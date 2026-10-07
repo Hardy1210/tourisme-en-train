@@ -1,0 +1,19 @@
+# Propriétaires du code : qui doit relire quoi avant une fusion dans main.
+# GitHub demande automatiquement la relecture des personnes listées ici.
+# Avec la règle « Require review from Code Owners » (voir docs/equipe/travail-en-equipe.md § 3),
+# aucune pull request ne peut être fusionnée sans l'accord de Hardy.
+#
+# Vérifier que @Hardy1210 est bien l'identifiant GitHub de Hardy.
+# Pour une modification de docs/07-contrat-infra.md, Hardy ajoute aussi les SR comme relecteurs (règle du contrat).
+
+# Tout le dépôt
+*                           @Hardy1210
+
+# Dossier des SR (infrastructure de production)
+/infra/                     @Hardy1210
+
+# Contrat entre l'application et l'infrastructure
+/docs/07-contrat-infra.md   @Hardy1210
+
+# Configuration GitHub (ce fichier, modèles)
+/.github/                   @Hardy1210

@@ -1,0 +1,11 @@
+# Secrets — jamais dans le dépôt
+.env
+.env.*
+!.env.example
+
+# Données téléchargées et produites par le traitement
+data/
+
+# Dépendances et constructions (complété à l'étape E00)
+node_modules/
+.next/
