@@ -2,7 +2,7 @@
 
 > **Pour :** Hardy (développeur) — à partager avec l'équipe et le tuteur.
 > **But :** démarrer le projet, configurer GitHub, accueillir un ou deux membres Systèmes & Réseaux (SR) et travailler ensemble jusqu'au rendu du 3 décembre, sans que personne n'attende personne.
-> **Version** 1.2 · 05/10/2026
+> **Version** 1.3 · 07/10/2026
 > **Liés :** `docs/07-contrat-infra.md` (contrat app ↔ infra) · `docs/equipe/guide-SR.md` (tâches des SR) · `docs/equipe/demarrage-SR.md` (premier jour des SR) · `.github/CODEOWNERS`
 
 ---
@@ -45,7 +45,7 @@
 |---|---|---|
 | 1 | Créer le dépôt sur GitHub (§ 3.1) | Un dépôt vide `tourisme-en-train` |
 | 2 | Dans le dossier du projet sur l'ordinateur, envoyer la documentation sur GitHub (commandes ci-dessous) | La doc est en ligne, `main` existe |
-| 3 | Configurer GitHub (§ 3.2 à 3.5) | `main` protégée, SR invités, tableau des tâches prêt |
+| 3 | Configurer GitHub (§ 3.2 à 3.6) | `main` protégée, SR invités, tableau des tâches prêt |
 | 4 | Réaliser l'étape **E00** (initialisation) puis **E01** (Docker + base) | Le projet se lance avec `docker compose up` |
 | 5 | Organiser la réunion de démarrage avec les SR (§ 4) | Chacun sait quoi faire |
 
@@ -56,9 +56,10 @@ git init
 git add .
 git commit -m "docs: documentation initiale du projet"
 git branch -M main
-git remote add origin https://github.com/Hardy1210/tourisme-en-train.git
+git remote add origin git@github.com:Hardy1210/tourisme-en-train.git
 git push -u origin main
 ```
+Adresse **SSH** (clé SSH déjà reliée au compte GitHub : aucun mot de passe à chaque envoi). Sans clé SSH, l'adresse HTTPS `https://github.com/Hardy1210/tourisme-en-train.git` fonctionne aussi (GitHub demande alors un jeton d'accès). Le choix n'a aucun effet sur le travail en équipe : chacun choisit pour son propre poste.
 
 > Les SR peuvent commencer **avant** que le code existe : choisir le serveur, le nom de domaine, le pare-feu (tâches I02, I03, I04, I08). Ils lanceront le projet en local (I01) dès que l'étape E01 est fusionnée (vers le 11/10).
 
@@ -71,7 +72,7 @@ git push -u origin main
 2. Nom : `tourisme-en-train`. Ne cocher **ni README, ni .gitignore, ni licence** (ils sont déjà dans le projet).
 3. Visibilité : **Public conseillé**.
    - Le projet est un projet open data destiné à être publié sur data.gouv.fr ;
-   - la protection de `main` (§ 3.3) est **gratuite pour un dépôt public**, mais payante pour un dépôt privé avec un compte gratuit ;
+   - la protection de `main` (§ 3.4) est **gratuite pour un dépôt public**, mais payante pour un dépôt privé avec un compte gratuit ;
    - aucun secret n'est jamais dans le dépôt (règle 4 de `CLAUDE.md`), donc rien de sensible n'est exposé.
    - Si l'école impose un dépôt privé : activer le **GitHub Student Developer Pack** (GitHub Education), qui donne gratuitement l'offre Pro et donc la protection des branches.
 
@@ -80,8 +81,20 @@ git push -u origin main
 2. Saisir l'identifiant GitHub de chaque SR.
 3. Chaque SR **accepte l'invitation** reçue par e-mail (sinon il ne peut rien envoyer).
 
-### 3.3 Protéger `main`
-Dépôt → **Settings → Rules → Rulesets → New ruleset → New branch ruleset**.
+### 3.3 Régler la fusion des pull requests
+Dépôt → **Settings → General**, rubrique **Pull Requests** :
+
+| Réglage | Valeur |
+|---|---|
+| Allow merge commits | ☐ décoché |
+| Allow squash merging | ✅ — Default commit message : **Pull request title** |
+| Allow rebase merging | ☐ décoché |
+| Automatically delete head branches | ✅ |
+
+**Pourquoi :** chaque PR devient **un seul commit** dans `main`, nommé d'après son titre (« E02 gares », « I05 proxy HTTPS ») : un historique lisible, une ligne par tâche. Une seule méthode = personne ne se trompe de bouton. Les branches fusionnées s'effacent toutes seules.
+
+### 3.4 Protéger `main`
+Dépôt → **Settings → Rulesets** (menu de gauche, rubrique « Code, planning, and automation ») **→ New ruleset → New branch ruleset**.
 
 | Réglage | Valeur |
 |---|---|
@@ -91,26 +104,28 @@ Dépôt → **Settings → Rules → Rulesets → New ruleset → New branch rul
 | Target branches | **Add target → Include default branch** |
 | Restrict deletions | ✅ |
 | Block force pushes | ✅ |
-| Require a pull request before merging | ✅ — Required approvals : **1** — **Require review from Code Owners** ✅ |
+| Require a pull request before merging | ✅ — Required approvals : **1** — **Dismiss stale pull request approvals when new commits are pushed** ✅ — **Require review from Code Owners** ✅ — Allowed merge methods : **Squash** uniquement |
+| Require status checks to pass | ☐ pour l'instant (aucun test automatique) ; **à activer quand l'intégration continue existe** |
+| Autres réglages | Laisser par défaut |
 
 **Ce que ça donne :**
 - personne ne peut envoyer directement dans `main` ni l'effacer ;
-- une PR des SR ne peut être fusionnée **qu'avec l'accord de Hardy** ;
+- une PR des SR ne peut être fusionnée **qu'avec l'accord de Hardy** ; si elle est modifiée après l'accord, il faut le redonner ;
 - Hardy, administrateur, peut fusionner **ses propres** PR sans attendre personne (case « bypass » au moment de la fusion) : il n'est jamais bloqué.
 
-### 3.4 Le fichier CODEOWNERS
+### 3.5 Le fichier CODEOWNERS
 Déjà présent dans `.github/CODEOWNERS`. Il dit à GitHub que **Hardy relit tout**. Avec le réglage « Require review from Code Owners », c'est ce qui rend son accord obligatoire.
 → Vérifier seulement que `@Hardy1210` est bien son identifiant GitHub.
 
 Le modèle de PR (`.github/pull_request_template.md`) pré-remplit chaque PR avec : quoi, tâche, comment vérifier, cases à cocher (périmètre, secrets, contrat).
 
-### 3.5 Le tableau des tâches
+### 3.6 Le tableau des tâches
 1. Dépôt → **Projects → New project → Board**. Nom : `tourisme-en-train` (le nom de code, qui ne change jamais ; un seul tableau pour toute l'équipe : tes étapes E00 → E18 et les tâches des SR I01 → I22).
 2. Colonnes : **À faire · En cours · En relecture · Terminé**.
 3. Créer une carte par tâche I01 à I22 (liste dans `docs/equipe/guide-SR.md` § 4), avec son responsable (SR1 ou SR2) et sa priorité.
 4. Règle : une carte passe en « En relecture » quand la PR est ouverte, en « Terminé » quand elle est fusionnée.
 
-### 3.6 Le canal d'équipe
+### 3.7 Le canal d'équipe
 Un salon Discord ou Teams **dédié au projet**. Les questions techniques précises vont **dans la PR concernée** (elles restent attachées au travail) ; le salon sert au reste.
 
 ---
@@ -255,3 +270,4 @@ Chaque décision prise en point d'équipe qui change le contrat ou l'organisatio
 | Date | Version | Modification |
 |---|---|---|
 | 02/10/2026 | 1.0 | Création |
+| 07/10/2026 | 1.3 | Réglages de fusion (§ 3.3, squash uniquement), approbation annulée si la PR change, adresse SSH, menu « Rulesets » ; sections 3.4 → 3.7 renumérotées |
