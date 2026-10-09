@@ -66,7 +66,7 @@ Un seul fuseau, mais trois pièges réels :
 | Couche | Outil | Rôle |
 |---|---|---|
 | Langage app | TypeScript strict | Typage de bout en bout |
-| Framework | Next.js 16 (App Router, sous réserve de l'essai Serwist, D029) + React 19 | Pages **et** routes API dans un seul projet |
+| Framework | Next.js 16 (App Router, D029) + React 19 | Pages **et** routes API dans un seul projet |
 | Style | Tailwind CSS 4 + shadcn/ui | Classes utilitaires, composants accessibles, tokens dans `globals.css` |
 | Validation | Zod 4 | Paramètres des routes, réponses externes, variables d'environnement |
 | Données client | TanStack Query | Cache et rechargement des réponses |

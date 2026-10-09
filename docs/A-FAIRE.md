@@ -17,6 +17,7 @@
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
 | **Données des cartes de destination** : l'interface (`06` § 3.4) affiche dernier retour, prochain train, CO₂, prix et « Faisable dans la journée », que `/api/destinations` ne fournit pas ; `liaison_directe` n'a ni heures d'arrivée ni retours (et aucun retour pour une destination hors région). Choisir : enrichir `liaison_directe` / la réponse de `/api/destinations`, ou des appels séparés par carte | Audit du 09/10 ; `liaison_directe` retirée du schéma initial de E01 pour ne rien figer | **Avant E04** (19/10) |
+| **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 

@@ -179,8 +179,8 @@ Détail des étapes et algorithmes : `04-traitement-donnees.md`.
 | Composant | Version cible | Remarque |
 |---|---|---|
 | Node.js | 24 LTS | `.nvmrc` et `engines.node` (D028) |
-| pnpm | 11.24.0 (fixé) | `packageManager` ; scripts d'installation autorisés un par un dans `pnpm-workspace.yaml` (D029) |
-| Next.js | 16 (App Router), sinon 15.5 si l'essai Serwist échoue | `params` et `searchParams` sont asynchrones (D029) |
+| pnpm | 11.24.0 (fixé) | `packageManager` ; scripts d'installation autorisés un par un (`allowBuilds` dans `pnpm-workspace.yaml`, D029) |
+| Next.js | 16 (App Router), Turbopack | `params` et `searchParams` sont asynchrones (D029) |
 | React | 19 | |
 | TypeScript | 5.9.3 (fixé) strict | `noUncheckedIndexedAccess` activé ; pas de 6.1+ ni 7 tant que typescript-eslint ne les prend pas en charge (D029) |
 | Tailwind CSS | 4 | Tokens dans `globals.css` via `@theme` |
@@ -189,7 +189,7 @@ Détail des étapes et algorithmes : `04-traitement-donnees.md`.
 | ESLint / Prettier | 10 (configuration « flat ») / 3 | Une seule configuration à la racine |
 | Vitest / Playwright | 5 / 1.x | Un projet Vitest par paquet, lancés ensemble par `pnpm test` |
 | MapLibre GL / react-map-gl | dernière stable | Fond OpenFreeMap |
-| Serwist | dernière stable | |
+| Serwist | 9 (`@serwist/turbopack`) | Service worker servi par une route Next.js, construit par esbuild — essai validé (D029) |
 | PostgreSQL / PostGIS | 16 / 3.4 | Image `postgis/postgis:16-3.4` |
 | tsx | dernière stable | Exécute le traitement des données en TypeScript sans étape de compilation |
 | csv-parse, pg, pg-copy-streams, yauzl | dernières stables | Lecture CSV en flux, connexion PostgreSQL, chargement `COPY`, lecture des ZIP GTFS |
