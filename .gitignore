@@ -1,11 +1,31 @@
 # Secrets — jamais dans le dépôt
 .env
 .env.*
-!.env.example
+# Fichiers d'exemple versionnés (ex. .env.example, infra/.env.prod.example)
+!*.example
 
-# Données téléchargées et produites par le traitement
-data/
+# Données téléchargées et produites par le traitement (seuls les dossiers sont versionnés)
+data/*
+!data/brut/
+data/brut/*
+!data/brut/.gitkeep
+!data/traite/
+data/traite/*
+!data/traite/.gitkeep
 
-# Dépendances et constructions (complété à l'étape E00)
+# Dépendances et constructions
 node_modules/
 .next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Sorties de tests
+coverage/
+test-results/
+playwright-report/
+
+# Éditeurs et système
+.DS_Store
+*.log

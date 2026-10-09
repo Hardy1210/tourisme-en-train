@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "fuseau": "Europe/Paris",
+  "region": {
+    "codeInsee": "27",
+    "nom": "Bourgogne-Franche-Comté",
+    "departements": ["21", "25", "39", "58", "70", "71", "89", "90"]
+  },
+  "fenetreJoursHoraires": 60,
+  "fenetreJoursLiaisons": 60,
+  "marche": { "vitesseKmH": 4.5, "coefDetour": 1.3 },
+  "velo": { "vitesseKmH": 15, "coefDetour": 1.3 },
+  "voiture": { "vitesseKmH": 50, "coefDetour": 1.3 },
+  "rail": { "coefDetour": 1.2 },
+  "rayons": {
+    "lieuxGareM": 1500,
+    "autourDeMoiDefautM": 2000,
+    "autourDeMoiOptionsM": [1000, 2000, 5000, 10000],
+    "mobiliteM": 800,
+    "cyclableM": 3000
+  },
+  "durees": {
+    "trainMaxOptionsMin": [30, 60, 120, 180],
+    "tranchesTempsMin": [30, 60, 120]
+  },
+  "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
+  "dedoublonnage": {
+    "distanceM": 75,
+    "similariteNom": 0.6,
+    "prioriteSources": ["datatourisme", "lieux_culturels", "festivals", "osm"]
+  },
+  "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
+  "impact": {
+    "source": "ADEME — Impact CO2",
+    "dateReleve": "2026-09-30",
+    "facteursCo2GParKm": {
+      "TGV": 2.93,
+      "TER": 27.7,
+      "INTERCITES": null,
+      "VOITURE": 142,
+      "AVION": null
+    },
+    "occupantsVoiturePartagee": 3,
+    "distanceMinAvionKm": 300
+  },
+  "prix": {
+    "aCalibrer": true,
+    "source": null,
+    "parKm": { "TER": null, "INTERCITES": null, "TGV": null },
+    "margeFourchette": 0.25
+  }
+}
