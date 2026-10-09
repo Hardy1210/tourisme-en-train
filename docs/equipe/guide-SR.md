@@ -2,7 +2,7 @@
 
 > **Pour :** les deux membres SR du projet `tourisme-en-train`.
 > **But :** savoir quoi faire, quand, et comment travailler avec Hardy **sans que personne n'attende personne**.
-> **Version** 1.3 · 05/10/2026
+> **Version** 1.4 · 09/10/2026
 > **Premier jour :** `docs/equipe/demarrage-SR.md` · **Organisation de l'équipe :** `docs/equipe/travail-en-equipe.md`
 
 ---
@@ -30,7 +30,7 @@ Priorités : **P0** indispensable à la mise en ligne · **P1** souhaitable · *
 ### Hébergement et serveur
 | ID | Tâche | Livrable | Qui | Prio |
 |---|---|---|---|---|
-| I01 | Lancer l'environnement local du projet (`docker compose up`) pour le connaître — **dès la fin de l'étape E01 (vers le 11/10)** | Retour à Hardy si quelque chose ne marche pas | SR1 + SR2 | P0 |
+| I01 | Lancer l'environnement local du projet (`docker compose up`) pour le connaître — **après la fusion de l'étape E01** | Retour à Hardy si quelque chose ne marche pas | SR1 + SR2 | P0 |
 | I02 | Choisir et préparer un serveur Linux (petit VPS, ou autre solution gratuite/école) | Fiche serveur | SR1 | P0 |
 | I03 | Accès administrateur sécurisé : SSH par clé, pas de root, mises à jour de sécurité automatiques | Procédure d'accès | SR1 | P0 |
 
@@ -46,7 +46,7 @@ Priorités : **P0** indispensable à la mise en ligne · **P1** souhaitable · *
 | ID | Tâche | Livrable | Qui | Prio |
 |---|---|---|---|---|
 | I08 | Pare-feu (22, 80, 443 uniquement), protection contre les connexions répétées | Rapport de scan des ports | SR2 | P0 |
-| I09 | Base inaccessible depuis Internet ; rôles `app_lecture` / `etl_ecriture` (voir `07` § 3) | Vérification écrite | SR1 | P0 |
+| I09 | Base inaccessible depuis Internet ; rôles `app_lecture` / `etl_ecriture` (voir `03-base-de-donnees.md` § 4 ; mots de passe : `07` § 3) | Vérification écrite | SR1 | P0 |
 | I10 | Secrets hors du dépôt, stockés de façon sûre | Procédure de gestion des secrets | SR2 | P1 |
 | I11 | En-têtes de sécurité (liste dans `07` § 6) | Bonne note securityheaders.com | SR2 | P1 |
 | I12 | Limitation d'appels sur `/api/trains/temps-reel` et `/api/geocodage` | Règle en place | SR2 | P1 |
@@ -95,3 +95,13 @@ Priorités : **P0** indispensable à la mise en ligne · **P1** souhaitable · *
 
 ## 7. Ce que vous pouvez présenter à l'oral
 Le schéma réseau, les preuves de sécurité (scan de ports, notes SSL Labs et securityheaders.com), une démonstration de restauration de sauvegarde, la supervision, et le test de charge si réalisé.
+
+---
+
+## Historique
+
+| Date | Version | Modification |
+|---|---|---|
+| 30/09/2026 | 1.0 | Création |
+| — | 1.1 → 1.3 | Modifications non tracées (dont : traitement des données en TypeScript, D024 ; calendrier recalé, D025 ; `infra/CLAUDE.md`, D026) |
+| 09/10/2026 | 1.4 | I01 : « après la fusion de E01 » au lieu d'une date ; I09 renvoie aux rôles de `03` § 4 ; historique ajouté |

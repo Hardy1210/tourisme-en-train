@@ -2,7 +2,7 @@
 
 > **Pour :** Hardy (développeur) — à partager avec l'équipe et le tuteur.
 > **But :** démarrer le projet, configurer GitHub, accueillir un ou deux membres Systèmes & Réseaux (SR) et travailler ensemble jusqu'au rendu du 3 décembre, sans que personne n'attende personne.
-> **Version** 1.4 · 07/10/2026
+> **Version** 1.5 · 09/10/2026
 > **Liés :** `docs/07-contrat-infra.md` (contrat app ↔ infra) · `docs/equipe/guide-SR.md` (tâches des SR) · `docs/equipe/demarrage-SR.md` (premier jour des SR) · `.github/CODEOWNERS`
 
 ---
@@ -61,7 +61,7 @@ git push -u origin main
 ```
 Adresse **SSH** (clé SSH déjà reliée au compte GitHub : aucun mot de passe à chaque envoi). Sans clé SSH, l'adresse HTTPS `https://github.com/Hardy1210/tourisme-en-train.git` fonctionne aussi (GitHub demande alors un jeton d'accès). Le choix n'a aucun effet sur le travail en équipe : chacun choisit pour son propre poste.
 
-> Les SR peuvent commencer **avant** que le code existe : choisir le serveur, le nom de domaine, le pare-feu (tâches I02, I03, I04, I08). Ils lanceront le projet en local (I01) dès que l'étape E01 est fusionnée (vers le 11/10).
+> Les SR peuvent commencer **avant** que le code existe : choisir le serveur, le nom de domaine, le pare-feu (tâches I02, I03, I04, I08). Ils lanceront le projet en local (I01) dès que l'étape E01 est fusionnée.
 
 ---
 
@@ -273,5 +273,7 @@ Chaque décision prise en point d'équipe qui change le contrat ou l'organisatio
 | Date | Version | Modification |
 |---|---|---|
 | 02/10/2026 | 1.0 | Création |
+| — | 1.1 → 1.2 | Modifications non tracées |
 | 07/10/2026 | 1.3 | Réglages de fusion (§ 3.3, squash uniquement), approbation annulée si la PR change, adresse SSH, menu « Rulesets » ; sections 3.4 → 3.7 renumérotées |
 | 07/10/2026 | 1.4 | Cycle de travail complété (retour sur `main`, ménage local), routine de Hardy précisée, suppression automatique des branches (§ 7), champs du tableau et création des tickets par script (§ 3.6) |
+| 09/10/2026 | 1.5 | Date de I01 remplacée par « après la fusion de E01 » ; historique complété |

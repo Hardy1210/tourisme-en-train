@@ -1,7 +1,7 @@
 # Démarrage — membres Systèmes & Réseaux
 
 > **Pour :** SR1 et SR2. **But :** être opérationnel le premier jour.
-> **Version** 1.1 · 05/10/2026
+> **Version** 1.2 · 09/10/2026
 > **À lire ensuite :** `docs/equipe/guide-SR.md` (vos tâches I01 → I22) · `docs/07-contrat-infra.md` (le contrat avec l'application)
 
 ---
@@ -34,7 +34,7 @@
 | 2 | Récupérer le projet | `git clone https://github.com/Hardy1210/tourisme-en-train.git` puis `cd tourisme-en-train` |
 | 3 | Lire les 4 documents | Ce guide · `infra/CLAUDE.md` (vos règles et l'état de vos tâches) · `docs/equipe/guide-SR.md` · `docs/07-contrat-infra.md` |
 | 4 | Ouvrir le tableau des tâches | Dépôt → **Projects → tourisme-en-train** ; prendre vos premières cartes |
-| 5 | Lancer le projet en local (tâche I01) | Dès que Hardy annonce que l'étape E01 est terminée (vers le 11/10) : voir § 4 |
+| 5 | Lancer le projet en local (tâche I01) | Après la fusion de l'étape E01 (Hardy l'annonce) : voir § 4 |
 
 > Les tâches **I02, I03, I04, I08** (serveur, accès sécurisé, nom de domaine, pare-feu) ne demandent pas le code de l'application : commencez par elles.
 
@@ -115,3 +115,5 @@ git push -u origin infra/I05-proxy-https   # 4. envoyer la branche
 | Date | Version | Modification |
 |---|---|---|
 | 02/10/2026 | 1.0 | Création |
+| 05/10/2026 | 1.1 | Lien vers `infra/CLAUDE.md`, exception `.github/workflows/deploiement*.yml` — D026 (ligne ajoutée après coup) |
+| 09/10/2026 | 1.2 | Date de I01 remplacée par « après la fusion de E01 » |
