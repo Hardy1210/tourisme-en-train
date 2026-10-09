@@ -1,6 +1,6 @@
 # Prompts Claude Design — écrans complémentaires
 
-> **Version** 1.0 · **Date** 30/09/2026
+> **Version** 1.1 · **Date** 09/10/2026
 > **Dépend de :** maquette Explorer v2 (`Explorer_Desktop_v2`), `docs/06-interface.md`, `docs/05-api.md`
 > **Usage :** à coller dans Claude Design, **dans le même projet que la maquette Explorer v2**, pour qu'il réutilise `tokens.css` et les composants existants.
 
@@ -57,7 +57,7 @@ Réponds seulement « Compris » ; j'envoie le premier écran ensuite.
 ```
 Corrections à apporter à la maquette Explorer v2 (mobile et desktop) :
 
-1. Retire le bouton « Mes sorties » de l'en-tête (les favoris arrivent plus tard). À sa place, un bouton « Menu » (icône trois traits ou « i ») qui ouvrira un petit menu : « À propos » et « Sources des données » (écran 6, à venir).
+1. Retire « Mes sorties » (les favoris arrivent plus tard). La navigation basse ne contient plus que deux entrées : « Explorer » et « Menu » (icône trois traits). « Menu » ouvrira un petit menu : « À propos » et « Sources des données » (écran 6, à venir).
 2. Les destinations hors région (Lyon Part-Dieu, Paris Gare de Lyon, Mulhouse) ne doivent afficher AUCUN nombre de lieux par catégorie. Remplace les pastilles par une mention discrète « Hors région · trains seulement ». Leur durée, nombre de trains et prix restent affichés.
 3. Vérifie qu'il ne reste aucune mention de transport à la demande (onglet Sur place de toutes les destinations).
 4. Vérifie que la légende des temps de trajet (≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30) utilise les tokens --map-time-1 à --map-time-4 et que ces tokens existent bien dans tokens.css ; liste-moi leurs valeurs.
@@ -179,7 +179,7 @@ Contenu :
 ```
 Crée le menu et l'écran « Sources des données » (mobile + desktop).
 
-Menu : le bouton « Menu » de l'en-tête (créé à l'étape de corrections) ouvre un petit menu avec « À propos » (affiche un toast « Bientôt disponible ») et « Sources des données ». Ajoute aussi un lien « Sources » cliquable dans l'attribution en bas de la carte.
+Menu : l'entrée « Menu » de la navigation basse (créée à l'étape de corrections) ouvre un petit menu avec « À propos » (affiche un toast « Bientôt disponible ») et « Sources des données ». Ajoute aussi un lien « Sources » cliquable dans l'attribution en bas de la carte.
 
 Écran Sources :
 - Mobile : page plein écran avec « ← Retour ». Desktop : dans le panneau gauche, avec « ← Retour ».
@@ -298,3 +298,12 @@ Fiche lieu
 
 Ajoute un sélecteur d'écrans de démonstration (discret, hors de l'interface) pour accéder directement à : états de l'Explorer (Résultats, Chargement, Localisation refusée, Aucun résultat, Hors ligne, Hors région), écrans d'erreur (sortie expirée, 404, panne), premier lancement.
 ```
+
+---
+
+## Historique
+
+| Date | Version | Modification |
+|---|---|---|
+| 30/09/2026 | 1.0 | Création |
+| 09/10/2026 | 1.1 | « Menu » dans la navigation basse (Explorer · Menu), comme la fiche E10 et `06` § 3 |

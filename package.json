@@ -1,0 +1,30 @@
+{
+  "name": "tourisme-en-train",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @tourisme/web dev",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:verifier": "prettier --check .",
+    "test": "vitest run",
+    "verifier": "pnpm typecheck && pnpm lint && pnpm format:verifier && pnpm test",
+    "etl": "pnpm --filter @tourisme/etl start"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.1",
+    "eslint": "^10.12.0",
+    "eslint-config-next": "16.4.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.71.1",
+    "vitest": "^5.0.3"
+  }
+}

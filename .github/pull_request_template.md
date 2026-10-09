@@ -7,6 +7,9 @@
 ## Comment vérifier
 <!-- Les commandes ou les étapes pour constater que ça marche. -->
 
+## Protections
+<!-- Quelles protections existantes (validation, filtre, test) deviennent insuffisantes avec ce changement ? -->
+
 ## Vérifications
 - [ ] Je n'ai modifié que mon périmètre (`infra/` pour les SR ; `.github/workflows/deploiement*.yml` pour la tâche I16).
 - [ ] Aucun mot de passe, clé ou secret dans les fichiers.

@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - etl
+  - packages/*
+
+# Scripts d'installation des dépendances : autorisés un par un (pnpm 11, D029).
+# false = refusé : le paquet fonctionne avec ses binaires précompilés.
+allowBuilds:
+  esbuild: true # binaire natif utilisé par tsx (traitement des données) et, en E14, par Serwist
+  unrs-resolver: false

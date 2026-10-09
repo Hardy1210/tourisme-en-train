@@ -18,7 +18,7 @@ Le dépôt et les outils existent (E00). Il faut maintenant une base PostgreSQL 
 
 ## Résultat attendu
 - Service `db` (et `adminer` en profil `outils`) opérationnels.
-- Toutes les tables **P0** de `03` créées par migration, avec index et contraintes.
+- Toutes les tables **P0** de `03` créées par migration, avec index et contraintes, **sauf `liaison_directe`** (créée en E04, voir la note du 09/10).
 - Rôles `proprietaire`, `etl_ecriture`, `app_lecture` avec les bons droits.
 - Base de test séparée pour les tests d'intégration.
 - Jeu d'échantillon chargeable.
@@ -35,12 +35,12 @@ Le dépôt et les outils existent (E00). Il faut maintenant une base PostgreSQL 
 4. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] `docker-compose.yml` : services `db`, `adminer` (profil `outils`), `etl` et `web` déclarés mais construits plus tard (profils `etl`, `demo`) ; volume `donnees_db` ; ports sur `127.0.0.1` uniquement ; `healthcheck` `pg_isready`.
+- [ ] `docker-compose.yml` : services `db`, `adminer` (profil `outils`), `etl` et `web` déclarés mais construits plus tard (profils `etl`, `demo`) ; volume `donnees_db` ; ports sur `127.0.0.1` uniquement, port de `db` côté hôte `${BDD_PORT_HOTE:-5432}` (D030) ; `healthcheck` `pg_isready`.
 - [ ] `apps/web/drizzle.config.ts` : schéma `src/lib/db/schema.ts`, sortie `../../db/migrations`, URL `BDD_URL_MIGRATIONS`.
 - [ ] `src/lib/db/types-postgis.ts` : `customType` `geographyPoint` (et plus tard ligne/multiligne).
-- [ ] `src/lib/db/schema.ts` : tables P0 de `03` § 3.1 → 3.12 avec contraintes et index.
+- [ ] `src/lib/db/schema.ts` : tables P0 de `03` § 3.1 → 3.12 **sauf § 3.5 `liaison_directe`**, avec contraintes et index. `schema.ts` et `types-postgis.ts` **sans** `import 'server-only'` (lus par drizzle-kit, D031).
 - [ ] Migration personnalisée n° 0 : `CREATE EXTENSION postgis`, `pg_trgm`.
-- [ ] Migration personnalisée « rôles » : création `etl_ecriture`, `app_lecture` (mots de passe depuis variables, via script de migration), droits, `ALTER DEFAULT PRIVILEGES`.
+- [ ] Script de création des rôles `etl_ecriture`, `app_lecture` avec leur mot de passe (`MDP_APP_LECTURE`, `MDP_ETL_ECRITURE`), idempotent, lancé par `pnpm db:migrer` **avant** les migrations ; migration personnalisée « droits » : `GRANT`, `ALTER DEFAULT PRIVILEGES`, **aucun mot de passe** (D031).
 - [ ] Index particuliers si non générés : GIST sur `geom`, GIN trigram sur `lieu.nom`.
 - [ ] `src/lib/db/client.ts` : client Drizzle + `postgres`/`pg` avec `BDD_URL_APP` (import `server-only`).
 - [ ] Scripts : `pnpm db:generer`, `pnpm db:migrer`, `pnpm db:reinitialiser` (local uniquement, demande confirmation).
@@ -70,3 +70,4 @@ Voir `_MODELE.md` § Fin d'étape. Mettre à jour `03` si le schéma réel diff�
 ## Notes et modifications après coup
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 09/10/2026 : port de `db` côté hôte réglable (D030) ; rôles créés par script, `server-only` absent de `schema.ts` (D031) ; **`liaison_directe` retirée du schéma initial** : sa structure dépend du point « données des cartes de destination » à décider avant E04 (`A-FAIRE`), elle sera créée par une migration au début de E04.

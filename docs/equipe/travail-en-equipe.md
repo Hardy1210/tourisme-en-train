@@ -2,7 +2,7 @@
 
 > **Pour :** Hardy (développeur) — à partager avec l'équipe et le tuteur.
 > **But :** démarrer le projet, configurer GitHub, accueillir un ou deux membres Systèmes & Réseaux (SR) et travailler ensemble jusqu'au rendu du 3 décembre, sans que personne n'attende personne.
-> **Version** 1.3 · 07/10/2026
+> **Version** 1.5 · 09/10/2026
 > **Liés :** `docs/07-contrat-infra.md` (contrat app ↔ infra) · `docs/equipe/guide-SR.md` (tâches des SR) · `docs/equipe/demarrage-SR.md` (premier jour des SR) · `.github/CODEOWNERS`
 
 ---
@@ -61,7 +61,7 @@ git push -u origin main
 ```
 Adresse **SSH** (clé SSH déjà reliée au compte GitHub : aucun mot de passe à chaque envoi). Sans clé SSH, l'adresse HTTPS `https://github.com/Hardy1210/tourisme-en-train.git` fonctionne aussi (GitHub demande alors un jeton d'accès). Le choix n'a aucun effet sur le travail en équipe : chacun choisit pour son propre poste.
 
-> Les SR peuvent commencer **avant** que le code existe : choisir le serveur, le nom de domaine, le pare-feu (tâches I02, I03, I04, I08). Ils lanceront le projet en local (I01) dès que l'étape E01 est fusionnée (vers le 11/10).
+> Les SR peuvent commencer **avant** que le code existe : choisir le serveur, le nom de domaine, le pare-feu (tâches I02, I03, I04, I08). Ils lanceront le projet en local (I01) dès que l'étape E01 est fusionnée.
 
 ---
 
@@ -122,8 +122,9 @@ Le modèle de PR (`.github/pull_request_template.md`) pré-remplit chaque PR ave
 ### 3.6 Le tableau des tâches
 1. Dépôt → **Projects → New project → Board**. Nom : `tourisme-en-train` (le nom de code, qui ne change jamais ; un seul tableau pour toute l'équipe : tes étapes E00 → E18 et les tâches des SR I01 → I22).
 2. Colonnes : **À faire · En cours · En relecture · Terminé**.
-3. Créer une carte par tâche I01 à I22 (liste dans `docs/equipe/guide-SR.md` § 4), avec son responsable (SR1 ou SR2) et sa priorité.
-4. Règle : une carte passe en « En relecture » quand la PR est ouverte, en « Terminé » quand elle est fusionnée.
+3. Champs **Semaine** (`S1` → `S8`, `Fin`) et **Priorité** (`P0`, `P1`, `P2`) : Settings du tableau → **Fields → + → Create a project field** (*Single select*).
+4. Les **41 tickets** (E00 → E18 pour Hardy, I01 → I22 pour les SR, liste dans `docs/equipe/guide-SR.md` § 4) sont créés **une seule fois par un script** (`gh`), avec responsable, semaine et priorité. Ils arrivent tout seuls dans le tableau.
+5. Règle : une carte passe en « En relecture » quand la PR est ouverte, en « Terminé » quand elle est fusionnée.
 
 ### 3.7 Le canal d'équipe
 Un salon Discord ou Teams **dédié au projet**. Les questions techniques précises vont **dans la PR concernée** (elles restent attachées au travail) ; le salon sert au reste.
@@ -154,7 +155,9 @@ Un salon Discord ou Teams **dédié au projet**. Les questions techniques préci
 4. Envoyer la branche sur GitHub    →  git push -u origin infra/I05-proxy-https
 5. Ouvrir une pull request          →  sur GitHub, bouton « Compare & pull request »
 6. Relecture                        →  Hardy approuve ou demande des corrections
-7. Fusion dans main                 →  « Squash and merge », puis suppression de la branche
+7. Fusion dans main                 →  « Squash and merge » (la branche s'efface seule sur GitHub, § 3.3)
+8. Revenir sur main                 →  git switch main  puis  git pull
+9. Ménage sur son ordinateur        →  git branch -D <branche>   (facultatif : rien ne casse si on l'oublie)
 ```
 
 | Qui | Nom des branches | Exemple |
@@ -167,7 +170,7 @@ Un salon Discord ou Teams **dédié au projet**. Les questions techniques préci
 **Taille :** une tâche = une PR, fusionnée en quelques jours. Une branche ouverte depuis des semaines finit toujours mal.
 
 ### Le travail de Hardy
-Il suit les étapes E00 → E18 (une branche par étape, PR en fin d'étape, fusion par « bypass »). Rien ne change pour lui par rapport au travail seul, à part le point hebdomadaire et la relecture des PR des SR.
+Il suit les étapes E00 → E18 : **une branche par étape, une seule PR en fin d'étape** (environ deux par semaine), fusionnée par « bypass » ; entre les deux, aucun passage par le site GitHub. Les PR des SR se relisent **uniquement sur le site** (§ 7) : rien à faire dans le terminal, leur travail arrive au prochain `git pull`. Rien ne change par rapport au travail seul, à part le point hebdomadaire et ces relectures.
 
 ---
 
@@ -205,7 +208,7 @@ Pas besoin d'être expert en infrastructure. La relecture vérifie surtout le **
 | 4 | Ports, variables et noms respectent `07-contrat-infra.md` | Comparer avec le contrat |
 | 5 | Ça a été testé (capture, sortie de commande, lien) | Description ou commentaires |
 
-- **Tout est bon** → **Review changes → Approve**, puis **Squash and merge**, puis **Delete branch**.
+- **Tout est bon** → **Review changes → Approve**, puis **Squash and merge** (la branche s'efface seule).
 - **Un point à corriger** → **Review changes → Request changes** avec un commentaire précis. Le SR corrige **sur la même branche** ; la PR se met à jour toute seule.
 - **Une question** → commentaire sur la ligne concernée (clic sur le « + » à côté de la ligne).
 
@@ -270,4 +273,7 @@ Chaque décision prise en point d'équipe qui change le contrat ou l'organisatio
 | Date | Version | Modification |
 |---|---|---|
 | 02/10/2026 | 1.0 | Création |
+| — | 1.1 → 1.2 | Modifications non tracées |
 | 07/10/2026 | 1.3 | Réglages de fusion (§ 3.3, squash uniquement), approbation annulée si la PR change, adresse SSH, menu « Rulesets » ; sections 3.4 → 3.7 renumérotées |
+| 07/10/2026 | 1.4 | Cycle de travail complété (retour sur `main`, ménage local), routine de Hardy précisée, suppression automatique des branches (§ 7), champs du tableau et création des tickets par script (§ 3.6) |
+| 09/10/2026 | 1.5 | Date de I01 remplacée par « après la fusion de E01 » ; historique complété |

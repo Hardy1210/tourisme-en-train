@@ -1,0 +1,10 @@
+# Documentation et références rédigées à la main : non reformatées
+*.md
+design/
+# Fichiers générés ou installés
+pnpm-lock.yaml
+node_modules/
+.next/
+coverage/
+data/
+db/migrations/

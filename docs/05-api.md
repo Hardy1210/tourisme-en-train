@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.4 · **Date** 05/10/2026
+> **Version** 1.5 · **Date** 09/10/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -136,7 +136,7 @@ Cache : `public, max-age=86400`.
 |---|---|
 | `depart`, `arrivee` | obligatoires |
 | `date` | date du jour (Paris) |
-| `depuis` | `HH:MM` ; défaut : maintenant si `date` = aujourd'hui, sinon `00:00` |
+| `depuis` | `HH:MM` ; défaut : heure actuelle à Paris (`maintenantParis()`, D031) si `date` = aujourd'hui, sinon `00:00` |
 ```ts
 { date: string,
   aller:  Array<Train>, retour: Array<Train>,
@@ -160,8 +160,8 @@ Tri par type puis distance. Cache : `public, max-age=86400`.
 | `type` | type de train le plus fréquent de la liaison |
 ```ts
 { distanceKm: number,
-  co2Kg: { train: number; voitureSeule: number; voiturePartagee: number; avion: number | null },
-  co2EconomiseKg: number,
+  co2Kg: { train: number | null; voitureSeule: number; voiturePartagee: number; avion: number | null },
+  co2EconomiseKg: number | null,                                     // null si le facteur du type de train n'est pas relevé (D031)
   prixEstime: { min: number; max: number; devise: "EUR" } | null,   // null tant que non calibré
   source: string, dateReleve: string }
 ```
@@ -242,3 +242,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 02/10/2026 | 1.2 | Route `/api/geocodage/inverse` (nom de la commune de l'utilisateur) — D022 |
 | 05/10/2026 | 1.3 | `dateDuJour()` déplacée dans `@tourisme/commun` — D024 |
 | 05/10/2026 | 1.4 | Adresse des flux `station_status` lue dans `config/sources.json` — D027 |
+| 09/10/2026 | 1.5 | `/api/impact` : CO₂ du train `null` si le facteur n'est pas relevé ; `/api/trains` : heure actuelle par `maintenantParis()` — D031 |

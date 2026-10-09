@@ -16,8 +16,8 @@ Le défi invite à publier le projet comme **réutilisation** sur data.gouv.fr (
 Réutilisation publiée, reliée aux jeux de données utilisés, avec une présentation claire.
 
 ## Actions de Hardy
-- [ ] Décider si le dépôt devient **public** et choisir une **licence du code** (ex. MIT) → décision dans `DECISIONS.md`.
-- [ ] Vérifier le nom de marque (INPI, domaine) avant de le rendre public.
+- [ ] Choisir une **licence du code** (ex. MIT) et ajouter le fichier `LICENSE` → décision dans `DECISIONS.md`. *Le dépôt est public depuis le 07/10 sans licence : tant qu'elle n'est pas choisie, le code est « tous droits réservés ».*
+- [ ] Vérifier le nom de marque (INPI, domaine) avant de publier la réutilisation.
 - [ ] Créer ou utiliser un compte data.gouv.fr ; publier la réutilisation (guide « publier une réutilisation » de data.gouv.fr).
 
 ## Tâches (avec Claude Code)
@@ -25,7 +25,7 @@ Réutilisation publiée, reliée aux jeux de données utilisés, avec une prése
 - [ ] Captures d'écran (Explorer, fiche destination, page « âme ») et, si possible, courte vidéo du parcours.
 - [ ] Texte de la réutilisation (titre, description courte et longue) à partir de `docs/equipe/pitch.md`.
 - [ ] Liste des jeux de données à associer (tous ceux de `source_donnees`).
-- [ ] Vérifier qu'aucun secret ni donnée personnelle n'est présent dans l'historique Git avant de passer public.
+- [ ] Vérifier qu'aucun secret ni donnée personnelle n'est présent dans l'historique Git (le dépôt est déjà public : à faire aussi dès qu'un doute existe, sans attendre E18).
 
 ## Critères d'acceptation
 - [ ] Réutilisation visible sur data.gouv.fr et associée aux jeux utilisés.
@@ -37,3 +37,4 @@ Voir `_MODELE.md`. Entrée finale dans `JOURNAL.md` : bilan du projet.
 
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 09/10/2026 : le dépôt est déjà public (créé public le 07/10, D023) : la décision « rendre public » est retirée ; reste le choix de la licence du code.

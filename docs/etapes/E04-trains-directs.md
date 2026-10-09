@@ -27,6 +27,7 @@ Table `liaison_directe` complète sur la fenêtre, avec distance estimée ; dur�
 3. Proposer le plan ; attendre la validation.
 
 ## Tâches
+- [ ] **Migration de la table `liaison_directe`** (retirée du schéma initial de E01), selon la décision prise sur les données des cartes de destination (`A-FAIRE` § 1) ; mise à jour de `03` § 3.5.
 - [ ] `transformations/liaisons.sql` + `liaisons.ts` : exécution des deux requêtes SQL de `04` § 4.3 (paramètres depuis `parametres.json`, date du jour à Paris en paramètre).
 - [ ] Distance : `ST_Distance(gare_dep.geom, gare_arr.geom) / 1000 × rail.coefDetour`, arrondie à 0,1 km.
 - [ ] Chargement transactionnel (suppression totale puis insertion).
@@ -53,3 +54,4 @@ Voir `_MODELE.md`.
 ## Notes et modifications après coup
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 09/10/2026 : la table `liaison_directe` n'est plus créée en E01 : sa migration ouvre cette étape, après la décision sur les données des cartes de destination (dernier retour, prochain train, faisable dans la journée).

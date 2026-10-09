@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.2 · **Date** 05/10/2026
+> **Version** 1.3 · **Date** 09/10/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -39,6 +39,7 @@
 | **Type de train** | `TER`, `INTERCITES`, `TGV`, `AUTRE` | `TypeTrain` | `type_train` | — |
 | **Date de service** | Jour d'exploitation d'un train, au format `AAAA-MM-JJ`, en heure de Paris | `dateService` | `date_service` | Date UTC |
 | **Date du jour** | La date d'aujourd'hui **à Paris**, calculée une fois puis passée en paramètre | `dateDuJour` | `date_du_jour` | `new Date()` |
+| **Heure actuelle** | L'heure qu'il est **à Paris**, en secondes depuis minuit, avec la date du jour ; obtenue une fois par `maintenantParis()`, puis passée en paramètre | `maintenantParis()`, `heureActuelleS` | `heure_actuelle_s` | `new Date()` |
 | **Heure en secondes** | Heure GTFS en secondes depuis minuit ; peut dépasser 86 400 (train après minuit) | `departS`, `arriveeS` | `depart_s`, `arrivee_s` | Horodatage |
 | **Aller / Retour** | Trains gare de départ → gare d'arrivée, et l'inverse, à la même date | `aller`, `retour` | — | — |
 | **Dernier retour** | Dernier train direct du retour ce jour-là | `dernierRetour` | — | — |
@@ -103,3 +104,4 @@
 | 30/09/2026 | 1.0 | Création |
 | 30/09/2026 | 1.1 | Vélos disponibles, début du week-end, partage |
 | 05/10/2026 | 1.2 | ETL en TypeScript + SQL (plus de Python) — D024 |
+| 09/10/2026 | 1.3 | Heure actuelle (`maintenantParis`) — D031 |

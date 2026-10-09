@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.2 · **Date** 05/10/2026
+> **Version** 1.3 · **Date** 09/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -74,7 +74,9 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 }
 ```
 
-- Les valeurs `null` sont **à renseigner à l'E09** (relevé des facteurs manquants, calibrage du prix) : les schémas de validation refusent `null` une fois `prix.aCalibrer` passé à `false`.
+- Les valeurs `null` sont **à renseigner à l'E09** (D031) :
+  - **facteur CO₂ à `null`** (valeur pas encore relevée) : toujours accepté par le schéma ; `/api/impact` renvoie alors `co2Kg.train: null` pour ce type de train ;
+  - **prix au kilomètre à `null`** : accepté **seulement** tant que `prix.aCalibrer` est vrai ; le schéma le refuse une fois `aCalibrer` passé à `false`.
 - Modifier une valeur = modifier ce fichier + une ligne dans `DECISIONS.md` si la valeur change le comportement visible.
 - Ajouter une clé = la déclarer dans le schéma de `packages/commun` dans le même commit. *Un test vérifie que le fichier est accepté par le schéma.*
 
@@ -251,5 +253,6 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | Date | Version | Modification |
 |---|---|---|
 | 30/09/2026 | 1.0 | Création |
-| 05/10/2026 | 1.2 | § 2 bis : adresses des sources dans `config/sources.json` — D027 |
 | 05/10/2026 | 1.1 | Traitement en TypeScript + SQL : commandes `pnpm etl`, validation Zod, schéma unique de `parametres.json`, horaires GTFS chargés bruts puis transformés en SQL — D024 |
+| 05/10/2026 | 1.2 | § 2 bis : adresses des sources dans `config/sources.json` — D027 |
+| 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |

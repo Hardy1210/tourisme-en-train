@@ -43,3 +43,4 @@ Voir `_MODELE.md`.
 
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 09/10/2026 : compatibilité Serwist / Next.js 16 vérifiée par un essai en E00 (D029) : `@serwist/turbopack` (route `app/serwist/[path]/route.ts`, `withSerwist()`, `SerwistProvider`) au lieu de `app/sw.ts` seul ; la phase d'audit n'a plus qu'à confirmer la version.

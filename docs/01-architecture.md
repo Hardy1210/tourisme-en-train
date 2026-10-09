@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.3 · **Date** 05/10/2026
+> **Version** 1.4 · **Date** 09/10/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -72,7 +72,7 @@ apps/web/src/
 │  └─ presentation/                     ← page « L'âme du produit », écran Sources
 ├─ components/ui/                       ← boutons, puces, feuilles, onglets (shadcn/ui sur tokens)
 ├─ config/
-│  ├─ marque.ts                         ← nom, slogan, description, URL
+│  ├─ marque.ts                         ← nom, slogan, description (l'URL est la variable URL_APP, lue côté serveur)
 │  └─ parametres.ts                     ← réexporte les paramètres validés de @tourisme/commun
 ├─ lib/
 │  ├─ db/                               ← client, schema.ts (Drizzle), requêtes PostGIS partagées
@@ -81,7 +81,8 @@ apps/web/src/
 │  ├─ dates/                            ← secondes ↔ « HH:MM » (pur) ; dateDuJour() vient de @tourisme/commun
 │  ├─ impact/                           ← co2(), prixEstime() (pur)
 │  ├─ http/                             ← format d'erreur, validation des paramètres, cache
-│  └─ env.ts                            ← variables d'environnement validées (Zod)
+│  ├─ journal.ts                        ← réexporte le journal JSON de @tourisme/commun
+│  └─ env.ts                            ← variables d'environnement validées (Zod, côté serveur)
 └─ styles/globals.css                   ← design system
 ```
 
@@ -137,7 +138,8 @@ packages/commun/                  ← @tourisme/commun, importé par l'app ET pa
 └─ src/
    ├─ parametres.ts               ← schéma Zod unique de config/parametres.json + valeurs validées
    ├─ sources.ts                  ← schéma Zod de config/sources.json (adresses, licences, réseaux locaux)
-   ├─ dates.ts                    ← dateDuJour() à Paris (seule lecture de l'horloge)
+   ├─ dates.ts                    ← dateDuJour() et maintenantParis() (seules lectures de l'horloge)
+   ├─ journal.ts                  ← journal JSON (une ligne par événement), utilisé par l'app et le traitement
    └─ categories.ts               ← catégories et types partagés
 
 etl/                              ← @tourisme/etl
@@ -176,16 +178,18 @@ Détail des étapes et algorithmes : `04-traitement-donnees.md`.
 
 | Composant | Version cible | Remarque |
 |---|---|---|
-| Node.js | 22 LTS | |
-| pnpm | 9+ | |
-| Next.js | 15 (App Router) | `params` et `searchParams` sont asynchrones |
+| Node.js | 24 LTS | `.nvmrc` et `engines.node` (D028) |
+| pnpm | 11.24.0 (fixé) | `packageManager` ; scripts d'installation autorisés un par un (`allowBuilds` dans `pnpm-workspace.yaml`, D029) |
+| Next.js | 16 (App Router), Turbopack | `params` et `searchParams` sont asynchrones (D029) |
 | React | 19 | |
-| TypeScript | 5.x strict | `noUncheckedIndexedAccess` activé |
+| TypeScript | 5.9.3 (fixé) strict | `noUncheckedIndexedAccess` activé ; pas de 6.1+ ni 7 tant que typescript-eslint ne les prend pas en charge (D029) |
 | Tailwind CSS | 4 | Tokens dans `globals.css` via `@theme` |
-| Drizzle ORM / drizzle-kit | dernière stable | Migrations SQL générées dans `db/migrations/` |
-| Zod | 3.x | |
+| Drizzle ORM / drizzle-kit | 0.45 / 0.31 | Migrations SQL générées dans `db/migrations/` |
+| Zod | 4 | |
+| ESLint / Prettier | 10 (configuration « flat ») / 3 | Une seule configuration à la racine |
+| Vitest / Playwright | 5 / 1.x | Un projet Vitest par paquet, lancés ensemble par `pnpm test` |
 | MapLibre GL / react-map-gl | dernière stable | Fond OpenFreeMap |
-| Serwist | dernière stable | |
+| Serwist | 9 (`@serwist/turbopack`) | Service worker servi par une route Next.js, construit par esbuild — essai validé (D029) |
 | PostgreSQL / PostGIS | 16 / 3.4 | Image `postgis/postgis:16-3.4` |
 | tsx | dernière stable | Exécute le traitement des données en TypeScript sans étape de compilation |
 | csv-parse, pg, pg-copy-streams, yauzl | dernières stables | Lecture CSV en flux, connexion PostgreSQL, chargement `COPY`, lecture des ZIP GTFS |
@@ -209,3 +213,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 30/09/2026 | 1.1 | Adaptateur `gbfs.ts` |
 | 05/10/2026 | 1.2 | Traitement des données en TypeScript + SQL (au lieu de Python), espace de travail pnpm, `packages/commun` — D024 |
 | 05/10/2026 | 1.3 | `config/sources.json` et son schéma dans `packages/commun` — D027 |
+| 09/10/2026 | 1.4 | § 8 : versions fixées (Node 24 — D028 ; Next.js 16, Zod 4, TypeScript 5.9, pnpm 11 — D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun — D031 |

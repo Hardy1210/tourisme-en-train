@@ -1,6 +1,6 @@
 # 08 — Conventions de code et qualité
 
-> **Version** 1.1 · **Date** 05/10/2026
+> **Version** 1.2 · **Date** 09/10/2026
 > **Dépend de :** `01-architecture.md`, `GLOSSAIRE.md`
 > **Utilisé par :** toutes les fiches d'étape
 > **Document de référence pour :** style de code, nommage détaillé, gestion des erreurs, journaux, tests, Git, définition de « terminé ».
@@ -11,10 +11,10 @@
 ## 1. TypeScript
 
 - `strict: true`, `noUncheckedIndexedAccess: true`, `noImplicitOverride: true`.
-- **Interdits :** `any`, `@ts-ignore` (utiliser `@ts-expect-error` avec justification), `as` pour forcer un type sauf après validation Zod, `console.log` (utiliser le journal), `export default` hors fichiers imposés par Next.js (`page.tsx`, `layout.tsx`, `route.ts`…).
+- **Interdits :** `any`, `@ts-ignore` (utiliser `@ts-expect-error` avec justification), `as` pour forcer un type sauf après validation Zod, `console.log` (utiliser le journal), `export default` hors fichiers imposés par Next.js (`page.tsx`, `layout.tsx`, `manifest.ts`…) et fichiers de configuration des outils (`next.config`, `postcss.config`, `eslint.config`, `prettier.config`, `vitest.config`, `drizzle.config`, `playwright.config`) — D031.
 - **Types dérivés, jamais recopiés** : `type Destination = z.infer<typeof schemaDestination>`. *Une copie à la main compile encore quand la source change, et cache l'écart.*
 - **Fonctions** : une responsabilité ; paramètres objets au-delà de 3 paramètres ; valeurs de retour typées explicitement pour les fonctions exportées.
-- **Code serveur** : première ligne `import 'server-only'` dans tout fichier de `server/`, `lib/db/`, `lib/external/`.
+- **Code serveur** : première ligne `import 'server-only'` dans tout fichier de `server/`, `lib/db/`, `lib/external/`, **sauf** `lib/db/schema.ts` et `lib/db/types-postgis.ts` (lus aussi par drizzle-kit, hors de Next.js). Dans Vitest, `server-only` est remplacé par un module vide (alias) — D031.
 - **Composants** : Server Components par défaut ; `'use client'` seulement si interaction ou hook navigateur ; props typées ; aucun appel `fetch` direct (hooks TanStack Query).
 
 ## 2. Traitement des données (`etl/`, TypeScript + SQL)
@@ -55,12 +55,12 @@ Vocabulaire : `GLOSSAIRE.md`. Un terme absent y est ajouté **avant** usage.
 - Les erreurs attendues (paramètre invalide, introuvable, service externe indisponible) sont des **classes dédiées** dans `lib/http/erreurs.ts`, traduites en réponse par un utilitaire unique.
 - Les erreurs inattendues sont journalisées avec contexte, et renvoient `ERREUR_INTERNE` sans détail.
 - **Aucun `catch` silencieux** : tout `catch` journalise ou relance.
-- Journaux : `lib/journal.ts` (JSON sur la sortie standard). **Jamais** de position, jamais de clé API, jamais de contenu de variable d'environnement.
+- Journaux : module unique `journal.ts` de `@tourisme/commun` (JSON sur la sortie standard), réexporté par `apps/web/src/lib/journal.ts` et importé par l'ETL (D031). **Jamais** de position, jamais de clé API, jamais de contenu de variable d'environnement.
 
 ## 6. Dates et heures
 
 Règles de `CLAUDE.md` § 3. En pratique :
-- `dateDuJour()` de `packages/commun` est **la seule** fonction qui lit l'horloge, dans l'app comme dans le traitement des données ; tout le reste reçoit la date en paramètre.
+- `dateDuJour()` et `maintenantParis()` (date du jour + heure actuelle en secondes depuis minuit) de `packages/commun` sont **les seules** fonctions qui lisent l'horloge, dans l'app comme dans le traitement des données ; elles acceptent un instant en paramètre pour les tests ; tout le reste reçoit la date ou l'heure en paramètre (D031).
 - Utiliser `Intl.DateTimeFormat` avec `timeZone: 'Europe/Paris'` (ou `Temporal` si disponible) ; pas de bibliothèque de dates sans décision.
 - Dans le SQL, la date du jour arrive **en paramètre** : jamais `CURRENT_DATE` ni `now()` (ils suivent le fuseau du serveur).
 
@@ -88,12 +88,12 @@ Règles de `CLAUDE.md` § 3. En pratique :
 | Développement | `pnpm dev` |
 | Vérification des types | `pnpm typecheck` |
 | Lint | `pnpm lint` |
-| Format | `pnpm format` |
+| Format | `pnpm format` (vérification seule : `pnpm format:verifier`) |
 | Tests unitaires | `pnpm test` |
 | Tests d'intégration | `pnpm test:integration` |
 | Tests de parcours | `pnpm test:e2e` |
 | Migrations | `pnpm db:generer` · `pnpm db:migrer` |
-| Tout vérifier | `pnpm verifier` (typecheck + lint + test) |
+| Tout vérifier | `pnpm verifier` (typecheck + lint + format + test) |
 | Traitement des données | `pnpm etl <source|all>` ou `docker compose run --rm etl <source|all>` |
 | Tests du traitement | inclus dans `pnpm test` (tout l'espace de travail) |
 
@@ -144,3 +144,4 @@ Une tâche est terminée quand **tout** est vrai :
 |---|---|---|
 | 30/09/2026 | 1.0 | Création |
 | 05/10/2026 | 1.1 | Traitement des données en TypeScript + SQL : règles du § 2, tests Vitest, commandes `pnpm etl` — D024 |
+| 09/10/2026 | 1.2 | Exceptions `export default` et `server-only`, journal dans le code commun, `maintenantParis()` — D031 |
