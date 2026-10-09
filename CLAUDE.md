@@ -181,7 +181,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 
 | Étape | Contenu | Sem. | État |
 |---|---|---|---|
-| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | 🟡 |
+| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ⬜ |
 | E02 | Gares | S2 | ⬜ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
@@ -210,12 +210,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E00 — code terminé sur `etape/E00-initialisation`, pull request à ouvrir
-- **Dernière session :** 09/10/2026
-- **Fait :** audit de la documentation et corrections ; D029 (Next.js 16 après essai Serwist réussi, Zod 4, TypeScript 5.9.3, pnpm 11), D030 (port hôte de la base), D031 (ajustements des conventions) ; espace de travail pnpm, `@tourisme/commun`, `apps/web`, `etl` ; `pnpm verifier` passe (31 tests)
-- **À valider par Hardy :** ouvrir l'app dans le navigateur (`pnpm dev`) ; points de `docs/A-FAIRE.md` § 1 (données des cartes de destination avant E04, légende de la carte avant E11)
+- **Étape en cours :** E01 — pas commencée (branche `etape/E01-docker-base` créée, elle porte cette sauvegarde)
+- **Dernière session :** 09/10/2026 — E00 terminée et fusionnée (PR #43, ticket #2 fermé) ; détail dans `JOURNAL.md`
+- **Fait :** E00 complète ; `pnpm verifier` passe (31 tests) ; Docker accessible depuis WSL ; `.env` local de Hardy avec `BDD_PORT_HOTE=5433`
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, 19/10), légende de la carte (avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** pousser la branche et ouvrir la PR de E00 (signaler aux SR le changement de port, `07` v1.4), puis lire `docs/etapes/E01-docker-base.md`
+- **Prochaine action précise :** lire `docs/etapes/E01-docker-base.md` et lancer la phase d'audit (versions Drizzle 0.45 / drizzle-kit 0.31 pour `geography`, script des rôles, `liaison_directe` exclue), puis proposer le plan
 
 ---
 
