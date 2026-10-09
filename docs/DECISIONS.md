@@ -191,6 +191,35 @@
 - **Écarté :** rester en Node 22 avec nvm (deux versions à gérer sur le même poste sans bénéfice).
 - **Impact :** `CLAUDE.md` § 4 ; `01` ; `07` ; fiches E00, E02 ; `A-FAIRE` ; `infra/CLAUDE.md` (résumé du contrat).
 
+## D029 — Versions de la stack fixées au démarrage du code
+- **Date :** 09/10/2026
+- **Décision :** **Next.js 16** (App Router) **sous réserve d'un essai de Serwist de 30 minutes en E00** : s'il échoue, Next.js 15 (dernière 15.5.x). **Zod 4**. **TypeScript fixé en 5.9.3**. **pnpm fixé en 11.24.0** (`packageManager`). ESLint 10 (configuration « flat »), Vitest 5, Drizzle ORM 0.45 (pas de version candidate 1.0). Résultat de l'essai Serwist : voir la fin de cette entrée.
+- **Raison :** au 09/10/2026, Next.js 16 est la version maintenue (la 15 ne reçoit plus que des correctifs) ; Serwist, nécessaire à la PWA (E14), dépend de l'outil de construction, d'où l'essai avant de s'engager. Zod 4 est la version actuelle. TypeScript 7 est sorti mais typescript-eslint exige TypeScript < 6.1 : sans version fixée, une installation casserait le lint. pnpm ≥ 10 bloque par défaut les scripts d'installation des dépendances : chaque autorisation est listée dans `pnpm-workspace.yaml`.
+- **Écarté :** Next.js 15 par défaut (version en fin de vie pour un projet livré en décembre) ; Zod 3 ; TypeScript « dernière version ».
+- **Impact :** `CLAUDE.md` § 4 ; `01` § 8 ; fiche E00 ; E14.
+- **Modifie :** D004 (versions).
+
+## D030 — Port de la base côté hôte réglable (développement local)
+- **Date :** 09/10/2026
+- **Décision :** le port **côté hôte** du service `db` est lu dans la variable `BDD_PORT_HOTE` (défaut `5432`) : `127.0.0.1:${BDD_PORT_HOTE}:5432`. Le conteneur écoute toujours sur 5432 ; les autres conteneurs utilisent `db:5432`. Les adresses de `.env.example` sont celles du poste (`localhost:<BDD_PORT_HOTE>`), utilisées par `pnpm dev`, `pnpm etl` et les migrations lancées sur la machine.
+- **Raison :** un autre projet (Lexio) occupe déjà le port 5432 sur le poste de Hardy, qui utilisera 5433.
+- **Écarté :** changer le port à l'intérieur du conteneur (touche toutes les adresses internes et la production) ; arrêter l'autre projet à chaque session.
+- **Impact :** `07` § 3, § 4 (local uniquement) ; `.env.example` ; E01.
+
+## D031 — Ajustements des conventions avant le code
+- **Date :** 09/10/2026
+- **Décision :**
+  1. **`server-only`** : obligatoire dans `server/`, `lib/db/`, `lib/external/`, **sauf** `lib/db/schema.ts` et `lib/db/types-postgis.ts`, lus aussi par drizzle-kit hors de Next.js. Dans Vitest, `server-only` est remplacé par un module vide (alias).
+  2. **`export default`** : autorisé dans les fichiers imposés par Next.js **et** dans les fichiers de configuration des outils (`next.config`, `postcss.config`, `eslint.config`, `prettier.config`, `vitest.config`, `drizzle.config`, `playwright.config`).
+  3. **Horloge** : deux fonctions seulement lisent l'horloge, toutes deux dans `@tourisme/commun` : `dateDuJour()` et `maintenantParis()` (date du jour + heure actuelle en secondes depuis minuit, à Paris). Elles acceptent un instant en paramètre pour les tests.
+  4. **Rôles de la base** : `etl_ecriture` et `app_lecture` sont créés **avec leur mot de passe par un script** (lisant `MDP_APP_LECTURE`, `MDP_ETL_ECRITURE`), lancé par `pnpm db:migrer` avant les migrations ; les migrations ne contiennent que les droits (`GRANT`, `ALTER DEFAULT PRIVILEGES`), jamais de mot de passe.
+  5. **Journal** : un seul module de journal JSON, dans `@tourisme/commun` ; `apps/web/src/lib/journal.ts` le réexporte, l'ETL l'importe.
+  6. **URL de l'application** : `config/marque.ts` ne contient plus d'URL. `URL_APP` est lue uniquement côté serveur (`lib/env.ts` : métadonnées, manifest) ; le bouton « Partager » utilise l'adresse de la page affichée.
+  7. **Valeurs `null` de `parametres.json`** : un facteur CO₂ à `null` (pas encore relevé) est toujours accepté, et `/api/impact` renvoie alors `co2Kg.train: null` pour ce type de train ; un prix au kilomètre à `null` n'est accepté que tant que `prix.aCalibrer` est vrai.
+- **Raison :** écarts relevés par l'audit du 09/10 : `server-only` lève une erreur hors de Next.js ; les fichiers de configuration exigent un export par défaut ; `/api/trains` et le temps réel ont besoin de l'heure, pas seulement de la date ; une migration SQL ne lit pas les variables d'environnement ; une variable `NEXT_PUBLIC_*` serait figée dans l'image Docker alors que l'URL change entre le local et la production ; les facteurs CO₂ manquants n'ont aucun lien avec le calibrage du prix.
+- **Écarté :** mots de passe écrits dans une migration ; heure lue directement dans les routes ; deux modules de journal.
+- **Impact :** `CLAUDE.md` § 1 ; `01` § 3 ; `03` § 4 ; `04` § 2 ; `05` § 3.10 ; `08` § 1, § 5, § 6 ; `GLOSSAIRE` ; fiches E00, E01.
+
 ---
 
 ## Modèle pour une nouvelle décision

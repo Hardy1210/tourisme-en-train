@@ -94,3 +94,5 @@ Voir `_MODELE.md` § Fin d'étape.
 - 02/10/2026 : `README.md` et `.gitignore` minimaux créés avant E00 (dépôt public dès la documentation) ; E00 les **complète** au lieu de les créer.
 - 05/10/2026 : traitement des données en TypeScript (paquet `@tourisme/etl`), espace de travail pnpm, `packages/commun` avec le schéma unique de `parametres.json` ; Python retiré (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 07/10/2026 : Node.js 24 au lieu de 22, `.nvmrc` et `engines.node` à la racine — D028 (note ajoutée après coup le 09/10).
+- 09/10/2026 : plan validé après audit. Versions fixées (Next.js 16 sous réserve d'un essai Serwist de 30 min, Zod 4, TypeScript 5.9.3, pnpm 11.24.0) — D029 ; `BDD_PORT_HOTE` dans `.env.example` — D030 ; `marque.ts` sans URL, `maintenantParis()` en plus de `dateDuJour()`, journal JSON dans `@tourisme/commun`, exceptions `export default` et `server-only` — D031. Le dépôt GitHub existait déjà (PR #1) : les critères correspondants sont vérifiés, pas refaits.

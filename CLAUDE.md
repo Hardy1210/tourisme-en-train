@@ -25,7 +25,7 @@ Application web installable (PWA), gratuite, sans inscription. Dès l'ouverture,
 | **Nom de code technique** | `tourisme-en-train` | dépôt, dossiers, base, conteneurs, paquets | **jamais** |
 | **Nom de marque** | **Wagoo** (provisoire) | tout ce que voit l'utilisateur | quand Hardy décide |
 
-**Source unique de la marque : `apps/web/src/config/marque.ts`** (nom, slogan, description, URL). Le manifest PWA et les métadonnées en sont générés. Changer de nom = ce fichier + cette ligne + le logo.
+**Source unique de la marque : `apps/web/src/config/marque.ts`** (nom, slogan, description). Le manifest PWA et les métadonnées en sont générés ; l'URL de l'application, elle, est une variable d'environnement lue côté serveur (`URL_APP`, D031). Changer de nom = ce fichier + cette ligne + le logo.
 
 Détail du produit : `docs/00-vision.md`.
 
@@ -54,7 +54,7 @@ Chaque règle dit **pourquoi** : elles sont écrites pour celui qui serait tent�
 
 Un seul fuseau, mais trois pièges réels :
 
-1. **« Aujourd'hui » se calcule explicitement en `Europe/Paris`, puis voyage en paramètre** (`dateDuJour: string` au format `AAAA-MM-JJ`). Jamais lu de l'horloge à l'intérieur d'une fonction. *Le serveur et Docker sont en UTC : entre minuit et 1 h–2 h, « aujourd'hui » en UTC est la veille → mauvais trains affichés. Et une fonction qui lit l'horloge n'est pas testable.*
+1. **« Aujourd'hui » se calcule explicitement en `Europe/Paris`, puis voyage en paramètre** (`dateDuJour: string` au format `AAAA-MM-JJ`). Jamais lu de l'horloge à l'intérieur d'une fonction : seules `dateDuJour()` et `maintenantParis()` (heure actuelle, D031) de `@tourisme/commun` la lisent. *Le serveur et Docker sont en UTC : entre minuit et 1 h–2 h, « aujourd'hui » en UTC est la veille → mauvais trains affichés. Et une fonction qui lit l'horloge n'est pas testable.*
 2. **Les horaires GTFS restent des secondes depuis minuit + une date de service.** Jamais convertis en `Date` UTC. *Un train peut partir à « 25:10 » (1 h 10 le lendemain).*
 3. **Tester une date d'été ET une date d'hiver.** *Le changement d'heure du 25/10/2026 tombe en plein développement ; un test qui passe en septembre peut échouer en novembre.*
 4. **Ne jamais fixer `TZ=Europe/Paris` dans les conteneurs pour « corriger » un décalage.** Le fuseau se déclare dans le calcul. *Fixer TZ masque le défaut en local et le laisse actif ailleurs.*
@@ -66,9 +66,9 @@ Un seul fuseau, mais trois pièges réels :
 | Couche | Outil | Rôle |
 |---|---|---|
 | Langage app | TypeScript strict | Typage de bout en bout |
-| Framework | Next.js 15 (App Router) + React 19 | Pages **et** routes API dans un seul projet |
+| Framework | Next.js 16 (App Router, sous réserve de l'essai Serwist, D029) + React 19 | Pages **et** routes API dans un seul projet |
 | Style | Tailwind CSS 4 + shadcn/ui | Classes utilitaires, composants accessibles, tokens dans `globals.css` |
-| Validation | Zod | Paramètres des routes, réponses externes, variables d'environnement |
+| Validation | Zod 4 | Paramètres des routes, réponses externes, variables d'environnement |
 | Données client | TanStack Query | Cache et rechargement des réponses |
 | Carte | MapLibre GL + react-map-gl + OpenFreeMap | Carte vectorielle gratuite, sans clé, stylable |
 | PWA | Serwist | Installation, hors ligne |
@@ -138,10 +138,10 @@ tourisme-en-train/
 │  ├─ lib/db/                    ← connexion, schéma Drizzle, requêtes PostGIS partagées
 │  ├─ lib/external/              ← adaptateurs : adresse.ts · sncf.ts · gbfs.ts
 │  ├─ lib/http/                  ← erreurs, validation des paramètres, réponses, cache
-│  ├─ lib/geo/ · lib/dates/ · lib/impact/  ← calculs purs (distances, durées, heures, CO₂, prix) ; dateDuJour() : @tourisme/commun
+│  ├─ lib/geo/ · lib/dates/ · lib/impact/  ← calculs purs (distances, durées, heures, CO₂, prix) ; dateDuJour(), maintenantParis() : @tourisme/commun
 │  ├─ lib/env.ts                 ← variables d'environnement validées par Zod
 │  └─ styles/globals.css         ← design system
-├─ packages/commun/src/         ← @tourisme/commun : schémas Zod de parametres.json et sources.json · dateDuJour() à Paris · types partagés
+├─ packages/commun/src/         ← @tourisme/commun : schémas Zod de parametres.json et sources.json · dateDuJour() et maintenantParis() à Paris · journal JSON · types partagés
 ├─ etl/                          ← @tourisme/etl : traitement des données (TypeScript + SQL)
 │  ├─ src/run.ts                 ← pnpm etl <source|all> [--force] [--hors-ligne]
 │  ├─ src/                       ← config.ts · db.ts · sources/ · transformations/ (TS pur + .sql) · chargement/ · controles/ · regles/
@@ -366,3 +366,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 05/10/2026 | 1.6 | Calendrier recalé sur la feuille de route (démarrage le 05/10, P0 le 22/11) — D025 |
 | 05/10/2026 | 1.7 | `infra/CLAUDE.md` pour les SR, exception `.github/workflows/deploiement*.yml` — D026 |
 | 05/10/2026 | 1.8 | Adresses des sources dans `config/sources.json` (préparation multi-région) — D027 |
+| 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |

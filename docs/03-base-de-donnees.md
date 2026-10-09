@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.2 · **Date** 05/10/2026
+> **Version** 1.3 · **Date** 09/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -254,7 +254,9 @@ Index : GIST(`geom`).
 | `etl_ecriture` | ETL | SELECT, INSERT, UPDATE, DELETE sur toutes les tables ; CREATE TEMP |
 | `app_lecture` | Application web | **SELECT uniquement** |
 
-*Pourquoi :* l'application ne peut rien modifier, même en cas de faille. Création des rôles dans une migration personnalisée ; mots de passe fournis par variables d'environnement (voir `07-contrat-infra.md`).
+*Pourquoi :* l'application ne peut rien modifier, même en cas de faille.
+
+**Création :** les rôles `etl_ecriture` et `app_lecture` sont créés **avec leur mot de passe par un script** (`MDP_APP_LECTURE`, `MDP_ETL_ECRITURE`, voir `07-contrat-infra.md`), lancé par `pnpm db:migrer` avant les migrations. Les migrations ne contiennent que les droits (`GRANT`, `ALTER DEFAULT PRIVILEGES`), jamais de mot de passe. *Pourquoi :* une migration SQL ne lit pas les variables d'environnement, et un mot de passe écrit dans une migration serait versionné (D031).
 
 ---
 
@@ -318,3 +320,4 @@ ORDER BY a.depart_s;
 | 30/09/2026 | 1.0 | Création |
 | 30/09/2026 | 1.1 | `mobilite_locale.id_source` (vélos disponibles, D019) |
 | 05/10/2026 | 1.2 | Chemin des règles de catégories : `etl/src/regles/categories.csv` (D024) |
+| 09/10/2026 | 1.3 | § 4 : rôles et mots de passe créés par script, droits seuls dans les migrations — D031 |

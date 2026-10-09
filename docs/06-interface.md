@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.2 · **Date** 02/10/2026
+> **Version** 1.3 · **Date** 09/10/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -56,7 +56,7 @@
    - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».
    - **b. À deux pas de vous** : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »).
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
-5. **Navigation basse** : Explorer · Mes sorties (« bientôt », P2) · À propos.
+5. **Navigation basse** : Explorer · Menu (→ À propos · Sources des données). Pas de « Mes sorties » en v1 (favoris = P2), comme la fiche E10.
 
 ### Desktop
 Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; la fiche destination s'ouvre en panneau latéral de 480 px.
@@ -66,7 +66,7 @@ Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur 
 |---|---|
 | Chargement | Squelettes + « On cherche ce qu'il y a autour de vous… » |
 | Localisation refusée ou impossible | Grand champ « Dans quelle ville êtes-vous ? » + suggestions de villes de la région |
-| Hors région pilote | Message clair : « Pour l'instant, Wagoo couvre la Bourgogne-Franche-Comté » (nom via `marque`) + choix d'une ville de la région |
+| Hors région pilote | Message clair : « Pour l'instant, <marque> couvre <région> » (`marque.nom` et `parametres.region.nom`, jamais écrits en dur) + choix d'une ville de la région |
 | Aucun résultat | Message utile + action (« Élargir à 1 h de train ») |
 | Hors ligne | Bandeau discret + dernières recherches |
 | Erreur serveur | Message simple + « Réessayer » |
@@ -95,7 +95,7 @@ Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur 
   4. **onglet Trains sans statut** (cas par défaut) ;
   5. bascule **Samedi / Dimanche** ;
   6. station de vélos **sans nombre** disponible.
-- À **retirer** de la maquette : le transport à la demande, le bouton « Mes sorties » (favoris, P2).
+- À **retirer** de la maquette : le transport à la demande, le bouton « Mes sorties » (favoris, P2), remplacé par l'entrée « Menu » de la navigation basse (§ 3).
 - **Écrans complémentaires à concevoir** (prompts : `design/prompts-ecrans.md`) : fiche lieu · calendrier « Choisir une date » · utilisateur hors région · destination hors région · écran Sources + menu · erreurs (sortie expirée, 404, panne) · détail « Comparer » (CO₂) · écran avant la localisation · invitation à installer l'app.
 
 ## 5. Page « L'âme du produit » et écran Sources
@@ -158,3 +158,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 30/09/2026 | 1.0 | Création |
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : carte en segments + étiquettes, week-end, partage, vélos disponibles, temps réel limité, états sans description / sans prix / sans statut, variantes à concevoir — D017 à D021 |
 | 02/10/2026 | 1.2 | Nom de la commune de la puce de localisation par `/api/geocodage/inverse` — D022 ; écrans complémentaires listés en § 4 bis |
+| 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |

@@ -5,7 +5,7 @@
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
-Gares et trains directs sont prêts (E02–E04). Il faut maintenant **ce qu'on vient voir** : musées, châteaux, parcs, aires de jeux, sites naturels, festivals. Chaque source est normalisée vers un format commun et classée dans l'une des 5 catégories.
+Les gares sont prêtes (E02) ; les lieux ne dépendent que d'elles (les trains directs, E03–E04, avancent en parallèle). Il faut maintenant **ce qu'on vient voir** : musées, châteaux, parcs, aires de jeux, sites naturels, festivals. Chaque source est normalisée vers un format commun et classée dans l'une des 5 catégories.
 
 ## Documents à lire
 - `CLAUDE.md`
@@ -66,3 +66,4 @@ Voir `_MODELE.md`. Mettre à jour `02` et `04` avec les colonnes et règles rée
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
+- 09/10/2026 : contexte aligné sur le préalable réel (E02 seulement).

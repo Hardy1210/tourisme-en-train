@@ -16,13 +16,16 @@
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
+| **Données des cartes de destination** : l'interface (`06` § 3.4) affiche dernier retour, prochain train, CO₂, prix et « Faisable dans la journée », que `/api/destinations` ne fournit pas ; `liaison_directe` n'a ni heures d'arrivée ni retours (et aucun retour pour une destination hors région). Choisir : enrichir `liaison_directe` / la réponse de `/api/destinations`, ou des appels séparés par carte | Audit du 09/10 ; `liaison_directe` retirée du schéma initial de E01 pour ne rien figer | **Avant E04** (19/10) |
+| Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
+| Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
 | Quoi | Pour quelle étape | Déclencheur |
 |---|---|---|
-| Créer le dépôt GitHub `tourisme-en-train` (public conseillé), inviter les SR, protéger `main`, créer le tableau `tourisme-en-train` — pas-à-pas : `equipe/travail-en-equipe.md` § 2–3 | E00 | Début E00 |
-| Installer Docker Desktop (moteur WSL2), Node 24, pnpm, Git | E00 | Début E00 |
+| Dépôt créé (public) et `main` protégée le 07/10. Vérifier que les SR sont invités et que le tableau `tourisme-en-train` existe — `equipe/travail-en-equipe.md` § 3.2, § 3.6 | E00 | Fin de E00 |
+| Prévenir les SR que I01 démarre après la fusion de E01 (la date « vers le 11/10 » a été retirée des guides) | E01 | Au prochain point d'équipe |
 | Créer les 41 tickets GitHub (E00 → E18, I01 → I22) avec le script préparé, puis le tableau `tourisme-en-train` | E00 | Semaine du 05/10, après la création du dépôt |
 | Vérifier l'URL du CSV DATAtourisme de la région | E05 | Début E05 |
 | Tester une extraction GéoDataMine pour les aires de jeux et parcs | E05 | Début E05 |
@@ -32,6 +35,22 @@
 | Relever les facteurs CO₂ manquants et une source de prix au km | E09 | Début E09 |
 | Vérifier la marque « Wagoo » (INPI, nom de domaine) | Avant publication | Avant E17/E18 |
 | Envoyer `equipe/demarrage-SR.md` et `equipe/guide-SR.md` aux SR ; organiser la réunion de démarrage (`travail-en-equipe.md` § 4) | E00 | Dès la fin de la documentation |
+
+## 2 bis. Seuils écrits en dur dans la documentation (règle 3)
+
+Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et son schéma) **à l'étape qui l'utilise**, puis la documentation cite la clé au lieu de la valeur.
+
+| Seuil | Où dans la doc | Étape |
+|---|---|---|
+| Contrôles du nombre de gares (> 2 500 en France, > 100 dans la région) | `04` § 4.1, E02 | E02 |
+| Distance de rapprochement arrêt GTFS ↔ gare (300 m) | `02` § 2.2, `04` § 4.2 | E03 |
+| Longueur maximale d'une description (500 caractères) | `04` § 4.4, E05 | E05 |
+| Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
+| Regroupement des quais de même nom (100 m) | `04` § 4.7, E07 | E07 |
+| Bornes de position France métropolitaine (lat 41–51,5, lon −5,5–10) | `05` § 1.6 | E08 |
+| Fenêtre du temps réel (3 prochaines heures) | `05` § A.2, `06` § 4, D021, E09 | E09 |
+| Arrondi de position du cache de géocodage inverse (~100 m) | `05` § 3.11 bis | E09 |
+| Nombre d'étiquettes sur la carte (5) | `06` § 3, D021 | E11 |
 
 ## 3. Reporté volontairement (après la soutenance ou si le temps le permet)
 

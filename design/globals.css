@@ -21,7 +21,7 @@
 
 @import "tailwindcss";
 
-/* Mode sombre piloté par la classe .dark (next-themes) */
+/* Mode sombre piloté par la classe .dark (outil de bascule à décider en E10) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 
