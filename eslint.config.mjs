@@ -1,5 +1,6 @@
 // Configuration ESLint unique de l'espace de travail (règles : docs/08-conventions-qualite.md § 1).
 import js from '@eslint/js';
+import nextVitals from 'eslint-config-next/core-web-vitals';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -23,6 +24,12 @@ export default tseslint.config(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  // Règles Next.js (React, hooks, accessibilité de base) limitées à l'application web.
+  ...nextVitals.map((config) => ({ ...config, files: ['apps/web/**/*.{ts,tsx}'] })),
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    settings: { next: { rootDir: 'apps/web' } },
+  },
   {
     languageOptions: {
       globals: { ...globals.node },
