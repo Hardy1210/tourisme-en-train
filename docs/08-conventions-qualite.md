@@ -88,12 +88,12 @@ Règles de `CLAUDE.md` § 3. En pratique :
 | Développement | `pnpm dev` |
 | Vérification des types | `pnpm typecheck` |
 | Lint | `pnpm lint` |
-| Format | `pnpm format` |
+| Format | `pnpm format` (vérification seule : `pnpm format:verifier`) |
 | Tests unitaires | `pnpm test` |
 | Tests d'intégration | `pnpm test:integration` |
 | Tests de parcours | `pnpm test:e2e` |
 | Migrations | `pnpm db:generer` · `pnpm db:migrer` |
-| Tout vérifier | `pnpm verifier` (typecheck + lint + test) |
+| Tout vérifier | `pnpm verifier` (typecheck + lint + format + test) |
 | Traitement des données | `pnpm etl <source|all>` ou `docker compose run --rm etl <source|all>` |
 | Tests du traitement | inclus dans `pnpm test` (tout l'espace de travail) |
 

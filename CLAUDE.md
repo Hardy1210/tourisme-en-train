@@ -181,7 +181,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 
 | Étape | Contenu | Sem. | État |
 |---|---|---|---|
-| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ⬜ |
+| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | 🟡 |
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ⬜ |
 | E02 | Gares | S2 | ⬜ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
@@ -210,12 +210,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E00 — non commencée
-- **Dernière session :** —
-- **Fait :** documentation complète (docs 00 → 08, glossaire, décisions, fiches E00 → E18, guide SR)
-- **À valider par Hardy :** relecture de la documentation (voir `docs/A-FAIRE.md`)
+- **Étape en cours :** E00 — code terminé sur `etape/E00-initialisation`, pull request à ouvrir
+- **Dernière session :** 09/10/2026
+- **Fait :** audit de la documentation et corrections ; D029 (Next.js 16 après essai Serwist réussi, Zod 4, TypeScript 5.9.3, pnpm 11), D030 (port hôte de la base), D031 (ajustements des conventions) ; espace de travail pnpm, `@tourisme/commun`, `apps/web`, `etl` ; `pnpm verifier` passe (31 tests)
+- **À valider par Hardy :** ouvrir l'app dans le navigateur (`pnpm dev`) ; points de `docs/A-FAIRE.md` § 1 (données des cartes de destination avant E04, légende de la carte avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** lire `docs/etapes/E00-initialisation.md` et lancer la phase d'audit
+- **Prochaine action précise :** pousser la branche et ouvrir la PR de E00 (signaler aux SR le changement de port, `07` v1.4), puis lire `docs/etapes/E01-docker-base.md`
 
 ---
 
@@ -345,11 +345,14 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 
 | Action | Commande |
 |---|---|
+| Installer les dépendances | `pnpm install` (Node 24, pnpm 11.24 fixé) |
 | Démarrer l'environnement local | *(E01)* |
 | Appliquer les migrations | *(E01)* |
-| Lancer le traitement des données | *(E02)* |
-| Lancer l'app en développement | *(E00)* |
-| Lancer les tests | *(E00)* |
+| Lancer l'app en développement | `pnpm dev` (lit le `.env` de la racine ; http://localhost:3000) |
+| Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
+| Lancer les tests | `pnpm test` (tous les paquets) |
+| Formater | `pnpm format` |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` (sources disponibles à partir de E02) |
 
 ---
 
@@ -367,3 +370,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 05/10/2026 | 1.7 | `infra/CLAUDE.md` pour les SR, exception `.github/workflows/deploiement*.yml` — D026 |
 | 05/10/2026 | 1.8 | Adresses des sources dans `config/sources.json` (préparation multi-région) — D027 |
 | 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |
+| 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
