@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E01 — pas commencée (branche `etape/E01-docker-base` créée, elle porte cette sauvegarde)
-- **Dernière session :** 09/10/2026 — E00 terminée et fusionnée (PR #43, ticket #2 fermé) ; détail dans `JOURNAL.md`
-- **Fait :** E00 complète ; `pnpm verifier` passe (31 tests) ; Docker accessible depuis WSL ; `.env` local de Hardy avec `BDD_PORT_HOTE=5433`
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, 19/10), légende de la carte (avant E11)
+- **Étape en cours :** E01 — critères vérifiés, pull request `etape/E01-docker-base` → `main` ouverte (`Closes #3`), à fusionner
+- **Dernière session :** 11/10/2026 — backlog intégré (D032), E01 réalisée (D033) ; détail dans `JOURNAL.md`
+- **Fait :** base locale PostGIS (`docker compose up -d`, port 5433, Adminer 8081 chez Hardy), 11 tables P0, rôles et droits, `pnpm db:migrer` / `db:generer` / `db:reinitialiser` / `test:integration` ; `pnpm verifier` 42 tests, intégration 11 tests
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, 19/10 ; décide aussi de la structure de `liaison_directe`), légende de la carte (avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** lire `docs/etapes/E01-docker-base.md` et lancer la phase d'audit (versions Drizzle 0.45 / drizzle-kit 0.31 pour `geography`, script des rôles, `liaison_directe` exclue), puis proposer le plan
+- **Prochaine action précise :** fusionner la PR de E01 et l'annoncer aux SR (départ de I01) ; puis créer `etape/E02-gares`, lire `docs/etapes/E02-gares.md` et lancer l'audit (mise à jour des gares par `uic` plutôt que suppression + insertion, à cause des clés étrangères ; `etl/Dockerfile`)
 
 ---
 

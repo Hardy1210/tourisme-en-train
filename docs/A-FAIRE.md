@@ -27,7 +27,6 @@
 |---|---|---|
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
-| Créer les 41 tickets GitHub (E00 → E18, I01 → I22) avec le script préparé, puis le tableau `tourisme-en-train` | E00 | Semaine du 05/10, après la création du dépôt |
 | Vérifier l'URL du CSV DATAtourisme de la région | E05 | Début E05 |
 | Tester une extraction GéoDataMine pour les aires de jeux et parcs | E05 | Début E05 |
 | Relire `categories_non_classees_*.csv` et compléter `categories.csv` | E05–E06 | Après chaque chargement de lieux |

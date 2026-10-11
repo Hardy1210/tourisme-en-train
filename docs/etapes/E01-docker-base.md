@@ -1,7 +1,7 @@
 # E01 — Docker local, base PostGIS et schéma initial
 
 > **Semaine :** S1 (05/10 → 11/10) · **Priorité :** P0 · **Branche :** `etape/E01-docker-base`
-> **Étapes préalables :** E00 · **État :** 🟡 critères vérifiés le 11/10, pull request à ouvrir
+> **Étapes préalables :** E00 · **État :** 🟡 critères vérifiés le 11/10, pull request ouverte
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -57,8 +57,8 @@ Le dépôt et les outils existent (E00). Il faut maintenant une base PostgreSQL 
 - [x] Aucun port exposé ailleurs que sur `127.0.0.1`.
 
 ## Vérifications manuelles
-- Adminer (`docker compose --profile outils up -d`) : tables, index, rôles visibles.
-- Arrêter/relancer `db` : les données persistent (volume).
+- [x] Adminer (`docker compose --profile outils up -d`) : tables, index, rôles visibles (vérifié par Hardy le 11/10).
+- [x] Arrêter/relancer `db` : les données persistent (volume).
 
 ## À ne pas toucher
 - `infra/` (SR).

@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.4 · **Date** 11/10/2026
+> **Version** 1.5 · **Date** 11/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -37,6 +37,95 @@
     └──── mobilite_locale
 
  ligne_ferroviaire (P1)      amenagement_cyclable (P1)
+```
+
+Les 11 tables créées en E01 et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
+
+```mermaid
+erDiagram
+    source_donnees {
+        text code PK
+        text nom
+        text licence
+        text attribution
+    }
+    execution_etl {
+        bigint id PK
+        text source
+        text statut
+        timestamptz debut
+    }
+    gare {
+        integer id PK
+        char uic UK
+        text nom
+        boolean dans_region
+        geography geom
+    }
+    trajet {
+        text id PK
+        text service_id
+        text type_train
+    }
+    passage {
+        text trajet_id PK,FK
+        smallint sequence PK
+        integer gare_id FK
+        integer arrivee_s
+        integer depart_s
+    }
+    service_jour {
+        text service_id PK
+        date date_service PK
+    }
+    lieu {
+        bigint id PK
+        text source FK
+        text id_source
+        text nom
+        text categorie
+        bigint doublon_de FK
+        geography geom
+    }
+    categorie_regle {
+        integer id PK
+        text source
+        text cle
+        text valeur
+        text categorie
+    }
+    lieu_gare {
+        bigint lieu_id PK,FK
+        integer gare_id PK,FK
+        integer distance_m
+        smallint duree_marche_min
+    }
+    gare_stats {
+        integer gare_id PK,FK
+        text categorie PK
+        integer nb_lieux
+    }
+    mobilite_locale {
+        bigint id PK
+        integer gare_id FK
+        text type
+        text source FK
+        integer distance_m
+        geography geom
+    }
+
+    trajet ||--|{ passage : "s'arrête"
+    gare ||--o{ passage : "desservie par"
+    service_jour }o..o{ trajet : "service_id"
+    gare ||--o{ lieu_gare : "à pied de"
+    lieu ||--o{ lieu_gare : "rattaché à"
+    gare ||--o{ gare_stats : "compte"
+    gare ||--o{ mobilite_locale : "proche de"
+    source_donnees ||--o{ lieu : "fournit"
+    source_donnees ||--o{ mobilite_locale : "fournit"
+    source_donnees ||..o{ execution_etl : "source"
+    lieu |o--o{ lieu : "doublon_de"
+    categorie_regle }o..o{ lieu : "classe (ETL)"
 ```
 
 | Table | Rôle | Remplie par | Prio |
@@ -322,3 +411,4 @@ ORDER BY a.depart_s;
 | 05/10/2026 | 1.2 | Chemin des règles de catégories : `etl/src/regles/categories.csv` (D024) |
 | 09/10/2026 | 1.3 | § 4 : rôles et mots de passe créés par script, droits seuls dans les migrations — D031 |
 | 11/10/2026 | 1.4 | E01 : migrations personnalisées (extensions, droits), correction du type `geography` par `pnpm db:generer`, échantillon et base de test — D033 |
+| 11/10/2026 | 1.5 | § 2 : diagramme Mermaid des 11 tables créées en E01 et de leurs liens |

@@ -24,6 +24,33 @@
 
 ---
 
+## 11/10/2026 — Backlog et étape E01 — base PostGIS, schéma, migrations
+**Fait :**
+- Backlog produit intégré (`docs/BACKLOG.md`) : CLAUDE.md § 6, § 7, § 14 ; colonne « Étape » de `00` § 6 alignée ; critère « requête de référence mesurée » dans E02 → E04 ; `Closes #` dans le modèle de PR et `demarrage-SR` ; ligne « Fonctionnalités » ajoutée aux 41 tickets (seul ajout, vérifié par comparaison).
+- E01 : `docker-compose.yml` (db, adminer, etl et web déclarés ; ports réglables `BDD_PORT_HOTE`, `ADMINER_PORT_HOTE`) ; schéma Drizzle des 11 tables P0 ; migrations 0000 extensions, 0001 schéma, 0002 droits ; scripts `db:generer`, `db:migrer`, `db:reinitialiser`, `db:test:preparer`, `test:integration` ; clients `pg` (web, ETL avec `COPY` et transaction) ; échantillon ; diagramme Mermaid dans `03` § 2.
+- Élément « Créer les 41 tickets » retiré de `A-FAIRE` (réalisé avant cette session).
+
+**Décisions :** D032 (backlog, lien fonctionnalités ↔ tickets), D033 (geography, scripts lancés par Node, `@tourisme/commun` lisible par Node, pilote `pg`, base de test, contrôle des mots de passe).
+
+**Problèmes rencontrés :**
+- drizzle-kit 0.31 met `"geography(Point, 4326)"` entre guillemets (refusé par PostgreSQL) : corrigé automatiquement par `pnpm db:generer`.
+- drizzle-kit charge `drizzle.config.ts` en CommonJS (pas d'`import.meta`) ; nom de contrainte unique en camelCase (`idSource`) : nommée explicitement.
+- L'image PostGIS crée déjà `postgis` (et topology, tiger) dans la base principale : migration 0000 en `IF NOT EXISTS`.
+- Docker non joignable depuis WSL en début de session (intégration WSL de Docker Desktop) ; réglé par Hardy.
+- `.env` de Hardy : mot de passe de `BDD_URL_MIGRATIONS` différent de `POSTGRES_PASSWORD` ; corrigé par Hardy, et contrôle ajouté aux scripts.
+- Port 8080 occupé par un autre projet : `ADMINER_PORT_HOTE=8081` dans le `.env` de Hardy.
+
+**À valider par Hardy :**
+- Données des cartes de destination (avant E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Fusionner la PR de E01, l'annoncer aux SR (I01), puis audit de E02.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (42) · intégration ✅ (11) · `next build` ✅
+**Commit :** `cb804ac` (backlog) · `b7b81ac` → `89a71b9` (E01) ; sauvegarde sur `etape/E01-docker-base`
+
+---
+
 ## 09/10/2026 — Étape E00 — audit de la documentation, initialisation du code
 **Fait :**
 - Audit complet de la documentation (44 fichiers `.md`) : contradictions corrigées (versions de Node, navigation basse, historiques, date de I01, dépôt déjà public dans E18, message « hors région » écrit en dur), écarts reportés dans `A-FAIRE` (données des cartes de destination, seuils écrits en dur, légende de la carte, licence, lien de billetterie).
