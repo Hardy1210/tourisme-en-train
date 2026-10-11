@@ -1,0 +1,70 @@
+# Environnement local (docs/07-contrat-infra.md § 4). La production est dans infra/ (SR).
+# Développement : `docker compose up -d` (base seule), puis `pnpm db:migrer` et `pnpm dev`.
+# Ports exposés uniquement sur 127.0.0.1. Aucun TZ : le fuseau se déclare dans le calcul (CLAUDE.md § 3).
+
+name: tourisme-en-train
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?voir .env.example}
+      POSTGRES_USER: ${POSTGRES_USER:?voir .env.example}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?voir .env.example}
+    ports:
+      # Port côté poste réglable pour éviter un conflit avec une autre base (D030).
+      - '127.0.0.1:${BDD_PORT_HOTE:-5432}:5432'
+    volumes:
+      - donnees_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # Consulter la base : `docker compose --profile outils up -d`, puis http://localhost:<ADMINER_PORT_HOTE> (serveur : db).
+  adminer:
+    image: adminer:5.5.1
+    profiles: [outils]
+    ports:
+      # Port côté poste réglable, comme celui de db (D030).
+      - '127.0.0.1:${ADMINER_PORT_HOTE:-8080}:8080'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Traitement des données : `docker compose run --rm etl <source|all>`. Dockerfile créé en E02.
+  etl:
+    build:
+      context: .
+      dockerfile: etl/Dockerfile
+    profiles: [etl]
+    environment:
+      BDD_URL_ETL: postgres://etl_ecriture:${MDP_ETL_ECRITURE}@db:5432/${POSTGRES_DB}
+      DOSSIER_DONNEES: /data
+    volumes:
+      - ./data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Application complète (soutenance) : `docker compose --profile demo up -d`. Dockerfile créé en E16.
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    profiles: [demo]
+    environment:
+      BDD_URL_APP: postgres://app_lecture:${MDP_APP_LECTURE}@db:5432/${POSTGRES_DB}
+      URL_APP: ${URL_APP:-http://localhost:3000}
+      NODE_ENV: production
+      SNCF_CLE_API: ${SNCF_CLE_API:-}
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  donnees_db:

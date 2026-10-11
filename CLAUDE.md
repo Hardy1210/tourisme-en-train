@@ -73,7 +73,7 @@ Un seul fuseau, mais trois pièges réels :
 | Carte | MapLibre GL + react-map-gl + OpenFreeMap | Carte vectorielle gratuite, sans clé, stylable |
 | PWA | Serwist | Installation, hors ligne |
 | Base | PostgreSQL 16 + PostGIS 3 | Stockage + requêtes géographiques (« proche de quoi ? ») |
-| Accès base (app) | Drizzle ORM + drizzle-kit | Requêtes typées, génération des migrations SQL |
+| Accès base (app) | Drizzle ORM + drizzle-kit, pilote `pg` | Requêtes typées, génération des migrations SQL (`pnpm db:generer`, D033) |
 | Traitement des données | TypeScript (Node 24, `tsx`) + SQL ; csv-parse, pg, pg-copy-streams | Télécharger, lire, valider (Zod), charger (`COPY`) ; transformations lourdes en SQL (PostGIS) |
 | Paquets | pnpm, en espace de travail (`apps/web` · `etl` · `packages/commun`) | Installations reproductibles ; code partagé entre l'app et le traitement |
 | Conteneurs | Docker + Docker Compose | Même environnement partout, démo en une commande |
@@ -125,9 +125,11 @@ tourisme-en-train/
 │  ├─ 07-contrat-infra.md        ← interface avec les SR
 │  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
 │  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
+│  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
 │  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
+├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
 ├─ apps/web/src/
 │  ├─ app/                       ← pages et routes API, fines
 │  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
@@ -146,7 +148,8 @@ tourisme-en-train/
 │  ├─ src/run.ts                 ← pnpm etl <source|all> [--force] [--hors-ligne]
 │  ├─ src/                       ← config.ts · db.ts · sources/ · transformations/ (TS pur + .sql) · chargement/ · controles/ · regles/
 │  └─ tests/                     ← Vitest, GTFS miniature
-├─ db/migrations/ · db/echantillon/
+├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
+├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
 ├─ data/brut/ · data/traite/     ← ignorés par Git
 └─ infra/                        ← production (SR) : CLAUDE.md propre · JOURNAL.md · compose prod, Caddy, sauvegardes
 ```
@@ -168,6 +171,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Créer ou modifier un écran | `06-interface.md` + `globals.css` |
 | Toucher Docker, variables, santé | `07-contrat-infra.md` |
 | Écrire du code, des tests, un commit | `08-conventions-qualite.md` |
+| Relier une fonctionnalité à ses tâches, estimer, planifier un sprint | `BACKLOG.md` |
 | Savoir pourquoi un choix a été fait | `DECISIONS.md` |
 | Reprendre une session | section 9 + dernière entrée de `JOURNAL.md` |
 
@@ -181,8 +185,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 
 | Étape | Contenu | Sem. | État |
 |---|---|---|---|
-| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | 🟡 |
-| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ⬜ |
+| E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
+| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | 🟡 |
 | E02 | Gares | S2 | ⬜ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
@@ -210,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E00 — code terminé sur `etape/E00-initialisation`, pull request à ouvrir
-- **Dernière session :** 09/10/2026
-- **Fait :** audit de la documentation et corrections ; D029 (Next.js 16 après essai Serwist réussi, Zod 4, TypeScript 5.9.3, pnpm 11), D030 (port hôte de la base), D031 (ajustements des conventions) ; espace de travail pnpm, `@tourisme/commun`, `apps/web`, `etl` ; `pnpm verifier` passe (31 tests)
-- **À valider par Hardy :** ouvrir l'app dans le navigateur (`pnpm dev`) ; points de `docs/A-FAIRE.md` § 1 (données des cartes de destination avant E04, légende de la carte avant E11)
+- **Étape en cours :** E01 — critères vérifiés, pull request `etape/E01-docker-base` → `main` ouverte (`Closes #3`), à fusionner
+- **Dernière session :** 11/10/2026 — backlog intégré (D032), E01 réalisée (D033) ; détail dans `JOURNAL.md`
+- **Fait :** base locale PostGIS (`docker compose up -d`, port 5433, Adminer 8081 chez Hardy), 11 tables P0, rôles et droits, `pnpm db:migrer` / `db:generer` / `db:reinitialiser` / `test:integration` ; `pnpm verifier` 42 tests, intégration 11 tests
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, 19/10 ; décide aussi de la structure de `liaison_directe`), légende de la carte (avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** pousser la branche et ouvrir la PR de E00 (signaler aux SR le changement de port, `07` v1.4), puis lire `docs/etapes/E01-docker-base.md`
+- **Prochaine action précise :** fusionner la PR de E01 et l'annoncer aux SR (départ de I01) ; puis créer `etape/E02-gares`, lire `docs/etapes/E02-gares.md` et lancer l'audit (mise à jour des gares par `uic` plutôt que suppression + insertion, à cause des clés étrangères ; `etl/Dockerfile`)
 
 ---
 
@@ -316,12 +320,13 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 2. **Section 9 « État actuel »** : étape, fait, à valider, bloquant, **prochaine action précise** (fichier + tâche). Supprimer ce qui est résolu.
 3. **Section 8** : état des étapes.
 4. **Fiche d'étape** : cocher l'avancement.
-5. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
-6. **`docs/DECISIONS.md`** : décisions de la session.
-7. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
-8. **Historique** de chaque document d'architecture modifié.
-9. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
-10. **Résumé à Hardy :** ✅ fait · ⏸ à valider · ⬜ reste à faire · ▶ première action de la prochaine session.
+5. **`docs/BACKLOG.md`** : passer à ✅ les fonctionnalités dont toutes les tâches sont fusionnées.
+6. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
+7. **`docs/DECISIONS.md`** : décisions de la session.
+8. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
+9. **Historique** de chaque document d'architecture modifié.
+10. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
+11. **Résumé à Hardy :** ✅ fait · ⏸ à valider · ⬜ reste à faire · ▶ première action de la prochaine session.
 
 **Reprise :** lire la section 9, la dernière entrée de `JOURNAL.md` et la fiche en cours, puis **résumer la situation en 5 lignes à Hardy avant toute action**.
 
@@ -346,8 +351,11 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Action | Commande |
 |---|---|
 | Installer les dépendances | `pnpm install` (Node 24, pnpm 11.24 fixé) |
-| Démarrer l'environnement local | *(E01)* |
-| Appliquer les migrations | *(E01)* |
+| Démarrer la base locale | `docker compose up -d` (Adminer : `docker compose --profile outils up -d`, http://localhost:<ADMINER_PORT_HOTE>, 8080 par défaut) |
+| Appliquer les migrations (crée aussi les rôles) | `pnpm db:migrer` |
+| Générer une migration | `pnpm db:generer` (personnalisée : `pnpm db:generer --custom --name=<nom>`) |
+| Repartir d'une base vide (local) | `pnpm db:reinitialiser` |
+| Tests d'intégration (base de test recréée) | `pnpm test:integration` |
 | Lancer l'app en développement | `pnpm dev` (lit le `.env` de la racine ; http://localhost:3000) |
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
@@ -371,3 +379,5 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 05/10/2026 | 1.8 | Adresses des sources dans `config/sources.json` (préparation multi-région) — D027 |
 | 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |
 | 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
+| 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |
+| 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |

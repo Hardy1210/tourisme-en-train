@@ -221,6 +221,27 @@
 - **Écarté :** mots de passe écrits dans une migration ; heure lue directement dans les routes ; deux modules de journal.
 - **Impact :** `CLAUDE.md` § 1 ; `01` § 3 ; `03` § 4 ; `04` § 2 ; `05` § 3.10 ; `08` § 1, § 5, § 6 ; `GLOSSAIRE` ; fiches E00, E01.
 
+## D032 — Backlog produit et lien fonctionnalités ↔ tickets
+- **Date :** 11/10/2026
+- **Décision :** `docs/BACKLOG.md` devient le document de référence pour les *user stories*, l'estimation (MoSCoW, points), les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches et la planification par sprint. `00-vision.md` § 6 reste la référence pour la liste et les priorités ; sa colonne « Étape » reprend la colonne « Tâches » du backlog. Chaque ticket GitHub (E00 → E18, I01 → I22) se termine par une ligne « Fonctionnalités : … » reprise de BACKLOG § 5. Le backlog est mis à jour au « garde le contexte » qui termine une étape. Les requêtes de référence de `03` § 5 sont exécutées sur les vraies données dès l'étape qui les charge (E02, E03, E04), temps mesuré. Les pull requests ferment leur ticket par `Closes #`.
+- **Raison :** suivi par le tuteur et point d'équipe du lundi ; une seule correspondance tâches ↔ fonctionnalités au lieu de deux colonnes divergentes ; le risque « interroger la base » est vérifié au plus tôt, et non découvert en E08.
+- **Écarté :** décrire les fonctionnalités uniquement dans GitHub Projects (pas versionné, pas lisible hors GitHub) ; recopier le backlog dans `00` § 6.
+- **Impact :** `CLAUDE.md` § 6, § 7, § 14 ; `00` § 6 ; fiches E02, E03, E04 ; `.github/pull_request_template.md` ; `equipe/demarrage-SR.md` § 5, § 6 ; descriptions des 41 tickets.
+
+## D033 — Mise en place de la base (E01) : geography, scripts lancés par Node, pilote unique
+- **Date :** 11/10/2026
+- **Décision :**
+  1. **Type `geography` :** `customType` `geographyPoint` (lu en `{ lon, lat }` depuis le format EWKB). drizzle-kit 0.31 met tout type absent de sa liste interne entre guillemets (`"geography(Point, 4326)"`, refusé par PostgreSQL) : `pnpm db:generer` lance drizzle-kit puis retire ces guillemets dans `db/migrations/*.sql`, et échoue s'il en reste.
+  2. **Migrations personnalisées :** `0000_extensions` (`IF NOT EXISTS` : l'image PostGIS crée déjà `postgis` dans la base principale) et `0002_droits` (`GRANT`, droits sur les séquences, `TEMPORARY` sur `current_database()`, `ALTER DEFAULT PRIVILEGES` pour les tables futures). Index GIST, GIN trigramme et CHECK : générés par Drizzle.
+  3. **Scripts de base dans `apps/web/scripts/`**, exécutés par `node` (Node 24 retire nativement les types TypeScript, sans `tsx`) : `generer`, `migrer`, `reinitialiser`, `preparer-base-test`. Dans l'image web : `node scripts/migrer.ts` (au lieu de `.mjs` dans `07`).
+  4. **`@tourisme/commun` importe ses fichiers avec l'extension `.ts`** (`allowImportingTsExtensions` dans `tsconfig.base.json`) : Node peut le lire directement, donc les scripts utilisent le journal commun.
+  5. **Pilote `pg` (node-postgres)** dans l'application comme dans l'ETL : un seul pilote à connaître.
+  6. **Base de test `<base>_test`** sur le même serveur, recréée à chaque `pnpm test:integration` ; ses adresses sont déduites des `BDD_URL_*` : aucune nouvelle variable.
+  7. **Contrôle de cohérence des mots de passe :** les scripts refusent de démarrer si une adresse `BDD_URL_*` contient un mot de passe différent de sa variable (`POSTGRES_PASSWORD`, `MDP_*`), en nommant les variables et jamais les valeurs.
+- **Raison :** essai sur PostGIS 16-3.4 (11/10) : le SQL généré tel quel ne s'applique pas. Le contrat `07` impose une commande de migration exécutable dans l'image web sans outil de développement. Un `.env` incohérent produisait seulement « password authentication failed », sans dire quoi corriger.
+- **Écarté :** corriger chaque migration à la main (oubli assuré) ; domaine SQL autour de `geography` (plus caché, efficacité des index « au plus près » à revérifier) ; `postgres.js` dans l'application (deuxième pilote) ; une variable `BDD_URL_TEST` (une de plus à maintenir).
+- **Impact :** `CLAUDE.md` § 4, § 6, § 16 ; `01` § 8 ; `03` § 1, § 6 ; `07` § 1, § 4 ; `08` § 8 ; `GLOSSAIRE` ; fiches E01, E16.
+
 ---
 
 ## Modèle pour une nouvelle décision

@@ -1,8 +1,8 @@
 # 00 — Vision, utilisateurs et périmètre
 
-> **Version** 1.1 · **Date** 30/09/2026
+> **Version** 1.2 · **Date** 11/10/2026
 > **Dépend de :** `GLOSSAIRE.md`
-> **Utilisé par :** tous les documents ; en particulier `05-api.md`, `06-interface.md`, fiches E08 → E13
+> **Utilisé par :** tous les documents ; en particulier `05-api.md`, `06-interface.md`, fiches E08 → E13, `BACKLOG.md`
 > **Document de référence pour :** le produit, les fonctionnalités, les priorités, le périmètre.
 
 ---
@@ -61,13 +61,13 @@ Priorités : **P0** indispensable au rendu · **P1** prévu, abandonné seulemen
 
 | ID | Fonctionnalité | Description | Prio | Étape |
 |---|---|---|---|---|
-| F01 | Localisation automatique | Position demandée à l'ouverture ; refus → recherche de ville/adresse | P0 | E11 |
+| F01 | Localisation automatique | Position demandée à l'ouverture ; refus → recherche de ville/adresse | P0 | E09, E11 |
 | F02 | Autour de moi | Résultats immédiats : lieux à pied et gares proches de la position | P0 | E08, E11 |
 | F03 | Gare de départ | Les gares les plus proches, avec distance ; changement possible | P0 | E08, E11 |
-| F04 | Destinations en train direct | Gares atteignables sans correspondance à la date choisie : durée, fréquence, premier départ, dernier retour | P0 | E04, E08, E11 |
+| F04 | Destinations en train direct | Gares atteignables sans correspondance à la date choisie : durée, fréquence, premier départ, dernier retour | P0 | E02, E03, E04, E08, E11 |
 | F05 | Filtres | Rayon, durée de train maximale, autre ville, catégories, date | P0 | E11 |
-| F06 | Fiche destination | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel | P0 | E09, E12 |
-| F07 | Trains aller / retour | Trains directs de la date (horaires théoriques), dernier retour mis en avant | P0 | E09, E12 |
+| F06 | Fiche destination | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel | P0 | E05, E06, E09, E12 |
+| F07 | Trains aller / retour | Trains directs de la date (horaires théoriques), dernier retour mis en avant | P0 | E03, E09, E12 |
 | F08 | Carte | Position, gares, lieux par catégorie ; gares colorées par tranche de temps (isochrone simplifiée) ; bascule liste/carte | P0 | E11 |
 | F09 | Transports sur place | Arrêts de bus/tram, stations de vélos et trottinettes proches de la gare d'arrivée | P0 | E07, E09, E12 |
 | F10 | Impact CO₂ | Train vs voiture seule vs voiture partagée (vs avion au-delà d'un seuil), source affichée | P0 | E09, E12 |
@@ -88,6 +88,8 @@ Priorités : **P0** indispensable au rendu · **P1** prévu, abandonné seulemen
 | F22 | Pépite méconnue | Badge : beaucoup de lieux, peu de fréquentation (Insee) | P2 | après |
 | F23 | Places MAX JEUNE / SENIOR | Badge de disponibilité | P2 | après |
 | F24 | Connexion Google | Synchroniser les favoris (Auth.js) | P2 | après |
+
+User stories, estimations, critères d'acceptation par fonctionnalité et lien avec les tickets : `BACKLOG.md`. Ce tableau reste la référence pour la liste et les priorités ; la colonne « Étape » reprend la colonne « Tâches » du backlog (D032).
 
 ## 7. Parcours principal
 
@@ -131,3 +133,4 @@ Nom de code : `tourisme-en-train`. Marque : **Wagoo** (provisoire), définie uni
 |---|---|---|
 | 30/09/2026 | 1.0 | Création |
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : partage (P1), week-end (P1), vélos disponibles (P1), temps réel limité à aujourd'hui, transport à la demande exclu — D017 à D020 |
+| 11/10/2026 | 1.2 | Renvoi vers `BACKLOG.md` ; colonne « Étape » alignée sur les tâches du backlog — D032 |

@@ -40,6 +40,7 @@ Table `liaison_directe` complète sur la fenêtre, avec distance estimée ; dur�
 - [ ] Aucune `duree_min ≤ 0` ; aucune liaison d'une gare vers elle-même.
 - [ ] Des destinations hors région apparaissent (ex. Lyon, Paris) si des trains directs existent.
 - [ ] Durée d'exécution notée dans le rapport ; si > 5 min, signalée à Hardy avant toute optimisation.
+- [ ] La requête de référence *destinations depuis une gare à une date* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; elle répond en **moins de 300 ms** ; temps mesuré et noté dans `JOURNAL.md`.
 
 ## Vérifications manuelles
 - 3 liaisons comparées à SNCF Connect (durée, premier et dernier train).
@@ -55,3 +56,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 09/10/2026 : la table `liaison_directe` n'est plus créée en E01 : sa migration ouvre cette étape, après la décision sur les données des cartes de destination (dernier retour, prochain train, faisable dans la journée).
+- 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).

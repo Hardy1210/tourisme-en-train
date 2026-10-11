@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 1.4 · **Date** 09/10/2026
+> **Version** 1.6 · **Date** 11/10/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `docs/equipe/guide-SR.md` ; `infra/CLAUDE.md` (résumé) ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -14,7 +14,7 @@
 |---|---|---|
 | Image de l'application | `apps/web/Dockerfile` (Next.js `standalone`, utilisateur non-root, port 3000) | Hardy |
 | Image du traitement des données | `etl/Dockerfile` (Node 24, pnpm, TypeScript exécuté avec `tsx`) | Hardy |
-| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node scripts/migrer.mjs`) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Hardy |
+| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node scripts/migrer.ts`, exécuté par Node 24 sans `tsx`, D033) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Hardy |
 | Route de santé | `GET /api/sante` (voir `05-api.md` § 3.1) | Hardy |
 | Commande ETL | `pnpm etl <source|all> [--force] [--hors-ligne]` (dans Docker : `docker compose run --rm etl <source|all>`) ; code retour 0 = succès | Hardy |
 | Journaux | Sortie standard, **une ligne JSON par événement** : `{ "niveau", "message", "horodatage", "contexte" }` ; jamais de position utilisateur | Hardy |
@@ -51,6 +51,7 @@
 | `SNCF_CLE_API` | web (temps réel, P1) | *(secret)* | non |
 | `NODE_ENV` | web | `production` | oui |
 | `BDD_PORT_HOTE` | compose **local** uniquement (port de `db` sur le poste) | `5432` (défaut) | non |
+| `ADMINER_PORT_HOTE` | compose **local** uniquement (port d'`adminer` sur le poste) | `8080` (défaut) | non |
 
 - Validées au démarrage par Zod : `apps/web/src/lib/env.ts` (application) et `etl/src/config.ts` (traitement des données). **Variable manquante = refus de démarrer avec un message clair.**
 - **Adresses de la base :** dans `.env.example`, les `BDD_URL_*` désignent le **poste** (`localhost:<BDD_PORT_HOTE>`), pour `pnpm dev`, `pnpm etl` et `pnpm db:migrer` lancés sur la machine. Les conteneurs reçoivent leurs propres adresses (`db:5432`) du compose (D030).
@@ -64,13 +65,13 @@
 | Service | Image | Ports (hôte) | Profil | Rôle |
 |---|---|---|---|---|
 | `db` | `postgis/postgis:16-3.4` | `127.0.0.1:${BDD_PORT_HOTE}` (défaut 5432) → 5432 dans le conteneur | *(toujours)* | Base de données |
-| `adminer` | `adminer` | `127.0.0.1:8080` | `outils` | Consulter la base |
+| `adminer` | `adminer:5.5.1` | `127.0.0.1:${ADMINER_PORT_HOTE}` (défaut 8080) → 8080 dans le conteneur | `outils` | Consulter la base |
 | `etl` | construite depuis `etl/Dockerfile` | — | `etl` | `docker compose run --rm etl all` |
 | `web` | construite depuis `apps/web/Dockerfile` | `127.0.0.1:3000` | `demo` | Application complète (soutenance) |
 
 - Volumes : `donnees_db` (base), `./data` monté dans `etl` sur `/data`.
 - Réseau interne unique ; seuls les ports ci-dessus sont exposés, **et uniquement sur 127.0.0.1**.
-- Le port côté hôte de `db` est réglable (`BDD_PORT_HOTE`) pour éviter un conflit avec une autre base sur le poste ; **cela ne concerne que l'environnement local** : en production, la base n'expose aucun port (§ 6) — D030.
+- Les ports côté hôte de `db` et d'`adminer` sont réglables (`BDD_PORT_HOTE`, `ADMINER_PORT_HOTE`) pour éviter un conflit avec un autre projet sur le poste ; **cela ne concerne que l'environnement local** : en production, la base n'expose aucun port (§ 6) — D030.
 - Démarrage développement : `docker compose up -d` (db) puis `pnpm dev`.
 - Démarrage soutenance : `docker compose --profile demo up -d`.
 
@@ -107,3 +108,5 @@
 | 05/10/2026 | 1.2 | Exception `.github/workflows/deploiement*.yml` pour le déploiement automatique ; renvoi vers `infra/CLAUDE.md` — D026 |
 | 07/10/2026 | 1.3 | Images Docker en Node 24 au lieu de 22 — D028 |
 | 09/10/2026 | 1.4 | Local uniquement : port de `db` côté hôte réglable (`BDD_PORT_HOTE`), adresses de `.env.example` côté poste — D030 ; rôles créés par la commande de migration — D031 ; historique remis dans l'ordre |
+| 11/10/2026 | 1.5 | Commande de migration dans l'image web : `node scripts/migrer.ts` au lieu de `.mjs` ; version d'Adminer fixée — D033. Pour les SR : rien ne change dans leur travail |
+| 11/10/2026 | 1.6 | Local uniquement : port d'Adminer côté hôte réglable (`ADMINER_PORT_HOTE`, 8080 par défaut), sur le modèle de D030 |

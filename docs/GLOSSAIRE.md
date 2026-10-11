@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.3 · **Date** 09/10/2026
+> **Version** 1.4 · **Date** 11/10/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -59,6 +59,9 @@
 | **Tranche de temps** | Classe de durée pour colorer la carte : `<30`, `<60`, `<120`, `≥120` min | `trancheTemps` | — | — |
 | **Source de données** | Un jeu de données ouvert utilisé (gares, GTFS, DATAtourisme…) | `SourceDonnees` | table `source_donnees` | — |
 | **Exécution ETL** | Un lancement du traitement pour une source, avec son résultat | `ExecutionEtl` | table `execution_etl` | — |
+| **Statut d'exécution** | Résultat d'une exécution ETL : `EN_COURS`, `SUCCES`, `ECHEC`, `IGNORE` (fichier inchangé) | `StatutExecution` | `statut` | — |
+| **Point géographique** | Coordonnées WGS 84 (longitude, latitude), stockées en `geography(Point, 4326)` | `PointGeo` (`{ lon, lat }`) | `geom` | Position de l'utilisateur (jamais stockée) |
+| **Échantillon** | Petit jeu de **données d'exemple** pour les tests, chargé uniquement dans la base de test | `echantillon` | source `echantillon`, dossier `db/echantillon/` | Vraies données |
 | **Qualité Tourisme** | Label d'État attribué à certains lieux | `qualiteTourisme` | `qualite_tourisme` | — |
 | **Région pilote** | Région couverte par les données de la v1 : Bourgogne-Franche-Comté (27) | `region` | `region` | — |
 | **Marque** | Nom commercial affiché (provisoire : Wagoo), défini dans `config/marque.ts` | `marque` | — | Nom de code `tourisme-en-train` |
@@ -105,3 +108,4 @@
 | 30/09/2026 | 1.1 | Vélos disponibles, début du week-end, partage |
 | 05/10/2026 | 1.2 | ETL en TypeScript + SQL (plus de Python) — D024 |
 | 09/10/2026 | 1.3 | Heure actuelle (`maintenantParis`) — D031 |
+| 11/10/2026 | 1.4 | Statut d'exécution, point géographique, échantillon (E01) |

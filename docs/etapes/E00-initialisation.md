@@ -1,7 +1,7 @@
 # E00 — Initialisation du dépôt et des outils
 
 > **Semaine :** S1 (05/10 → 11/10) · **Priorité :** P0 · **Branche :** `etape/E00-initialisation`
-> **Étapes préalables :** aucune · **État :** 🟡 en cours (PR à ouvrir)
+> **Étapes préalables :** aucune · **État :** ✅ terminé (PR #43, fusionnée le 09/10/2026)
 > **Version de la fiche** 1.1 · **Date** 05/10/2026
 
 ## Contexte minimal
@@ -26,7 +26,7 @@ Un dépôt prêt à accueillir le code : outils installés, structure en place, 
 ## Actions de Hardy
 - [x] Créer le dépôt GitHub `tourisme-en-train` (compte Hardy1210, **public conseillé**), y envoyer la documentation, protéger `main`, inviter les SR : pas-à-pas dans `docs/equipe/travail-en-equipe.md` § 2–3.
 - [x] Installer : Git, Docker Desktop (moteur WSL2), Node.js 24 LTS (`.nvmrc` = `24` et `engines.node` `>=24` à la racine — D028), pnpm (`corepack enable`), un éditeur.
-- [ ] Envoyer `docs/equipe/demarrage-SR.md` et `docs/equipe/guide-SR.md` aux SR.
+- [x] Envoyer `docs/equipe/demarrage-SR.md` et `docs/equipe/guide-SR.md` aux SR.
 - [x] Valider le plan proposé par Claude Code après l'audit.
 
 ## Phase d'audit
