@@ -14,13 +14,15 @@ Projet réalisé dans le cadre du défi data.gouv.fr **« Tourisme en train »**
 
 ## Prérequis
 - Node.js 24 (`.nvmrc`) et pnpm 11 (`corepack enable`, version fixée dans `package.json`)
-- Docker (base de données, à partir de l'étape E01)
+- Docker (base de données PostgreSQL + PostGIS)
 - Git
 
 ## Démarrage (développement)
 ```
 pnpm install
-cp .env.example .env      # puis remplir les mots de passe
+cp .env.example .env      # puis remplir les mots de passe (lettres, chiffres, . _ ~ -)
+docker compose up -d      # base de données (port BDD_PORT_HOTE, 5432 par défaut)
+pnpm db:migrer            # rôles + migrations (relançable sans risque)
 pnpm dev                  # application sur http://localhost:3000
 ```
 
@@ -28,6 +30,10 @@ pnpm dev                  # application sur http://localhost:3000
 |---|---|
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Tests | `pnpm test` |
+| Tests d'intégration (base de test recréée, Docker nécessaire) | `pnpm test:integration` |
+| Générer une migration après une modification de `schema.ts` | `pnpm db:generer` |
+| Repartir d'une base vide (local, demande confirmation) | `pnpm db:reinitialiser` |
+| Consulter la base | `docker compose --profile outils up -d` puis http://localhost:8080 |
 | Traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` (`pnpm etl --help`) |
 
 ## Organisation

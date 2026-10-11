@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.4 · **Date** 09/10/2026
+> **Version** 1.5 · **Date** 11/10/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -184,7 +184,7 @@ Détail des étapes et algorithmes : `04-traitement-donnees.md`.
 | React | 19 | |
 | TypeScript | 5.9.3 (fixé) strict | `noUncheckedIndexedAccess` activé ; pas de 6.1+ ni 7 tant que typescript-eslint ne les prend pas en charge (D029) |
 | Tailwind CSS | 4 | Tokens dans `globals.css` via `@theme` |
-| Drizzle ORM / drizzle-kit | 0.45 / 0.31 | Migrations SQL générées dans `db/migrations/` |
+| Drizzle ORM / drizzle-kit | 0.45 / 0.31 | Migrations SQL générées dans `db/migrations/` par `pnpm db:generer` (correction du type `geography`, D033) ; pilote `pg` (node-postgres) dans l'application comme dans le traitement des données |
 | Zod | 4 | |
 | ESLint / Prettier | 10 (configuration « flat ») / 3 | Une seule configuration à la racine |
 | Vitest / Playwright | 5 / 1.x | Un projet Vitest par paquet, lancés ensemble par `pnpm test` |
@@ -214,3 +214,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 05/10/2026 | 1.2 | Traitement des données en TypeScript + SQL (au lieu de Python), espace de travail pnpm, `packages/commun` — D024 |
 | 05/10/2026 | 1.3 | `config/sources.json` et son schéma dans `packages/commun` — D027 |
 | 09/10/2026 | 1.4 | § 8 : versions fixées (Node 24 — D028 ; Next.js 16, Zod 4, TypeScript 5.9, pnpm 11 — D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun — D031 |
+| 11/10/2026 | 1.5 | § 8 : pilote `pg` dans l'application, génération des migrations par `pnpm db:generer` — D033 |

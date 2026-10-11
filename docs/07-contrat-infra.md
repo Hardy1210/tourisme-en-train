@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 1.4 · **Date** 09/10/2026
+> **Version** 1.5 · **Date** 11/10/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `docs/equipe/guide-SR.md` ; `infra/CLAUDE.md` (résumé) ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -14,7 +14,7 @@
 |---|---|---|
 | Image de l'application | `apps/web/Dockerfile` (Next.js `standalone`, utilisateur non-root, port 3000) | Hardy |
 | Image du traitement des données | `etl/Dockerfile` (Node 24, pnpm, TypeScript exécuté avec `tsx`) | Hardy |
-| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node scripts/migrer.mjs`) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Hardy |
+| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node scripts/migrer.ts`, exécuté par Node 24 sans `tsx`, D033) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Hardy |
 | Route de santé | `GET /api/sante` (voir `05-api.md` § 3.1) | Hardy |
 | Commande ETL | `pnpm etl <source|all> [--force] [--hors-ligne]` (dans Docker : `docker compose run --rm etl <source|all>`) ; code retour 0 = succès | Hardy |
 | Journaux | Sortie standard, **une ligne JSON par événement** : `{ "niveau", "message", "horodatage", "contexte" }` ; jamais de position utilisateur | Hardy |
@@ -64,7 +64,7 @@
 | Service | Image | Ports (hôte) | Profil | Rôle |
 |---|---|---|---|---|
 | `db` | `postgis/postgis:16-3.4` | `127.0.0.1:${BDD_PORT_HOTE}` (défaut 5432) → 5432 dans le conteneur | *(toujours)* | Base de données |
-| `adminer` | `adminer` | `127.0.0.1:8080` | `outils` | Consulter la base |
+| `adminer` | `adminer:5.5.1` | `127.0.0.1:8080` | `outils` | Consulter la base |
 | `etl` | construite depuis `etl/Dockerfile` | — | `etl` | `docker compose run --rm etl all` |
 | `web` | construite depuis `apps/web/Dockerfile` | `127.0.0.1:3000` | `demo` | Application complète (soutenance) |
 
@@ -107,3 +107,4 @@
 | 05/10/2026 | 1.2 | Exception `.github/workflows/deploiement*.yml` pour le déploiement automatique ; renvoi vers `infra/CLAUDE.md` — D026 |
 | 07/10/2026 | 1.3 | Images Docker en Node 24 au lieu de 22 — D028 |
 | 09/10/2026 | 1.4 | Local uniquement : port de `db` côté hôte réglable (`BDD_PORT_HOTE`), adresses de `.env.example` côté poste — D030 ; rôles créés par la commande de migration — D031 ; historique remis dans l'ordre |
+| 11/10/2026 | 1.5 | Commande de migration dans l'image web : `node scripts/migrer.ts` au lieu de `.mjs` ; version d'Adminer fixée — D033. Pour les SR : rien ne change dans leur travail |

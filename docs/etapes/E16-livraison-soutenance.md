@@ -47,3 +47,4 @@ Voir `_MODELE.md`.
 
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 11/10/2026 : `node scripts/migrer.ts` doit tourner dans l'image web : la sortie `standalone` ne contient pas `apps/web/scripts/`, `db/migrations/`, `packages/commun/src/` ni `config/parametres.json`, à copier explicitement avec `drizzle-orm`, `pg` et `zod` (D033).

@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.3 · **Date** 09/10/2026
+> **Version** 1.4 · **Date** 11/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -11,8 +11,8 @@
 
 1. **PostgreSQL 16 + PostGIS 3.4**, extensions `postgis` et `pg_trgm` (similarité de noms).
 2. **Toute géométrie est en `geography(…, 4326)`** : les distances sont directement en mètres. *Avec `geometry`, les distances seraient en degrés et chaque requête devrait convertir.*
-3. **Le schéma est déclaré dans Drizzle** (`apps/web/src/lib/db/schema.ts`). drizzle-kit génère les migrations SQL dans `db/migrations/`. Ce que Drizzle ne sait pas générer (extensions, rôles, index particuliers) va dans une **migration SQL personnalisée** (`drizzle-kit generate --custom`).
-4. **Le type `geography` est déclaré par un `customType` Drizzle** (`lib/db/types-postgis.ts`), une seule fois.
+3. **Le schéma est déclaré dans Drizzle** (`apps/web/src/lib/db/schema.ts`). drizzle-kit génère les migrations SQL dans `db/migrations/`. Ce que Drizzle ne sait pas générer va dans une **migration SQL personnalisée** (`pnpm db:generer --custom --name=<nom>`) : extensions (`0000_extensions`, `IF NOT EXISTS` car l'image PostGIS crée déjà `postgis` dans la base principale) et droits (`0002_droits`). Les index GIST et GIN trigramme et les CHECK sont générés par Drizzle ; les listes des CHECK viennent de `@tourisme/commun` (`CATEGORIES`, `TYPES_TRAIN`, `TYPES_MOBILITE`, `STATUTS_EXECUTION`). **Toujours générer avec `pnpm db:generer`**, jamais `drizzle-kit generate` seul (voir point 4).
+4. **Le type `geography` est déclaré par un `customType` Drizzle** (`lib/db/types-postgis.ts`), une seule fois : `geographyPoint`, lu en `{ lon, lat }`. drizzle-kit 0.31 écrit ce type entre guillemets (`"geography(Point, 4326)"`), ce que PostgreSQL refuse : `pnpm db:generer` les retire après chaque génération et échoue s'il en reste (D033).
 5. **Aucune donnée utilisateur** en v1. La position n'est jamais stockée.
 6. **Les heures de train sont des entiers** (secondes depuis minuit, peuvent dépasser 86 400). **Les jours sont des `date`.** Aucun `timestamp` pour les horaires.
 7. **Tout nom de table et de colonne en français, `snake_case`, sans accents** (voir `GLOSSAIRE.md`).
@@ -299,7 +299,7 @@ ORDER BY a.depart_s;
 
 ## 6. Données d'exemple
 
-`db/echantillon/` contient un **petit jeu cohérent** (une dizaine de gares, quelques trajets, une trentaine de lieux) pour les tests automatisés. Il est chargé uniquement dans la base de test. **Jamais** mélangé aux vraies données.
+`db/echantillon/echantillon.sql` contient un **petit jeu cohérent** (10 gares aux codes UIC fictifs `EX…`, 5 trajets sur une date d'été et une date d'hiver, 30 lieux dont un doublon, 3 transports sur place), rattaché à la source `echantillon`. Il est chargé uniquement dans la base de test `<base>_test` par `pnpm db:test:preparer` (lancé par `pnpm test:integration`). **Jamais** mélangé aux vraies données.
 
 ---
 
@@ -321,3 +321,4 @@ ORDER BY a.depart_s;
 | 30/09/2026 | 1.1 | `mobilite_locale.id_source` (vélos disponibles, D019) |
 | 05/10/2026 | 1.2 | Chemin des règles de catégories : `etl/src/regles/categories.csv` (D024) |
 | 09/10/2026 | 1.3 | § 4 : rôles et mots de passe créés par script, droits seuls dans les migrations — D031 |
+| 11/10/2026 | 1.4 | E01 : migrations personnalisées (extensions, droits), correction du type `geography` par `pnpm db:generer`, échantillon et base de test — D033 |

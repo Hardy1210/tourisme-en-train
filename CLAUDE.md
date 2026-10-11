@@ -73,7 +73,7 @@ Un seul fuseau, mais trois pièges réels :
 | Carte | MapLibre GL + react-map-gl + OpenFreeMap | Carte vectorielle gratuite, sans clé, stylable |
 | PWA | Serwist | Installation, hors ligne |
 | Base | PostgreSQL 16 + PostGIS 3 | Stockage + requêtes géographiques (« proche de quoi ? ») |
-| Accès base (app) | Drizzle ORM + drizzle-kit | Requêtes typées, génération des migrations SQL |
+| Accès base (app) | Drizzle ORM + drizzle-kit, pilote `pg` | Requêtes typées, génération des migrations SQL (`pnpm db:generer`, D033) |
 | Traitement des données | TypeScript (Node 24, `tsx`) + SQL ; csv-parse, pg, pg-copy-streams | Télécharger, lire, valider (Zod), charger (`COPY`) ; transformations lourdes en SQL (PostGIS) |
 | Paquets | pnpm, en espace de travail (`apps/web` · `etl` · `packages/commun`) | Installations reproductibles ; code partagé entre l'app et le traitement |
 | Conteneurs | Docker + Docker Compose | Même environnement partout, démo en une commande |
@@ -129,6 +129,7 @@ tourisme-en-train/
 │  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
+├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
 ├─ apps/web/src/
 │  ├─ app/                       ← pages et routes API, fines
 │  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
@@ -147,7 +148,8 @@ tourisme-en-train/
 │  ├─ src/run.ts                 ← pnpm etl <source|all> [--force] [--hors-ligne]
 │  ├─ src/                       ← config.ts · db.ts · sources/ · transformations/ (TS pur + .sql) · chargement/ · controles/ · regles/
 │  └─ tests/                     ← Vitest, GTFS miniature
-├─ db/migrations/ · db/echantillon/
+├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
+├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
 ├─ data/brut/ · data/traite/     ← ignorés par Git
 └─ infra/                        ← production (SR) : CLAUDE.md propre · JOURNAL.md · compose prod, Caddy, sauvegardes
 ```
@@ -184,7 +186,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Étape | Contenu | Sem. | État |
 |---|---|---|---|
 | E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
-| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ⬜ |
+| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | 🟡 |
 | E02 | Gares | S2 | ⬜ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
@@ -349,8 +351,11 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Action | Commande |
 |---|---|
 | Installer les dépendances | `pnpm install` (Node 24, pnpm 11.24 fixé) |
-| Démarrer l'environnement local | *(E01)* |
-| Appliquer les migrations | *(E01)* |
+| Démarrer la base locale | `docker compose up -d` (Adminer : `docker compose --profile outils up -d`, http://localhost:8080) |
+| Appliquer les migrations (crée aussi les rôles) | `pnpm db:migrer` |
+| Générer une migration | `pnpm db:generer` (personnalisée : `pnpm db:generer --custom --name=<nom>`) |
+| Repartir d'une base vide (local) | `pnpm db:reinitialiser` |
+| Tests d'intégration (base de test recréée) | `pnpm test:integration` |
 | Lancer l'app en développement | `pnpm dev` (lit le `.env` de la racine ; http://localhost:3000) |
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
@@ -375,3 +380,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |
 | 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
 | 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |
+| 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |
