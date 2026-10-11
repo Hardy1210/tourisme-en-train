@@ -33,7 +33,7 @@ pnpm dev                  # application sur http://localhost:3000
 | Tests d'intégration (base de test recréée, Docker nécessaire) | `pnpm test:integration` |
 | Générer une migration après une modification de `schema.ts` | `pnpm db:generer` |
 | Repartir d'une base vide (local, demande confirmation) | `pnpm db:reinitialiser` |
-| Consulter la base | `docker compose --profile outils up -d` puis http://localhost:8080 |
+| Consulter la base | `docker compose --profile outils up -d` puis http://localhost:<ADMINER_PORT_HOTE> (8080 par défaut) |
 | Traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` (`pnpm etl --help`) |
 
 ## Organisation

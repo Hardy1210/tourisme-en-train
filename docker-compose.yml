@@ -23,12 +23,13 @@ services:
       retries: 10
     restart: unless-stopped
 
-  # Consulter la base : `docker compose --profile outils up -d`, puis http://localhost:8080 (serveur : db).
+  # Consulter la base : `docker compose --profile outils up -d`, puis http://localhost:<ADMINER_PORT_HOTE> (serveur : db).
   adminer:
     image: adminer:5.5.1
     profiles: [outils]
     ports:
-      - '127.0.0.1:8080:8080'
+      # Port côté poste réglable, comme celui de db (D030).
+      - '127.0.0.1:${ADMINER_PORT_HOTE:-8080}:8080'
     depends_on:
       db:
         condition: service_healthy

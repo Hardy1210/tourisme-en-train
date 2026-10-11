@@ -351,7 +351,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Action | Commande |
 |---|---|
 | Installer les dépendances | `pnpm install` (Node 24, pnpm 11.24 fixé) |
-| Démarrer la base locale | `docker compose up -d` (Adminer : `docker compose --profile outils up -d`, http://localhost:8080) |
+| Démarrer la base locale | `docker compose up -d` (Adminer : `docker compose --profile outils up -d`, http://localhost:<ADMINER_PORT_HOTE>, 8080 par défaut) |
 | Appliquer les migrations (crée aussi les rôles) | `pnpm db:migrer` |
 | Générer une migration | `pnpm db:generer` (personnalisée : `pnpm db:generer --custom --name=<nom>`) |
 | Repartir d'une base vide (local) | `pnpm db:reinitialiser` |
