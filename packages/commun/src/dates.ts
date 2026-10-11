@@ -1,7 +1,7 @@
 // Les DEUX seules fonctions du projet qui lisent l'horloge (CLAUDE.md § 3, D031).
 // Elles calculent la date et l'heure à Paris, quel que soit le fuseau du serveur (Docker est en UTC).
 // L'instant est un paramètre facultatif : les tests le fixent, le code appelant ne le passe jamais.
-import { parametres } from './parametres';
+import { parametres } from './parametres.ts';
 
 const FORMAT_PARIS = new Intl.DateTimeFormat('fr-FR', {
   timeZone: parametres.fuseau,

@@ -1,0 +1,1072 @@
+{
+  "id": "1ee3e3ae-b2da-4f60-9d99-85f921671b37",
+  "prevId": "1c592681-7637-46b3-aeaa-411a1c533f2b",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.categorie_regle": {
+      "name": "categorie_regle",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "categorie_regle_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
+          }
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cle": {
+          "name": "cle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valeur": {
+          "name": "valeur",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categorie": {
+          "name": "categorie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sous_categorie": {
+          "name": "sous_categorie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "priorite": {
+          "name": "priorite",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 100
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "categorie_regle_source_cle_valeur_unique": {
+          "name": "categorie_regle_source_cle_valeur_unique",
+          "columns": [
+            "source",
+            "cle",
+            "valeur"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "categorie_regle_categorie_check": {
+          "name": "categorie_regle_categorie_check",
+          "value": "\"categorie_regle\".\"categorie\" IN ('enfants', 'nature', 'parcs', 'patrimoine', 'culture')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.execution_etl": {
+      "name": "execution_etl",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "execution_etl_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
+          }
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "debut": {
+          "name": "debut",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fin": {
+          "name": "fin",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "statut": {
+          "name": "statut",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nb_lignes": {
+          "name": "nb_lignes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "execution_etl_statut_check": {
+          "name": "execution_etl_statut_check",
+          "value": "\"execution_etl\".\"statut\" IN ('EN_COURS', 'SUCCES', 'ECHEC', 'IGNORE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.gare": {
+      "name": "gare",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "gare_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
+          }
+        },
+        "uic": {
+          "name": "uic",
+          "type": "char(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nom": {
+          "name": "nom",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "commune": {
+          "name": "commune",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "code_insee": {
+          "name": "code_insee",
+          "type": "char(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "departement": {
+          "name": "departement",
+          "type": "char(3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dans_region": {
+          "name": "dans_region",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "geom": {
+          "name": "geom",
+          "type": "geography(Point, 4326)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maj": {
+          "name": "maj",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "gare_geom_index": {
+          "name": "gare_geom_index",
+          "columns": [
+            {
+              "expression": "geom",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "gist",
+          "concurrently": false
+        },
+        "gare_dans_region_index": {
+          "name": "gare_dans_region_index",
+          "columns": [
+            {
+              "expression": "dans_region",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "gare_uic_unique": {
+          "name": "gare_uic_unique",
+          "columns": [
+            "uic"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.gare_stats": {
+      "name": "gare_stats",
+      "schema": "",
+      "columns": {
+        "gare_id": {
+          "name": "gare_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categorie": {
+          "name": "categorie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nb_lieux": {
+          "name": "nb_lieux",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "gare_stats_gare_id_gare_id_fk": {
+          "name": "gare_stats_gare_id_gare_id_fk",
+          "tableFrom": "gare_stats",
+          "columnsFrom": [
+            "gare_id"
+          ],
+          "tableTo": "gare",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "gare_stats_gare_id_categorie_pk": {
+          "name": "gare_stats_gare_id_categorie_pk",
+          "columns": [
+            "gare_id",
+            "categorie"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.lieu": {
+      "name": "lieu",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "lieu_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
+          }
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id_source": {
+          "name": "id_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nom": {
+          "name": "nom",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "categorie": {
+          "name": "categorie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sous_categorie": {
+          "name": "sous_categorie",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "adresse": {
+          "name": "adresse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "commune": {
+          "name": "commune",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "code_insee": {
+          "name": "code_insee",
+          "type": "char(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "horaires": {
+          "name": "horaires",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "periode": {
+          "name": "periode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qualite_tourisme": {
+          "name": "qualite_tourisme",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "doublon_de": {
+          "name": "doublon_de",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "geom": {
+          "name": "geom",
+          "type": "geography(Point, 4326)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maj": {
+          "name": "maj",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "lieu_geom_index": {
+          "name": "lieu_geom_index",
+          "columns": [
+            {
+              "expression": "geom",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "gist",
+          "concurrently": false
+        },
+        "lieu_categorie_index": {
+          "name": "lieu_categorie_index",
+          "columns": [
+            {
+              "expression": "categorie",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "lieu_nom_trgm_index": {
+          "name": "lieu_nom_trgm_index",
+          "columns": [
+            {
+              "expression": "nom",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "gin_trgm_ops"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "gin",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "lieu_source_source_donnees_code_fk": {
+          "name": "lieu_source_source_donnees_code_fk",
+          "tableFrom": "lieu",
+          "columnsFrom": [
+            "source"
+          ],
+          "tableTo": "source_donnees",
+          "columnsTo": [
+            "code"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "lieu_doublon_de_lieu_id_fk": {
+          "name": "lieu_doublon_de_lieu_id_fk",
+          "tableFrom": "lieu",
+          "columnsFrom": [
+            "doublon_de"
+          ],
+          "tableTo": "lieu",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "lieu_source_id_source_unique": {
+          "name": "lieu_source_id_source_unique",
+          "columns": [
+            "source",
+            "id_source"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "lieu_categorie_check": {
+          "name": "lieu_categorie_check",
+          "value": "\"lieu\".\"categorie\" IN ('enfants', 'nature', 'parcs', 'patrimoine', 'culture')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.lieu_gare": {
+      "name": "lieu_gare",
+      "schema": "",
+      "columns": {
+        "lieu_id": {
+          "name": "lieu_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gare_id": {
+          "name": "gare_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "distance_m": {
+          "name": "distance_m",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duree_marche_min": {
+          "name": "duree_marche_min",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "lieu_gare_gare_id_distance_m_index": {
+          "name": "lieu_gare_gare_id_distance_m_index",
+          "columns": [
+            {
+              "expression": "gare_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "distance_m",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "lieu_gare_lieu_id_lieu_id_fk": {
+          "name": "lieu_gare_lieu_id_lieu_id_fk",
+          "tableFrom": "lieu_gare",
+          "columnsFrom": [
+            "lieu_id"
+          ],
+          "tableTo": "lieu",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "lieu_gare_gare_id_gare_id_fk": {
+          "name": "lieu_gare_gare_id_gare_id_fk",
+          "tableFrom": "lieu_gare",
+          "columnsFrom": [
+            "gare_id"
+          ],
+          "tableTo": "gare",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "lieu_gare_lieu_id_gare_id_pk": {
+          "name": "lieu_gare_lieu_id_gare_id_pk",
+          "columns": [
+            "lieu_id",
+            "gare_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.mobilite_locale": {
+      "name": "mobilite_locale",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "mobilite_locale_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "always"
+          }
+        },
+        "gare_id": {
+          "name": "gare_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nom": {
+          "name": "nom",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lignes": {
+          "name": "lignes",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "operateur": {
+          "name": "operateur",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id_source": {
+          "name": "id_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distance_m": {
+          "name": "distance_m",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "geom": {
+          "name": "geom",
+          "type": "geography(Point, 4326)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "mobilite_locale_gare_id_distance_m_index": {
+          "name": "mobilite_locale_gare_id_distance_m_index",
+          "columns": [
+            {
+              "expression": "gare_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "distance_m",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "mobilite_locale_gare_id_gare_id_fk": {
+          "name": "mobilite_locale_gare_id_gare_id_fk",
+          "tableFrom": "mobilite_locale",
+          "columnsFrom": [
+            "gare_id"
+          ],
+          "tableTo": "gare",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "mobilite_locale_source_source_donnees_code_fk": {
+          "name": "mobilite_locale_source_source_donnees_code_fk",
+          "tableFrom": "mobilite_locale",
+          "columnsFrom": [
+            "source"
+          ],
+          "tableTo": "source_donnees",
+          "columnsTo": [
+            "code"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "mobilite_locale_type_check": {
+          "name": "mobilite_locale_type_check",
+          "value": "\"mobilite_locale\".\"type\" IN ('BUS', 'TRAM', 'VELO', 'TROTTINETTE', 'AUTRE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.passage": {
+      "name": "passage",
+      "schema": "",
+      "columns": {
+        "trajet_id": {
+          "name": "trajet_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sequence": {
+          "name": "sequence",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gare_id": {
+          "name": "gare_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "arrivee_s": {
+          "name": "arrivee_s",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "depart_s": {
+          "name": "depart_s",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "passage_gare_id_index": {
+          "name": "passage_gare_id_index",
+          "columns": [
+            {
+              "expression": "gare_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "passage_trajet_id_trajet_id_fk": {
+          "name": "passage_trajet_id_trajet_id_fk",
+          "tableFrom": "passage",
+          "columnsFrom": [
+            "trajet_id"
+          ],
+          "tableTo": "trajet",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "passage_gare_id_gare_id_fk": {
+          "name": "passage_gare_id_gare_id_fk",
+          "tableFrom": "passage",
+          "columnsFrom": [
+            "gare_id"
+          ],
+          "tableTo": "gare",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "passage_trajet_id_sequence_pk": {
+          "name": "passage_trajet_id_sequence_pk",
+          "columns": [
+            "trajet_id",
+            "sequence"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.service_jour": {
+      "name": "service_jour",
+      "schema": "",
+      "columns": {
+        "service_id": {
+          "name": "service_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_service": {
+          "name": "date_service",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "service_jour_date_service_index": {
+          "name": "service_jour_date_service_index",
+          "columns": [
+            {
+              "expression": "date_service",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "service_jour_service_id_date_service_pk": {
+          "name": "service_jour_service_id_date_service_pk",
+          "columns": [
+            "service_id",
+            "date_service"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.source_donnees": {
+      "name": "source_donnees",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nom": {
+          "name": "nom",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "producteur": {
+          "name": "producteur",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "licence": {
+          "name": "licence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "attribution": {
+          "name": "attribution",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_telechargement": {
+          "name": "date_telechargement",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "empreinte": {
+          "name": "empreinte",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nb_lignes": {
+          "name": "nb_lignes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.trajet": {
+      "name": "trajet",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "service_id": {
+          "name": "service_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type_train": {
+          "name": "type_train",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nom_ligne": {
+          "name": "nom_ligne",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "numero": {
+          "name": "numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "trajet_service_id_index": {
+          "name": "trajet_service_id_index",
+          "columns": [
+            {
+              "expression": "service_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "trajet_type_train_check": {
+          "name": "trajet_type_train_check",
+          "value": "\"trajet\".\"type_train\" IN ('TER', 'INTERCITES', 'TGV', 'AUTRE')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

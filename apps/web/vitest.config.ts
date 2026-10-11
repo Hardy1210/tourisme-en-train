@@ -9,5 +9,6 @@ export default defineConfig({
       'server-only': path.join(import.meta.dirname, 'tests/server-only-vide.ts'),
     },
   },
-  test: { name: 'web' },
+  // Les tests d'intégration (base réelle) ont leur propre configuration : vitest.integration.config.ts.
+  test: { name: 'web', exclude: ['**/node_modules/**', '**/*.integration.test.ts'] },
 });

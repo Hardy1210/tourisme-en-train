@@ -14,7 +14,12 @@
     "format:verifier": "prettier --check .",
     "test": "vitest run",
     "verifier": "pnpm typecheck && pnpm lint && pnpm format:verifier && pnpm test",
-    "etl": "pnpm --filter @tourisme/etl start"
+    "etl": "pnpm --filter @tourisme/etl start",
+    "db:generer": "pnpm --filter @tourisme/web db:generer",
+    "db:migrer": "pnpm --filter @tourisme/web db:migrer",
+    "db:reinitialiser": "pnpm --filter @tourisme/web db:reinitialiser",
+    "db:test:preparer": "pnpm --filter @tourisme/web db:test:preparer",
+    "test:integration": "pnpm db:test:preparer && vitest run --config vitest.integration.config.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
