@@ -49,6 +49,7 @@ Horaires de la fenêtre (`fenetreJoursHoraires`) chargés, rapprochés des gares
 - [ ] Tests en paires : un service actif le mardi est présent **et** absent le dimanche ; une exception de type 2 le retire **et** une de type 1 l'ajoute.
 - [ ] Un passage à `25:10:00` est stocké à 90 600 s.
 - [ ] Le calendrier déplié est correct le 24/10 **et** le 26/10 (changement d'heure).
+- [ ] La requête de référence *trains directs A → B à une date* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`.
 
 ## Vérifications manuelles
 - Requête SQL : trains Dijon-Ville → Beaune un jour de semaine ; comparer 3 horaires avec SNCF Connect.
@@ -64,3 +65,4 @@ Voir `_MODELE.md`. Documenter la règle de type de train dans `04` § 4.2.
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
+- 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).

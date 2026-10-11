@@ -221,6 +221,13 @@
 - **Écarté :** mots de passe écrits dans une migration ; heure lue directement dans les routes ; deux modules de journal.
 - **Impact :** `CLAUDE.md` § 1 ; `01` § 3 ; `03` § 4 ; `04` § 2 ; `05` § 3.10 ; `08` § 1, § 5, § 6 ; `GLOSSAIRE` ; fiches E00, E01.
 
+## D032 — Backlog produit et lien fonctionnalités ↔ tickets
+- **Date :** 11/10/2026
+- **Décision :** `docs/BACKLOG.md` devient le document de référence pour les *user stories*, l'estimation (MoSCoW, points), les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches et la planification par sprint. `00-vision.md` § 6 reste la référence pour la liste et les priorités ; sa colonne « Étape » reprend la colonne « Tâches » du backlog. Chaque ticket GitHub (E00 → E18, I01 → I22) se termine par une ligne « Fonctionnalités : … » reprise de BACKLOG § 5. Le backlog est mis à jour au « garde le contexte » qui termine une étape. Les requêtes de référence de `03` § 5 sont exécutées sur les vraies données dès l'étape qui les charge (E02, E03, E04), temps mesuré. Les pull requests ferment leur ticket par `Closes #`.
+- **Raison :** suivi par le tuteur et point d'équipe du lundi ; une seule correspondance tâches ↔ fonctionnalités au lieu de deux colonnes divergentes ; le risque « interroger la base » est vérifié au plus tôt, et non découvert en E08.
+- **Écarté :** décrire les fonctionnalités uniquement dans GitHub Projects (pas versionné, pas lisible hors GitHub) ; recopier le backlog dans `00` § 6.
+- **Impact :** `CLAUDE.md` § 6, § 7, § 14 ; `00` § 6 ; fiches E02, E03, E04 ; `.github/pull_request_template.md` ; `equipe/demarrage-SR.md` § 5, § 6 ; descriptions des 41 tickets.
+
 ---
 
 ## Modèle pour une nouvelle décision

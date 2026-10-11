@@ -3,6 +3,8 @@
 
 ## Tâche ou étape
 <!-- Ex. : I05 (proxy Caddy) ou E04 (trains directs). -->
+<!-- Mettre le numéro du ticket GitHub après « Closes # » (ex. : Closes #25) : le ticket se ferme à la fusion. -->
+Closes #
 
 ## Comment vérifier
 <!-- Les commandes ou les étapes pour constater que ça marche. -->

@@ -1,7 +1,7 @@
 # Démarrage — membres Systèmes & Réseaux
 
 > **Pour :** SR1 et SR2. **But :** être opérationnel le premier jour.
-> **Version** 1.2 · 09/10/2026
+> **Version** 1.3 · 11/10/2026
 > **À lire ensuite :** `docs/equipe/guide-SR.md` (vos tâches I01 → I22) · `docs/07-contrat-infra.md` (le contrat avec l'application)
 
 ---
@@ -63,10 +63,10 @@ git add infra/
 git commit -m "feat(infra): proxy Caddy avec HTTPS"   # 3. sauvegarder (message en français)
 git push -u origin infra/I05-proxy-https   # 4. envoyer la branche
 ```
-5. Sur GitHub : bouton **Compare & pull request**. Le modèle de description s'affiche : remplissez *Quoi · Tâche · Comment vérifier* et cochez les cases.
+5. Sur GitHub : bouton **Compare & pull request**. Le modèle de description s'affiche : remplissez *Quoi · Tâche · Comment vérifier* et cochez les cases. Dans *Tâche*, complétez `Closes #<numéro du ticket>` (ex. : `Closes #25`).
 6. Déplacez la carte du tableau dans **En relecture**.
 7. Hardy relit. S'il demande des corrections : corrigez **sur la même branche**, puis `git add`, `git commit`, `git push` — la PR se met à jour toute seule.
-8. Après la fusion : carte dans **Terminé**, puis `git switch main` et `git pull`.
+8. Après la fusion : le ticket se ferme et la carte passe **automatiquement** dans **Terminé**. Puis `git switch main`, `git pull` et `git branch -D infra/I05-proxy-https` (supprime la branche locale, devenue inutile).
 
 **Messages de commit :** `feat(infra): …` (ajout) · `fix(infra): …` (correction) · `docs(infra): …` (documentation).
 
@@ -84,6 +84,7 @@ git push -u origin infra/I05-proxy-https   # 4. envoyer la branche
 | Envoyer | `git push` (la première fois : `git push -u origin <branche>`) |
 | Changer de branche | `git switch <branche>` |
 | Voir l'historique | `git log --oneline` |
+| Supprimer une branche fusionnée | `git branch -D <branche>` |
 
 **Avant toute commande qui efface (`git reset --hard`, `git checkout -- …`, `git clean`) : `git status` d'abord, et en cas de doute, demander.** Ces commandes détruisent le travail non sauvegardé.
 
@@ -117,3 +118,4 @@ git push -u origin infra/I05-proxy-https   # 4. envoyer la branche
 | 02/10/2026 | 1.0 | Création |
 | 05/10/2026 | 1.1 | Lien vers `infra/CLAUDE.md`, exception `.github/workflows/deploiement*.yml` — D026 (ligne ajoutée après coup) |
 | 09/10/2026 | 1.2 | Date de I01 remplacée par « après la fusion de E01 » |
+| 11/10/2026 | 1.3 | `Closes #` dans la pull request, carte déplacée automatiquement, `git branch -D` après la fusion — D032 |

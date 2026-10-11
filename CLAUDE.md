@@ -125,6 +125,7 @@ tourisme-en-train/
 │  ├─ 07-contrat-infra.md        ← interface avec les SR
 │  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
 │  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
+│  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
 │  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
@@ -168,6 +169,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Créer ou modifier un écran | `06-interface.md` + `globals.css` |
 | Toucher Docker, variables, santé | `07-contrat-infra.md` |
 | Écrire du code, des tests, un commit | `08-conventions-qualite.md` |
+| Relier une fonctionnalité à ses tâches, estimer, planifier un sprint | `BACKLOG.md` |
 | Savoir pourquoi un choix a été fait | `DECISIONS.md` |
 | Reprendre une session | section 9 + dernière entrée de `JOURNAL.md` |
 
@@ -316,12 +318,13 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 2. **Section 9 « État actuel »** : étape, fait, à valider, bloquant, **prochaine action précise** (fichier + tâche). Supprimer ce qui est résolu.
 3. **Section 8** : état des étapes.
 4. **Fiche d'étape** : cocher l'avancement.
-5. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
-6. **`docs/DECISIONS.md`** : décisions de la session.
-7. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
-8. **Historique** de chaque document d'architecture modifié.
-9. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
-10. **Résumé à Hardy :** ✅ fait · ⏸ à valider · ⬜ reste à faire · ▶ première action de la prochaine session.
+5. **`docs/BACKLOG.md`** : passer à ✅ les fonctionnalités dont toutes les tâches sont fusionnées.
+6. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
+7. **`docs/DECISIONS.md`** : décisions de la session.
+8. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
+9. **Historique** de chaque document d'architecture modifié.
+10. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
+11. **Résumé à Hardy :** ✅ fait · ⏸ à valider · ⬜ reste à faire · ▶ première action de la prochaine session.
 
 **Reprise :** lire la section 9, la dernière entrée de `JOURNAL.md` et la fiche en cours, puis **résumer la situation en 5 lignes à Hardy avant toute action**.
 
@@ -371,3 +374,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 05/10/2026 | 1.8 | Adresses des sources dans `config/sources.json` (préparation multi-région) — D027 |
 | 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |
 | 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
+| 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |

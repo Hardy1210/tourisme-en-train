@@ -58,6 +58,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [ ] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`.
 - [ ] Rapport généré et relu par Hardy.
 - [ ] `source_donnees` contient toutes les sources de `02`.
+- [ ] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`.
 
 ## Vérifications manuelles
 - 5 gares au hasard comparées à la réalité (position sur une carte).
@@ -74,3 +75,4 @@ Voir `_MODELE.md`. Compléter `CLAUDE.md` § 16 (commande ETL).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 07/10/2026 : `etl/Dockerfile` en Node 24 — D028 (note ajoutée après coup le 09/10).
+- 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
