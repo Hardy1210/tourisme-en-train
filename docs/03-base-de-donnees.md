@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.5 · **Date** 11/10/2026
+> **Version** 1.6 · **Date** 19/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -157,7 +157,8 @@ Conventions : `NN` = non nul · `PK` = clé primaire · `FK` = clé étrangère 
 | Colonne | Type | Contraintes | Description |
 |---|---|---|---|
 | `id` | integer | PK, identity | |
-| `uic` | char(8) | NN, UQ | Code UIC |
+| `uic` | char(8) | NN, UQ | Code UIC principal (le premier du fichier) ; clé de rapprochement des chargements |
+| `codes_uic` | char(8)[] | NN | Tous les codes UIC de la gare (`uic` compris) — rapprochement des arrêts GTFS (E03), D034 |
 | `nom` | text | NN | Nom affiché |
 | `commune` | text | | |
 | `code_insee` | char(5) | | Commune |
@@ -166,7 +167,9 @@ Conventions : `NN` = non nul · `PK` = clé primaire · `FK` = clé étrangère 
 | `geom` | geography(Point, 4326) | NN | |
 | `maj` | timestamptz | NN, défaut now() | Dernier chargement |
 
-Index : GIST(`geom`), (`dans_region`).
+Index : GIST(`geom`), (`dans_region`), GIN(`codes_uic`).
+
+Mise à jour **par `uic`** (insertion ou mise à jour), jamais suppression puis réinsertion : `passage`, `lieu_gare`, `mobilite_locale` et `gare_stats` pointent vers `gare.id` (D034).
 
 ### 3.2 `trajet`
 | Colonne | Type | Contraintes | Description |
@@ -412,3 +415,4 @@ ORDER BY a.depart_s;
 | 09/10/2026 | 1.3 | § 4 : rôles et mots de passe créés par script, droits seuls dans les migrations — D031 |
 | 11/10/2026 | 1.4 | E01 : migrations personnalisées (extensions, droits), correction du type `geography` par `pnpm db:generer`, échantillon et base de test — D033 |
 | 11/10/2026 | 1.5 | § 2 : diagramme Mermaid des 11 tables créées en E01 et de leurs liens |
+| 19/10/2026 | 1.6 | § 3.1 : colonne `codes_uic` et mise à jour par `uic` (migration en E02) — D034 |

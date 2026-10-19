@@ -255,3 +255,17 @@
 - **Impact :** documents et code touchés
 - **Remplace :** Dyyy (si applicable)
 ```
+
+## D034 — Gares : tous les codes UIC, nom de commune par le COG INSEE, mise à jour par `uic`
+- **Date :** 19/10/2026
+- **Décision :**
+  1. **Colonne `gare.codes_uic` (char(8)[])** : tous les codes UIC du fichier ; `uic` reste le premier code et la clé de rapprochement des chargements.
+  2. **Nouvelle source `communes`** (Code officiel géographique INSEE, Licence Ouverte) pour remplir `gare.commune` à partir du code INSEE.
+  3. **Gares mises à jour par `uic`** (insertion ou mise à jour), jamais supprimées puis réinsérées ; une gare disparue n'est supprimée que si rien ne la référence.
+  4. **Toutes les gares de France** sont chargées ; la région n'est qu'un filtre (`dans_region`).
+  5. **Seuils et emprise des contrôles dans `parametres.json`** (`controles.garesFranceMin`, `controles.garesRegionMin`, `region.emprise`).
+  6. **`config/sources.json` porte un champ `verifie`** : `false` tant que l'adresse et la licence n'ont pas été vérifiées sur la vraie source à son étape.
+- **Raison :** audit du fichier réel (19/10). 11 gares ont plusieurs codes, et pour Paris Montparnasse le code principal est le dernier : garder seulement le premier ferait échouer le rapprochement des horaires (E03). Le fichier ne donne que le code de la commune, alors que `/api/gares` et le repli hors ligne (recherche de ville, « Autour de <commune> ») ont besoin du nom. Les tables d'horaires, de lieux et de mobilités référenceront `gare.id` : une suppression complète échouerait dès E03. Les destinations hors région (Paris, Lyon) doivent exister comme gares d'arrivée.
+- **Écarté :** garder le seul premier code (rapprochement par distance seulement, risque d'erreur dans les grandes gares) ; `commune` laissée vide (repli hors ligne cassé) ; déduire la commune du nom de la gare (faux pour les gares TGV) ; gares de la région seulement (destinations hors région perdues, aucun gain : 2 792 lignes).
+- **Impact :** `02` § 1, § 2.1, § 2.1 bis ; `03` § 3.1 (migration à faire en E02) ; `04` § 2, § 4.1 ; fiche E02 ; `A-FAIRE` § 2 bis.
+

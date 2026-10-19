@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.1 · **Date** 11/10/2026
+> **Version** 1.2 · **Date** 19/10/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · `equipe/guide-SR.md` § 4 (tâches I01 → I22)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -88,7 +88,7 @@ Total : **38 points**. Les SR travaillent uniquement dans `infra/` ; le lien ave
 | ID | Élément | Tâches | Sprint | Remarque | État |
 |---|---|---|---|---|---|
 | T1 | Initialisation du dépôt, des outils et des conventions | E00 | S1 | terminé le 09/10 | ✅ |
-| T2 | Base de données locale (PostgreSQL + PostGIS), schéma et migrations | E01 | S1 | critères vérifiés le 11/10, PR à fusionner | 🟡 |
+| T2 | Base de données locale (PostgreSQL + PostGIS), schéma et migrations | E01 | S1 | fusionnée le 11/10 (#44) | ✅ |
 | T3 | Chaîne de données : gares, horaires, trains directs, lieux, rattachements, transports | E02 → E07 | S2 → S4 | Jalon : données en base le 01/11 | ⬜ |
 | T4 | API de l'application | E08 · E09 | S5 | Jalon : API complète le 08/11 | ⬜ |
 | T5 | Socle de l'interface et design system | E10 | S6 | — | ⬜ |
@@ -153,7 +153,7 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 
 | Sprint | Dates | Hardy | SR | Résultat visible / jalon |
 |---|---|---|---|---|
-| S1 | 05 → 11/10 | E00 ✅ · E01 🟡 | I02 · I03 · I04 | Dépôt, outils, base locale |
+| S1 | 05 → 11/10 | E00 ✅ · E01 ✅ | I02 · I03 · I04 | Dépôt, outils, base locale |
 | S2 | 12 → 18/10 | E02 · E03 | I01 · I08 · I09 | Gares et horaires en base |
 | S3 | 19 → 25/10 | E04 · E05 | I05 · I06 · I10 | Trains directs, lieux ; site en HTTPS (INF1) |
 | S4 | 26/10 → 01/11 | E06 · E07 | I13 · I21 | **Jalon : données complètes (01/11)** |
@@ -182,3 +182,4 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 |---|---|---|
 | 09/10/2026 | 1.0 | Création à partir de `00-vision.md` § 6, des étapes E00 → E18 et des tâches I01 → I22 ; requêtes testées au plus tôt |
 | 11/10/2026 | 1.1 | Intégré au dépôt (D032) ; T2 en cours (E01 réalisée, PR à fusionner) |
+| 19/10/2026 | 1.2 | T2 terminé (E01 fusionnée) |

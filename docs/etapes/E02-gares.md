@@ -1,7 +1,7 @@
 # E02 — Gares (et socle de l'ETL)
 
 > **Semaine :** S2 (12/10 → 18/10) · **Priorité :** P0 · **Branche :** `etape/E02-gares`
-> **Étapes préalables :** E01 · **État :** ⬜ à faire
+> **Étapes préalables :** E01 · **État :** 🟡 en cours
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -23,13 +23,13 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - Image Docker `etl` fonctionnelle.
 
 ## Actions de Hardy
-- [ ] Trouver l'URL de téléchargement du fichier « Gares de voyageurs » (data.gouv.fr ou data.sncf.com) et la licence exacte ; les donner à Claude Code (elles iront dans `config/sources.json`).
+- [x] Trouver l'URL de téléchargement du fichier « Gares de voyageurs » (data.gouv.fr ou data.sncf.com) et la licence exacte ; les donner à Claude Code (elles iront dans `config/sources.json`).
 - [ ] Relire le premier rapport ETL.
 
 ## Phase d'audit
-1. Télécharger le fichier une fois, **lire ses vraies colonnes**, comparer à `02` § 2.1 ; corriger `02` si besoin.
-2. Compter les gares sans position ou sans UIC.
-3. Proposer le plan ; attendre la validation.
+1. ✅ Télécharger le fichier une fois, **lire ses vraies colonnes**, comparer à `02` § 2.1 ; corriger `02` si besoin.
+2. ✅ Compter les gares sans position ou sans UIC.
+3. ✅ Proposer le plan ; attendre la validation (validé le 19/10).
 
 ## Tâches
 **Socle ETL**
@@ -37,12 +37,14 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [ ] `etl/src/chargement/base.ts` : lecture CSV en flux (csv-parse) → `COPY` dans une table temporaire → contrôles → transaction (suppression des lignes de la source + insertion).
 - [ ] `etl/src/controles/base.ts` : contrôles déclaratifs (nom, bloquant oui/non, résultat).
 - [ ] Journal `execution_etl` (début, fin, statut, nb lignes, message) et rapport Markdown (`04` § 5).
-- [ ] `config/sources.json` (première version : entrées de **toutes** les sources de `02`, adresses connues, les autres à compléter aux étapes suivantes) + schéma Zod `packages/commun/src/sources.ts`.
-- [ ] `etl/src/sources/registre.ts` : lit `config/sources.json` (aucune adresse dans le code) et remplit `source_donnees` (code, nom, producteur, URL, licence, attribution) → commande `pnpm etl sources`.
+- [x] `config/sources.json` (première version : entrées de **toutes** les sources de `02`, adresses connues, les autres à compléter aux étapes suivantes) + schéma Zod `packages/commun/src/sources.ts`.
+- [x] `etl/src/sources/registre.ts` : lit `config/sources.json` (aucune adresse dans le code) et remplit `source_donnees` (code, nom, producteur, URL, licence, attribution) → commande `pnpm etl sources`.
 - [ ] `etl/Dockerfile` (Node 24 + pnpm, exécution avec `tsx`) ; service `etl` du compose avec `./data:/data`.
 
 **Gares**
 - [ ] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
+- [ ] Migration : colonne `gare.codes_uic` (`03` § 3.1, D034).
+- [ ] `sources/communes.ts` : lecture du COG, nom de commune par code INSEE (`02` § 2.1 bis).
 - [ ] `transformations/gares.ts` : normalisation UIC 8 chiffres, département, `dans_region` (fonctions pures, testées avec Vitest).
 - [ ] Chargement dans `gare` (rapprochement par `uic`).
 - [ ] Contrôles de `04` § 4.1.
@@ -57,7 +59,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [ ] Relancé sans changement → statut `IGNORE`.
 - [ ] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`.
 - [ ] Rapport généré et relu par Hardy.
-- [ ] `source_donnees` contient toutes les sources de `02`.
+- [x] `source_donnees` contient toutes les sources de `02` (16, vérifié le 19/10).
 - [ ] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`.
 
 ## Vérifications manuelles
@@ -76,3 +78,4 @@ Voir `_MODELE.md`. Compléter `CLAUDE.md` § 16 (commande ETL).
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 07/10/2026 : `etl/Dockerfile` en Node 24 — D028 (note ajoutée après coup le 09/10).
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
+- 19/10/2026 : audit fait ; colonne `codes_uic`, source `communes` (COG INSEE), mise à jour par `uic`, seuils dans `parametres.json` (D034).

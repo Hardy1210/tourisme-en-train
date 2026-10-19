@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.3 · **Date** 05/10/2026
+> **Version** 1.4 · **Date** 19/10/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -14,6 +14,7 @@
 | Code source | Nom | Producteur | Nature | Mode | Prio | Étape |
 |---|---|---|---|---|---|---|
 | `gares` | Gares de voyageurs | SNCF | Fichier CSV / GeoJSON | Base | P0 | E02 |
+| `communes` | Code officiel géographique — communes | INSEE | CSV | Base | P0 | E02 |
 | `gtfs_sncf` | Horaires SNCF (TER, Intercités, TGV) | SNCF | GTFS (ZIP de CSV) | Base | P0 | E03 |
 | `datatourisme` | DATAtourisme — POI par région | ADN Tourisme | CSV par région | Base | P0 | E05 |
 | `osm` | OpenStreetMap (aires de jeux, parcs, points de vue…) | Contributeurs OSM | Extraction GéoDataMine ou Overpass | Base | P0 | E05 |
@@ -38,14 +39,24 @@
 ## 2. Sources stockées en base
 
 ### 2.1 `gares` — Gares de voyageurs (P0)
-- **Où :** data.gouv.fr, « Gares de voyageurs » (SNCF) · miroir data.sncf.com.
-- **Format :** CSV (séparateur `;`) ou GeoJSON.
-- **Champs attendus :** `nom`, `libellecourt`, `segment_drg`, `position_geographique` (lat, lon), `codeinsee`, `codes_uic`.
-- **Utilisés :** nom, position, code INSEE de la commune, code UIC (8 chiffres).
-- **Filtre région :** code INSEE de la commune → département → région (table de passage départements ↔ région dans `parametres.json` ou dérivée du code INSEE).
-- **Pièges :** `codes_uic` peut contenir plusieurs codes (séparés par `;`) ; position parfois vide.
-- **Licence :** Licence Ouverte / ODbL selon la fiche — **à confirmer à l'E02**.
+- **Où :** data.sncf.com, « Gares de voyageurs » (SNCF Gares & Connexions) ; la fiche data.gouv.fr renvoie vers le même fichier. Adresse dans `config/sources.json`.
+- **Format (vérifié le 19/10/2026) :** CSV, séparateur `;`, UTF-8 **avec BOM** (à retirer à la lecture). 2 792 lignes, empreinte stable d'un téléchargement à l'autre.
+- **Colonnes réelles :** `nom` (nom **de la gare**, pas de la commune), `libellecourt` (trigramme), `segment_drg` (parfois plusieurs : `A;B`), `position_geographique` (`"lat, lon"`), `codeinsee` (5 caractères), `codes_uic`, `id` (identifiant interne, non utilisé).
+- **Utilisés :** nom, position, code INSEE de la commune, codes UIC (8 chiffres).
+- **Absent :** le **nom de la commune** (« Besançon Franche-Comté TGV » est aux Auxons) → source `communes` (§ 2.1 bis).
+- **Filtre région :** code INSEE de la commune → département → `parametres.region.departements`.
+- **Constats du 19/10 :** aucune gare sans position, sans UIC ni sans code INSEE ; aucun doublon d'UIC ; 11 gares à plusieurs codes UIC (`;`), dont Paris Montparnasse où le code principal est le **dernier** ; toutes les gares en métropole, aucune en Corse ni outre-mer ; 196 dans la région.
+- **Piège hors code :** ouvrir puis enregistrer le CSV dans Excel supprime le zéro initial des codes INSEE (`02761` → `2761`).
+- **Licence :** ODbL (confirmée le 19/10/2026).
 - **Table cible :** `gare`.
+
+### 2.1 bis `communes` — Code officiel géographique, communes (P0)
+- **Où :** INSEE, fichier `v_commune_<année>.csv` du COG (fiche data.gouv.fr « Code officiel géographique »). Adresse dans `config/sources.json` ; elle change chaque année (millésime).
+- **Format :** CSV, séparateur `,`, UTF-8. ~37 500 lignes.
+- **Colonnes utilisées :** `TYPECOM` (`COM` commune, `ARM` arrondissement municipal, `COMD` commune déléguée, `COMA` associée), `COM` (code INSEE), `LIBELLE` (nom), `COMPARENT` (commune de rattachement d'un `ARM`/`COMD`/`COMA`).
+- **Usage :** donner `gare.commune` à partir de `gare.code_insee`. Paris 13ᵉ (`75113`, `ARM`) → commune parente. Code absent (8 gares au 19/10, toutes hors région : communes fusionnées) → `commune` vide, compté dans le rapport.
+- **Licence :** Licence Ouverte 2.0.
+- **Table cible :** aucune (utilisé pendant le chargement des gares).
 
 ### 2.2 `gtfs_sncf` — Horaires SNCF (P0)
 - **Où :** data.gouv.fr « Horaires SNCF » / transport.data.gouv.fr (SNCF Voyageurs). Horaires théoriques TER, Intercités, TGV pour environ 150 jours.
@@ -208,3 +219,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 30/09/2026 | 1.1 | Vélos disponibles en direct (GBFS `station_status`, P1) — D019 |
 | 02/10/2026 | 1.2 | API Adresse : recherche inverse (commune de l'utilisateur), Nominatim écarté — D022 |
 | 05/10/2026 | 1.3 | Adresses et licences des sources enregistrées dans `config/sources.json` — D027 |
+| 19/10/2026 | 1.4 | Audit E02 : colonnes réelles des gares, licence ODbL confirmée ; nouvelle source `communes` (COG INSEE) — D034 |

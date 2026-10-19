@@ -24,6 +24,31 @@
 
 ---
 
+## 19/10/2026 — Étape E02 — audit des gares, configuration des sources
+**Fait :**
+- E01 fusionnée dans `main` le 11/10 (PR #44) ; branche `etape/E02-gares` créée.
+- Audit du fichier réel des gares (data.sncf.com, ODbL) : 2 792 gares, 196 dans la région, aucune sans position ni sans UIC ; BOM, position `"lat, lon"`, 11 gares à plusieurs codes UIC, nom de commune absent. `02`, `03`, `04` corrigés.
+- Fichier des communes du COG INSEE 2026 testé : nom de commune trouvé pour 2 784 gares sur 2 792 (8 codes de communes fusionnées, toutes hors région).
+- `config/sources.json` (16 sources, champ `verifie`) et son schéma `packages/commun/src/sources.ts` (7 tests) ; `parametres.json` : `region.emprise`, `controles`.
+- `pnpm etl sources` remplit `source_donnees` (16 lignes vérifiées en base).
+
+**Décisions :** D034 (codes UIC multiples, source `communes`, mise à jour par `uic`, toute la France, seuils dans `parametres.json`).
+
+**Problèmes rencontrés :**
+- La section 9 de `CLAUDE.md` annonçait encore la PR de E01 à fusionner : corrigée.
+- E02 démarre avec une semaine de retard sur le calendrier (prévue en S2).
+
+**À valider par Hardy :**
+- Données des cartes de destination (avant E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Socle de l'ETL : `etl/src/sources/base.ts` (téléchargement, SHA-256, `--hors-ligne`), puis chargement, contrôles, journal `execution_etl` et rapport.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (49)
+**Commit :** `0301632` (sources) ; sauvegarde sur `etape/E02-gares`
+
+---
+
 ## 11/10/2026 — Backlog et étape E01 — base PostGIS, schéma, migrations
 **Fait :**
 - Backlog produit intégré (`docs/BACKLOG.md`) : CLAUDE.md § 6, § 7, § 14 ; colonne « Étape » de `00` § 6 alignée ; critère « requête de référence mesurée » dans E02 → E04 ; `Closes #` dans le modèle de PR et `demarrage-SR` ; ligne « Fonctionnalités » ajoutée aux 41 tickets (seul ajout, vérifié par comparaison).
