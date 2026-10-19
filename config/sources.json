@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "code": "gares",
+      "nom": "Gares de voyageurs",
+      "producteur": "SNCF Gares & Connexions",
+      "mode": "base",
+      "page": "https://ressources.data.sncf.com/explore/dataset/gares-de-voyageurs/",
+      "telechargement": "https://ressources.data.sncf.com/api/explore/v2.1/catalog/datasets/gares-de-voyageurs/exports/csv?delimiter=%3B",
+      "licence": "ODbL",
+      "attribution": "SNCF Gares & Connexions — Gares de voyageurs (ODbL)",
+      "verifie": true
+    },
+    {
+      "code": "communes",
+      "nom": "Code officiel géographique — communes",
+      "producteur": "INSEE",
+      "mode": "base",
+      "page": "https://www.data.gouv.fr/datasets/code-officiel-geographique-1",
+      "telechargement": "https://www.insee.fr/fr/statistiques/fichier/8740222/v_commune_2026.csv",
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "INSEE — Code officiel géographique 2026 (Licence Ouverte)",
+      "verifie": true
+    },
+    {
+      "code": "gtfs_sncf",
+      "nom": "Horaires SNCF (TER, Intercités, TGV)",
+      "producteur": "SNCF Voyageurs",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "SNCF Voyageurs — horaires GTFS (ODbL)",
+      "verifie": false
+    },
+    {
+      "code": "datatourisme",
+      "nom": "DATAtourisme — points d'intérêt de la région",
+      "producteur": "ADN Tourisme",
+      "mode": "base",
+      "page": "https://www.datatourisme.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "DATAtourisme / ADN Tourisme (Licence Ouverte)",
+      "verifie": false
+    },
+    {
+      "code": "osm",
+      "nom": "OpenStreetMap",
+      "producteur": "Contributeurs OpenStreetMap",
+      "mode": "base",
+      "page": "https://www.openstreetmap.org/copyright",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "© les contributeurs d'OpenStreetMap (ODbL)",
+      "verifie": false
+    },
+    {
+      "code": "transport_local",
+      "nom": "Offres de mobilité locales (bus, tram, vélos)",
+      "producteur": "Autorités organisatrices de la mobilité",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Selon le réseau (souvent ODbL)",
+      "attribution": "Réseaux locaux via transport.data.gouv.fr",
+      "verifie": false
+    },
+    {
+      "code": "lieux_culturels",
+      "nom": "Base des lieux et équipements culturels",
+      "producteur": "Ministère de la Culture",
+      "mode": "base",
+      "page": "https://www.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Ministère de la Culture — lieux et équipements culturels (Licence Ouverte)",
+      "verifie": false
+    },
+    {
+      "code": "festivals",
+      "nom": "Liste des festivals en France",
+      "producteur": "Ministère de la Culture",
+      "mode": "base",
+      "page": "https://www.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Ministère de la Culture — festivals (Licence Ouverte)",
+      "verifie": false
+    },
+    {
+      "code": "qualite_tourisme",
+      "nom": "Établissements labellisés Qualité Tourisme",
+      "producteur": "Ministères économiques et financiers",
+      "mode": "base",
+      "page": "https://www.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Qualité Tourisme — ministères économiques et financiers (Licence Ouverte)",
+      "verifie": false
+    },
+    {
+      "code": "lignes",
+      "nom": "Lignes par région administrative",
+      "producteur": "SNCF Réseau",
+      "mode": "base",
+      "page": "https://ressources.data.sncf.com",
+      "telechargement": null,
+      "licence": "À confirmer en E07",
+      "attribution": "SNCF Réseau — lignes par région administrative",
+      "verifie": false
+    },
+    {
+      "code": "cyclable",
+      "nom": "Aménagements cyclables France métropolitaine",
+      "producteur": "Geovelo",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "Geovelo et contributeurs OpenStreetMap (ODbL)",
+      "verifie": false
+    },
+    {
+      "code": "api_adresse",
+      "nom": "API Adresse (Géoplateforme)",
+      "producteur": "IGN",
+      "mode": "direct",
+      "page": "https://adresse.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "IGN — Base Adresse Nationale (Licence Ouverte)",
+      "verifie": false
+    },
+    {
+      "code": "api_sncf",
+      "nom": "API SNCF (temps réel)",
+      "producteur": "SNCF",
+      "mode": "direct",
+      "page": "https://numerique.sncf.com/startup/api/",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "SNCF — API temps réel (ODbL)",
+      "verifie": false
+    },
+    {
+      "code": "gbfs_direct",
+      "nom": "Disponibilité des vélos (GBFS)",
+      "producteur": "Opérateurs de vélos en libre-service",
+      "mode": "direct",
+      "page": "https://transport.data.gouv.fr",
+      "telechargement": null,
+      "licence": "Selon l'opérateur",
+      "attribution": "Opérateurs de vélos via transport.data.gouv.fr",
+      "verifie": false
+    },
+    {
+      "code": "fond_carte",
+      "nom": "OpenFreeMap",
+      "producteur": "OpenFreeMap / OpenStreetMap",
+      "mode": "direct",
+      "page": "https://openfreemap.org",
+      "telechargement": null,
+      "licence": "ODbL (données OSM)",
+      "attribution": "OpenFreeMap © OpenMapTiles, données © les contributeurs d'OpenStreetMap",
+      "verifie": false
+    },
+    {
+      "code": "facteurs_co2",
+      "nom": "Facteurs d'émission Impact CO2",
+      "producteur": "ADEME",
+      "mode": "local",
+      "page": "https://impactco2.fr",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "ADEME — Impact CO2 (Licence Ouverte)",
+      "verifie": false
+    }
+  ]
+}
