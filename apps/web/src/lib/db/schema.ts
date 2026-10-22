@@ -96,6 +96,9 @@ export const passage = pgTable(
       .references(() => gare.id),
     arriveeS: integer(),
     departS: integer(),
+    // D036 : `pickup_type` / `drop_off_type` = 1 dans le GTFS.
+    monteeInterdite: boolean().notNull().default(false),
+    descenteInterdite: boolean().notNull().default(false),
   },
   (t) => [primaryKey({ columns: [t.trajetId, t.sequence] }), index().on(t.gareId)],
 );

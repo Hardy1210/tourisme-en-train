@@ -28,11 +28,11 @@
       "nom": "Horaires SNCF (TER, Intercités, TGV)",
       "producteur": "SNCF Voyageurs",
       "mode": "base",
-      "page": "https://transport.data.gouv.fr",
-      "telechargement": null,
+      "page": "https://transport.data.gouv.fr/datasets/horaires-sncf",
+      "telechargement": "https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip",
       "licence": "ODbL",
       "attribution": "SNCF Voyageurs — horaires GTFS (ODbL)",
-      "verifie": false
+      "verifie": true
     },
     {
       "code": "datatourisme",

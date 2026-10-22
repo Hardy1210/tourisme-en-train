@@ -3,7 +3,7 @@
 // d'autres tables pointent vers `gare.id`).
 import type pg from 'pg';
 import { parametres } from '../config';
-import { auMoins, type Controle } from '../controles/base';
+import { aucune, auMoins, type Controle } from '../controles/base';
 
 export const TABLE_TEMPORAIRE = {
   nom: 'tmp_gare',
@@ -19,19 +19,6 @@ export const TABLE_TEMPORAIRE = {
     ['lat', 'float8'],
   ],
 } as const;
-
-/** Contrôle « la requête compte 0 ligne » (avec paramètres). */
-function aucune(nom: string, requete: string, valeurs: readonly unknown[] = []): Controle {
-  return {
-    nom,
-    bloquant: true,
-    async verifier(client) {
-      const { rows } = await client.query<{ n: number }>(requete, [...valeurs]);
-      const n = rows[0]?.n ?? 0;
-      return { reussi: n === 0, detail: n === 0 ? 'aucune' : `${n} trouvée(s)` };
-    },
-  };
-}
 
 const { emprise } = parametres.region;
 

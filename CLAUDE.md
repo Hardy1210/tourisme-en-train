@@ -188,7 +188,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ✅ |
 | E02 | Gares | S2 | ✅ |
-| E03 | Horaires GTFS SNCF | S2 | ⬜ |
+| E03 | Horaires GTFS SNCF | S2 | ✅ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ⬜ |
@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E02 terminée sur `etape/E02-gares`, pull request vers `main` ouverte ; E03 (horaires GTFS) ensuite
-- **Dernière session :** 22/10/2026 — socle ETL, `pnpm etl gares`, `etl/Dockerfile` (D035) ; détail dans `JOURNAL.md`
-- **Fait :** 2 792 gares en base (196 dans la région), rapport relu, 5 gares vérifiées ; requête « gares proches » ~12 ms ; `pnpm verifier` 112 tests, `pnpm test:integration` 17
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11)
+- **Étape en cours :** E03 terminée sur `etape/E03-horaires`, pull request vers `main` ouverte ; E04 (trains directs) ensuite
+- **Dernière session :** 22/10/2026 — E02 fusionnée (#45) ; E03 : audit et chargement du GTFS SNCF (D036, D037) ; détail dans `JOURNAL.md`
+- **Fait :** 2 792 gares ; 3 516 trajets, 33 650 passages, 11 100 jours de circulation (fenêtre de 60 jours) ; requête « trains A → B » ~5 ms ; `pnpm verifier` 149 tests, `pnpm test:integration` 28
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11) ; trains en jumelage (fiche E04, notes)
 - **Bloquant :** —
-- **Prochaine action précise :** fusionner la PR de E02, créer `etape/E03-horaires` depuis `main`, puis lire `docs/etapes/E03-horaires.md` et auditer le GTFS SNCF (télécharger le ZIP, lire `stops.txt`, `trips.txt`, `stop_times.txt`, `calendar_dates.txt`, comparer à `02` § 2.2)
+- **Prochaine action précise :** fusionner la PR de E03, créer `etape/E04-trains-directs` depuis `main`, puis lire `docs/etapes/E04-trains-directs.md` (avec ses notes : montée/descente, jumelage) et `04` § 4.3
 
 ---
 
@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `gares` |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `gares`, `gtfs_sncf` |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -384,3 +384,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |
 | 19/10/2026 | 1.13 | § 8 et § 9 : E01 terminée, E02 en cours |
 | 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |
+| 22/10/2026 | 1.15 | § 8, § 9 et § 16 : E03 terminée, `pnpm etl gtfs_sncf` |

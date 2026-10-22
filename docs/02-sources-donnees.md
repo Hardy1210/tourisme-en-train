@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.4 · **Date** 19/10/2026
+> **Version** 1.5 · **Date** 22/10/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -59,18 +59,23 @@
 - **Table cible :** aucune (utilisé pendant le chargement des gares).
 
 ### 2.2 `gtfs_sncf` — Horaires SNCF (P0)
-- **Où :** data.gouv.fr « Horaires SNCF » / transport.data.gouv.fr (SNCF Voyageurs). Horaires théoriques TER, Intercités, TGV pour environ 150 jours.
-- **Format :** ZIP GTFS : `agency.txt`, `routes.txt`, `trips.txt`, `stop_times.txt`, `stops.txt`, `calendar.txt`, `calendar_dates.txt`.
-- **Champs utilisés :**
-  - `stops.txt` : `stop_id`, `stop_name`, `stop_lat`, `stop_lon`, `parent_station`
-  - `routes.txt` : `route_id`, `route_short_name`, `route_long_name`, `route_type`, `agency_id`
-  - `trips.txt` : `trip_id`, `route_id`, `service_id`
-  - `stop_times.txt` : `trip_id`, `stop_sequence`, `stop_id`, `arrival_time`, `departure_time`
-  - `calendar.txt` / `calendar_dates.txt` : jours de circulation
-- **Rapprochement avec `gare` :** le `stop_id` contient le code UIC (forme attendue `StopArea:OCE87713040` ou `StopPoint:OCE…-87713040`). On extrait **les 8 chiffres UIC**. Contrôle : distance gare GTFS ↔ gare du référentiel < 300 m.
-- **Type de train :** déduit de `agency`, `route` ou du préfixe du `stop_id` (`OCETrain TER`, `OCETGV INOUI`, `OCEINTERCITES`…) — **règle exacte à établir à l'E03** et documentée dans `04`.
-- **Pièges :** heures > 24:00:00 ; un trajet peut sortir de la région (on garde **tous les arrêts** d'un trajet qui touche la région, pour connaître les destinations hors région).
-- **Licence :** ODbL — **à confirmer à l'E03**.
+- **Où :** transport.data.gouv.fr, « Réseau SNCF TGV, Intercités et TER » (SNCF). Adresse dans `config/sources.json`.
+- **Format (vérifié le 22/10/2026) :** ZIP GTFS de 5,5 Mo (98 Mo décompressé) : `agency.txt`, `routes.txt`, `trips.txt`, `stop_times.txt`, `stops.txt`, `calendar_dates.txt`, `feed_info.txt`, `transfers.txt` (vide). **Pas de `calendar.txt`** : chaque jour de circulation est une ligne de `calendar_dates.txt` (`exception_type` = 1). Période couverte : du 21/10/2026 au 31/03/2027 (`feed_info.txt`). Fuseau `Europe/Paris` pour toutes les agences.
+- **Volumes au 22/10 :** 59 861 trajets, 517 723 passages, 8 854 arrêts, 209 624 jours de circulation. Trajets en train touchant la région sur 60 jours : 3 516 (34 207 passages).
+- **Colonnes utilisées** (le détail par colonne, gardée ou jetée, est dans `04` § 4.2) :
+  - `trips.txt` : `trip_id`, `service_id`, `route_id` (jointure), `trip_headsign` (**numéro du train**, et non la destination)
+  - `stop_times.txt` : `trip_id`, `stop_sequence`, `stop_id`, `arrival_time`, `departure_time`, `pickup_type`, `drop_off_type`
+  - `calendar_dates.txt` : `service_id`, `date`, `exception_type` ; `calendar.txt` pris en charge s'il réapparaît
+  - `routes.txt` : `route_id`, `route_short_name`
+  - `stops.txt` : `stop_id`, `stop_name` (rapport seulement) ; `agency.txt` : `agency_timezone` (contrôle) ; `feed_info.txt` : `feed_end_date` (contrôle)
+- **`stop_id` :** toujours un quai, de la forme `StopPoint:OCE<mode>-<UIC 8 chiffres>` (ex. `StopPoint:OCETGV INOUI-87713040`). Il porte **le code UIC** (rapproché de `gare.codes_uic`) **et le mode** (type de train). Un seul mode par trajet (vérifié).
+- **Rapprochement avec `gare` :** par l'UIC seul, sans rattrapage par distance (D036). 98,1 % des passages des trajets de la région sont rapprochés ; les autres sont des gares étrangères (Bâle, Lausanne, Genève, Luxembourg, Karlsruhe…), absentes de `gare`.
+- **Type de train :** lu dans le mode du `stop_id` ; `route_type` et l'agence ne sont **pas fiables** (des cars y sont déclarés comme des trains). Règle : `04` § 4.2.
+- **Cars et navettes :** modes `Car TER`, `Car à réservation`, `Navette` (6 822 trajets : 6 390 `Car TER`, 324 `Car à réservation`, 108 `Navette` ; dont 375 touchant la région) : **exclus** et comptés (D036).
+- **Montée et descente :** `pickup_type` / `drop_off_type` = 1 interdit la montée / la descente. En plus du premier et du dernier arrêt, ~3 100 arrêts intermédiaires sont « montée seule » ou « descente seule » → colonnes `passage.montee_interdite`, `passage.descente_interdite` (D036).
+- **Constats du 22/10 :** 196 gares de la région desservies par un train sur la période du fichier, 194 sur les 60 jours chargés : Corbigny et Flez-Cuzy - Tannay n'ont que des cars jusqu'au 26/12 (signalées dans le rapport). 89 passages après minuit (jusqu'à `25:18:00`). Aucune séquence en double.
+- **Pièges :** heures > 24:00:00 ; un trajet peut sortir de la région (on garde **tous les arrêts** d'un trajet qui touche la région) ; destinations étrangères perdues (hors périmètre France métropolitaine).
+- **Licence :** ODbL (confirmée le 22/10/2026).
 - **Tables cibles :** `trajet`, `passage`, `service_jour`, puis calcul de `liaison_directe`.
 
 ### 2.3 `datatourisme` — Points d'intérêt (P0)
@@ -220,3 +225,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 02/10/2026 | 1.2 | API Adresse : recherche inverse (commune de l'utilisateur), Nominatim écarté — D022 |
 | 05/10/2026 | 1.3 | Adresses et licences des sources enregistrées dans `config/sources.json` — D027 |
 | 19/10/2026 | 1.4 | Audit E02 : colonnes réelles des gares, licence ODbL confirmée ; nouvelle source `communes` (COG INSEE) — D034 |
+| 22/10/2026 | 1.5 | § 2.2 réécrit après l'audit E03 : pas de `calendar.txt`, type de train lu dans le `stop_id`, cars exclus, montée et descente interdites, licence ODbL confirmée — D036 |

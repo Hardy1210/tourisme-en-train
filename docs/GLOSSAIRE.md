@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.4 · **Date** 11/10/2026
+> **Version** 1.5 · **Date** 22/10/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -36,7 +36,8 @@
 | **Liaison directe** | Deux gares reliées par au moins un train sans correspondance à une date donnée | `LiaisonDirecte` | table `liaison_directe` | Itinéraire (hors périmètre) |
 | **Trajet** | Un train précis (un « trip » GTFS) | `Trajet`, `trajetId` | table `trajet`, `trajet_id` | Liaison directe |
 | **Passage** | L'arrêt d'un trajet dans une gare, avec ses heures | `Passage` | table `passage` | — |
-| **Type de train** | `TER`, `INTERCITES`, `TGV`, `AUTRE` | `TypeTrain` | `type_train` | — |
+| **Type de train** | `TER`, `INTERCITES`, `TGV`, `AUTRE` (règle : `04` § 4.2) | `TypeTrain` | `type_train` | Mode GTFS (texte brut du `stop_id`) |
+| **Montée interdite / descente interdite** | Arrêt où l'on ne peut pas monter / pas descendre (`pickup_type` / `drop_off_type` = 1) | `monteeInterdite`, `descenteInterdite` | `montee_interdite`, `descente_interdite` | — |
 | **Date de service** | Jour d'exploitation d'un train, au format `AAAA-MM-JJ`, en heure de Paris | `dateService` | `date_service` | Date UTC |
 | **Date du jour** | La date d'aujourd'hui **à Paris**, calculée une fois puis passée en paramètre | `dateDuJour` | `date_du_jour` | `new Date()` |
 | **Heure actuelle** | L'heure qu'il est **à Paris**, en secondes depuis minuit, avec la date du jour ; obtenue une fois par `maintenantParis()`, puis passée en paramètre | `maintenantParis()`, `heureActuelleS` | `heure_actuelle_s` | `new Date()` |
@@ -109,3 +110,4 @@
 | 05/10/2026 | 1.2 | ETL en TypeScript + SQL (plus de Python) — D024 |
 | 09/10/2026 | 1.3 | Heure actuelle (`maintenantParis`) — D031 |
 | 11/10/2026 | 1.4 | Statut d'exécution, point géographique, échantillon (E01) |
+| 22/10/2026 | 1.5 | Montée et descente interdites ; type de train renvoie à `04` § 4.2 (E03) |

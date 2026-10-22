@@ -24,6 +24,35 @@
 
 ---
 
+## 22/10/2026 — Étape E03 — horaires GTFS SNCF
+**Fait :**
+- Audit du GTFS SNCF (transport.data.gouv.fr, ODbL) : pas de `calendar.txt`, type de train dans le `stop_id`, cars dans le fichier, gares étrangères, montée et descente interdites ; tableaux colonne par colonne validés par Hardy.
+- Migration `0004_passage_montee_descente` ; `regles/types-train.ts`, `sources/zip.ts`, `chargement/gtfs-brut.ts`, `transformations/gtfs.sql` + `sql.ts`, `chargement/gtfs.ts` + `gtfs-controles.ts`, `sources/gtfs-sncf.ts` ; `pnpm etl gtfs_sncf`.
+- GTFS miniature (`etl/tests/donnees/gtfs_mini/`) : calendrier, exceptions, changement d'heure, après minuit, montée interdite, cars, AUTRE.
+- Premier chargement : 3 516 trajets (TER 2 669, TGV 613, Intercités 234), 33 650 passages, 11 100 jours de circulation ; 98,4 % rapprochés ; 6 contrôles ✅ ; ~26 s ; `SUCCES` puis `IGNORE`, aussi dans Docker.
+- **Requête de référence « trains A → B »** : ~5 ms ; Dijon → Beaune le lundi 26/10 : 46 trains.
+- Hardy : 3 horaires Dijon → Beaune vérifiés sur SNCF Connect (conformes).
+
+**Décisions :** D036 (source, type de train, cars exclus, `calendar.txt`, sans rattrapage par distance, montée et descente), D037 (IGNORE du jour, règle en un fichier, GTFS miniature, sections SQL, seuil de rapprochement).
+
+**Problèmes rencontrés :**
+- Nombre de trajets en car mal recopié dans `02` (2 789 au lieu de 6 822) : corrigé.
+- Un BOM invisible inséré dans le code par une édition : remplacé par `\uFEFF`.
+- Une requête d'audit sans index a dépassé 5 min : arrêtée et réécrite.
+- Corbigny et Flez-Cuzy - Tannay : cars seulement jusqu'au 26/12 (signalées dans le rapport).
+- **Trains en jumelage** (ex. TGV 12177 et 5537) : deux trajets aux mêmes horaires, 139 départs en double le 26/10 ; à traiter en E04.
+
+**À valider par Hardy :**
+- Données des cartes de destination et traitement des trains en jumelage (audit E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Fusionner la PR de E03, puis lire `docs/etapes/E04-trains-directs.md`.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (149) · intégration ✅ (28)
+**Commit :** `aa863a9` → `52822f8` ; sauvegarde sur `etape/E03-horaires`
+
+---
+
 ## 22/10/2026 — Étape E02 — socle de l'ETL, gares en base, image Docker
 **Fait :**
 - Socle ETL : `sources/base.ts` (téléchargement, empreinte, `--hors-ligne`), `chargement/base.ts` (CSV validé, `COPY`, transaction), `controles/base.ts`, `chargement/execution.ts` (`execution_etl`) et `chargement/rapport.ts` (rapport Markdown).

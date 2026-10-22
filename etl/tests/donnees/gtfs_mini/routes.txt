@@ -1,0 +1,7 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+R_TER,1,K7,Alpha - Gamma,,2,,0749FF,FFFFFF
+R_NUIT,1,IC9,Gamma - Beta,,2,,0749FF,FFFFFF
+R_TGV,1,071B,Alpha - Gamma,,2,,0749FF,FFFFFF
+R_AUTRE,1,PB,Alpha - Beta,,2,,0749FF,FFFFFF
+R_CAR,1,C30,Alpha - Beta,,2,,006600,FFFFFF
+R_HORS,1,K9,Gamma - Bale,,2,,0749FF,FFFFFF
