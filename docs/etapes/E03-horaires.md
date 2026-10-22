@@ -1,7 +1,7 @@
 # E03 — Horaires GTFS SNCF
 
 > **Semaine :** S2 (12/10 → 18/10) · **Priorité :** P0 · **Branche :** `etape/E03-horaires`
-> **Étapes préalables :** E02 · **État :** 🟡 en cours
+> **Étapes préalables :** E02 · **État :** ✅ terminé (22/10/2026)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -68,3 +68,4 @@ Voir `_MODELE.md`. Documenter la règle de type de train dans `04` § 4.2.
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
 - 22/10/2026 : audit fait (URL trouvée par Claude Code, validée par Hardy) ; pas de `calendar.txt` ; type de train par le `stop_id` ; cars exclus ; aucun rattrapage par distance ; colonnes `montee_interdite` / `descente_interdite` (migration) ; Corbigny et Flez-Cuzy signalées — D036.
 - 22/10/2026 : premier chargement réel : 3 516 trajets, 33 650 passages, 11 100 jours de circulation, ~26 s ; `IGNORE` seulement si même fichier **et** déjà chargé le jour même à Paris (la fenêtre avance chaque jour).
+- 22/10/2026 : vérification manuelle faite par Hardy (3 trains Dijon → Beaune conformes à SNCF Connect) ; IGNORE du jour, règle et tests — D037.

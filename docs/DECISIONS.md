@@ -297,3 +297,15 @@
 - **Écarté :** type par `route_type` ou par l'agence (faux) ; cars classés AUTRE (présentés comme des trains) ; filtrer montée/descente au chargement en supprimant les passages (l'arrêt existe : un train peut y prendre des voyageurs sans en laisser).
 - **Impact :** `02` § 2.2 ; `03` § 3.3, § 5 ; `04` § 4.2, § 4.3 ; `GLOSSAIRE` ; `A-FAIRE` § 2 bis ; `config/sources.json` ; fiches E03, E04.
 
+## D037 — Chargement du GTFS (E03) : IGNORE du jour, règle en un seul fichier, GTFS miniature en dossier
+- **Date :** 22/10/2026
+- **Décision :**
+  1. **`gtfs_sncf` est `IGNORE` seulement si le fichier est inchangé ET déjà chargé le jour même** (date à Paris de `source_donnees.date_telechargement`) ; sinon rechargé (~26 s).
+  2. **Règle du type de train dans `etl/src/regles/types-train.ts`**, seul endroit où elle est écrite ; le SQL la reçoit en paramètres.
+  3. **Le chargement reçoit une fonction « ouvre tel fichier »** : ZIP en production (`yauzl`), dossier en clair dans les tests (`etl/tests/donnees/gtfs_mini/`) ; lecture du ZIP testée sur un petit `mini.zip` versionné. Aucune nouvelle dépendance.
+  4. **Fichiers SQL découpés en sections `-- @nom`**, paramètres `:nom` (comme `03` § 5), transformés en `$1`, `$2`… ; fonctions pures testées (`transformations/sql.ts`).
+  5. **Colonnes GTFS lues par leur nom dans l'en-tête** (l'ordre peut changer), colonnes facultatives du standard créées vides si absentes.
+  6. **Seuil `controles.rapprochementGtfsMinPct` (90)** dans `parametres.json` (règle 3).
+- **Raison :** la fenêtre de 60 jours avance chaque jour : un fichier inchangé chargé la veille laisserait un jour manquant en fin de fenêtre. Un GTFS de test lisible se relit et se corrige sans outil. Un seuil métier n'a pas sa place dans le code.
+- **Écarté :** `IGNORE` sur la seule empreinte (fenêtre figée) ; charger tout le fichier jusqu'au 31/03 sans fenêtre (contraire à `fenetreJoursHoraires`) ; dépendance `yazl` pour fabriquer des ZIP de test.
+- **Impact :** `04` § 1, § 2, § 4.2 ; fiche E03.

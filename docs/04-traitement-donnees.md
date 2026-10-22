@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.6 · **Date** 22/10/2026
+> **Version** 1.7 · **Date** 22/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -12,7 +12,7 @@
 1. **L'ETL prépare tout ; l'application ne fait que lire.**
 2. **Chaque source est indépendante** : `pnpm etl <source>` la traite seule. `pnpm etl all` enchaîne dans l'ordre (§ 3). Dans Docker : `docker compose run --rm etl <source|all>`.
 3. **Idempotent :** relancer deux fois donne le même résultat.
-4. **Empreinte :** si le fichier téléchargé n'a pas changé (SHA-256 identique à `source_donnees.empreinte`), la source est marquée `IGNORE` sauf avec `--force`.
+4. **Empreinte :** si le fichier téléchargé n'a pas changé (SHA-256 identique à `source_donnees.empreinte`), la source est marquée `IGNORE` sauf avec `--force`. Exception : `gtfs_sncf` n'est `IGNORE` que si le fichier est inchangé **et** a déjà été chargé le jour même à Paris, car sa fenêtre avance chaque jour (D037).
 5. **Chargement transactionnel :** données lues → tables temporaires → contrôles → **dans une seule transaction** : suppression des lignes de la source + insertion. En cas d'échec, rien n'est modifié.
 6. **Calculs géographiques et transformations lourdes en SQL (PostgreSQL + PostGIS).** Le code TypeScript télécharge, lit en flux, valide et charge (`COPY`) ; il ne fait pas de calcul ligne à ligne sur les gros volumes.
 7. **Chaque exécution est journalisée** dans `execution_etl` et produit un **rapport** dans `data/traite/rapports/AAAA-MM-JJ_<source>.md`.
@@ -296,3 +296,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
 | 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |
 | 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites ; § 2 : `controles.rapprochementGtfsMinPct` — D036 |
+| 22/10/2026 | 1.7 | § 1 : règle `IGNORE` propre au GTFS (fenêtre glissante) — D037 |
