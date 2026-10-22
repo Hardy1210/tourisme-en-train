@@ -58,3 +58,4 @@ Voir `_MODELE.md`.
 - 09/10/2026 : la table `liaison_directe` n'est plus créée en E01 : sa migration ouvre cette étape, après la décision sur les données des cartes de destination (dernier retour, prochain train, faisable dans la journée).
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
 - 22/10/2026 : une paire A → B n'est retenue que si la montée est possible en A et la descente en B (`passage.montee_interdite`, `passage.descente_interdite`, `04` § 4.3) — D036.
+- 22/10/2026 : **trains en jumelage** constatés au chargement E03 : deux trajets (deux numéros, ex. TGV 12177 et 5537) avec les mêmes horaires sur une partie du parcours (rames attelées). 139 départs en double le 26/10. À traiter dans le calcul des liaisons (`nb_trains`) et l'affichage : compter une seule fois une même paire (gare, heure de départ, gare, heure d'arrivée). À décider à l'audit de E04.
