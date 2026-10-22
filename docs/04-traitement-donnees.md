@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.4 · **Date** 19/10/2026
+> **Version** 1.5 · **Date** 22/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -125,7 +125,9 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 7. `dans_region` = `departement` ∈ `parametres.region.departements`.
 8. Charger dans `gare` **par `uic`** (insertion ou mise à jour) ; une gare absente du fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034).
 
-**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise`.
+**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; aucun code `uic` principal en double dans le fichier (sinon la mise à jour par `uic` échoue).
+
+**Fichier des communes :** son empreinte compte aussi — la source est `IGNORE` seulement si les **deux** fichiers sont inchangés (un nouveau millésime du COG change des noms de commune).
 
 ### 4.2 Horaires GTFS (E03)
 1. Télécharger le ZIP → `data/brut/gtfs_sncf/`.
@@ -260,3 +262,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 05/10/2026 | 1.2 | § 2 bis : adresses des sources dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |
 | 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
+| 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` |

@@ -3,6 +3,7 @@
 import { journal } from '@tourisme/commun';
 import { AIDE, lireArguments, type Source } from './arguments';
 import { lireConfig } from './config';
+import { traiterGares } from './sources/gares';
 import { traiterSources } from './sources/registre';
 
 type Traitement = (options: { force: boolean; horsLigne: boolean }) => Promise<void>;
@@ -10,6 +11,7 @@ type Traitement = (options: { force: boolean; horsLigne: boolean }) => Promise<v
 // Rempli au fil des étapes : E02 (sources, gares), E03 (gtfs_sncf), E04 (liaisons)…
 const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   sources: traiterSources,
+  gares: traiterGares,
 };
 
 async function executer(argv: readonly string[]): Promise<number> {

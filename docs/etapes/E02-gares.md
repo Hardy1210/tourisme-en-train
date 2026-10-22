@@ -42,12 +42,12 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [ ] `etl/Dockerfile` (Node 24 + pnpm, exécution avec `tsx`) ; service `etl` du compose avec `./data:/data`.
 
 **Gares**
-- [ ] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
+- [x] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
 - [x] Migration : colonne `gare.codes_uic` (`03` § 3.1, D034) — `0003_gare_codes_uic`, avec la contrainte `uic = ANY(codes_uic)`.
 - [x] `sources/communes.ts` : lecture du COG, nom de commune par code INSEE (`02` § 2.1 bis).
 - [x] `transformations/gares.ts` : normalisation UIC 8 chiffres, département, `dans_region` (fonctions pures, testées avec Vitest).
-- [ ] Chargement dans `gare` (rapprochement par `uic`).
-- [ ] Contrôles de `04` § 4.1.
+- [x] Chargement dans `gare` (rapprochement par `uic`).
+- [x] Contrôles de `04` § 4.1.
 
 **Tests**
 - [x] Normalisation UIC : `"87713040"` ✓, `"0087713040"` → `87713040`, liste `"87713040;87713041"` → premier, `"12345"` → rejet.
@@ -55,12 +55,12 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [x] `dans_region` : Dijon (21) vrai **et** Lyon (69) faux.
 
 ## Critères d'acceptation
-- [ ] `docker compose run --rm etl gares` (ou `pnpm etl gares`) → statut `SUCCES`, code retour 0.
-- [ ] Relancé sans changement → statut `IGNORE`.
-- [ ] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`.
+- [x] `docker compose run --rm etl gares` (ou `pnpm etl gares`) → statut `SUCCES`, code retour 0.
+- [x] Relancé sans changement → statut `IGNORE`.
+- [x] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`. (22/10 : 2 792 / 196 ; la gare s'appelle « Dijon » dans le fichier, UIC 87713040.)
 - [ ] Rapport généré et relu par Hardy.
 - [x] `source_donnees` contient toutes les sources de `02` (16, vérifié le 19/10).
-- [ ] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`.
+- [x] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`. (22/10 : ~12 ms, index GIST utilisé.)
 
 ## Vérifications manuelles
 - 5 gares au hasard comparées à la réalité (position sur une carte).
