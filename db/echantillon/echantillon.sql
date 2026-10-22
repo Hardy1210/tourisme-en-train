@@ -12,8 +12,8 @@ VALUES ('echantillon', 'Échantillon de test (données d''exemple)', 'tourisme-e
         'https://example.org/echantillon', 'Aucune (données inventées)', 'Données d''exemple');
 
 -- 10 gares : 9 dans la région, Lyon-Part-Dieu hors région.
-INSERT INTO gare (uic, nom, commune, code_insee, departement, dans_region, geom)
-SELECT uic, nom, commune, insee, dep, dans_region, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography
+INSERT INTO gare (uic, codes_uic, nom, commune, code_insee, departement, dans_region, geom)
+SELECT uic, ARRAY[uic], nom, commune, insee, dep, dans_region, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography
 FROM (VALUES
   ('EX000001', 'Dijon-Ville',           'Dijon',            '21231', '21', true,  5.0272, 47.3233),
   ('EX000002', 'Beaune',                'Beaune',           '21054', '21', true,  4.8436, 47.0237),

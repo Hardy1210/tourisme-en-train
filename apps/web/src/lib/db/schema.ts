@@ -50,6 +50,7 @@ export const gare = pgTable(
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     uic: char({ length: 8 }).notNull().unique(),
+    codesUic: char({ length: 8 }).array().notNull(),
     nom: text().notNull(),
     commune: text(),
     codeInsee: char({ length: 5 }),
@@ -58,7 +59,12 @@ export const gare = pgTable(
     geom: geographyPoint().notNull(),
     maj: maj(),
   },
-  (t) => [index().using('gist', t.geom), index().on(t.dansRegion)],
+  (t) => [
+    index().using('gist', t.geom),
+    index().on(t.dansRegion),
+    index().using('gin', t.codesUic),
+    check('gare_uic_dans_codes_uic_check', sql`${t.uic} = ANY (${t.codesUic})`),
+  ],
 );
 
 // § 3.2

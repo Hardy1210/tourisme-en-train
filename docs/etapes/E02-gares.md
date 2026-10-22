@@ -43,7 +43,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 
 **Gares**
 - [ ] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
-- [ ] Migration : colonne `gare.codes_uic` (`03` § 3.1, D034).
+- [x] Migration : colonne `gare.codes_uic` (`03` § 3.1, D034) — `0003_gare_codes_uic`, avec la contrainte `uic = ANY(codes_uic)`.
 - [ ] `sources/communes.ts` : lecture du COG, nom de commune par code INSEE (`02` § 2.1 bis).
 - [ ] `transformations/gares.ts` : normalisation UIC 8 chiffres, département, `dans_region` (fonctions pures, testées avec Vitest).
 - [ ] Chargement dans `gare` (rapprochement par `uic`).
