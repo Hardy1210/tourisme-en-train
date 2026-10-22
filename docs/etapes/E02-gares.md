@@ -39,7 +39,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [x] Journal `execution_etl` (début, fin, statut, nb lignes, message) et rapport Markdown (`04` § 5).
 - [x] `config/sources.json` (première version : entrées de **toutes** les sources de `02`, adresses connues, les autres à compléter aux étapes suivantes) + schéma Zod `packages/commun/src/sources.ts`.
 - [x] `etl/src/sources/registre.ts` : lit `config/sources.json` (aucune adresse dans le code) et remplit `source_donnees` (code, nom, producteur, URL, licence, attribution) → commande `pnpm etl sources`.
-- [ ] `etl/Dockerfile` (Node 24 + pnpm, exécution avec `tsx`) ; service `etl` du compose avec `./data:/data`.
+- [x] `etl/Dockerfile` (Node 24 + pnpm, exécution avec `tsx`) ; service `etl` du compose avec `./data:/data`.
 
 **Gares**
 - [x] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
@@ -57,7 +57,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 ## Critères d'acceptation
 - [x] `docker compose run --rm etl gares` (ou `pnpm etl gares`) → statut `SUCCES`, code retour 0.
 - [x] Relancé sans changement → statut `IGNORE`.
-- [x] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`. (22/10 : 2 792 / 196 ; la gare s'appelle « Dijon » dans le fichier, UIC 87713040.)
+- [x] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`. (22/10 : 2 792 / 196 ; la gare s'appelle « Dijon » dans le fichier, UIC 87713040 ; vérifié aussi avec `docker compose run --rm etl gares`.)
 - [ ] Rapport généré et relu par Hardy.
 - [x] `source_donnees` contient toutes les sources de `02` (16, vérifié le 19/10).
 - [x] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`. (22/10 : ~12 ms, index GIST utilisé.)
