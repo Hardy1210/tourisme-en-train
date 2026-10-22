@@ -35,6 +35,8 @@ export const schemaParametres = z
     controles: z.strictObject({
       garesFranceMin: z.number().int().positive(),
       garesRegionMin: z.number().int().positive(),
+      /** Part minimale (en %) des passages des trajets retenus rapprochés d'une gare (E03). */
+      rapprochementGtfsMinPct: z.number().min(0).max(100),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),

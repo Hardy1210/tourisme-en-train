@@ -35,7 +35,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
-  "controles": { "garesFranceMin": 2500, "garesRegionMin": 100 },
+  "controles": { "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90 },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "marche":  { "vitesseKmH": 4.5, "coefDetour": 1.3 },
@@ -169,7 +169,7 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 
 **Jetées :** `trips.direction_id` (l'ordre des arrêts suffit), `block_id` (enchaînement du matériel : correspondances, règle 6), `shape_id` (vide) ; `stop_times.stop_headsign`, `shape_dist_traveled` (vides) ; `routes.route_long_name` (abréviations peu lisibles), `route_type` (pas fiable), `agency_id`, `route_desc`, `route_url` (vides), couleurs (charte graphique, règle 1) ; `stops` : positions (celles de `gare` font foi), `location_type`, `parent_station`, colonnes vides ; `agency` : nom, adresse, langue ; `transfers.txt` (correspondances, règle 6).
 
-**Contrôles bloquants :** toutes les agences en `Europe/Paris` ; > 90 % des passages des trajets retenus rapprochés d'une gare ; aucune séquence dupliquée ; aucun `depart_s` négatif ; au moins un trajet par jour de la fenêtre.
+**Contrôles bloquants :** toutes les agences dans le fuseau `fuseau` ; au moins `controles.rapprochementGtfsMinPct` % des passages des trajets retenus rapprochés d'une gare ; aucune séquence dupliquée ; aucun `depart_s` négatif ; au moins un trajet par jour de la fenêtre.
 **Avertissements (rapport) :** fenêtre dépassant `feed_end_date` ; nombre de trajets `AUTRE` ; trajets en car exclus ; gares de la région sans aucun train dans la fenêtre (nommées) ; arrêts non rapprochés les plus fréquents (nommés).
 
 ### 4.3 Liaisons directes (E04)
@@ -295,4 +295,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |
 | 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
 | 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |
-| 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites — D036 |
+| 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites ; § 2 : `controles.rapprochementGtfsMinPct` — D036 |

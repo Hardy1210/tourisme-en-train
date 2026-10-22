@@ -57,3 +57,21 @@ export function auMoins(
     },
   };
 }
+
+/** Contrôle « la requête compte 0 ligne » (requête paramétrée : `$1`, `$2`…). */
+export function aucune(
+  nom: string,
+  requete: string,
+  valeurs: readonly unknown[] = [],
+  bloquant = true,
+): Controle {
+  return {
+    nom,
+    bloquant,
+    async verifier(client) {
+      const { rows } = await client.query<{ n: number }>(requete, [...valeurs]);
+      const n = rows[0]?.n ?? 0;
+      return { reussi: n === 0, detail: n === 0 ? 'aucune' : `${n} trouvée(s)` };
+    },
+  };
+}
