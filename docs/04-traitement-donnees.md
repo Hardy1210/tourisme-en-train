@@ -262,4 +262,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 05/10/2026 | 1.2 | § 2 bis : adresses des sources dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |
 | 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
-| 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` |
+| 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |

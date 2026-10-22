@@ -187,7 +187,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 |---|---|---|---|
 | E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ✅ |
-| E02 | Gares | S2 | 🟡 |
+| E02 | Gares | S2 | ✅ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
@@ -214,13 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E02 — gares et socle de l'ETL, sur la branche `etape/E02-gares` (audit fait, configuration faite)
-- **Dernière session :** 19/10/2026 — audit du fichier des gares, `config/sources.json`, `pnpm etl sources` (D034) ; détail dans `JOURNAL.md`
-- **Fait :** E01 fusionnée (#44) ; `config/sources.json` (16 sources) + schéma ; `region.emprise` et `controles` dans `parametres.json` ; `source_donnees` remplie ; `pnpm verifier` 49 tests
-- **Reste en E02 :** socle ETL (téléchargement, chargement, contrôles, `execution_etl`, rapport) · migration `codes_uic` · gares + communes · `etl/Dockerfile` · critères d'acceptation (comptages, 5 gares sur carte, requête de référence mesurée)
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, retard : prévu le 19/10), légende de la carte (avant E11)
+- **Étape en cours :** E02 terminée sur `etape/E02-gares`, pull request vers `main` ouverte ; E03 (horaires GTFS) ensuite
+- **Dernière session :** 22/10/2026 — socle ETL, `pnpm etl gares`, `etl/Dockerfile` (D035) ; détail dans `JOURNAL.md`
+- **Fait :** 2 792 gares en base (196 dans la région), rapport relu, 5 gares vérifiées ; requête « gares proches » ~12 ms ; `pnpm verifier` 112 tests, `pnpm test:integration` 17
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** créer `etl/src/sources/base.ts` (téléchargement en flux vers `data/brut/<source>/`, SHA-256, comparaison avec `source_donnees.empreinte`, `--hors-ligne`), puis `etl/src/chargement/base.ts` et `etl/src/controles/base.ts` (fiche E02, « Socle ETL »)
+- **Prochaine action précise :** fusionner la PR de E02, créer `etape/E03-horaires` depuis `main`, puis lire `docs/etapes/E03-horaires.md` et auditer le GTFS SNCF (télécharger le ZIP, lire `stops.txt`, `trips.txt`, `stop_times.txt`, `calendar_dates.txt`, comparer à `02` § 2.2)
 
 ---
 
@@ -384,4 +383,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |
 | 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |
 | 19/10/2026 | 1.13 | § 8 et § 9 : E01 terminée, E02 en cours |
-| 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` |
+| 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |

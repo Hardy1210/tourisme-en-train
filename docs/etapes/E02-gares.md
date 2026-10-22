@@ -1,7 +1,7 @@
 # E02 — Gares (et socle de l'ETL)
 
 > **Semaine :** S2 (12/10 → 18/10) · **Priorité :** P0 · **Branche :** `etape/E02-gares`
-> **Étapes préalables :** E01 · **État :** 🟡 en cours
+> **Étapes préalables :** E01 · **État :** ✅ terminé (22/10/2026)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -24,7 +24,7 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 
 ## Actions de Hardy
 - [x] Trouver l'URL de téléchargement du fichier « Gares de voyageurs » (data.gouv.fr ou data.sncf.com) et la licence exacte ; les donner à Claude Code (elles iront dans `config/sources.json`).
-- [ ] Relire le premier rapport ETL.
+- [x] Relire le premier rapport ETL.
 
 ## Phase d'audit
 1. ✅ Télécharger le fichier une fois, **lire ses vraies colonnes**, comparer à `02` § 2.1 ; corriger `02` si besoin.
@@ -58,12 +58,12 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [x] `docker compose run --rm etl gares` (ou `pnpm etl gares`) → statut `SUCCES`, code retour 0.
 - [x] Relancé sans changement → statut `IGNORE`.
 - [x] > 2 500 gares en France, > 100 dans la région ; Dijon-Ville présente avec `dans_region = true`. (22/10 : 2 792 / 196 ; la gare s'appelle « Dijon » dans le fichier, UIC 87713040 ; vérifié aussi avec `docker compose run --rm etl gares`.)
-- [ ] Rapport généré et relu par Hardy.
+- [x] Rapport généré et relu par Hardy.
 - [x] `source_donnees` contient toutes les sources de `02` (16, vérifié le 19/10).
 - [x] La requête de référence *gares les plus proches d'une position* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; temps mesuré et noté dans `JOURNAL.md`. (22/10 : ~12 ms, index GIST utilisé.)
 
 ## Vérifications manuelles
-- 5 gares au hasard comparées à la réalité (position sur une carte).
+- [x] 5 gares au hasard comparées à la réalité (position sur une carte) — Hardy, 22/10.
 
 ## À ne pas toucher
 - Schéma (sauf écart constaté, alors migration + `03`).
@@ -79,3 +79,4 @@ Voir `_MODELE.md`. Compléter `CLAUDE.md` § 16 (commande ETL).
 - 07/10/2026 : `etl/Dockerfile` en Node 24 — D028 (note ajoutée après coup le 09/10).
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
 - 19/10/2026 : audit fait ; colonne `codes_uic`, source `communes` (COG INSEE), mise à jour par `uic`, seuils dans `parametres.json` (D034).
+- 22/10/2026 : socle ETL, fusion propre à chaque source, contrôle « UIC en double », empreinte du COG, `.dockerignore` — D035. La gare de Dijon s'appelle « Dijon » dans le fichier (critère « Dijon-Ville »).

@@ -24,6 +24,35 @@
 
 ---
 
+## 22/10/2026 — Étape E02 — socle de l'ETL, gares en base, image Docker
+**Fait :**
+- Socle ETL : `sources/base.ts` (téléchargement, empreinte, `--hors-ligne`), `chargement/base.ts` (CSV validé, `COPY`, transaction), `controles/base.ts`, `chargement/execution.ts` (`execution_etl`) et `chargement/rapport.ts` (rapport Markdown).
+- Gares : migration `0003_gare_codes_uic` (remplie avant de devenir obligatoire, contrainte `uic = ANY(codes_uic)`), `transformations/gares.ts`, `sources/communes.ts`, `sources/gares.ts`, `chargement/gares.ts` ; `pnpm etl gares`.
+- `etl/Dockerfile` et `.dockerignore` ; `docker compose run --rm etl gares` vérifié (aide, SUCCES, IGNORE, hors ligne, erreur → code 1).
+- Résultats : 2 792 gares, 196 dans la région, 0 écartée, 11 à plusieurs codes UIC, 8 sans nom de commune (communes fusionnées, hors région) ; 4 contrôles ✅.
+- **Requête de référence « gares les plus proches »** sur les vraies données : ~12 ms à chaud (17 ms à froid), index GIST utilisé.
+- Hardy : rapport relu, 5 gares au hasard vérifiées sur une carte, démonstration Docker + Adminer rejouée.
+
+**Décisions :** D035 (socle ETL, fusion par source, durée mesurée par la base, `.dockerignore`, `DOSSIER_DONNEES` relatif).
+
+**Problèmes rencontrés :**
+- `DOSSIER_DONNEES=./data` était lu depuis `etl/` : résolu depuis la racine du dépôt.
+- drizzle-kit générait `ADD COLUMN … NOT NULL` direct (échec sur une table remplie) : migration complétée à la main, testée sur 10 gares.
+- 584 communes déléguées partagent le code de leur commune dans le COG 2026 : la commune l'emporte (testé).
+- Docker non joignable depuis WSL en début de session : Docker Desktop relancé par Hardy.
+- La SNCF a republié le fichier des gares le 22/10 à 12:43 UTC : empreinte changée, rechargement détecté automatiquement (comportement attendu).
+
+**À valider par Hardy :**
+- Données des cartes de destination (avant E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Fusionner la PR de E02, puis lire `docs/etapes/E03-horaires.md`, audit du GTFS SNCF.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (112) · intégration ✅ (17)
+**Commit :** `2ca2c51` → `860c077` ; sauvegarde sur `etape/E02-gares`
+
+---
+
 ## 19/10/2026 — Étape E02 — audit des gares, configuration des sources
 **Fait :**
 - E01 fusionnée dans `main` le 11/10 (PR #44) ; branche `etape/E02-gares` créée.
