@@ -33,10 +33,10 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 
 ## Tâches
 **Socle ETL**
-- [ ] `etl/src/sources/base.ts` : téléchargement en flux (`fetch`) vers `data/brut/<source>/`, calcul SHA-256 (`node:crypto`), comparaison avec `source_donnees.empreinte`, mode `--hors-ligne`.
-- [ ] `etl/src/chargement/base.ts` : lecture CSV en flux (csv-parse) → `COPY` dans une table temporaire → contrôles → transaction (suppression des lignes de la source + insertion).
-- [ ] `etl/src/controles/base.ts` : contrôles déclaratifs (nom, bloquant oui/non, résultat).
-- [ ] Journal `execution_etl` (début, fin, statut, nb lignes, message) et rapport Markdown (`04` § 5).
+- [x] `etl/src/sources/base.ts` : téléchargement en flux (`fetch`) vers `data/brut/<source>/`, calcul SHA-256 (`node:crypto`), comparaison avec `source_donnees.empreinte`, mode `--hors-ligne`.
+- [x] `etl/src/chargement/base.ts` : lecture CSV en flux (csv-parse) → `COPY` dans une table temporaire → contrôles → transaction (suppression des lignes de la source + insertion).
+- [x] `etl/src/controles/base.ts` : contrôles déclaratifs (nom, bloquant oui/non, résultat).
+- [x] Journal `execution_etl` (début, fin, statut, nb lignes, message) et rapport Markdown (`04` § 5).
 - [x] `config/sources.json` (première version : entrées de **toutes** les sources de `02`, adresses connues, les autres à compléter aux étapes suivantes) + schéma Zod `packages/commun/src/sources.ts`.
 - [x] `etl/src/sources/registre.ts` : lit `config/sources.json` (aucune adresse dans le code) et remplit `source_donnees` (code, nom, producteur, URL, licence, attribution) → commande `pnpm etl sources`.
 - [ ] `etl/Dockerfile` (Node 24 + pnpm, exécution avec `tsx`) ; service `etl` du compose avec `./data:/data`.
@@ -45,14 +45,14 @@ La base est prête (E01). Première source réelle : les gares, pivot de tout le
 - [ ] `sources/gares.ts` : `telecharger()`, `lire()` (validation Zod ligne à ligne).
 - [x] Migration : colonne `gare.codes_uic` (`03` § 3.1, D034) — `0003_gare_codes_uic`, avec la contrainte `uic = ANY(codes_uic)`.
 - [ ] `sources/communes.ts` : lecture du COG, nom de commune par code INSEE (`02` § 2.1 bis).
-- [ ] `transformations/gares.ts` : normalisation UIC 8 chiffres, département, `dans_region` (fonctions pures, testées avec Vitest).
+- [x] `transformations/gares.ts` : normalisation UIC 8 chiffres, département, `dans_region` (fonctions pures, testées avec Vitest).
 - [ ] Chargement dans `gare` (rapprochement par `uic`).
 - [ ] Contrôles de `04` § 4.1.
 
 **Tests**
-- [ ] Normalisation UIC : `"87713040"` ✓, `"0087713040"` → `87713040`, liste `"87713040;87713041"` → premier, `"12345"` → rejet.
-- [ ] Département : `21231` → `21`, `2A004` → `2A`, `97411` → `974`.
-- [ ] `dans_region` : Dijon (21) vrai **et** Lyon (69) faux.
+- [x] Normalisation UIC : `"87713040"` ✓, `"0087713040"` → `87713040`, liste `"87713040;87713041"` → premier, `"12345"` → rejet.
+- [x] Département : `21231` → `21`, `2A004` → `2A`, `97411` → `974`.
+- [x] `dans_region` : Dijon (21) vrai **et** Lyon (69) faux.
 
 ## Critères d'acceptation
 - [ ] `docker compose run --rm etl gares` (ou `pnpm etl gares`) → statut `SUCCES`, code retour 0.
