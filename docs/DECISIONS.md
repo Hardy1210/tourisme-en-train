@@ -255,3 +255,30 @@
 - **Impact :** documents et code touchés
 - **Remplace :** Dyyy (si applicable)
 ```
+
+## D034 — Gares : tous les codes UIC, nom de commune par le COG INSEE, mise à jour par `uic`
+- **Date :** 19/10/2026
+- **Décision :**
+  1. **Colonne `gare.codes_uic` (char(8)[])** : tous les codes UIC du fichier ; `uic` reste le premier code et la clé de rapprochement des chargements.
+  2. **Nouvelle source `communes`** (Code officiel géographique INSEE, Licence Ouverte) pour remplir `gare.commune` à partir du code INSEE.
+  3. **Gares mises à jour par `uic`** (insertion ou mise à jour), jamais supprimées puis réinsérées ; une gare disparue n'est supprimée que si rien ne la référence.
+  4. **Toutes les gares de France** sont chargées ; la région n'est qu'un filtre (`dans_region`).
+  5. **Seuils et emprise des contrôles dans `parametres.json`** (`controles.garesFranceMin`, `controles.garesRegionMin`, `region.emprise`).
+  6. **`config/sources.json` porte un champ `verifie`** : `false` tant que l'adresse et la licence n'ont pas été vérifiées sur la vraie source à son étape.
+- **Raison :** audit du fichier réel (19/10). 11 gares ont plusieurs codes, et pour Paris Montparnasse le code principal est le dernier : garder seulement le premier ferait échouer le rapprochement des horaires (E03). Le fichier ne donne que le code de la commune, alors que `/api/gares` et le repli hors ligne (recherche de ville, « Autour de <commune> ») ont besoin du nom. Les tables d'horaires, de lieux et de mobilités référenceront `gare.id` : une suppression complète échouerait dès E03. Les destinations hors région (Paris, Lyon) doivent exister comme gares d'arrivée.
+- **Écarté :** garder le seul premier code (rapprochement par distance seulement, risque d'erreur dans les grandes gares) ; `commune` laissée vide (repli hors ligne cassé) ; déduire la commune du nom de la gare (faux pour les gares TGV) ; gares de la région seulement (destinations hors région perdues, aucun gain : 2 792 lignes).
+- **Impact :** `02` § 1, § 2.1, § 2.1 bis ; `03` § 3.1 (migration à faire en E02) ; `04` § 2, § 4.1 ; fiche E02 ; `A-FAIRE` § 2 bis.
+
+## D035 — Socle du traitement des données (E02)
+- **Date :** 22/10/2026
+- **Décision :**
+  1. **Un déroulé commun à toutes les sources** : `obtenirFichier` (téléchargement en flux vers un fichier `.partiel` renommé à la fin, SHA-256 au passage, `--hors-ligne`) → `charger` (CSV lu en flux et validé par Zod, `COPY` en table temporaire, contrôles, **fusion propre à chaque source**, empreinte enregistrée, le tout dans une transaction) → `executerSource` (ligne `execution_etl` écrite **hors** de la transaction, rapport Markdown, erreur relancée pour le code retour).
+  2. **La fusion est fournie par la source** : suppression puis insertion pour la plupart, mise à jour par `uic` pour les gares (D034).
+  3. **Durée d'une exécution mesurée par la base** (`clock_timestamp()`), date du rapport par `maintenantParis()` : aucune autre lecture de l'horloge (CLAUDE.md § 3).
+  4. **Gares `IGNORE` seulement si les deux fichiers** (gares et COG) sont inchangés ; l'empreinte du COG est enregistrée dans la même transaction.
+  5. **Contrôle bloquant « UIC principal en double »** en plus des trois de `04` § 4.1.
+  6. **`DOSSIER_DONNEES` relatif lu depuis la racine du dépôt** (`pnpm --filter` lance le traitement depuis `etl/`) ; absolu (`/data` dans Docker) inchangé.
+  7. **`.dockerignore` à la racine** : `.env`, `node_modules`, `data/`, `.git`, documentation et tests exclus du contexte de construction ; image `etl` lancée par `tsx` directement (pas `pnpm start`, qui ajouterait une ligne non JSON à la sortie), utilisateur `node`.
+- **Raison :** un téléchargement interrompu ne doit jamais écraser le fichier que `--hors-ligne` réutilisera le jour de la soutenance ; un ECHEC doit rester visible après l'annulation de la transaction ; une source dont seul le fichier annexe change (nouveau millésime du COG) doit être retraitée ; sans `.dockerignore`, `.env` (mots de passe) partait dans le contexte de construction.
+- **Écarté :** tout charger en mémoire (inutile pour les gares, impossible pour les horaires en E03) ; journal dans la transaction (un échec effacerait sa propre trace) ; durée par `Date.now()` (lecture de l'horloge hors des deux fonctions autorisées).
+- **Impact :** `04` § 4.1 ; `07` § 1, § 3 ; `CLAUDE.md` § 16 ; fiche E02.

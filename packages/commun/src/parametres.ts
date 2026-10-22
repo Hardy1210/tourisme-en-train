@@ -23,6 +23,18 @@ export const schemaParametres = z
       codeInsee: z.string().regex(/^\d{2}$/),
       nom: z.string().min(1),
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
+      /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
+      emprise: z.strictObject({
+        latMin: z.number().min(-90).max(90),
+        latMax: z.number().min(-90).max(90),
+        lonMin: z.number().min(-180).max(180),
+        lonMax: z.number().min(-180).max(180),
+      }),
+    }),
+    /** Seuils des contrôles bloquants de l'ETL (docs/04-traitement-donnees.md § 4). */
+    controles: z.strictObject({
+      garesFranceMin: z.number().int().positive(),
+      garesRegionMin: z.number().int().positive(),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),

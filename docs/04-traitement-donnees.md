@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.3 · **Date** 09/10/2026
+> **Version** 1.5 · **Date** 22/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -32,8 +32,10 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   "region": {
     "codeInsee": "27",
     "nom": "Bourgogne-Franche-Comté",
-    "departements": ["21", "25", "39", "58", "70", "71", "89", "90"]
+    "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
+    "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
+  "controles": { "garesFranceMin": 2500, "garesRegionMin": 100 },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "marche":  { "vitesseKmH": 4.5, "coefDetour": 1.3 },
@@ -114,15 +116,18 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 ## 4. Algorithmes par source
 
 ### 4.1 Gares (E02)
-1. Télécharger → `data/brut/gares/`.
-2. Lire (CSV en flux), valider (Zod) : nom, position, code INSEE, code(s) UIC.
-3. Normaliser l'UIC sur **8 chiffres** ; si plusieurs codes, garder le premier de 8 chiffres commençant par `87` et journaliser les autres.
+1. Télécharger → `data/brut/gares/` ; télécharger aussi `communes` → `data/brut/communes/` (`02` § 2.1 bis).
+2. Lire (CSV en flux, BOM retiré), valider (Zod) : nom, position `"lat, lon"`, code INSEE, code(s) UIC.
+3. Normaliser chaque UIC sur **8 chiffres** ; `uic` = le premier code de 8 chiffres commençant par `87`, `codes_uic` = tous les codes valides (D034).
 4. Écarter les gares sans position ou sans UIC (comptées dans le rapport).
 5. `departement` = 2 premiers caractères du code INSEE (3 pour l'outre-mer, `2A`/`2B` pour la Corse).
-6. `dans_region` = `departement` ∈ `parametres.region.departements`.
-7. Charger dans `gare` (clé de rapprochement : `uic`).
+6. `commune` = `LIBELLE` du COG pour ce code (`ARM`/`COMD` → commune parente) ; code absent → vide, compté.
+7. `dans_region` = `departement` ∈ `parametres.region.departements`.
+8. Charger dans `gare` **par `uic`** (insertion ou mise à jour) ; une gare absente du fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034).
 
-**Contrôles :** nombre de gares > 2 500 en France ; > 100 dans la région ; aucune gare de la région hors de son emprise.
+**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; aucun code `uic` principal en double dans le fichier (sinon la mise à jour par `uic` échoue).
+
+**Fichier des communes :** son empreinte compte aussi — la source est `IGNORE` seulement si les **deux** fichiers sont inchangés (un nouveau millésime du COG change des noms de commune).
 
 ### 4.2 Horaires GTFS (E03)
 1. Télécharger le ZIP → `data/brut/gtfs_sncf/`.
@@ -256,3 +261,5 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 05/10/2026 | 1.1 | Traitement en TypeScript + SQL : commandes `pnpm etl`, validation Zod, schéma unique de `parametres.json`, horaires GTFS chargés bruts puis transformés en SQL — D024 |
 | 05/10/2026 | 1.2 | § 2 bis : adresses des sources dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |
+| 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
+| 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |

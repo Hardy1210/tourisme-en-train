@@ -24,6 +24,60 @@
 
 ---
 
+## 22/10/2026 — Étape E02 — socle de l'ETL, gares en base, image Docker
+**Fait :**
+- Socle ETL : `sources/base.ts` (téléchargement, empreinte, `--hors-ligne`), `chargement/base.ts` (CSV validé, `COPY`, transaction), `controles/base.ts`, `chargement/execution.ts` (`execution_etl`) et `chargement/rapport.ts` (rapport Markdown).
+- Gares : migration `0003_gare_codes_uic` (remplie avant de devenir obligatoire, contrainte `uic = ANY(codes_uic)`), `transformations/gares.ts`, `sources/communes.ts`, `sources/gares.ts`, `chargement/gares.ts` ; `pnpm etl gares`.
+- `etl/Dockerfile` et `.dockerignore` ; `docker compose run --rm etl gares` vérifié (aide, SUCCES, IGNORE, hors ligne, erreur → code 1).
+- Résultats : 2 792 gares, 196 dans la région, 0 écartée, 11 à plusieurs codes UIC, 8 sans nom de commune (communes fusionnées, hors région) ; 4 contrôles ✅.
+- **Requête de référence « gares les plus proches »** sur les vraies données : ~12 ms à chaud (17 ms à froid), index GIST utilisé.
+- Hardy : rapport relu, 5 gares au hasard vérifiées sur une carte, démonstration Docker + Adminer rejouée.
+
+**Décisions :** D035 (socle ETL, fusion par source, durée mesurée par la base, `.dockerignore`, `DOSSIER_DONNEES` relatif).
+
+**Problèmes rencontrés :**
+- `DOSSIER_DONNEES=./data` était lu depuis `etl/` : résolu depuis la racine du dépôt.
+- drizzle-kit générait `ADD COLUMN … NOT NULL` direct (échec sur une table remplie) : migration complétée à la main, testée sur 10 gares.
+- 584 communes déléguées partagent le code de leur commune dans le COG 2026 : la commune l'emporte (testé).
+- Docker non joignable depuis WSL en début de session : Docker Desktop relancé par Hardy.
+- La SNCF a republié le fichier des gares le 22/10 à 12:43 UTC : empreinte changée, rechargement détecté automatiquement (comportement attendu).
+
+**À valider par Hardy :**
+- Données des cartes de destination (avant E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Fusionner la PR de E02, puis lire `docs/etapes/E03-horaires.md`, audit du GTFS SNCF.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (112) · intégration ✅ (17)
+**Commit :** `2ca2c51` → `860c077` ; sauvegarde sur `etape/E02-gares`
+
+---
+
+## 19/10/2026 — Étape E02 — audit des gares, configuration des sources
+**Fait :**
+- E01 fusionnée dans `main` le 11/10 (PR #44) ; branche `etape/E02-gares` créée.
+- Audit du fichier réel des gares (data.sncf.com, ODbL) : 2 792 gares, 196 dans la région, aucune sans position ni sans UIC ; BOM, position `"lat, lon"`, 11 gares à plusieurs codes UIC, nom de commune absent. `02`, `03`, `04` corrigés.
+- Fichier des communes du COG INSEE 2026 testé : nom de commune trouvé pour 2 784 gares sur 2 792 (8 codes de communes fusionnées, toutes hors région).
+- `config/sources.json` (16 sources, champ `verifie`) et son schéma `packages/commun/src/sources.ts` (7 tests) ; `parametres.json` : `region.emprise`, `controles`.
+- `pnpm etl sources` remplit `source_donnees` (16 lignes vérifiées en base).
+
+**Décisions :** D034 (codes UIC multiples, source `communes`, mise à jour par `uic`, toute la France, seuils dans `parametres.json`).
+
+**Problèmes rencontrés :**
+- La section 9 de `CLAUDE.md` annonçait encore la PR de E01 à fusionner : corrigée.
+- E02 démarre avec une semaine de retard sur le calendrier (prévue en S2).
+
+**À valider par Hardy :**
+- Données des cartes de destination (avant E04) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Socle de l'ETL : `etl/src/sources/base.ts` (téléchargement, SHA-256, `--hors-ligne`), puis chargement, contrôles, journal `execution_etl` et rapport.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (49)
+**Commit :** `0301632` (sources) ; sauvegarde sur `etape/E02-gares`
+
+---
+
 ## 11/10/2026 — Backlog et étape E01 — base PostGIS, schéma, migrations
 **Fait :**
 - Backlog produit intégré (`docs/BACKLOG.md`) : CLAUDE.md § 6, § 7, § 14 ; colonne « Étape » de `00` § 6 alignée ; critère « requête de référence mesurée » dans E02 → E04 ; `Closes #` dans le modèle de PR et `demarrage-SR` ; ligne « Fonctionnalités » ajoutée aux 41 tickets (seul ajout, vérifié par comparaison).

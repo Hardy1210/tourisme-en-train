@@ -186,8 +186,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Étape | Contenu | Sem. | État |
 |---|---|---|---|
 | E00 | Initialisation : dépôt, outils, conventions, squelette, `marque.ts`, `parametres.json` | S1 | ✅ |
-| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | 🟡 |
-| E02 | Gares | S2 | ⬜ |
+| E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ✅ |
+| E02 | Gares | S2 | ✅ |
 | E03 | Horaires GTFS SNCF | S2 | ⬜ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E01 — critères vérifiés, pull request `etape/E01-docker-base` → `main` ouverte (`Closes #3`), à fusionner
-- **Dernière session :** 11/10/2026 — backlog intégré (D032), E01 réalisée (D033) ; détail dans `JOURNAL.md`
-- **Fait :** base locale PostGIS (`docker compose up -d`, port 5433, Adminer 8081 chez Hardy), 11 tables P0, rôles et droits, `pnpm db:migrer` / `db:generer` / `db:reinitialiser` / `test:integration` ; `pnpm verifier` 42 tests, intégration 11 tests
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (**avant E04**, 19/10 ; décide aussi de la structure de `liaison_directe`), légende de la carte (avant E11)
+- **Étape en cours :** E02 terminée sur `etape/E02-gares`, pull request vers `main` ouverte ; E03 (horaires GTFS) ensuite
+- **Dernière session :** 22/10/2026 — socle ETL, `pnpm etl gares`, `etl/Dockerfile` (D035) ; détail dans `JOURNAL.md`
+- **Fait :** 2 792 gares en base (196 dans la région), rapport relu, 5 gares vérifiées ; requête « gares proches » ~12 ms ; `pnpm verifier` 112 tests, `pnpm test:integration` 17
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11)
 - **Bloquant :** —
-- **Prochaine action précise :** fusionner la PR de E01 et l'annoncer aux SR (départ de I01) ; puis créer `etape/E02-gares`, lire `docs/etapes/E02-gares.md` et lancer l'audit (mise à jour des gares par `uic` plutôt que suppression + insertion, à cause des clés étrangères ; `etl/Dockerfile`)
+- **Prochaine action précise :** fusionner la PR de E02, créer `etape/E03-horaires` depuis `main`, puis lire `docs/etapes/E03-horaires.md` et auditer le GTFS SNCF (télécharger le ZIP, lire `stops.txt`, `trips.txt`, `stop_times.txt`, `calendar_dates.txt`, comparer à `02` § 2.2)
 
 ---
 
@@ -360,7 +360,8 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` (sources disponibles à partir de E02) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `gares` |
+| Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
 
@@ -381,3 +382,5 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
 | 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |
 | 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |
+| 19/10/2026 | 1.13 | § 8 et § 9 : E01 terminée, E02 en cours |
+| 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |

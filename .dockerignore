@@ -1,0 +1,15 @@
+# Contexte de construction des images (etl/Dockerfile, puis apps/web/Dockerfile en E16).
+# Les secrets ne quittent jamais le poste (CLAUDE.md § 2, règle 4) ; le reste allège la construction.
+.env
+.env.*
+!.env.example
+.git
+**/node_modules
+**/.next
+**/tsconfig.tsbuildinfo
+data
+docs
+design
+infra
+**/tests
+**/*.test.ts

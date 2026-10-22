@@ -16,7 +16,7 @@
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
-| **Données des cartes de destination** : l'interface (`06` § 3.4) affiche dernier retour, prochain train, CO₂, prix et « Faisable dans la journée », que `/api/destinations` ne fournit pas ; `liaison_directe` n'a ni heures d'arrivée ni retours (et aucun retour pour une destination hors région). Choisir : enrichir `liaison_directe` / la réponse de `/api/destinations`, ou des appels séparés par carte | Audit du 09/10 ; `liaison_directe` retirée du schéma initial de E01 pour ne rien figer | **Avant E04** (19/10) |
+| **Données des cartes de destination** : l'interface (`06` § 3.4) affiche dernier retour, prochain train, CO₂, prix et « Faisable dans la journée », que `/api/destinations` ne fournit pas ; `liaison_directe` n'a ni heures d'arrivée ni retours (et aucun retour pour une destination hors région). Choisir : enrichir `liaison_directe` / la réponse de `/api/destinations`, ou des appels séparés par carte | Audit du 09/10 ; `liaison_directe` retirée du schéma initial de E01 pour ne rien figer | **Avant E04** |
 | **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
@@ -42,7 +42,6 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Seuil | Où dans la doc | Étape |
 |---|---|---|
-| Contrôles du nombre de gares (> 2 500 en France, > 100 dans la région) | `04` § 4.1, E02 | E02 |
 | Distance de rapprochement arrêt GTFS ↔ gare (300 m) | `02` § 2.2, `04` § 4.2 | E03 |
 | Longueur maximale d'une description (500 caractères) | `04` § 4.4, E05 | E05 |
 | Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
