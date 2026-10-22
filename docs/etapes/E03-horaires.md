@@ -1,7 +1,7 @@
 # E03 — Horaires GTFS SNCF
 
 > **Semaine :** S2 (12/10 → 18/10) · **Priorité :** P0 · **Branche :** `etape/E03-horaires`
-> **Étapes préalables :** E02 · **État :** ⬜ à faire
+> **Étapes préalables :** E02 · **État :** 🟡 en cours
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -20,15 +20,15 @@ Les gares sont en base (E02) avec un ETL réutilisable. On charge maintenant les
 Horaires de la fenêtre (`fenetreJoursHoraires`) chargés, rapprochés des gares, avec le type de train.
 
 ## Actions de Hardy
-- [ ] Trouver l'URL du GTFS SNCF (data.gouv.fr « Horaires SNCF » ou transport.data.gouv.fr) et la licence ; les donner à Claude Code (elles iront dans `config/sources.json`).
-- [ ] Valider la règle de détection du type de train proposée à l'audit.
+- [x] Trouver l'URL du GTFS SNCF (data.gouv.fr « Horaires SNCF » ou transport.data.gouv.fr) et la licence ; les donner à Claude Code (elles iront dans `config/sources.json`).
+- [x] Valider la règle de détection du type de train proposée à l'audit (22/10, D036).
 
 ## Phase d'audit
-1. Télécharger le ZIP, lister les fichiers, lire 20 lignes de chaque fichier utilisé.
-2. Vérifier le **format réel des `stop_id`** et l'extraction de l'UIC ; mesurer le taux de rapprochement avec `gare`.
-3. Examiner `agency.txt`, `routes.txt` et proposer une **règle écrite** de type de train (TER / INTERCITES / TGV / AUTRE).
-4. Mesurer le volume (trajets touchant la région, passages).
-5. Mettre à jour `02` § 2.2 et `04` § 4.2 avec ce qui a été constaté. Attendre la validation.
+1. ✅ Télécharger le ZIP, lister les fichiers, lire 20 lignes de chaque fichier utilisé.
+2. ✅ Vérifier le **format réel des `stop_id`** et l'extraction de l'UIC ; mesurer le taux de rapprochement avec `gare`.
+3. ✅ Examiner `agency.txt`, `routes.txt` et proposer une **règle écrite** de type de train (TER / INTERCITES / TGV / AUTRE).
+4. ✅ Mesurer le volume (trajets touchant la région, passages).
+5. ✅ Mettre à jour `02` § 2.2 et `04` § 4.2 avec ce qui a été constaté. Attendre la validation.
 
 ## Tâches
 - [ ] `sources/gtfs-sncf.ts` : téléchargement du ZIP, lecture en flux des fichiers utiles (yauzl + csv-parse) et `COPY` **brut** (texte) dans des tables temporaires (`04` § 4.2).
@@ -66,3 +66,4 @@ Voir `_MODELE.md`. Documenter la règle de type de train dans `04` § 4.2.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
+- 22/10/2026 : audit fait (URL trouvée par Claude Code, validée par Hardy) ; pas de `calendar.txt` ; type de train par le `stop_id` ; cars exclus ; aucun rattrapage par distance ; colonnes `montee_interdite` / `descente_interdite` (migration) ; Corbigny et Flez-Cuzy signalées — D036.

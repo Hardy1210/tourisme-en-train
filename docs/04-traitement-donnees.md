@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.5 · **Date** 22/10/2026
+> **Version** 1.6 · **Date** 22/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -131,15 +131,46 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 
 ### 4.2 Horaires GTFS (E03)
 1. Télécharger le ZIP → `data/brut/gtfs_sncf/`.
-2. **Chargement brut :** les fichiers utiles (`agency`, `routes`, `trips`, `stop_times`, `stops`, `calendar`, `calendar_dates`) sont lus en flux depuis le ZIP et copiés **tels quels** (texte) dans des tables temporaires avec `COPY`. Tout le reste se fait en SQL.
-3. **UIC d'un arrêt (SQL) :** `substring(stop_id from '(\d{8})')`. Rapprocher de `gare.uic`. Si l'UIC est absent de `gare` : rapprochement par distance < 300 m (`ST_DWithin`), sinon arrêt ignoré (compté).
-4. **Trajets retenus :** ceux dont au moins un arrêt est une gare `dans_region`. On garde **tous leurs arrêts**.
-5. **Type de train :** règle à établir à l'audit de l'E03 à partir de `agency`/`routes`/`stop_id` ; résultat ∈ {`TER`, `INTERCITES`, `TGV`, `AUTRE`} ; règle documentée ici après l'E03.
-6. **Heures (SQL) :** `"HH:MM:SS"` → secondes (`split_part(h, ':', 1)::int * 3600 + split_part(h, ':', 2)::int * 60 + split_part(h, ':', 3)::int`), sans limite à 24 h.
-7. **Calendrier (SQL) :** déplier `calendar` jour par jour avec `generate_series` (dates de début et de fin, filtrées sur les jours de semaine actifs), appliquer `calendar_dates` (1 = ajout, 2 = suppression), limiter à `[date du jour, date du jour + fenetreJoursHoraires]`. La date du jour est calculée **à Paris** par `dateDuJour()` (`packages/commun`) et passée en paramètre de la requête.
-8. Remplir `trajet`, `passage`, `service_jour` par `INSERT … SELECT` depuis les tables temporaires, dans la transaction de chargement.
+2. **Chargement brut :** les fichiers utiles sont lus en flux depuis le ZIP et copiés **tels quels** (texte) dans des tables temporaires avec `COPY`. Tout le reste se fait en SQL.
+3. **UIC et mode d'un arrêt (SQL) :** le `stop_id` a la forme `StopPoint:OCE<mode>-<UIC>` ; UIC = `substring(stop_id from '(\d{8})$')`, mode = `substring(stop_id from '^StopPoint:OCE(.*)-\d{8}$')`. UIC rapproché de `gare.codes_uic` (tous les codes d'une gare, D034). **Aucun rattrapage par distance** (D036) : un arrêt sans gare est ignoré et compté (gares étrangères).
+4. **Type de train** (règle validée le 22/10, D036), d'après le mode du trajet :
 
-**Contrôles :** > 90 % des arrêts des trajets retenus rapprochés d'une gare ; aucune séquence dupliquée ; aucun `depart_s` négatif ; au moins un trajet par jour de la fenêtre.
+   | Mode dans le `stop_id` | `type_train` |
+   |---|---|
+   | `Train TER`, `TramTrain` | `TER` |
+   | `TGV INOUI`, `OUIGO`, `Lyria`, `ICE` | `TGV` |
+   | `INTERCITES`, `INTERCITES de nuit` | `INTERCITES` |
+   | `Car TER`, `Car à réservation`, `Navette` | **exclu** (pas un train), compté dans le rapport |
+   | tout autre mode (ex. `Train` Paris–Bruxelles) | `AUTRE`, compté dans le rapport |
+
+5. **Trajets retenus :** trajets en train (pas exclus au point 4) dont au moins un arrêt est une gare `dans_region` **et** qui circulent au moins un jour de la fenêtre. On garde **tous leurs arrêts** rapprochés.
+6. **Heures (SQL) :** `"HH:MM:SS"` → secondes (`split_part(h, ':', 1)::int * 3600 + split_part(h, ':', 2)::int * 60 + split_part(h, ':', 3)::int`), sans limite à 24 h (`"25:10:00"` → 90 600).
+7. **Calendrier (SQL) :** si `calendar.txt` est présent, le déplier jour par jour avec `generate_series` (jours de semaine actifs) ; appliquer `calendar_dates` (1 = ajout, 2 = suppression) ; limiter à `[date du jour, date du jour + fenetreJoursHoraires]`. Au 22/10, `calendar.txt` est absent : seules les lignes `exception_type` = 1 comptent. La date du jour est calculée **à Paris** par `dateDuJour()` (`packages/commun`) et passée en paramètre de la requête.
+8. Remplir `trajet`, `passage`, `service_jour` par `INSERT … SELECT` depuis les tables temporaires, dans la transaction de chargement (suppression puis insertion : aucune table ne pointe vers `trajet`, sauf `passage` en cascade).
+
+**Correspondance des colonnes (audit du 22/10) :**
+
+| Fichier | Colonne | Devient | Transformation |
+|---|---|---|---|
+| `trips` | `trip_id` | `trajet.id` | telle quelle |
+| `trips` | `service_id` | `trajet.service_id` | telle quelle |
+| `trips` | `trip_headsign` | `trajet.numero` | telle quelle (numéro du train) |
+| `trips` | `route_id` | — | jointure avec `routes` |
+| `routes` | `route_short_name` | `trajet.nom_ligne` | telle quelle (`K7`, `C30`…) |
+| `stop_times` | `trip_id` | `passage.trajet_id` | telle quelle |
+| `stop_times` | `stop_sequence` | `passage.sequence` | texte → nombre |
+| `stop_times` | `stop_id` | `passage.gare_id`, `trajet.type_train` | UIC → `gare.codes_uic` ; mode → règle du point 4 |
+| `stop_times` | `arrival_time`, `departure_time` | `passage.arrivee_s`, `passage.depart_s` | point 6 |
+| `stop_times` | `pickup_type`, `drop_off_type` | `passage.montee_interdite`, `passage.descente_interdite` | `= '1'` |
+| `calendar_dates` | `service_id`, `date`, `exception_type` | `service_jour` | point 7 (`AAAAMMJJ` → date) |
+| `stops` | `stop_id`, `stop_name` | — | noms des arrêts non rapprochés, dans le rapport |
+| `agency` | `agency_timezone` | — | contrôle |
+| `feed_info` | `feed_end_date` | — | contrôle |
+
+**Jetées :** `trips.direction_id` (l'ordre des arrêts suffit), `block_id` (enchaînement du matériel : correspondances, règle 6), `shape_id` (vide) ; `stop_times.stop_headsign`, `shape_dist_traveled` (vides) ; `routes.route_long_name` (abréviations peu lisibles), `route_type` (pas fiable), `agency_id`, `route_desc`, `route_url` (vides), couleurs (charte graphique, règle 1) ; `stops` : positions (celles de `gare` font foi), `location_type`, `parent_station`, colonnes vides ; `agency` : nom, adresse, langue ; `transfers.txt` (correspondances, règle 6).
+
+**Contrôles bloquants :** toutes les agences en `Europe/Paris` ; > 90 % des passages des trajets retenus rapprochés d'une gare ; aucune séquence dupliquée ; aucun `depart_s` négatif ; au moins un trajet par jour de la fenêtre.
+**Avertissements (rapport) :** fenêtre dépassant `feed_end_date` ; nombre de trajets `AUTRE` ; trajets en car exclus ; gares de la région sans aucun train dans la fenêtre (nommées) ; arrêts non rapprochés les plus fréquents (nommés).
 
 ### 4.3 Liaisons directes (E04)
 ```sql
@@ -150,7 +181,8 @@ SELECT a.trajet_id, a.gare_id AS dep, b.gare_id AS arr,
 FROM passage a
 JOIN passage b ON b.trajet_id = a.trajet_id AND b.sequence > a.sequence
 JOIN gare g ON g.id = a.gare_id AND g.dans_region
-WHERE a.depart_s IS NOT NULL AND b.arrivee_s IS NOT NULL AND a.gare_id <> b.gare_id;
+WHERE a.depart_s IS NOT NULL AND b.arrivee_s IS NOT NULL AND a.gare_id <> b.gare_id
+  AND NOT a.montee_interdite AND NOT b.descente_interdite;  -- D036
 
 -- 2) Agrégation par date de service
 INSERT INTO liaison_directe (gare_depart_id, gare_arrivee_id, date_service, duree_min,
@@ -263,3 +295,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 09/10/2026 | 1.3 | § 2 : règle des valeurs `null` séparée entre facteurs CO₂ et prix — D031 ; historique remis dans l'ordre |
 | 19/10/2026 | 1.4 | § 2 : `region.emprise` et `controles` ; § 4.1 réécrit après l'audit (BOM, `codes_uic`, communes COG, mise à jour par `uic`) — D034 |
 | 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |
+| 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites — D036 |

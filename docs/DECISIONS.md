@@ -282,3 +282,18 @@
 - **Raison :** un téléchargement interrompu ne doit jamais écraser le fichier que `--hors-ligne` réutilisera le jour de la soutenance ; un ECHEC doit rester visible après l'annulation de la transaction ; une source dont seul le fichier annexe change (nouveau millésime du COG) doit être retraitée ; sans `.dockerignore`, `.env` (mots de passe) partait dans le contexte de construction.
 - **Écarté :** tout charger en mémoire (inutile pour les gares, impossible pour les horaires en E03) ; journal dans la transaction (un échec effacerait sa propre trace) ; durée par `Date.now()` (lecture de l'horloge hors des deux fonctions autorisées).
 - **Impact :** `04` § 4.1 ; `07` § 1, § 3 ; `CLAUDE.md` § 16 ; fiche E02.
+
+## D036 — Horaires GTFS SNCF : type de train par le `stop_id`, cars exclus, montée et descente
+- **Date :** 22/10/2026
+- **Décision :**
+  1. **Source :** « Réseau SNCF TGV, Intercités et TER » (transport.data.gouv.fr), licence ODbL.
+  2. **Type de train lu dans le mode du `stop_id`** (`StopPoint:OCE<mode>-<UIC>`) : TER (`Train TER`, `TramTrain`), TGV (`TGV INOUI`, `OUIGO`, `Lyria`, `ICE`), INTERCITES (`INTERCITES`, `INTERCITES de nuit`), AUTRE (tout autre mode, compté dans le rapport).
+  3. **Cars et navettes exclus** (`Car TER`, `Car à réservation`, `Navette`), comptés dans le rapport.
+  4. **`calendar.txt` pris en charge** bien qu'absent du fichier actuel.
+  5. **Aucun rattrapage par distance** : un arrêt dont l'UIC n'est pas dans `gare.codes_uic` est ignoré et compté ; le seuil de 300 m disparaît.
+  6. **`passage.montee_interdite` et `passage.descente_interdite`** (migration) ; les trains directs A → B exigent montée possible en A et descente possible en B.
+  7. **Corbigny et Flez-Cuzy - Tannay** (cars seulement jusqu'au 26/12) restent sans train et sont nommées dans le rapport.
+- **Raison :** audit du 22/10. `route_type` et l'agence classent des cars comme des trains, alors que le mode du `stop_id` est fiable (un seul par trajet). La promesse est « y aller en train ». Les seuls arrêts non rapprochés sont des gares étrangères à plus de 5 km de toute gare française : le rattrapage n'aurait rien apporté et pouvait rattacher une mauvaise gare. ~3 100 arrêts intermédiaires interdisent la montée ou la descente : sans ces colonnes, E04 proposerait des trajets impossibles.
+- **Écarté :** type par `route_type` ou par l'agence (faux) ; cars classés AUTRE (présentés comme des trains) ; filtrer montée/descente au chargement en supprimant les passages (l'arrêt existe : un train peut y prendre des voyageurs sans en laisser).
+- **Impact :** `02` § 2.2 ; `03` § 3.3, § 5 ; `04` § 4.2, § 4.3 ; `GLOSSAIRE` ; `A-FAIRE` § 2 bis ; `config/sources.json` ; fiches E03, E04.
+

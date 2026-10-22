@@ -57,3 +57,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 09/10/2026 : la table `liaison_directe` n'est plus créée en E01 : sa migration ouvre cette étape, après la décision sur les données des cartes de destination (dernier retour, prochain train, faisable dans la journée).
 - 11/10/2026 : critère ajouté : requête de référence exécutée sur les vraies données, temps mesuré (D032).
+- 22/10/2026 : une paire A → B n'est retenue que si la montée est possible en A et la descente en B (`passage.montee_interdite`, `passage.descente_interdite`, `04` § 4.3) — D036.

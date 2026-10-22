@@ -42,7 +42,6 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Seuil | Où dans la doc | Étape |
 |---|---|---|
-| Distance de rapprochement arrêt GTFS ↔ gare (300 m) | `02` § 2.2, `04` § 4.2 | E03 |
 | Longueur maximale d'une description (500 caractères) | `04` § 4.4, E05 | E05 |
 | Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
 | Regroupement des quais de même nom (100 m) | `04` § 4.7, E07 | E07 |

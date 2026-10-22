@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.7 · **Date** 22/10/2026
+> **Version** 1.8 · **Date** 22/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -190,8 +190,11 @@ Index : (`service_id`).
 | `gare_id` | integer | NN, FK → gare | |
 | `arrivee_s` | integer | | Secondes depuis minuit (peut dépasser 86 400) |
 | `depart_s` | integer | | idem |
+| `montee_interdite` | boolean | NN, défaut false | `pickup_type` = 1 : on ne peut pas monter à cet arrêt (D036) |
+| `descente_interdite` | boolean | NN, défaut false | `drop_off_type` = 1 : on ne peut pas descendre à cet arrêt (D036) |
 
 Index : (`gare_id`), (`trajet_id`, `sequence`) via la clé.
+Un trajet A → B n'est valable que si l'on peut **monter** en A et **descendre** en B.
 
 ### 3.4 `service_jour`
 | Colonne | Type | Contraintes | Description |
@@ -384,6 +387,7 @@ JOIN passage b ON b.trajet_id = a.trajet_id AND b.sequence > a.sequence
 JOIN trajet t ON t.id = a.trajet_id
 JOIN service_jour s ON s.service_id = t.service_id AND s.date_service = :date
 WHERE a.gare_id = :depart AND b.gare_id = :arrivee AND a.depart_s >= :depuis_s
+  AND NOT a.montee_interdite AND NOT b.descente_interdite
 ORDER BY a.depart_s;
 ```
 
@@ -417,3 +421,4 @@ ORDER BY a.depart_s;
 | 11/10/2026 | 1.5 | § 2 : diagramme Mermaid des 11 tables créées en E01 et de leurs liens |
 | 19/10/2026 | 1.6 | § 3.1 : colonne `codes_uic` et mise à jour par `uic` (migration en E02) — D034 |
 | 22/10/2026 | 1.7 | § 3.1 : migration `0003_gare_codes_uic` appliquée, contrainte `uic = ANY(codes_uic)` |
+| 22/10/2026 | 1.8 | § 3.3 : `passage.montee_interdite`, `passage.descente_interdite` ; § 5 : requête « trains A → B » filtrée — D036 |
