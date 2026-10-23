@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.9 · **Date** 23/10/2026
+> **Version** 1.10 · **Date** 23/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -168,7 +168,7 @@ Conventions : `NN` = non nul · `PK` = clé primaire · `FK` = clé étrangère 
 | Colonne | Type | Contraintes | Description |
 |---|---|---|---|
 | `id` | integer | PK, identity | |
-| `uic` | char(8) | NN, UQ | Code UIC principal (le premier du fichier) ; clé de rapprochement des chargements |
+| `uic` | char(8) | NN, UQ | Code UIC principal (le premier du fichier) ; peut changer d'un chargement à l'autre (D039) |
 | `codes_uic` | char(8)[] | NN, CHECK `uic = ANY(codes_uic)` | Tous les codes UIC de la gare (`uic` compris) — rapprochement des arrêts GTFS (E03), D034 |
 | `nom` | text | NN | Nom affiché (nom **de la gare** ; celui de la commune est dans `commune`) |
 | `code_insee` | char(5) | FK → commune | Commune de la gare ; nul si le code du fichier est absent du COG (D038) |
@@ -180,7 +180,7 @@ Index : GIST(`geom`), (`dans_region`), GIN(`codes_uic`), (`code_insee`). Migrati
 
 Le nom de la commune et le département se lisent par jointure : `JOIN commune c ON c.code_insee = g.code_insee` (`LEFT JOIN` pour garder les gares sans commune).
 
-Mise à jour **par `uic`** (insertion ou mise à jour), jamais suppression puis réinsertion : `passage`, `lieu_gare`, `mobilite_locale` et `gare_stats` pointent vers `gare.id` (D034).
+Mise à jour de la gare qui partage **au moins un code UIC** avec la ligne du fichier (`codes_uic && …`), sinon insertion ; jamais suppression puis réinsertion : `passage`, `lieu_gare`, `mobilite_locale` et `gare_stats` pointent vers `gare.id` (D034, D039). Deux gares ne partagent jamais un code : c'est un contrôle bloquant du chargement.
 
 ### 3.1 bis `commune`
 | Colonne | Type | Contraintes | Description |
@@ -447,3 +447,4 @@ ORDER BY a.depart_s;
 | 22/10/2026 | 1.7 | § 3.1 : migration `0003_gare_codes_uic` appliquée, contrainte `uic = ANY(codes_uic)` |
 | 22/10/2026 | 1.8 | § 3.3 : `passage.montee_interdite`, `passage.descente_interdite` ; § 5 : requête « trains A → B » filtrée — D036 |
 | 23/10/2026 | 1.9 | § 3.1 bis : table `commune` (code INSEE, nom, département) ; § 3.1 : `gare.commune` et `gare.departement` retirés, `gare.code_insee` → `commune` ; § 2 et § 7 — D038 |
+| 23/10/2026 | 1.10 | § 3.1 : gare reconnue par un code UIC commun, plus par le seul `uic` — D039 |

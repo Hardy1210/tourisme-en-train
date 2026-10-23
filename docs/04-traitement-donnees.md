@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.8 · **Date** 23/10/2026
+> **Version** 1.9 · **Date** 23/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -134,9 +134,9 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 5. Département = 2 premiers caractères du code INSEE du fichier (3 pour l'outre-mer, `2A`/`2B` pour la Corse) ; il n'est pas stocké dans `gare`.
 6. `dans_region` = département ∈ `parametres.region.departements`.
 7. `code_insee` gardé seulement s'il existe dans `commune` ; sinon vide, et la gare est listée dans le rapport (D038).
-8. Charger dans `gare` **par `uic`** (insertion ou mise à jour) ; une gare absente du fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034).
+8. Charger dans `gare` : mettre à jour la gare qui partage **au moins un code UIC** avec la ligne (l'ordre des codes, donc `uic`, peut changer d'un fichier à l'autre : Paris Gare de Lyon le 23/10), insérer les autres ; une gare sans aucun code dans le fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034, D039).
 
-**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; **aucune gare de la région sans commune** (attrape aussi une table `commune` vide : `pnpm etl communes` d'abord) ; aucun code `uic` principal en double dans le fichier (sinon la mise à jour par `uic` échoue).
+**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; **aucune gare de la région sans commune** (attrape aussi une table `commune` vide : `pnpm etl communes` d'abord) ; aucun code UIC présent dans plusieurs lignes du fichier ; aucune ligne du fichier correspondant à plusieurs gares en base (doublon à fusionner à la main, D039).
 
 **Modifié après coup (D038) :** le COG n'est plus lu ici ; l'empreinte des gares seule décide de `IGNORE`.
 
@@ -309,3 +309,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites ; § 2 : `controles.rapprochementGtfsMinPct` — D036 |
 | 22/10/2026 | 1.7 | § 1 : règle `IGNORE` propre au GTFS (fenêtre glissante) — D037 |
 | 23/10/2026 | 1.8 | § 3 et § 4.0 : commande `communes` et table `commune` ; § 4.1 : `commune` et `departement` ne sont plus stockés dans `gare`, contrôle « gares de la région sans commune » ; § 2 : `controles.communesFranceMin` — D038 |
+| 23/10/2026 | 1.9 | § 4.1 : gare reconnue par un code UIC commun ; contrôles « code UIC dans plusieurs lignes » et « ligne correspondant à plusieurs gares » — D039 |

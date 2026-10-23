@@ -81,7 +81,13 @@ async function chargerGares(
 
   const { lignes, bilan } = lireCsv(gares.chemin, schemaGare, { delimiteur: ';' });
   suivi.lecture = bilan;
-  let fusion: BilanFusion = { chargees: 0, supprimees: 0, gardees: [], sansCommune: [] };
+  let fusion: BilanFusion = {
+    chargees: 0,
+    ajoutees: 0,
+    supprimees: 0,
+    gardees: [],
+    sansCommune: [],
+  };
 
   const resultat = await charger(
     pool,
@@ -114,6 +120,7 @@ async function chargerGares(
       `${fusion.sansCommune.length} gare(s) sans commune (code absent de la table commune) : ${fusion.sansCommune.join(', ')}`,
     );
   }
+  if (fusion.ajoutees > 0) suivi.remarques.push(`${fusion.ajoutees} gare(s) nouvelle(s)`);
   if (fusion.supprimees > 0)
     suivi.remarques.push(`${fusion.supprimees} gare(s) absente(s) du fichier, supprimée(s)`);
   if (fusion.gardees.length > 0) {

@@ -258,7 +258,7 @@
 
 ## D034 — Gares : tous les codes UIC, nom de commune par le COG INSEE, mise à jour par `uic`
 - **Date :** 19/10/2026
-- **Point 2 remplacé par D038** (le COG remplit la table `commune`, plus `gare.commune`).
+- **Point 2 remplacé par D038** (le COG remplit la table `commune`, plus `gare.commune`). **Point 3 précisé par D039** (gare reconnue par un code UIC commun, plus par le seul `uic`).
 - **Décision :**
   1. **Colonne `gare.codes_uic` (char(8)[])** : tous les codes UIC du fichier ; `uic` reste le premier code et la clé de rapprochement des chargements.
   2. **Nouvelle source `communes`** (Code officiel géographique INSEE, Licence Ouverte) pour remplir `gare.commune` à partir du code INSEE.
@@ -325,3 +325,14 @@
 - **Raison :** remarque du professeur sur le schéma (normalisation). Le nom et le département décrivent la commune, pas la gare : recopiés dans `gare` puis `lieu`, ils seraient répétés et pourraient diverger entre deux chargements. Une table à part les stocke une fois et accueille les futures informations sur les communes (fréquentation, `03` § 7). Fait avant E04, tant que `lieu` est vide.
 - **Écarté :** garder les copies dans `gare` (redondance) ; mettre `dans_region` dans `commune` (mélange donnée officielle et réglage du projet, et perdu pour les 8 gares sans commune) ; lire le COG dans `gares` comme avant (deux sources dans une commande, `IGNORE` sur deux empreintes) ; table `departement` en plus (aucun besoin aujourd'hui).
 - **Impact :** `03` § 2, § 3.1, § 3.1 bis, § 3.6, § 7 ; `02` § 2.1 bis ; `04` § 2, § 3, § 4.0, § 4.1 ; `GLOSSAIRE` ; fiche E02 ; `CLAUDE.md` § 16 ; `A-FAIRE` § 1.
+
+## D039 — Gares reconnues par un code UIC commun, pas par le seul code principal
+- **Date :** 23/10/2026
+- **Précise :** D034, point 3 (mise à jour « par `uic` »).
+- **Décision :**
+  1. **Au chargement, une ligne du fichier met à jour la gare qui partage au moins un code UIC avec elle** (`codes_uic && …`, index GIN) ; `uic` (premier code) est recopié du fichier et peut donc changer. Aucun code commun → nouvelle gare.
+  2. **Deux contrôles bloquants remplacent « UIC principal en double »** : aucun code dans plusieurs lignes du fichier ; aucune ligne du fichier correspondant à plusieurs gares en base.
+  3. **Un doublon déjà en base se fusionne à la main**, jamais automatiquement : le contrôle bloque et le rapport le signale.
+- **Raison :** le fichier SNCF du 23/10 a inversé les codes de Paris Gare de Lyon (`87686030;87686006`). Reconnue par son seul premier code, la gare a été recréée (id 27041) à côté de l'ancienne (id 1913, gardée car 530 passages la référencent), avec les mêmes codes. Au rechargement suivant, le GTFS aurait réparti ses trains entre les deux gares (chaque code vers la gare dont il est le code principal), et E04 aurait calculé des liaisons fausses. Les contrôles d'alors ne voyaient rien.
+- **Écarté :** garder `uic` comme clé en le choisissant de façon stable (plus petit code) : le fichier peut aussi ajouter ou retirer un code ; fusionner automatiquement les doublons (déplacer les passages, lieux et mobilités) : rare, risqué, et mieux vu par un humain ; une contrainte d'exclusion en base sur les tableaux : extension supplémentaire pour un cas que les contrôles couvrent.
+- **Impact :** `03` § 3.1 ; `04` § 4.1 ; fiche E02. Base locale : doublon 27041 supprimé (aucune référence), gare 1913 passée au code principal `87686030`.

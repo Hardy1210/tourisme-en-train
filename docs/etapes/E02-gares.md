@@ -81,3 +81,4 @@ Voir `_MODELE.md`. Compléter `CLAUDE.md` § 16 (commande ETL).
 - 19/10/2026 : audit fait ; colonne `codes_uic`, source `communes` (COG INSEE), mise à jour par `uic`, seuils dans `parametres.json` (D034).
 - 22/10/2026 : socle ETL, fusion propre à chaque source, contrôle « UIC en double », empreinte du COG, `.dockerignore` — D035. La gare de Dijon s'appelle « Dijon » dans le fichier (critère « Dijon-Ville »).
 - 23/10/2026 : **modifié après coup** — table `commune` (nom et département par code INSEE), commande `pnpm etl communes` avant `gares` ; `gare.commune` et `gare.departement` retirés, `gare.code_insee` relié à `commune` (remarque du professeur, D038).
+- 23/10/2026 : **modifié après coup** — gare reconnue par un code UIC commun et non plus par le seul code principal, deux contrôles bloquants sur les codes partagés (doublon de Paris Gare de Lyon, D039).
