@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.5 · **Date** 22/10/2026
+> **Version** 1.6 · **Date** 23/10/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -53,10 +53,10 @@
 ### 2.1 bis `communes` — Code officiel géographique, communes (P0)
 - **Où :** INSEE, fichier `v_commune_<année>.csv` du COG (fiche data.gouv.fr « Code officiel géographique »). Adresse dans `config/sources.json` ; elle change chaque année (millésime).
 - **Format :** CSV, séparateur `,`, UTF-8. ~37 500 lignes.
-- **Colonnes utilisées :** `TYPECOM` (`COM` commune, `ARM` arrondissement municipal, `COMD` commune déléguée, `COMA` associée), `COM` (code INSEE), `LIBELLE` (nom), `COMPARENT` (commune de rattachement d'un `ARM`/`COMD`/`COMA`).
-- **Usage :** donner `gare.commune` à partir de `gare.code_insee`. Paris 13ᵉ (`75113`, `ARM`) → commune parente. Code absent (8 gares au 19/10, toutes hors région : communes fusionnées) → `commune` vide, compté dans le rapport.
+- **Colonnes utilisées :** `TYPECOM` (`COM` commune, `ARM` arrondissement municipal, `COMD` commune déléguée, `COMA` associée), `COM` (code INSEE), `LIBELLE` (nom), `DEP` (département ; vide pour `COMD` et `COMA`), `COMPARENT` (commune de rattachement d'un `ARM`/`COMD`/`COMA`).
+- **Usage :** table `commune` (nom et département par code INSEE), reliée à `gare.code_insee` (D038). Paris 13ᵉ (`75113`, `ARM`) → nom et département de la commune parente. Code de gare absent (8 gares au 19/10, toutes hors région : communes fusionnées) → `gare.code_insee` vide, compté dans le rapport des gares.
 - **Licence :** Licence Ouverte 2.0.
-- **Table cible :** aucune (utilisé pendant le chargement des gares).
+- **Table cible :** `commune` (36 912 codes au 23/10).
 
 ### 2.2 `gtfs_sncf` — Horaires SNCF (P0)
 - **Où :** transport.data.gouv.fr, « Réseau SNCF TGV, Intercités et TER » (SNCF). Adresse dans `config/sources.json`.
@@ -226,3 +226,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 05/10/2026 | 1.3 | Adresses et licences des sources enregistrées dans `config/sources.json` — D027 |
 | 19/10/2026 | 1.4 | Audit E02 : colonnes réelles des gares, licence ODbL confirmée ; nouvelle source `communes` (COG INSEE) — D034 |
 | 22/10/2026 | 1.5 | § 2.2 réécrit après l'audit E03 : pas de `calendar.txt`, type de train lu dans le `stop_id`, cars exclus, montée et descente interdites, licence ODbL confirmée — D036 |
+| 23/10/2026 | 1.6 | § 2.1 bis : `communes` remplit la table `commune` (colonne `DEP` lue) — D038 |

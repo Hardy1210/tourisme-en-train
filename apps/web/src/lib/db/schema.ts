@@ -44,6 +44,13 @@ export const sourceDonnees = pgTable('source_donnees', {
   nbLignes: integer(),
 });
 
+// § 3.1 bis
+export const commune = pgTable('commune', {
+  codeInsee: char({ length: 5 }).primaryKey(),
+  nom: text().notNull(),
+  departement: char({ length: 3 }).notNull(),
+});
+
 // § 3.1
 export const gare = pgTable(
   'gare',
@@ -52,9 +59,7 @@ export const gare = pgTable(
     uic: char({ length: 8 }).notNull().unique(),
     codesUic: char({ length: 8 }).array().notNull(),
     nom: text().notNull(),
-    commune: text(),
-    codeInsee: char({ length: 5 }),
-    departement: char({ length: 3 }),
+    codeInsee: char({ length: 5 }).references(() => commune.codeInsee),
     dansRegion: boolean().notNull().default(false),
     geom: geographyPoint().notNull(),
     maj: maj(),
@@ -63,6 +68,7 @@ export const gare = pgTable(
     index().using('gist', t.geom),
     index().on(t.dansRegion),
     index().using('gin', t.codesUic),
+    index().on(t.codeInsee),
     check('gare_uic_dans_codes_uic_check', sql`${t.uic} = ANY (${t.codesUic})`),
   ],
 );

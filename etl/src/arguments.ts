@@ -4,6 +4,7 @@ import { parseArgs } from 'node:util';
 /** Sources et calculs dans l'ordre du pipeline `all` (docs/04-traitement-donnees.md § 3). */
 export const SOURCES = [
   'sources',
+  'communes',
   'gares',
   'gtfs_sncf',
   'liaisons',

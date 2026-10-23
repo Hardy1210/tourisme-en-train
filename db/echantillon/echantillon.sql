@@ -11,21 +11,34 @@ INSERT INTO source_donnees (code, nom, producteur, url, licence, attribution)
 VALUES ('echantillon', 'Échantillon de test (données d''exemple)', 'tourisme-en-train',
         'https://example.org/echantillon', 'Aucune (données inventées)', 'Données d''exemple');
 
+-- Communes des gares et des lieux d'exemple (vrais codes INSEE).
+INSERT INTO commune (code_insee, nom, departement) VALUES
+  ('21231', 'Dijon',            '21'),
+  ('21054', 'Beaune',           '21'),
+  ('39198', 'Dole',             '39'),
+  ('25056', 'Besançon',         '25'),
+  ('71076', 'Chalon-sur-Saône', '71'),
+  ('71270', 'Mâcon',            '71'),
+  ('21425', 'Montbard',         '21'),
+  ('89024', 'Auxerre',          '89'),
+  ('90010', 'Belfort',          '90'),
+  ('69383', 'Lyon',             '69');
+
 -- 10 gares : 9 dans la région, Lyon-Part-Dieu hors région.
-INSERT INTO gare (uic, codes_uic, nom, commune, code_insee, departement, dans_region, geom)
-SELECT uic, ARRAY[uic], nom, commune, insee, dep, dans_region, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography
+INSERT INTO gare (uic, codes_uic, nom, code_insee, dans_region, geom)
+SELECT uic, ARRAY[uic], nom, insee, dans_region, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography
 FROM (VALUES
-  ('EX000001', 'Dijon-Ville',           'Dijon',            '21231', '21', true,  5.0272, 47.3233),
-  ('EX000002', 'Beaune',                'Beaune',           '21054', '21', true,  4.8436, 47.0237),
-  ('EX000003', 'Dole-Ville',            'Dole',             '39198', '39', true,  5.4935, 47.0926),
-  ('EX000004', 'Besançon-Viotte',       'Besançon',         '25056', '25', true,  6.0217, 47.2471),
-  ('EX000005', 'Chalon-sur-Saône',      'Chalon-sur-Saône', '71076', '71', true,  4.8429, 46.7815),
-  ('EX000006', 'Mâcon-Ville',           'Mâcon',            '71270', '71', true,  4.8268, 46.3017),
-  ('EX000007', 'Montbard',              'Montbard',         '21425', '21', true,  4.3381, 47.6239),
-  ('EX000008', 'Auxerre-Saint-Gervais', 'Auxerre',          '89024', '89', true,  3.5800, 47.7926),
-  ('EX000009', 'Belfort-Ville',         'Belfort',          '90010', '90', true,  6.8550, 47.6338),
-  ('EX000010', 'Lyon-Part-Dieu',        'Lyon',             '69383', '69', false, 4.8597, 45.7605)
-) AS g (uic, nom, commune, insee, dep, dans_region, lon, lat);
+  ('EX000001', 'Dijon-Ville',           '21231', true,  5.0272, 47.3233),
+  ('EX000002', 'Beaune',                '21054', true,  4.8436, 47.0237),
+  ('EX000003', 'Dole-Ville',            '39198', true,  5.4935, 47.0926),
+  ('EX000004', 'Besançon-Viotte',       '25056', true,  6.0217, 47.2471),
+  ('EX000005', 'Chalon-sur-Saône',      '71076', true,  4.8429, 46.7815),
+  ('EX000006', 'Mâcon-Ville',           '71270', true,  4.8268, 46.3017),
+  ('EX000007', 'Montbard',              '21425', true,  4.3381, 47.6239),
+  ('EX000008', 'Auxerre-Saint-Gervais', '89024', true,  3.5800, 47.7926),
+  ('EX000009', 'Belfort-Ville',         '90010', true,  6.8550, 47.6338),
+  ('EX000010', 'Lyon-Part-Dieu',        '69383', false, 4.8597, 45.7605)
+) AS g (uic, nom, insee, dans_region, lon, lat);
 
 -- Jours de circulation : une date d'été et une date d'hiver (après le changement d'heure du 25/10/2026).
 INSERT INTO service_jour (service_id, date_service) VALUES

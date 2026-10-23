@@ -33,6 +33,8 @@ export const schemaParametres = z
     }),
     /** Seuils des contrôles bloquants de l'ETL (docs/04-traitement-donnees.md § 4). */
     controles: z.strictObject({
+      /** Codes INSEE dans `commune` (communes, arrondissements, communes déléguées, D038). */
+      communesFranceMin: z.number().int().positive(),
       garesFranceMin: z.number().int().positive(),
       garesRegionMin: z.number().int().positive(),
       /** Part minimale (en %) des passages des trajets retenus rapprochés d'une gare (E03). */

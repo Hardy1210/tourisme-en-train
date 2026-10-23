@@ -19,6 +19,7 @@ function urlTest(variable: 'BDD_URL_MIGRATIONS' | 'BDD_URL_APP' | 'BDD_URL_ETL')
 
 const TABLES_P0 = [
   'categorie_regle',
+  'commune',
   'execution_etl',
   'gare',
   'gare_stats',

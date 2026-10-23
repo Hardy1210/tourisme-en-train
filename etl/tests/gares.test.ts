@@ -19,7 +19,6 @@ describe('schemaGare', () => {
       codesUic: ['87713040'],
       nom: 'Dijon',
       codeInsee: '21231',
-      departement: '21',
       dansRegion: true,
       lat: 47.3234,
       lon: 5.0272,

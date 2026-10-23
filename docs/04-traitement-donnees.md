@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.7 · **Date** 22/10/2026
+> **Version** 1.8 · **Date** 23/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -35,7 +35,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
-  "controles": { "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90 },
+  "controles": { "communesFranceMin": 34000, "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90 },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "marche":  { "vitesseKmH": 4.5, "coefDetour": 1.3 },
@@ -96,7 +96,8 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | Ordre | Commande | Fait | Dépend de | Étape |
 |---|---|---|---|---|
 | 1 | `sources` | Enregistre/à jour `source_donnees` (métadonnées, licences) | — | E02 |
-| 2 | `gares` | Charge toutes les gares de France, marque `dans_region` | 1 | E02 |
+| 1 bis | `communes` | Charge `commune` (COG INSEE) | 1 | D038 |
+| 2 | `gares` | Charge toutes les gares de France, marque `dans_region`, les relie à `commune` | 1, 1 bis | E02 |
 | 3 | `gtfs_sncf` | Charge `trajet`, `passage`, `service_jour` | 2 | E03 |
 | 4 | `liaisons` | Calcule `liaison_directe` | 3 | E04 |
 | 5 | `regles` | Charge `categorie_regle` depuis `regles/categories.csv` | — | E05 |
@@ -115,19 +116,29 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 
 ## 4. Algorithmes par source
 
+### 4.0 Communes (D038)
+1. Télécharger → `data/brut/communes/v_commune.csv` (`02` § 2.1 bis).
+2. Lire et valider (Zod) : code INSEE (5 caractères), nom, département (obligatoire pour une `COM`).
+3. Indexer : une `COM` prend son nom et son `DEP` ; un `ARM`, une `COMD` ou une `COMA` prend ceux de sa commune de rattachement, sauf si son code est déjà celui d'une `COM` (la `COM` l'emporte). Le fichier est lu en entier avant l'indexation (une commune déléguée peut précéder sa parente).
+4. Charger dans `commune` **par `code_insee`** (insertion ou mise à jour) ; un code absent du fichier est supprimé si rien ne le référence, sinon gardé et signalé.
+
+**Contrôles (bloquants) :** codes ≥ `controles.communesFranceMin` ; aucun département de la région sans commune.
+
+**Nouveau millésime du COG :** lancer ensuite `pnpm etl gares --force`, pour qu'une gare dont le code vient d'apparaître soit reliée à sa commune.
+
 ### 4.1 Gares (E02)
-1. Télécharger → `data/brut/gares/` ; télécharger aussi `communes` → `data/brut/communes/` (`02` § 2.1 bis).
+1. Télécharger → `data/brut/gares/`.
 2. Lire (CSV en flux, BOM retiré), valider (Zod) : nom, position `"lat, lon"`, code INSEE, code(s) UIC.
 3. Normaliser chaque UIC sur **8 chiffres** ; `uic` = le premier code de 8 chiffres commençant par `87`, `codes_uic` = tous les codes valides (D034).
 4. Écarter les gares sans position ou sans UIC (comptées dans le rapport).
-5. `departement` = 2 premiers caractères du code INSEE (3 pour l'outre-mer, `2A`/`2B` pour la Corse).
-6. `commune` = `LIBELLE` du COG pour ce code (`ARM`/`COMD` → commune parente) ; code absent → vide, compté.
-7. `dans_region` = `departement` ∈ `parametres.region.departements`.
+5. Département = 2 premiers caractères du code INSEE du fichier (3 pour l'outre-mer, `2A`/`2B` pour la Corse) ; il n'est pas stocké dans `gare`.
+6. `dans_region` = département ∈ `parametres.region.departements`.
+7. `code_insee` gardé seulement s'il existe dans `commune` ; sinon vide, et la gare est listée dans le rapport (D038).
 8. Charger dans `gare` **par `uic`** (insertion ou mise à jour) ; une gare absente du fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034).
 
-**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; aucun code `uic` principal en double dans le fichier (sinon la mise à jour par `uic` échoue).
+**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; **aucune gare de la région sans commune** (attrape aussi une table `commune` vide : `pnpm etl communes` d'abord) ; aucun code `uic` principal en double dans le fichier (sinon la mise à jour par `uic` échoue).
 
-**Fichier des communes :** son empreinte compte aussi — la source est `IGNORE` seulement si les **deux** fichiers sont inchangés (un nouveau millésime du COG change des noms de commune).
+**Modifié après coup (D038) :** le COG n'est plus lu ici ; l'empreinte des gares seule décide de `IGNORE`.
 
 ### 4.2 Horaires GTFS (E03)
 1. Télécharger le ZIP → `data/brut/gtfs_sncf/`.
@@ -297,3 +308,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 22/10/2026 | 1.5 | § 4.1 : contrôle « UIC en double », empreinte du COG prise en compte pour `IGNORE` — D035 |
 | 22/10/2026 | 1.6 | § 4.2 réécrit après l'audit E03 (type de train par le `stop_id`, cars exclus, sans rattrapage par distance, correspondance des colonnes, contrôles) ; § 4.3 : montée et descente interdites ; § 2 : `controles.rapprochementGtfsMinPct` — D036 |
 | 22/10/2026 | 1.7 | § 1 : règle `IGNORE` propre au GTFS (fenêtre glissante) — D037 |
+| 23/10/2026 | 1.8 | § 3 et § 4.0 : commande `communes` et table `commune` ; § 4.1 : `commune` et `departement` ne sont plus stockés dans `gare`, contrôle « gares de la région sans commune » ; § 2 : `controles.communesFranceMin` — D038 |

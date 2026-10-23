@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.8 · **Date** 22/10/2026
+> **Version** 1.9 · **Date** 23/10/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -26,6 +26,9 @@
                  ┌──────────────┐
                  │ source_donnees│◀── execution_etl
                  └──────────────┘
+┌─────────┐
+│ commune │◀── gare.code_insee
+└─────────┘
 ┌────────┐   ┌─────────┐   ┌─────────┐   ┌──────────────┐
 │  gare  │◀──│ passage │──▶│ trajet  │──▶│ service_jour │
 └───┬────┘   └─────────┘   └─────────┘   └──────────────┘
@@ -39,7 +42,7 @@
  ligne_ferroviaire (P1)      amenagement_cyclable (P1)
 ```
 
-Les 11 tables créées en E01 et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
+Les tables créées (11 en E01, `commune` ensuite, D038) et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
 
 ```mermaid
 erDiagram
@@ -55,10 +58,16 @@ erDiagram
         text statut
         timestamptz debut
     }
+    commune {
+        char code_insee PK
+        text nom
+        char departement
+    }
     gare {
         integer id PK
         char uic UK
         text nom
+        char code_insee FK
         boolean dans_region
         geography geom
     }
@@ -114,6 +123,7 @@ erDiagram
         geography geom
     }
 
+    commune |o--o{ gare : "située dans"
     trajet ||--|{ passage : "s'arrête"
     gare ||--o{ passage : "desservie par"
     service_jour }o..o{ trajet : "service_id"
@@ -130,6 +140,7 @@ erDiagram
 
 | Table | Rôle | Remplie par | Prio |
 |---|---|---|---|
+| `commune` | Communes de France (nom, département), par code INSEE | ETL `communes` | P0 |
 | `gare` | Toutes les gares de France (petite table) | ETL `gares` | P0 |
 | `trajet` | Trains (trips GTFS) touchant la région | ETL `gtfs_sncf` | P0 |
 | `passage` | Arrêts de chaque trajet | ETL `gtfs_sncf` | P0 |
@@ -159,17 +170,30 @@ Conventions : `NN` = non nul · `PK` = clé primaire · `FK` = clé étrangère 
 | `id` | integer | PK, identity | |
 | `uic` | char(8) | NN, UQ | Code UIC principal (le premier du fichier) ; clé de rapprochement des chargements |
 | `codes_uic` | char(8)[] | NN, CHECK `uic = ANY(codes_uic)` | Tous les codes UIC de la gare (`uic` compris) — rapprochement des arrêts GTFS (E03), D034 |
-| `nom` | text | NN | Nom affiché |
-| `commune` | text | | |
-| `code_insee` | char(5) | | Commune |
-| `departement` | char(3) | | Dérivé du code INSEE |
-| `dans_region` | boolean | NN, défaut false | Gare de la région pilote |
+| `nom` | text | NN | Nom affiché (nom **de la gare** ; celui de la commune est dans `commune`) |
+| `code_insee` | char(5) | FK → commune | Commune de la gare ; nul si le code du fichier est absent du COG (D038) |
+| `dans_region` | boolean | NN, défaut false | Gare de la région pilote : département du code INSEE du fichier dans `parametres.region.departements`. Réglage du projet, pas une propriété de la commune : reste dans `gare` (D038) |
 | `geom` | geography(Point, 4326) | NN | |
 | `maj` | timestamptz | NN, défaut now() | Dernier chargement |
 
-Index : GIST(`geom`), (`dans_region`), GIN(`codes_uic`). Migration `0003_gare_codes_uic`.
+Index : GIST(`geom`), (`dans_region`), GIN(`codes_uic`), (`code_insee`). Migrations `0003_gare_codes_uic`, `0005_table_commune`.
+
+Le nom de la commune et le département se lisent par jointure : `JOIN commune c ON c.code_insee = g.code_insee` (`LEFT JOIN` pour garder les gares sans commune).
 
 Mise à jour **par `uic`** (insertion ou mise à jour), jamais suppression puis réinsertion : `passage`, `lieu_gare`, `mobilite_locale` et `gare_stats` pointent vers `gare.id` (D034).
+
+### 3.1 bis `commune`
+| Colonne | Type | Contraintes | Description |
+|---|---|---|---|
+| `code_insee` | char(5) | PK | Code officiel (COG INSEE) : 5 chiffres, ou `2A`/`2B` + 3 chiffres |
+| `nom` | text | NN | `LIBELLE` du COG |
+| `departement` | char(3) | NN | `DEP` du COG |
+
+Une ligne par code du COG : communes (`COM`), mais aussi arrondissements municipaux (`ARM`), communes déléguées (`COMD`) et associées (`COMA`), qui prennent **le nom et le département de leur commune de rattachement** (Paris 13ᵉ `75113` → « Paris », `75`) : une gare ou un lieu peut porter n'importe lequel de ces codes.
+
+Mise à jour **par `code_insee`** (insertion ou mise à jour) ; un code disparu du COG n'est supprimé que si rien ne le référence (même règle que `gare`, D034). Migration `0005_table_commune`, D038.
+
+*Pourquoi une table :* le nom et le département décrivent la commune, pas la gare. Recopiés dans `gare` puis `lieu`, ils seraient répétés et pourraient diverger ; ici, ils sont stockés une fois, et une information nouvelle sur les communes (fréquentation, § 7) s'ajoute en une colonne.
 
 ### 3.2 `trajet`
 | Colonne | Type | Contraintes | Description |
@@ -232,8 +256,8 @@ Calculée uniquement pour les gares de départ **dans la région** et sur la fen
 | `sous_categorie` | text | | Libellé lisible (« aire de jeux »…) |
 | `description` | text | | Courte, nettoyée |
 | `adresse` | text | | |
-| `commune` | text | | |
-| `code_insee` | char(5) | | |
+| `commune` | text | | Provisoire : à remplacer par le lien vers `commune` si les sources donnent le code INSEE (audit E05, D038) |
+| `code_insee` | char(5) | | Pas encore de FK → `commune` (audit E05, D038) |
 | `url` | text | | Site officiel |
 | `image_url` | text | | |
 | `horaires` | text | | Texte tel que fourni |
@@ -405,7 +429,7 @@ ORDER BY a.depart_s;
 |---|---|
 | Connexion Google (Auth.js) | `utilisateur`, `compte`, `session`, `jeton_verification` (schéma Auth.js) |
 | Favoris synchronisés | `favori` (utilisateur_id, gare_id ou lieu_id) |
-| Pépite méconnue | colonne `frequentation` sur une table `commune` |
+| Pépite méconnue | colonne `frequentation` sur la table `commune` (§ 3.1 bis) |
 
 ---
 
@@ -422,3 +446,4 @@ ORDER BY a.depart_s;
 | 19/10/2026 | 1.6 | § 3.1 : colonne `codes_uic` et mise à jour par `uic` (migration en E02) — D034 |
 | 22/10/2026 | 1.7 | § 3.1 : migration `0003_gare_codes_uic` appliquée, contrainte `uic = ANY(codes_uic)` |
 | 22/10/2026 | 1.8 | § 3.3 : `passage.montee_interdite`, `passage.descente_interdite` ; § 5 : requête « trains A → B » filtrée — D036 |
+| 23/10/2026 | 1.9 | § 3.1 bis : table `commune` (code INSEE, nom, département) ; § 3.1 : `gare.commune` et `gare.departement` retirés, `gare.code_insee` → `commune` ; § 2 et § 7 — D038 |
