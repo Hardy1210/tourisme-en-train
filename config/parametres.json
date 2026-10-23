@@ -7,7 +7,12 @@
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
-  "controles": { "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90 },
+  "controles": {
+    "communesFranceMin": 34000,
+    "garesFranceMin": 2500,
+    "garesRegionMin": 100,
+    "rapprochementGtfsMinPct": 90
+  },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "marche": { "vitesseKmH": 4.5, "coefDetour": 1.3 },

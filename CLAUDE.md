@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `gares`, `gtfs_sncf` |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `gares`, `gtfs_sncf` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -385,3 +385,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 19/10/2026 | 1.13 | § 8 et § 9 : E01 terminée, E02 en cours |
 | 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |
 | 22/10/2026 | 1.15 | § 8, § 9 et § 16 : E03 terminée, `pnpm etl gtfs_sncf` |
+| 23/10/2026 | 1.16 | § 16 : `pnpm etl communes` — D038 |

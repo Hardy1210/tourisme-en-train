@@ -1,16 +1,15 @@
 // Commande `pnpm etl gares` (docs/04-traitement-donnees.md § 4.1) : toutes les gares de France,
-// `dans_region` pour la région pilote, nom de commune tiré du COG INSEE (source `communes`).
+// `dans_region` pour la région pilote, reliées à `commune` par le code INSEE (D038 : `pnpm etl communes` avant).
 import { trouverSource } from '@tourisme/commun';
 import { z } from 'zod';
 import { charger, lireCsv } from '../chargement/base';
 import { CONTROLES, TABLE_TEMPORAIRE, fusionnerGares, type BilanFusion } from '../chargement/gares';
 import { executerSource } from '../chargement/execution';
-import { taille, type Suivi } from '../chargement/rapport';
+import type { Suivi } from '../chargement/rapport';
 import { lireConfig, parametres, resoudreDossierDonnees } from '../config';
 import { creerPool } from '../db';
 import { departementDe, estDansRegion, lireCodesUic, lirePosition } from '../transformations/gares';
 import { estInchange, lireEmpreinteConnue, obtenirFichier } from './base';
-import { lireCommunes } from './communes';
 
 /** Une ligne du fichier SNCF, validée et transformée (colonnes réelles : `02` § 2.1). */
 export const schemaGare = z
@@ -43,7 +42,6 @@ export const schemaGare = z
       ...codes,
       nom: ligne.nom,
       codeInsee: ligne.codeinsee,
-      departement,
       dansRegion: estDansRegion(departement, parametres.region.departements),
       ...position,
     };
@@ -70,43 +68,20 @@ async function chargerGares(
   options: { force: boolean; horsLigne: boolean },
   suivi: Suivi,
 ): Promise<'SUCCES' | 'IGNORE'> {
-  const horsLigne = options.horsLigne;
   const gares = await obtenirFichier(trouverSource('gares'), {
     dossierDonnees,
     nomFichier: 'gares.csv',
-    horsLigne,
+    horsLigne: options.horsLigne,
   });
   suivi.fichier = { nom: 'gares.csv', ...gares };
-  const cog = await obtenirFichier(trouverSource('communes'), {
-    dossierDonnees,
-    nomFichier: 'v_commune.csv',
-    horsLigne,
-  });
-  suivi.remarques.push(
-    `Communes : v_commune.csv, empreinte \`${cog.empreinte.slice(0, 12)}\`, ${taille(cog.taille)}`,
-  );
 
-  // Les deux fichiers comptent : une nouvelle année du COG change des noms de commune.
   const client = await pool.connect();
-  const connues = await Promise.all([
-    lireEmpreinteConnue(client, 'gares'),
-    lireEmpreinteConnue(client, 'communes'),
-  ]).finally(() => client.release());
-  if (
-    estInchange(gares.empreinte, connues[0], options.force) &&
-    estInchange(cog.empreinte, connues[1], options.force)
-  ) {
-    return 'IGNORE';
-  }
-
-  const { communes, bilan: bilanCog } = await lireCommunes(cog.chemin);
-  if (bilanCog.rejets.length > 0)
-    suivi.remarques.push(`Communes : ${bilanCog.rejets.length} ligne(s) du COG écartée(s)`);
+  const connue = await lireEmpreinteConnue(client, 'gares').finally(() => client.release());
+  if (estInchange(gares.empreinte, connue, options.force)) return 'IGNORE';
 
   const { lignes, bilan } = lireCsv(gares.chemin, schemaGare, { delimiteur: ';' });
   suivi.lecture = bilan;
-  const sansCommune: string[] = [];
-  let fusion: BilanFusion = { chargees: 0, supprimees: 0, gardees: [] };
+  let fusion: BilanFusion = { chargees: 0, supprimees: 0, gardees: [], sansCommune: [] };
 
   const resultat = await charger(
     pool,
@@ -114,29 +89,18 @@ async function chargerGares(
       source: 'gares',
       tableTemporaire: TABLE_TEMPORAIRE,
       lignes,
-      versValeurs: (g: GareLue) => {
-        const commune = communes.get(g.codeInsee) ?? null;
-        if (commune === null)
-          sansCommune.push(`${g.nom} (${g.codeInsee}${g.dansRegion ? ', RÉGION' : ''})`);
-        return [
-          g.uic,
-          g.codesUic,
-          g.nom,
-          commune,
-          g.codeInsee,
-          g.departement,
-          g.dansRegion,
-          g.lon,
-          g.lat,
-        ];
-      },
+      versValeurs: (g: GareLue) => [
+        g.uic,
+        g.codesUic,
+        g.nom,
+        g.codeInsee,
+        g.dansRegion,
+        g.lon,
+        g.lat,
+      ],
       controles: CONTROLES,
       fusionner: async (c) => {
         fusion = await fusionnerGares(c);
-        await c.query(
-          `UPDATE source_donnees SET empreinte = $1, date_telechargement = now(), nb_lignes = $2 WHERE code = 'communes'`,
-          [cog.empreinte, communes.size],
-        );
         return fusion.chargees;
       },
     },
@@ -145,9 +109,9 @@ async function chargerGares(
 
   suivi.chargees = resultat.chargees;
   suivi.controles = resultat.controles;
-  if (sansCommune.length > 0) {
+  if (fusion.sansCommune.length > 0) {
     suivi.remarques.push(
-      `${sansCommune.length} gare(s) sans nom de commune (code absent du COG) : ${sansCommune.join(', ')}`,
+      `${fusion.sansCommune.length} gare(s) sans commune (code absent de la table commune) : ${fusion.sansCommune.join(', ')}`,
     );
   }
   if (fusion.supprimees > 0)

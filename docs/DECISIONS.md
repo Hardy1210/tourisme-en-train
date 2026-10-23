@@ -258,6 +258,7 @@
 
 ## D034 — Gares : tous les codes UIC, nom de commune par le COG INSEE, mise à jour par `uic`
 - **Date :** 19/10/2026
+- **Point 2 remplacé par D038** (le COG remplit la table `commune`, plus `gare.commune`).
 - **Décision :**
   1. **Colonne `gare.codes_uic` (char(8)[])** : tous les codes UIC du fichier ; `uic` reste le premier code et la clé de rapprochement des chargements.
   2. **Nouvelle source `communes`** (Code officiel géographique INSEE, Licence Ouverte) pour remplir `gare.commune` à partir du code INSEE.
@@ -309,3 +310,18 @@
 - **Raison :** la fenêtre de 60 jours avance chaque jour : un fichier inchangé chargé la veille laisserait un jour manquant en fin de fenêtre. Un GTFS de test lisible se relit et se corrige sans outil. Un seuil métier n'a pas sa place dans le code.
 - **Écarté :** `IGNORE` sur la seule empreinte (fenêtre figée) ; charger tout le fichier jusqu'au 31/03 sans fenêtre (contraire à `fenetreJoursHoraires`) ; dépendance `yazl` pour fabriquer des ZIP de test.
 - **Impact :** `04` § 1, § 2, § 4.2 ; fiche E03.
+
+## D038 — Table `commune` : le nom et le département quittent `gare`
+- **Date :** 23/10/2026
+- **Remplace :** D034, point 2 (nom de commune recopié dans `gare.commune`).
+- **Décision :**
+  1. **Table `commune`** (`code_insee` clé, `nom`, `departement`), remplie par une commande à part, **`pnpm etl communes`**, lancée avant `gares` ; une ligne par code du COG, arrondissements et communes déléguées compris (nom et département de la commune de rattachement). Mise à jour par `code_insee`, jamais de suppression d'une commune référencée.
+  2. **`gare.code_insee` devient une clé étrangère vers `commune`** (indexée) ; `gare.commune` et `gare.departement` sont supprimés, on les lit par jointure.
+  3. **Code de gare absent du COG** (8 gares, toutes hors région, communes fusionnées) : `gare.code_insee` vide, gare listée dans le rapport ; une gare **de la région** sans commune est un contrôle bloquant.
+  4. **`dans_region` reste dans `gare`**, calculé au chargement : c'est un réglage du projet (région pilote de `parametres.json`), pas une propriété de la commune.
+  5. **`lieu` n'est pas touché maintenant** : le lien vers `commune` sera décidé à l'audit de E05, selon que DATAtourisme et OSM donnent ou non le code INSEE.
+  6. **Migration `0005_table_commune` complétée à la main** : communes des gares recopiées avant la clé étrangère, empreinte de `communes` oubliée pour forcer le premier chargement.
+  7. **Seuil `controles.communesFranceMin` (34 000)** dans `parametres.json`.
+- **Raison :** remarque du professeur sur le schéma (normalisation). Le nom et le département décrivent la commune, pas la gare : recopiés dans `gare` puis `lieu`, ils seraient répétés et pourraient diverger entre deux chargements. Une table à part les stocke une fois et accueille les futures informations sur les communes (fréquentation, `03` § 7). Fait avant E04, tant que `lieu` est vide.
+- **Écarté :** garder les copies dans `gare` (redondance) ; mettre `dans_region` dans `commune` (mélange donnée officielle et réglage du projet, et perdu pour les 8 gares sans commune) ; lire le COG dans `gares` comme avant (deux sources dans une commande, `IGNORE` sur deux empreintes) ; table `departement` en plus (aucun besoin aujourd'hui).
+- **Impact :** `03` § 2, § 3.1, § 3.1 bis, § 3.6, § 7 ; `02` § 2.1 bis ; `04` § 2, § 3, § 4.0, § 4.1 ; `GLOSSAIRE` ; fiche E02 ; `CLAUDE.md` § 16 ; `A-FAIRE` § 1.
