@@ -24,6 +24,32 @@
 
 ---
 
+## 23/10/2026 — Correctifs avant E04 — table `commune`, codes UIC des gares
+**Fait :**
+- Essais de Hardy dans Docker et Adminer (connexion, requêtes de contrôle des horaires, Dijon → Beaune) ; explications sur les tables d'horaires (`trajet`, `passage`, `service_jour`) et la lecture du GTFS (ZIP lu en flux, tables brutes temporaires).
+- **Remarque du professeur (normalisation)** : nom et département de la commune recopiés dans `gare`. Table `commune` (code INSEE clé, nom, département) remplie par `pnpm etl communes` (36 912 codes), `gare.code_insee` en clé étrangère indexée, migration `0005_table_commune` complétée à la main (données gardées) ; `dans_region` reste dans `gare` ; `lieu` décidé en E05. PR #47.
+- **Doublon de Paris Gare de Lyon** : le fichier SNCF du 23/10 a inversé ses codes UIC, la gare a été recréée (id 27041) à côté de l'ancienne (id 1913, 530 passages). Gares désormais reconnues par un code UIC commun, deux contrôles bloquants ; le contrôle a bien échoué sur la base avant nettoyage ; doublon sans référence supprimé, gare 1913 passée au code `87686030`. PR #48.
+- Rechargement complet : 2 792 gares, 3 467 trajets, 33 275 passages, 11 231 jours (fenêtre commençant le 23/10) ; 499 passages sur l'unique Paris Gare de Lyon. Commandes testées aussi dans Docker.
+- Alerte Dependabot n° 2 (esbuild ≤ 0.24.2 via drizzle-kit) fermée « code non utilisé » ; rappel dans `A-FAIRE` § 3.
+- Prompt fourni à Hardy pour mettre à jour sa page « Audit des gares Wagoo » (table `commune`, codes UIC, schéma des tables).
+
+**Décisions :** D038 (table `commune`), D039 (gare reconnue par un code UIC commun) ; proposition « cartes de destination » en attente (future D040).
+
+**Problèmes rencontrés :**
+- La migration de `0005` aurait laissé `communes` en `IGNORE` (même empreinte) avec une table partielle : empreinte remise à zéro dans la migration.
+- Message de commentaire Dependabot limité à 280 caractères (refus de l'API, raccourci).
+
+**À valider par Hardy :**
+- Proposition « cartes de destination » (`A-FAIRE` § 1) ; trains en jumelage (E04) ; copie de la page d'audit dans le dépôt.
+
+**Prochaine action :**
+- Trancher les cartes de destination, puis audit E04 sur `etape/E04-trains-directs`.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (149) · intégration ✅ (35)
+**Commit :** #47 `505d155`, #48 `55759f7` sur `main` ; sauvegarde sur `etape/E04-trains-directs`
+
+---
+
 ## 22/10/2026 — Étape E03 — horaires GTFS SNCF
 **Fait :**
 - Audit du GTFS SNCF (transport.data.gouv.fr, ODbL) : pas de `calendar.txt`, type de train dans le `stop_id`, cars dans le fichier, gares étrangères, montée et descente interdites ; tableaux colonne par colonne validés par Hardy.

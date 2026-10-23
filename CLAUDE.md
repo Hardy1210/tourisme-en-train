@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E03 terminée sur `etape/E03-horaires`, pull request vers `main` ouverte ; E04 (trains directs) ensuite
-- **Dernière session :** 22/10/2026 — E02 fusionnée (#45) ; E03 : audit et chargement du GTFS SNCF (D036, D037) ; détail dans `JOURNAL.md`
-- **Fait :** 2 792 gares ; 3 516 trajets, 33 650 passages, 11 100 jours de circulation (fenêtre de 60 jours) ; requête « trains A → B » ~5 ms ; `pnpm verifier` 149 tests, `pnpm test:integration` 28
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11) ; trains en jumelage (fiche E04, notes)
-- **Bloquant :** —
-- **Prochaine action précise :** fusionner la PR de E03, créer `etape/E04-trains-directs` depuis `main`, puis lire `docs/etapes/E04-trains-directs.md` (avec ses notes : montée/descente, jumelage) et `04` § 4.3
+- **Étape en cours :** E04 (trains directs) pas commencée ; branche `etape/E04-trains-directs` créée depuis `main` (elle porte la sauvegarde du 23/10)
+- **Dernière session :** 23/10/2026 — E03 fusionnée (#46) ; table `commune` (#47, D038, remarque du professeur) ; gares reconnues par un code UIC commun (#48, D039, doublon de Paris Gare de Lyon) ; alerte Dependabot esbuild fermée ; détail dans `JOURNAL.md`
+- **Fait :** 36 912 communes ; 2 792 gares ; 3 467 trajets, 33 275 passages, 11 231 jours de circulation (fenêtre au 23/10) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` ; `pnpm verifier` 149 tests, `pnpm test:integration` 35
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **données des cartes de destination : proposition de Claude à accepter ou refuser (devient D040)**, trains en jumelage (fiche E04, notes), légende de la carte (avant E11), commune des lieux (audit E05)
+- **Bloquant :** E04 attend la décision sur les cartes de destination (forme de `liaison_directe`)
+- **Prochaine action précise :** faire trancher la proposition « cartes de destination » de `A-FAIRE.md` § 1 (si acceptée : D040, puis `03` § 3.5, `04` § 4.3, `05` § 3.4) ; puis lire `docs/etapes/E04-trains-directs.md` et `04` § 4.3 et lancer l'audit E04
 
 ---
 
@@ -386,3 +386,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |
 | 22/10/2026 | 1.15 | § 8, § 9 et § 16 : E03 terminée, `pnpm etl gtfs_sncf` |
 | 23/10/2026 | 1.16 | § 16 : `pnpm etl communes` — D038 |
+| 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
