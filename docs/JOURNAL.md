@@ -24,6 +24,29 @@
 
 ---
 
+## 30/10/2026 — Avant E04 — reprise, cartes de destination réexpliquées
+**Fait :**
+- Reprise après une semaine d'arrêt ; situation résumée à Hardy.
+- Proposition « cartes de destination » réexpliquée simplement, avec son coût : (1) dernier retour et « faisable dans la journée » dans `liaison_directe`, ½ journée en E04 ; (2) départ **ou** arrivée dans la région, quelques minutes ; (3) prochain train à la demande, ½ journée en E08. Total ≈ 1 jour, faible tant que `liaison_directe` n'est pas construite. Trois choix : A tout (recommandé), B minimum, C rien.
+- Aucun code modifié.
+
+**Décisions :** aucune (D040 en attente).
+
+**Problèmes rencontrés :**
+- Hardy en déplacement vers Nantes, peu de réseau : décision reportée au retour à Dijon.
+- E04 en retard (prévue en S3) ; jalon « données en base » du 01/11 non tenu. Fenêtre GTFS en base (23/10) à recharger avant le calcul des liaisons.
+
+**À valider par Hardy :**
+- Cartes de destination : A, B ou C ; trains en jumelage : oui / non.
+
+**Prochaine action :**
+- Recueillir les deux réponses, écrire D040 et les documents `03`, `04`, `05`, recharger le GTFS, puis audit E04.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (149) · intégration non relancée (aucun code modifié depuis le 23/10)
+**Commit :** sauvegarde sur `etape/E04-trains-directs`
+
+---
+
 ## 23/10/2026 — Correctifs avant E04 — table `commune`, codes UIC des gares
 **Fait :**
 - Essais de Hardy dans Docker et Adminer (connexion, requêtes de contrôle des horaires, Dijon → Beaune) ; explications sur les tables d'horaires (`trajet`, `passage`, `service_jour`) et la lecture du GTFS (ZIP lu en flux, tables brutes temporaires).
