@@ -107,6 +107,29 @@ describe('contrôle « gares de la région sans commune »', () => {
   });
 });
 
+describe('contrôle « dans_region conforme à la commune » (D040)', () => {
+  const nom = 'Gares dont dans_region ne correspond pas';
+
+  it('Dijon (21) dans la région, Lyon (69) et gare sans commune hors région : accepté', async () => {
+    const lignes = `('87000006', '{87000006}', 'Dijon', '21231', true, 5.03, 47.32),
+      ('87000007', '{87000007}', 'Lyon', '69383', false, 4.86, 45.76),
+      ('87000003', '{87000003}', 'Olonne', '85166', false, -1.77, 46.53)`;
+    expect(await controler(nom, lignes)).toBe(true);
+  });
+
+  it('Lyon (69) marquée dans la région : bloquant', async () => {
+    expect(
+      await controler(nom, `('87000007', '{87000007}', 'Lyon', '69383', true, 4.86, 45.76)`),
+    ).toBe(false);
+  });
+
+  it('Dijon (21) marquée hors région : bloquant', async () => {
+    expect(
+      await controler(nom, `('87000006', '{87000006}', 'Dijon', '21231', false, 5.03, 47.32)`),
+    ).toBe(false);
+  });
+});
+
 describe('contrôles des codes UIC (D039)', () => {
   const dole = `('EX000003', '{EX000003}', 'Dole', '39198', true, 5.4935, 47.0926)`;
 

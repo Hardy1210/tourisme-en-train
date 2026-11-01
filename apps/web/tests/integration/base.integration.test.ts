@@ -23,6 +23,7 @@ const TABLES_P0 = [
   'execution_etl',
   'gare',
   'gare_stats',
+  'liaison_directe',
   'lieu',
   'lieu_gare',
   'mobilite_locale',

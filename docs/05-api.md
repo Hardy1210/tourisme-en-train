@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.5 · **Date** 09/10/2026
+> **Version** 1.6 · **Date** 01/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -101,12 +101,16 @@ Cache : aucun (position).
     gare: { id: number; nom: string; lat: number; lon: number; dansRegion: boolean };
     dureeMin: number; trancheTemps: "<30" | "<60" | "<120" | ">=120";
     nbTrains: number; premierDepart: string; dernierDepart: string;
+    prochainDepart: string | null;   // à partir de l'heure actuelle si date = aujourd'hui ; null s'il n'y en a plus
+    dernierRetour: string | null;    // dernier départ de la liaison inverse ; null si aucun retour direct
     typesTrain: TypeTrain[];
+    distanceKm: number;
     lieuxParCategorie: Partial<Record<Categorie, number>>;  // seulement les catégories demandées
-    faisableJournee: boolean | null;                        // null si non calculable (P1)
+    faisableJournee: boolean;                               // liaison_directe.faisable_journee (D040)
     lieuxCharges: boolean                                    // false hors région pilote
   }> }
 ```
+Calcul (D040) : `dernierRetour` par jointure sur la liaison inverse (`03` § 3.5) ; `prochainDepart` par **une seule requête groupée** sur `passage` pour toutes les destinations de la réponse (jamais une requête par destination) ; `date` autre qu'aujourd'hui → `prochainDepart` = `premierDepart`.
 Tri : durée croissante. Les destinations sans aucun lieu des catégories demandées restent listées si `lieuxCharges = false` (hors région), sinon elles sont exclues.
 Cache : `public, max-age=3600`.
 
@@ -141,9 +145,10 @@ Cache : `public, max-age=86400`.
 { date: string,
   aller:  Array<Train>, retour: Array<Train>,
   dernierRetour: Train | null }
-type Train = { trajetId: string; depart: string; arrivee: string; departS: number; arriveeS: number;
-               dureeMin: number; typeTrain: TypeTrain; numero: string | null; lendemain: boolean }
+type Train = { trajetIds: string[]; depart: string; arrivee: string; departS: number; arriveeS: number;
+               dureeMin: number; typeTrain: TypeTrain; numeros: string[]; lendemain: boolean }
 ```
+**Trains en jumelage** (D040) : les trajets aux mêmes `departS` et `arriveeS` forment **un seul** `Train`, avec tous leurs identifiants et numéros (affichés « TGV 12177 / 5537 ») ; `numeros` est vide si aucun n'est connu. La limite compte les trains, pas les trajets.
 `retour` = trains `arrivee → depart` le même jour, sans filtre `depuis`. Limite : `parametres.limites.trains`. Cache : `public, max-age=900`.
 
 ### 3.9 `GET /api/mobilites/[gareId]`
@@ -243,3 +248,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/10/2026 | 1.3 | `dateDuJour()` déplacée dans `@tourisme/commun` — D024 |
 | 05/10/2026 | 1.4 | Adresse des flux `station_status` lue dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.5 | `/api/impact` : CO₂ du train `null` si le facteur n'est pas relevé ; `/api/trains` : heure actuelle par `maintenantParis()` — D031 |
+| 01/11/2026 | 1.6 | § 3.4 : `prochainDepart`, `dernierRetour`, `distanceKm`, `faisableJournee` toujours rempli ; § 3.8 : trains en jumelage regroupés (`trajetIds`, `numeros`) — D040 |

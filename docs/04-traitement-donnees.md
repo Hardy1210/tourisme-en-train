@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.9 · **Date** 23/10/2026
+> **Version** 1.10 · **Date** 01/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -136,7 +136,7 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 7. `code_insee` gardé seulement s'il existe dans `commune` ; sinon vide, et la gare est listée dans le rapport (D038).
 8. Charger dans `gare` : mettre à jour la gare qui partage **au moins un code UIC** avec la ligne (l'ordre des codes, donc `uic`, peut changer d'un fichier à l'autre : Paris Gare de Lyon le 23/10), insérer les autres ; une gare sans aucun code dans le fichier est supprimée si rien ne la référence, sinon gardée et signalée dans le rapport (exception au § 1.5, D034, D039).
 
-**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; **aucune gare de la région sans commune** (attrape aussi une table `commune` vide : `pnpm etl communes` d'abord) ; aucun code UIC présent dans plusieurs lignes du fichier ; aucune ligne du fichier correspondant à plusieurs gares en base (doublon à fusionner à la main, D039).
+**Contrôles (bloquants) :** nombre de gares ≥ `controles.garesFranceMin` ; gares de la région ≥ `controles.garesRegionMin` ; aucune gare de la région hors de `region.emprise` ; **aucune gare de la région sans commune** (attrape aussi une table `commune` vide : `pnpm etl communes` d'abord) ; aucun code UIC présent dans plusieurs lignes du fichier ; aucune ligne du fichier correspondant à plusieurs gares en base (doublon à fusionner à la main, D039) ; **`dans_region` conforme au département de la commune** (`commune.departement` ∈ `region.departements`, faux pour une gare sans commune) : la valeur calculée ne diverge jamais de la table `commune` (D040).
 
 **Modifié après coup (D038) :** le COG n'est plus lu ici ; l'empreinte des gares seule décide de `IGNORE`.
 
@@ -184,32 +184,50 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 **Avertissements (rapport) :** fenêtre dépassant `feed_end_date` ; nombre de trajets `AUTRE` ; trajets en car exclus ; gares de la région sans aucun train dans la fenêtre (nommées) ; arrêts non rapprochés les plus fréquents (nommés).
 
 ### 4.3 Liaisons directes (E04)
+Commande `pnpm etl liaisons`, après `gtfs_sncf`. Requêtes complètes : `etl/src/transformations/liaisons.sql`. Toujours recalculé (≈ 2 s au 01/11), sans `IGNORE` : la fenêtre avance chaque jour.
+
 ```sql
--- 1) Paires par trajet (indépendantes de la date)
-CREATE TEMP TABLE paire AS
-SELECT a.trajet_id, a.gare_id AS dep, b.gare_id AS arr,
-       a.depart_s, b.arrivee_s, (b.arrivee_s - a.depart_s) / 60 AS duree_min
+-- 1) Paires par trajet (indépendantes de la date) : départ OU arrivée dans la région (D040)
+CREATE TEMP TABLE tmp_paire AS
+SELECT a.trajet_id, a.gare_id AS dep, b.gare_id AS arr, a.depart_s, b.arrivee_s
 FROM passage a
 JOIN passage b ON b.trajet_id = a.trajet_id AND b.sequence > a.sequence
-JOIN gare g ON g.id = a.gare_id AND g.dans_region
+JOIN gare gd ON gd.id = a.gare_id
+JOIN gare ga ON ga.id = b.gare_id
 WHERE a.depart_s IS NOT NULL AND b.arrivee_s IS NOT NULL AND a.gare_id <> b.gare_id
-  AND NOT a.montee_interdite AND NOT b.descente_interdite;  -- D036
+  AND NOT a.montee_interdite AND NOT b.descente_interdite      -- D036
+  AND (gd.dans_region OR ga.dans_region);
 
--- 2) Agrégation par date de service
-INSERT INTO liaison_directe (gare_depart_id, gare_arrivee_id, date_service, duree_min,
-                             nb_trains, premier_depart_s, dernier_depart_s, types_train, distance_km)
-SELECT p.dep, p.arr, s.date_service, MIN(p.duree_min), COUNT(DISTINCT p.trajet_id),
-       MIN(p.depart_s), MAX(p.depart_s), ARRAY_AGG(DISTINCT t.type_train), <distance>
-FROM paire p
+-- 2) Agrégation par date de service ; trains en jumelage comptés une fois (D040)
+CREATE TEMP TABLE tmp_liaison AS
+SELECT p.dep, p.arr, s.date_service,
+       MIN((p.arrivee_s - p.depart_s) / 60) AS duree_min,
+       COUNT(DISTINCT (p.depart_s, p.arrivee_s)) AS nb_trains,
+       MIN(p.depart_s) AS premier_depart_s, MAX(p.depart_s) AS dernier_depart_s,
+       MIN(p.arrivee_s) AS premiere_arrivee_s, ARRAY_AGG(DISTINCT t.type_train) AS types_train
+FROM tmp_paire p
 JOIN trajet t ON t.id = p.trajet_id
 JOIN service_jour s ON s.service_id = t.service_id
-WHERE s.date_service BETWEEN :date_du_jour AND :date_du_jour + :fenetre
+WHERE s.date_service BETWEEN :debut AND :debut + :jours
 GROUP BY p.dep, p.arr, s.date_service;
-```
-**Distance :** distance à vol d'oiseau entre les deux gares × `rail.coefDetour` (estimation assumée, suffisante pour le CO₂ et le prix).
-**Mesurer la durée d'exécution** à l'E04 ; si > 5 min, en parler avant d'optimiser.
 
-**Contrôles (en paires) :** Dijon-Ville → Beaune existe un jour de semaine **et** Beaune → Dijon-Ville aussi ; aucune liaison avec `duree_min ≤ 0` ; une paire sans train direct connu n'existe pas.
+-- 3) Insertion avec la distance et « faisable dans la journée » (liaison inverse r = retour)
+INSERT INTO liaison_directe (...)
+SELECT l.*, <distance>,
+       coalesce(l.premiere_arrivee_s <= :arrivee_max_s
+                AND r.dernier_depart_s >= l.premiere_arrivee_s + :visite_s, false)
+FROM tmp_liaison l
+LEFT JOIN tmp_liaison r ON r.dep = l.arr AND r.arr = l.dep AND r.date_service = l.date_service;
+```
+**Paramètres :** `:debut` = date du jour à Paris (`dateDuJour()`), `:jours` = `fenetreJoursLiaisons`, `:arrivee_max_s` = `journee.arriveeMaxAller` en secondes, `:visite_s` = `journee.dureeVisiteMin` × 60, `:coef_detour` = `rail.coefDetour`.
+**Distance :** `ST_Distance(gare de départ, gare d'arrivée) / 1000 × rail.coefDetour`, arrondie à 0,1 km (estimation assumée, suffisante pour le CO₂ et le prix).
+**Faisable dans la journée :** première arrivée ≤ `journee.arriveeMaxAller` **et** dernier retour (dernier départ de la liaison inverse, même date) ≥ première arrivée + `journee.dureeVisiteMin` ; aucun retour → faux.
+**Chargement :** dans une transaction, suppression totale puis insertion (aucune table ne pointe vers `liaison_directe`).
+
+**Contrôles bloquants** (sur `tmp_liaison`, avant le remplacement) : aucune liaison avec `duree_min ≤ 0` ; aucune liaison d'une gare vers elle-même ; aucun jour de la fenêtre sans liaison (attrape des horaires trop anciens : relancer `pnpm etl gtfs_sncf`).
+**Avertissement :** liaisons sans liaison inverse le même jour (aller sans retour direct possible).
+**Constats (rapport) :** liaisons, paires de gares, destinations hors région, liaisons faisables dans la journée, trains en jumelage regroupés.
+*Une paire sans train direct connu ne peut pas exister* : chaque liaison vient d'un passage (construction). *Dijon ↔ Beaune* reste un critère d'acceptation vérifié à la main (fiche E04) : un nom de gare écrit dans le code ne vaudrait que pour la région pilote.
 
 ### 4.4 Lieux : DATAtourisme, OSM, lieux culturels, festivals (E05)
 Commun aux quatre sources :
@@ -284,7 +302,7 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | Durée à pied (min) | ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉ | |
 | Durée vélo / voiture jusqu'à la gare | idem avec `velo` / `voiture` | |
 | Tranche de temps | `<30`, `<60`, `<120`, `≥120` selon `durees.tranchesTempsMin` | |
-| Faisable dans la journée | un aller arrive avant `journee.arriveeMaxAller` **et** un retour part après cette arrivée + `journee.dureeVisiteMin` | |
+| Faisable dans la journée | un aller arrive avant `journee.arriveeMaxAller` **et** un retour part après cette arrivée + `journee.dureeVisiteMin` | **calculé par l'ETL** (§ 4.3), lu dans `liaison_directe.faisable_journee` (D040) |
 | CO₂ train (kg, aller-retour) | 2 × distance_km × facteur du type de train / 1000 | `impact.facteursCo2GParKm` |
 | CO₂ voiture seule | 2 × distance_km × `VOITURE` / 1000 | |
 | CO₂ voiture partagée (par personne) | CO₂ voiture seule / `occupantsVoiturePartagee` | |
@@ -310,3 +328,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 22/10/2026 | 1.7 | § 1 : règle `IGNORE` propre au GTFS (fenêtre glissante) — D037 |
 | 23/10/2026 | 1.8 | § 3 et § 4.0 : commande `communes` et table `commune` ; § 4.1 : `commune` et `departement` ne sont plus stockés dans `gare`, contrôle « gares de la région sans commune » ; § 2 : `controles.communesFranceMin` — D038 |
 | 23/10/2026 | 1.9 | § 4.1 : gare reconnue par un code UIC commun ; contrôles « code UIC dans plusieurs lignes » et « ligne correspondant à plusieurs gares » — D039 |
+| 01/11/2026 | 1.10 | § 4.3 réécrit : départ ou arrivée dans la région, `premiere_arrivee_s`, `faisable_journee`, trains en jumelage, contrôles ; § 4.1 : contrôle de `dans_region` ; § 6 : faisable dans la journée calculé par l'ETL — D040 |

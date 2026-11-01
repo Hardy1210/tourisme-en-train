@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.5 · **Date** 11/10/2026
+> **Version** 1.6 · **Date** 01/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -127,7 +127,8 @@ Page Explorer (client)
       1. valider les paramètres (Zod)                                  features/destinations/schemas.ts
       2. appeler le service                                            features/destinations/server/service.ts
            → requetes.destinationsDepuis(gareId, date, …)              SQL sur liaison_directe + gare_stats
-           → trancheTemps(duree), faisableJournee(…)                   fonctions pures
+             (faisable_journee précalculé par l'ETL, dernier retour par jointure, prochain départ groupé — D040)
+           → trancheTemps(duree)                                       fonction pure
       3. répondre en JSON + en-têtes de cache                          lib/http
 ```
 
@@ -215,3 +216,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 05/10/2026 | 1.3 | `config/sources.json` et son schéma dans `packages/commun` — D027 |
 | 09/10/2026 | 1.4 | § 8 : versions fixées (Node 24 — D028 ; Next.js 16, Zod 4, TypeScript 5.9, pnpm 11 — D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun — D031 |
 | 11/10/2026 | 1.5 | § 8 : pilote `pg` dans l'application, génération des migrations par `pnpm db:generer` — D033 |
+| 01/11/2026 | 1.6 | § 5 : faisable dans la journée précalculé par l'ETL, prochain départ en une requête groupée — D040 |

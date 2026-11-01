@@ -1,5 +1,5 @@
 // Schéma de la base, tables P0 (docs/03-base-de-donnees.md § 3, document de référence).
-// `liaison_directe` (§ 3.5) est créée au début de E04 ; tables P1 en E07.
+// Tables P1 en E07.
 // Sans `import 'server-only'` : lu aussi par drizzle-kit, hors de Next.js (D031).
 // Noms de colonnes : camelCase ici, snake_case en base (option `casing` de Drizzle).
 import { CATEGORIES, STATUTS_EXECUTION, TYPES_MOBILITE, TYPES_TRAIN } from '@tourisme/commun';
@@ -13,6 +13,7 @@ import {
   date,
   index,
   integer,
+  numeric,
   pgTable,
   primaryKey,
   smallint,
@@ -117,6 +118,37 @@ export const serviceJour = pgTable(
     dateService: date({ mode: 'string' }).notNull(), // AAAA-MM-JJ, jamais un Date (CLAUDE.md § 3)
   },
   (t) => [primaryKey({ columns: [t.serviceId, t.dateService] }), index().on(t.dateService)],
+);
+
+// § 3.5 — deux sens (départ OU arrivée dans la région), trains en jumelage comptés une fois (D040).
+// Le dernier retour est le `dernierDepartS` de la liaison inverse (même date), lu par jointure.
+export const liaisonDirecte = pgTable(
+  'liaison_directe',
+  {
+    gareDepartId: integer()
+      .notNull()
+      .references(() => gare.id),
+    gareArriveeId: integer()
+      .notNull()
+      .references(() => gare.id),
+    dateService: date({ mode: 'string' }).notNull(),
+    dureeMin: smallint().notNull(),
+    nbTrains: smallint().notNull(),
+    premierDepartS: integer().notNull(),
+    dernierDepartS: integer().notNull(),
+    premiereArriveeS: integer().notNull(),
+    typesTrain: text().array().notNull(),
+    distanceKm: numeric({ precision: 6, scale: 1, mode: 'number' }).notNull(),
+    faisableJournee: boolean().notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.gareDepartId, t.gareArriveeId, t.dateService] }),
+    // Liaisons vers une gare : protection des gares au chargement, clé étrangère à la suppression.
+    index().on(t.gareArriveeId),
+    check('liaison_directe_gares_distinctes_check', sql`${t.gareDepartId} <> ${t.gareArriveeId}`),
+    check('liaison_directe_duree_min_check', sql`${t.dureeMin} > 0`),
+    check('liaison_directe_nb_trains_check', sql`${t.nbTrains} > 0`),
+  ],
 );
 
 // § 3.6

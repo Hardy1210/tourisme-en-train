@@ -44,6 +44,14 @@ export const CONTROLES: readonly Controle[] = [
     `SELECT count(*)::int AS n FROM tmp_gare t
      WHERE dans_region AND NOT EXISTS (SELECT 1 FROM commune c WHERE c.code_insee = t.code_insee)`,
   ),
+  // `dans_region` se déduit de `commune.departement` : gardée dans `gare` (filtre de presque toutes les
+  // requêtes), elle ne doit jamais en diverger (D040). Sans commune : jamais dans la région.
+  aucune(
+    'Gares dont dans_region ne correspond pas au département de leur commune',
+    `SELECT count(*)::int AS n FROM tmp_gare t LEFT JOIN commune c ON c.code_insee = t.code_insee
+     WHERE t.dans_region IS DISTINCT FROM coalesce(c.departement::text = ANY($1::text[]), false)`,
+    [parametres.region.departements],
+  ),
   // Sinon une gare en base correspondrait à deux lignes du fichier (laquelle garder ?).
   aucune(
     'Code UIC présent dans plusieurs lignes du fichier',
@@ -88,7 +96,9 @@ const SANS_COMMUNE = `
 const REFERENCEE = `(EXISTS (SELECT 1 FROM passage r WHERE r.gare_id = g.id)
   OR EXISTS (SELECT 1 FROM lieu_gare r WHERE r.gare_id = g.id)
   OR EXISTS (SELECT 1 FROM gare_stats r WHERE r.gare_id = g.id)
-  OR EXISTS (SELECT 1 FROM mobilite_locale r WHERE r.gare_id = g.id))`;
+  OR EXISTS (SELECT 1 FROM mobilite_locale r WHERE r.gare_id = g.id)
+  OR EXISTS (SELECT 1 FROM liaison_directe r WHERE r.gare_depart_id = g.id)
+  OR EXISTS (SELECT 1 FROM liaison_directe r WHERE r.gare_arrivee_id = g.id))`;
 
 const ABSENTE = 'NOT EXISTS (SELECT 1 FROM tmp_gare t WHERE t.codes_uic && g.codes_uic)';
 

@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.6 · **Date** 23/10/2026
+> **Version** 1.7 · **Date** 01/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -37,6 +37,7 @@
 | **Durée à pied** | Distance à pied ÷ vitesse de marche | `dureeMarcheMin` | `duree_marche_min` | — |
 | **Liaison directe** | Deux gares reliées par au moins un train sans correspondance à une date donnée | `LiaisonDirecte` | table `liaison_directe` | Itinéraire (hors périmètre) |
 | **Trajet** | Un train précis (un « trip » GTFS) | `Trajet`, `trajetId` | table `trajet`, `trajet_id` | Liaison directe |
+| **Trains en jumelage** | Deux trajets (deux numéros) aux mêmes heures de départ et d'arrivée entre deux gares : rames attelées, **un seul train** pour le voyageur ; affiché avec ses deux numéros (« TGV 12177 / 5537 ») | `numeros` | — | Doublon |
 | **Passage** | L'arrêt d'un trajet dans une gare, avec ses heures | `Passage` | table `passage` | — |
 | **Type de train** | `TER`, `INTERCITES`, `TGV`, `AUTRE` (règle : `04` § 4.2) | `TypeTrain` | `type_train` | Mode GTFS (texte brut du `stop_id`) |
 | **Montée interdite / descente interdite** | Arrêt où l'on ne peut pas monter / pas descendre (`pickup_type` / `drop_off_type` = 1) | `monteeInterdite`, `descenteInterdite` | `montee_interdite`, `descente_interdite` | — |
@@ -45,10 +46,11 @@
 | **Heure actuelle** | L'heure qu'il est **à Paris**, en secondes depuis minuit, avec la date du jour ; obtenue une fois par `maintenantParis()`, puis passée en paramètre | `maintenantParis()`, `heureActuelleS` | `heure_actuelle_s` | `new Date()` |
 | **Heure en secondes** | Heure GTFS en secondes depuis minuit ; peut dépasser 86 400 (train après minuit) | `departS`, `arriveeS` | `depart_s`, `arrivee_s` | Horodatage |
 | **Aller / Retour** | Trains gare de départ → gare d'arrivée, et l'inverse, à la même date | `aller`, `retour` | — | — |
-| **Dernier retour** | Dernier train direct du retour ce jour-là | `dernierRetour` | — | — |
-| **Faisable dans la journée** | Aller arrivant avant l'heure limite ET retour possible après la durée de visite | `faisableJournee` | — | — |
+| **Première arrivée** | Heure d'arrivée la plus tôt d'un train direct à la gare d'arrivée ce jour-là | `premiereArriveeS` | `premiere_arrivee_s` | Premier départ |
+| **Dernier retour** | Dernier train direct du retour ce jour-là (dernier départ de la liaison inverse) | `dernierRetour` | `dernier_depart_s` de la liaison inverse | — |
+| **Faisable dans la journée** | Première arrivée avant `journee.arriveeMaxAller` ET dernier retour au moins `journee.dureeVisiteMin` après (D040) | `faisableJournee` | `faisable_journee` | — |
 | **Durée de trajet** | Durée minimale d'un train direct entre deux gares, en minutes | `dureeTrajetMin` | `duree_min` | — |
-| **Fréquence** | Nombre de trains directs dans la journée | `nbTrains` | `nb_trains` | — |
+| **Fréquence** | Nombre de trains directs dans la journée (trains en jumelage comptés une fois) | `nbTrains` | `nb_trains` | — |
 | **Mobilité locale** | Moyen de transport à l'arrivée : arrêt de bus, arrêt de tram, station de vélos ou de trottinettes | `MobiliteLocale` | table `mobilite_locale` | Train |
 | **Type de mobilité** | `BUS`, `TRAM`, `VELO`, `TROTTINETTE`, `AUTRE` | `TypeMobilite` | `type` | — |
 | **Vélos disponibles** | Nombre de vélos libres en direct dans une station (GBFS), jamais stocké | `velosDisponibles` | — | Station (emplacement, stocké) |
@@ -114,3 +116,4 @@
 | 11/10/2026 | 1.4 | Statut d'exécution, point géographique, échantillon (E01) |
 | 22/10/2026 | 1.5 | Montée et descente interdites ; type de train renvoie à `04` § 4.2 (E03) |
 | 23/10/2026 | 1.6 | Commune et code INSEE (table `commune`) — D038 |
+| 01/11/2026 | 1.7 | Trains en jumelage, première arrivée ; dernier retour et faisable dans la journée précisés (E04) — D040 |
