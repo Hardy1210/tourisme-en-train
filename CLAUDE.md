@@ -189,7 +189,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ✅ |
 | E02 | Gares | S2 | ✅ |
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
-| E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
+| E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ⬜ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E03 terminée sur `etape/E03-horaires`, pull request vers `main` ouverte ; E04 (trains directs) ensuite
-- **Dernière session :** 22/10/2026 — E02 fusionnée (#45) ; E03 : audit et chargement du GTFS SNCF (D036, D037) ; détail dans `JOURNAL.md`
-- **Fait :** 2 792 gares ; 3 516 trajets, 33 650 passages, 11 100 jours de circulation (fenêtre de 60 jours) ; requête « trains A → B » ~5 ms ; `pnpm verifier` 149 tests, `pnpm test:integration` 28
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — données des cartes de destination (avant E04), légende de la carte (avant E11) ; trains en jumelage (fiche E04, notes)
-- **Bloquant :** —
-- **Prochaine action précise :** fusionner la PR de E03, créer `etape/E04-trains-directs` depuis `main`, puis lire `docs/etapes/E04-trains-directs.md` (avec ses notes : montée/descente, jumelage) et `04` § 4.3
+- **Étape en cours :** E04 (trains directs) pas commencée ; branche `etape/E04-trains-directs` (sauvegardes du 23/10 et du 30/10)
+- **Dernière session :** 30/10/2026 — reprise ; proposition « cartes de destination » réexpliquée avec son coût (≈ 1 jour) et trois choix A / B / C ; Hardy en déplacement (Nantes, peu de réseau), décision reportée au retour à Dijon ; aucun code modifié
+- **Fait :** 36 912 communes ; 2 792 gares ; 3 467 trajets, 33 275 passages, 11 231 jours de circulation (fenêtre au 23/10) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` ; `pnpm verifier` 149 tests, `pnpm test:integration` 35 (23/10)
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **cartes de destination : choix A (tout), B (minimum) ou C (rien), devient D040** ; **trains en jumelage : compter une fois une même paire (gare, heure de départ, gare, heure d'arrivée), oui / non** ; légende de la carte (avant E11), commune des lieux (audit E05)
+- **Bloquant :** E04 attend ces deux réponses (forme de `liaison_directe`, calcul de `nb_trains`) ; E04 est en retard (prévue en S3) et le jalon « données en base » du 01/11 ne sera pas tenu
+- **Prochaine action précise :** au retour de Hardy, recueillir A / B / C et la réponse sur le jumelage ; écrire D040 puis `03` § 3.5, `04` § 4.3, `05` § 3.4 ; recharger le GTFS (`pnpm etl gtfs_sncf`, fenêtre du 23/10 périmée) ; lire `docs/etapes/E04-trains-directs.md` et lancer l'audit E04
 
 ---
 
@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `gares`, `gtfs_sncf` (dans cet ordre) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `gares`, `gtfs_sncf`, `liaisons` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -386,3 +386,6 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |
 | 22/10/2026 | 1.15 | § 8, § 9 et § 16 : E03 terminée, `pnpm etl gtfs_sncf` |
 | 23/10/2026 | 1.16 | § 16 : `pnpm etl communes` — D038 |
+| 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
+| 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
+| 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |

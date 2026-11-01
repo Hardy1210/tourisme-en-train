@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.10 · **Date** 23/10/2026
+> **Version** 1.11 · **Date** 01/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -42,7 +42,7 @@
  ligne_ferroviaire (P1)      amenagement_cyclable (P1)
 ```
 
-Les tables créées (11 en E01, `commune` ensuite, D038) et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
+Les tables créées (11 en E01, `commune` ensuite, D038, `liaison_directe` en E04, D040) et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
 
 ```mermaid
 erDiagram
@@ -87,6 +87,14 @@ erDiagram
         text service_id PK
         date date_service PK
     }
+    liaison_directe {
+        integer gare_depart_id PK,FK
+        integer gare_arrivee_id PK,FK
+        date date_service PK
+        smallint duree_min
+        smallint nb_trains
+        boolean faisable_journee
+    }
     lieu {
         bigint id PK
         text source FK
@@ -127,6 +135,8 @@ erDiagram
     trajet ||--|{ passage : "s'arrête"
     gare ||--o{ passage : "desservie par"
     service_jour }o..o{ trajet : "service_id"
+    gare ||--o{ liaison_directe : "départ"
+    gare ||--o{ liaison_directe : "arrivée"
     gare ||--o{ lieu_gare : "à pied de"
     lieu ||--o{ lieu_gare : "rattaché à"
     gare ||--o{ gare_stats : "compte"
@@ -145,7 +155,7 @@ erDiagram
 | `trajet` | Trains (trips GTFS) touchant la région | ETL `gtfs_sncf` | P0 |
 | `passage` | Arrêts de chaque trajet | ETL `gtfs_sncf` | P0 |
 | `service_jour` | Jours de circulation, dépliés par date | ETL `gtfs_sncf` | P0 |
-| `liaison_directe` | Paires de gares reliées sans correspondance, par date | ETL (calcul) | P0 |
+| `liaison_directe` | Paires de gares reliées sans correspondance, par date | ETL `liaisons` | P0 |
 | `lieu` | Lieux de la région | ETL `datatourisme`, `osm`, `lieux_culturels`, `festivals` | P0 |
 | `categorie_regle` | Règles de classement des lieux | Fichier versionné, chargé par l'ETL | P0 |
 | `lieu_gare` | Lieux à distance de marche de chaque gare | ETL (calcul) | P0 |
@@ -172,7 +182,7 @@ Conventions : `NN` = non nul · `PK` = clé primaire · `FK` = clé étrangère 
 | `codes_uic` | char(8)[] | NN, CHECK `uic = ANY(codes_uic)` | Tous les codes UIC de la gare (`uic` compris) — rapprochement des arrêts GTFS (E03), D034 |
 | `nom` | text | NN | Nom affiché (nom **de la gare** ; celui de la commune est dans `commune`) |
 | `code_insee` | char(5) | FK → commune | Commune de la gare ; nul si le code du fichier est absent du COG (D038) |
-| `dans_region` | boolean | NN, défaut false | Gare de la région pilote : département du code INSEE du fichier dans `parametres.region.departements`. Réglage du projet, pas une propriété de la commune : reste dans `gare` (D038) |
+| `dans_region` | boolean | NN, défaut false | Gare de la région pilote : département du code INSEE du fichier dans `parametres.region.departements`. Réglage du projet, pas une propriété de la commune : reste dans `gare` (D038). **Valeur calculée assumée** (elle se déduit de `commune.departement`) : gardée parce que presque toutes les requêtes filtrent sur la région, et vérifiée à chaque chargement par un contrôle bloquant (D040) |
 | `geom` | geography(Point, 4326) | NN | |
 | `maj` | timestamptz | NN, défaut now() | Dernier chargement |
 
@@ -235,15 +245,19 @@ Dépliage de `calendar.txt` + exceptions de `calendar_dates.txt`, limité à la 
 | `gare_depart_id` | integer | PK (1/3), FK → gare | |
 | `gare_arrivee_id` | integer | PK (2/3), FK → gare | |
 | `date_service` | date | PK (3/3) | |
-| `duree_min` | smallint | NN | Durée du train le plus rapide |
-| `nb_trains` | smallint | NN | Trains directs ce jour-là |
+| `duree_min` | smallint | NN, CHECK > 0 | Durée du train le plus rapide |
+| `nb_trains` | smallint | NN, CHECK > 0 | Trains directs ce jour-là ; trains en jumelage comptés une fois (D040) |
 | `premier_depart_s` | integer | NN | |
-| `dernier_depart_s` | integer | NN | |
+| `dernier_depart_s` | integer | NN | Pour la liaison inverse, c'est le **dernier retour** |
+| `premiere_arrivee_s` | integer | NN | Arrivée la plus tôt à la gare d'arrivée (D040) |
 | `types_train` | text[] | NN | Types présents (TER, TGV…) |
-| `distance_km` | numeric(6,1) | NN | Estimation (voir `04` § Distance) |
+| `distance_km` | numeric(6,1) | NN | Estimation (voir `04` § 4.3) |
+| `faisable_journee` | boolean | NN | Règle `journee` de `parametres.json`, calculée par l'ETL (`04` § 4.3, D040) |
 
-Index : (`gare_depart_id`, `date_service`).
-Calculée uniquement pour les gares de départ **dans la région** et sur la fenêtre `parametres.fenetreJoursLiaisons`.
+Contraintes : CHECK `gare_depart_id <> gare_arrivee_id`. Index : la clé (`gare_depart_id`, `gare_arrivee_id`, `date_service`) sert aussi à lire la liaison inverse ; (`gare_arrivee_id`) pour retrouver les liaisons vers une gare (protection des gares au chargement, clé étrangère : sans lui, le chargement des gares passe de 4 s à 60 s). Migrations `0006_liaison_directe`, `0007_liaison_directe_index_arrivee`.
+Calculée quand la gare de départ **ou** d'arrivée est dans la région (les deux sens, D040), sur la fenêtre `[date du jour, + parametres.fenetreJoursLiaisons]`. Remplacée en entier à chaque calcul (suppression puis insertion) : aucune table ne pointe vers elle.
+
+Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare_depart_id = l.gare_arrivee_id AND r.gare_arrivee_id = l.gare_depart_id AND r.date_service = l.date_service`, puis `r.dernier_depart_s` (D040).
 
 ### 3.6 `lieu`
 | Colonne | Type | Contraintes | Description |
@@ -398,9 +412,12 @@ ORDER BY distance_m
 LIMIT :limite;
 
 -- Destinations depuis une gare à une date
-SELECT l.gare_arrivee_id, g.nom, l.duree_min, l.nb_trains, l.premier_depart_s, l.dernier_depart_s
+SELECT l.gare_arrivee_id, g.nom, l.duree_min, l.nb_trains, l.premier_depart_s, l.dernier_depart_s,
+       r.dernier_depart_s AS dernier_retour_s, l.faisable_journee
 FROM liaison_directe l
 JOIN gare g ON g.id = l.gare_arrivee_id
+LEFT JOIN liaison_directe r ON r.gare_depart_id = l.gare_arrivee_id
+  AND r.gare_arrivee_id = l.gare_depart_id AND r.date_service = l.date_service
 WHERE l.gare_depart_id = :gare AND l.date_service = :date AND l.duree_min <= :duree_max
 ORDER BY l.duree_min;
 
@@ -448,3 +465,4 @@ ORDER BY a.depart_s;
 | 22/10/2026 | 1.8 | § 3.3 : `passage.montee_interdite`, `passage.descente_interdite` ; § 5 : requête « trains A → B » filtrée — D036 |
 | 23/10/2026 | 1.9 | § 3.1 bis : table `commune` (code INSEE, nom, département) ; § 3.1 : `gare.commune` et `gare.departement` retirés, `gare.code_insee` → `commune` ; § 2 et § 7 — D038 |
 | 23/10/2026 | 1.10 | § 3.1 : gare reconnue par un code UIC commun, plus par le seul `uic` — D039 |
+| 01/11/2026 | 1.11 | § 3.5 : `liaison_directe` créée en E04 (deux sens, `premiere_arrivee_s`, `faisable_journee`, jumelage, dernier retour par jointure) ; § 3.1 : `dans_region` valeur calculée assumée et contrôlée ; § 2 et § 5 — D040 |

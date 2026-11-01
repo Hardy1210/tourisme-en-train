@@ -16,9 +16,10 @@
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
-| **Données des cartes de destination** : l'interface (`06` § 3.4) affiche dernier retour, prochain train, CO₂, prix et « Faisable dans la journée », que `/api/destinations` ne fournit pas ; `liaison_directe` n'a ni heures d'arrivée ni retours (et aucun retour pour une destination hors région). Choisir : enrichir `liaison_directe` / la réponse de `/api/destinations`, ou des appels séparés par carte | Audit du 09/10 ; `liaison_directe` retirée du schéma initial de E01 pour ne rien figer | **Avant E04** |
+| **Plusieurs gares dans une même ville** : depuis Dijon, Paris apparaît en deux destinations (Paris Gare de Lyon : 14 trains, 1 h 36 ; Paris Bercy : 6 trains, 2 h 52, dont le premier départ à 05:35). SNCF Connect les regroupe sous « Paris ». Choix d'affichage : une carte par commune (via `gare.code_insee` → `commune`, arrondissements déjà rattachés à « Paris ») avec ses gares, ou une carte par gare | Relevé le 01/11 en comparant les liaisons E04 avec SNCF Connect ; les liaisons restent calculées par gare (aucun changement en E04) | **Avant E08** (forme de `/api/destinations`) |
 | **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
 | **Commune des lieux** : relier `lieu` à `commune` (clé étrangère sur `code_insee`, colonne `lieu.commune` supprimée) si les sources donnent le code INSEE ; sinon choisir comment le retrouver (code postal + nom) | D038 : `gare` est déjà reliée à `commune`, `lieu` laissé tel quel faute de connaître les sources | **Audit de E05** |
+| Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
@@ -64,6 +65,7 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Itinéraire piéton réel | Moteur de routage nécessaire | Après la soutenance |
 | Extension nationale | Volume et temps | P0 + P1 terminés avant le gel (27/11) |
 | Carte hors ligne (PMTiles régional) | Optionnel pour la démo | E16, si réseau incertain le jour J |
+| Faille esbuild 0.18.20 (GHSA-67mh-4wv8-2f99) amenée par drizzle-kit 0.31.11 : alerte Dependabot n° 2 fermée « code non utilisé » le 23/10 (fonction `serve` jamais lancée, outil de développement uniquement) | Aucune version corrigée de drizzle-kit ; forcer la version d'esbuild = risque sans gain | Prochaine mise à jour de drizzle-kit : vérifier `pnpm why esbuild -r` |
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |
 
 ## 4. Idées d'évolution
