@@ -5,6 +5,14 @@ export const CATEGORIES = ['enfants', 'nature', 'parcs', 'patrimoine', 'culture'
 export const schemaCategorie = z.enum(CATEGORIES);
 export type Categorie = z.infer<typeof schemaCategorie>;
 
+/**
+ * Condition d'une règle de catégorie OSM (`regles/categories.csv`, D041). Aucune = nom obligatoire ;
+ * `sans_nom` = gardé même sans nom ; `notable` = nommé et avec un signe de sortie.
+ */
+export const CONDITIONS_REGLE = ['sans_nom', 'notable'] as const;
+export const schemaConditionRegle = z.enum(CONDITIONS_REGLE);
+export type ConditionRegle = z.infer<typeof schemaConditionRegle>;
+
 export const TYPES_TRAIN = ['TER', 'INTERCITES', 'TGV', 'AUTRE'] as const;
 export const schemaTypeTrain = z.enum(TYPES_TRAIN);
 export type TypeTrain = z.infer<typeof schemaTypeTrain>;

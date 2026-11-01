@@ -39,6 +39,10 @@ export const schemaParametres = z
       garesRegionMin: z.number().int().positive(),
       /** Part minimale (en %) des passages des trajets retenus rapprochés d'une gare (E03). */
       rapprochementGtfsMinPct: z.number().min(0).max(100),
+      /** Communes de la région avec un contour (source `contours`, D041). */
+      contoursRegionMin: z.number().int().positive(),
+      /** Lieux gardés dans la région, par source de lieux (E05). */
+      lieuxSourceMin: z.number().int().positive(),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),
@@ -60,6 +64,10 @@ export const schemaParametres = z
     journee: z.strictObject({
       arriveeMaxAller: schemaHeure,
       dureeVisiteMin: z.number().int().positive(),
+    }),
+    lieux: z.strictObject({
+      /** Description coupée au mot près au-delà de cette longueur (docs/04 § 4.4). */
+      descriptionMaxCaracteres: z.number().int().positive(),
     }),
     dedoublonnage: z.strictObject({
       distanceM: schemaDistanceM,

@@ -4,20 +4,29 @@ import { journal } from '@tourisme/commun';
 import { AIDE, lireArguments, type Source } from './arguments';
 import { lireConfig } from './config';
 import { traiterCommunes } from './sources/communes';
+import { traiterContours } from './sources/contours';
+import { traiterDatatourisme } from './sources/datatourisme';
 import { traiterGares } from './sources/gares';
 import { traiterGtfsSncf } from './sources/gtfs-sncf';
 import { traiterLiaisons } from './sources/liaisons';
+import { traiterOsm } from './sources/osm';
+import { traiterRegles } from './sources/regles';
 import { traiterSources } from './sources/registre';
 
 type Traitement = (options: { force: boolean; horsLigne: boolean }) => Promise<void>;
 
-// Rempli au fil des étapes : E02 (sources, gares), E03 (gtfs_sncf), D038 (communes), E04 (liaisons)…
+// Rempli au fil des étapes : E02 (sources, gares), E03 (gtfs_sncf), D038 (communes), E04 (liaisons),
+// E05 (contours, regles, datatourisme, osm)…
 const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   sources: traiterSources,
   communes: traiterCommunes,
+  contours: traiterContours,
   gares: traiterGares,
   gtfs_sncf: traiterGtfsSncf,
   liaisons: traiterLiaisons,
+  regles: traiterRegles,
+  datatourisme: traiterDatatourisme,
+  osm: traiterOsm,
 };
 
 async function executer(argv: readonly string[]): Promise<number> {

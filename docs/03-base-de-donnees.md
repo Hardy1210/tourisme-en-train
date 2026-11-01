@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.11 · **Date** 01/11/2026
+> **Version** 1.12 · **Date** 01/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -27,7 +27,7 @@
                  │ source_donnees│◀── execution_etl
                  └──────────────┘
 ┌─────────┐
-│ commune │◀── gare.code_insee
+│ commune │◀── gare.code_insee, lieu.code_insee   (contour : communes de la région)
 └─────────┘
 ┌────────┐   ┌─────────┐   ┌─────────┐   ┌──────────────┐
 │  gare  │◀──│ passage │──▶│ trajet  │──▶│ service_jour │
@@ -42,7 +42,7 @@
  ligne_ferroviaire (P1)      amenagement_cyclable (P1)
 ```
 
-Les tables créées (11 en E01, `commune` ensuite, D038, `liaison_directe` en E04, D040) et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
+Les tables créées (11 en E01, `commune` ensuite, D038, `liaison_directe` en E04, D040 ; contour et lien `lieu` → `commune` en E05, D041) et leurs liens (trait plein = clé étrangère ; pointillé = lien par valeur, sans clé étrangère) :
 
 ```mermaid
 erDiagram
@@ -62,6 +62,7 @@ erDiagram
         char code_insee PK
         text nom
         char departement
+        geography contour
     }
     gare {
         integer id PK
@@ -101,6 +102,7 @@ erDiagram
         text id_source
         text nom
         text categorie
+        char code_insee FK
         bigint doublon_de FK
         geography geom
     }
@@ -110,6 +112,7 @@ erDiagram
         text cle
         text valeur
         text categorie
+        text condition
     }
     lieu_gare {
         bigint lieu_id PK,FK
@@ -132,6 +135,7 @@ erDiagram
     }
 
     commune |o--o{ gare : "située dans"
+    commune |o--o{ lieu : "contient"
     trajet ||--|{ passage : "s'arrête"
     gare ||--o{ passage : "desservie par"
     service_jour }o..o{ trajet : "service_id"
@@ -150,7 +154,7 @@ erDiagram
 
 | Table | Rôle | Remplie par | Prio |
 |---|---|---|---|
-| `commune` | Communes de France (nom, département), par code INSEE | ETL `communes` | P0 |
+| `commune` | Communes de France (nom, département), par code INSEE ; contour des communes de la région | ETL `communes`, `contours` | P0 |
 | `gare` | Toutes les gares de France (petite table) | ETL `gares` | P0 |
 | `trajet` | Trains (trips GTFS) touchant la région | ETL `gtfs_sncf` | P0 |
 | `passage` | Arrêts de chaque trajet | ETL `gtfs_sncf` | P0 |
@@ -198,10 +202,15 @@ Mise à jour de la gare qui partage **au moins un code UIC** avec la ligne du fi
 | `code_insee` | char(5) | PK | Code officiel (COG INSEE) : 5 chiffres, ou `2A`/`2B` + 3 chiffres |
 | `nom` | text | NN | `LIBELLE` du COG |
 | `departement` | char(3) | NN | `DEP` du COG |
+| `contour` | geography(MultiPolygon, 4326) | | Contour de la commune (source `contours`), **rempli pour les communes de la région seulement** ; nul ailleurs (D041) |
+
+Index : GIST(`contour`) (« dans quelle commune tombe ce point ? »).
 
 Une ligne par code du COG : communes (`COM`), mais aussi arrondissements municipaux (`ARM`), communes déléguées (`COMD`) et associées (`COMA`), qui prennent **le nom et le département de leur commune de rattachement** (Paris 13ᵉ `75113` → « Paris », `75`) : une gare ou un lieu peut porter n'importe lequel de ces codes.
 
-Mise à jour **par `code_insee`** (insertion ou mise à jour) ; un code disparu du COG n'est supprimé que si rien ne le référence (même règle que `gare`, D034). Migration `0005_table_commune`, D038.
+Mise à jour **par `code_insee`** (insertion ou mise à jour) ; un code disparu du COG n'est supprimé que si rien ne le référence (même règle que `gare`, D034). Migration `0005_table_commune`, D038. `contour` : chargé par `pnpm etl contours`, après `communes` ; une commune absente du fichier de contours perd le sien (migration `0008_lieux_contours_communes`, D041).
+
+*Pourquoi le contour est ici :* il décrit la commune, pas le lieu. Rangé dans `commune`, il est stocké une fois et sert à tous ceux qui en ont besoin (lieux, plus tard gares ou arrêts) ; une table à part, liée une à une, n'apporterait qu'une jointure de plus pour une seule colonne.
 
 *Pourquoi une table :* le nom et le département décrivent la commune, pas la gare. Recopiés dans `gare` puis `lieu`, ils seraient répétés et pourraient diverger ; ici, ils sont stockés une fois, et une information nouvelle sur les communes (fréquentation, § 7) s'ajoute en une colonne.
 
@@ -270,19 +279,19 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `sous_categorie` | text | | Libellé lisible (« aire de jeux »…) |
 | `description` | text | | Courte, nettoyée |
 | `adresse` | text | | |
-| `commune` | text | | Provisoire : à remplacer par le lien vers `commune` si les sources donnent le code INSEE (audit E05, D038) |
-| `code_insee` | char(5) | | Pas encore de FK → `commune` (audit E05, D038) |
+| `code_insee` | char(5) | FK → commune(code_insee) | Commune dont le contour contient le lieu, quelle que soit la source (D041) ; nom de la commune par jointure |
 | `url` | text | | Site officiel |
 | `image_url` | text | | |
 | `horaires` | text | | Texte tel que fourni |
 | `periode` | text | | Festivals : période de l'année |
 | `qualite_tourisme` | boolean | NN, défaut false | |
-| `doublon_de` | bigint | FK → lieu(id) | Rempli si fusionné dans un autre lieu |
+| `doublon_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Rempli si fusionné dans un autre lieu ; remis à nul si ce lieu disparaît au rechargement de sa source |
 | `geom` | geography(Point, 4326) | NN | |
 | `maj` | timestamptz | NN, défaut now() | |
 
 Contraintes : UQ(`source`, `id_source`).
 Index : GIST(`geom`), (`categorie`), GIN(`nom` gin_trgm_ops).
+Chargement par source : mise à jour **par (`source`, `id_source`)**, puis suppression des lieux disparus de la source : l'`id` d'un lieu reste stable d'un chargement à l'autre (D041). Seuls les lieux situés dans un contour de commune de la région sont chargés.
 Les requêtes de l'application ignorent les lignes où `doublon_de` n'est pas nul.
 
 ### 3.7 `categorie_regle`
@@ -295,6 +304,7 @@ Les requêtes de l'application ignorent les lignes où `doublon_de` n'est pas nu
 | `categorie` | text | | Catégorie cible ; **nul = à exclure** |
 | `sous_categorie` | text | | Libellé affiché |
 | `priorite` | smallint | NN, défaut 100 | Plus petit = prioritaire si plusieurs règles s'appliquent |
+| `condition` | text | CHECK in (`sans_nom`, `notable`) | OSM : nul = nom obligatoire ; `sans_nom` = gardé sans nom ; `notable` = nommé avec un signe de sortie (D041). Ignorée pour une règle d'exclusion |
 
 Contrainte : UQ(`source`, `cle`, `valeur`).
 Source de vérité : `etl/src/regles/categories.csv` (versionné, éditable sans code), chargé à chaque exécution.
@@ -466,3 +476,4 @@ ORDER BY a.depart_s;
 | 23/10/2026 | 1.9 | § 3.1 bis : table `commune` (code INSEE, nom, département) ; § 3.1 : `gare.commune` et `gare.departement` retirés, `gare.code_insee` → `commune` ; § 2 et § 7 — D038 |
 | 23/10/2026 | 1.10 | § 3.1 : gare reconnue par un code UIC commun, plus par le seul `uic` — D039 |
 | 01/11/2026 | 1.11 | § 3.5 : `liaison_directe` créée en E04 (deux sens, `premiere_arrivee_s`, `faisable_journee`, jumelage, dernier retour par jointure) ; § 3.1 : `dans_region` valeur calculée assumée et contrôlée ; § 2 et § 5 — D040 |
+| 01/11/2026 | 1.12 | § 3.1 bis : `commune.contour` (communes de la région) ; § 3.6 : `lieu.commune` supprimée, `lieu.code_insee` → `commune`, `doublon_de` ON DELETE SET NULL, mise à jour par (`source`, `id_source`) ; § 3.7 : `categorie_regle.condition` ; § 2 — D041 |

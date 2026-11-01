@@ -2,7 +2,13 @@
 // Tables P1 en E07.
 // Sans `import 'server-only'` : lu aussi par drizzle-kit, hors de Next.js (D031).
 // Noms de colonnes : camelCase ici, snake_case en base (option `casing` de Drizzle).
-import { CATEGORIES, STATUTS_EXECUTION, TYPES_MOBILITE, TYPES_TRAIN } from '@tourisme/commun';
+import {
+  CATEGORIES,
+  CONDITIONS_REGLE,
+  STATUTS_EXECUTION,
+  TYPES_MOBILITE,
+  TYPES_TRAIN,
+} from '@tourisme/commun';
 import { sql, type SQL } from 'drizzle-orm';
 import {
   type AnyPgColumn,
@@ -22,7 +28,7 @@ import {
   unique,
 } from 'drizzle-orm/pg-core';
 
-import { geographyPoint } from './types-postgis';
+import { geographyMultiPolygone, geographyPoint } from './types-postgis';
 
 /** `colonne IN ('A', 'B')` à partir d'une liste partagée de @tourisme/commun (jamais recopiée). */
 function parmi(colonne: AnyPgColumn, valeurs: readonly string[]): SQL {
@@ -46,11 +52,17 @@ export const sourceDonnees = pgTable('source_donnees', {
 });
 
 // § 3.1 bis
-export const commune = pgTable('commune', {
-  codeInsee: char({ length: 5 }).primaryKey(),
-  nom: text().notNull(),
-  departement: char({ length: 3 }).notNull(),
-});
+export const commune = pgTable(
+  'commune',
+  {
+    codeInsee: char({ length: 5 }).primaryKey(),
+    nom: text().notNull(),
+    departement: char({ length: 3 }).notNull(),
+    // Communes de la région seulement (source `contours`, D041) ; nul ailleurs.
+    contour: geographyMultiPolygone(),
+  },
+  (t) => [index().using('gist', t.contour)],
+);
 
 // § 3.1
 export const gare = pgTable(
@@ -165,14 +177,17 @@ export const lieu = pgTable(
     sousCategorie: text(),
     description: text(),
     adresse: text(),
-    commune: text(),
-    codeInsee: char({ length: 5 }),
+    // Commune dont le contour contient le lieu (D041).
+    codeInsee: char({ length: 5 }).references(() => commune.codeInsee),
     url: text(),
     imageUrl: text(),
     horaires: text(),
     periode: text(),
     qualiteTourisme: boolean().notNull().default(false),
-    doublonDe: bigint({ mode: 'number' }).references((): AnyPgColumn => lieu.id),
+    // Un lieu supprimé au rechargement de sa source ne bloque pas ses doublons (recalculés en E06).
+    doublonDe: bigint({ mode: 'number' }).references((): AnyPgColumn => lieu.id, {
+      onDelete: 'set null',
+    }),
     geom: geographyPoint().notNull(),
     maj: maj(),
   },
@@ -196,10 +211,13 @@ export const categorieRegle = pgTable(
     categorie: text(),
     sousCategorie: text(),
     priorite: smallint().notNull().default(100),
+    /** OSM : nul = nom obligatoire ; voir CONDITIONS_REGLE (D041). */
+    condition: text(),
   },
   (t) => [
     unique().on(t.source, t.cle, t.valeur),
     check('categorie_regle_categorie_check', parmi(t.categorie, CATEGORIES)),
+    check('categorie_regle_condition_check', parmi(t.condition, CONDITIONS_REGLE)),
   ],
 );
 

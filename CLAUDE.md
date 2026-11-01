@@ -126,7 +126,7 @@ tourisme-en-train/
 │  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
 │  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
 │  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
-│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md
+│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md · LECONS.md (leçons réutilisables, pour Hardy)
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
 ├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
@@ -172,7 +172,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Toucher Docker, variables, santé | `07-contrat-infra.md` |
 | Écrire du code, des tests, un commit | `08-conventions-qualite.md` |
 | Relier une fonctionnalité à ses tâches, estimer, planifier un sprint | `BACKLOG.md` |
-| Savoir pourquoi un choix a été fait | `DECISIONS.md` |
+| Savoir pourquoi un choix a été fait | `DECISIONS.md` (sommaire par thème en tête) |
+| Réviser, préparer la soutenance, réutiliser une leçon ailleurs | `DECISIONS.md` + `LECONS.md` |
 | Reprendre une session | section 9 + dernière entrée de `JOURNAL.md` |
 
 **Ne lire que ce que l'étape en cours demande.** Chaque fiche d'étape liste ses documents.
@@ -190,7 +191,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E02 | Gares | S2 | ✅ |
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
-| E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
+| E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ⬜ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
@@ -214,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E04 (trains directs) pas commencée ; branche `etape/E04-trains-directs` (sauvegardes du 23/10 et du 30/10)
-- **Dernière session :** 30/10/2026 — reprise ; proposition « cartes de destination » réexpliquée avec son coût (≈ 1 jour) et trois choix A / B / C ; Hardy en déplacement (Nantes, peu de réseau), décision reportée au retour à Dijon ; aucun code modifié
-- **Fait :** 36 912 communes ; 2 792 gares ; 3 467 trajets, 33 275 passages, 11 231 jours de circulation (fenêtre au 23/10) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` ; `pnpm verifier` 149 tests, `pnpm test:integration` 35 (23/10)
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **cartes de destination : choix A (tout), B (minimum) ou C (rien), devient D040** ; **trains en jumelage : compter une fois une même paire (gare, heure de départ, gare, heure d'arrivée), oui / non** ; légende de la carte (avant E11), commune des lieux (audit E05)
-- **Bloquant :** E04 attend ces deux réponses (forme de `liaison_directe`, calcul de `nb_trains`) ; E04 est en retard (prévue en S3) et le jalon « données en base » du 01/11 ne sera pas tenu
-- **Prochaine action précise :** au retour de Hardy, recueillir A / B / C et la réponse sur le jumelage ; écrire D040 puis `03` § 3.5, `04` § 4.3, `05` § 3.4 ; recharger le GTFS (`pnpm etl gtfs_sncf`, fenêtre du 23/10 périmée) ; lire `docs/etapes/E04-trains-directs.md` et lancer l'audit E04
+- **Étape en cours :** E05 (lieux DATAtourisme + OSM) pas commencée ; branche `etape/E05-lieux` (sauvegarde du 01/11)
+- **Dernière session :** 01/11/2026 — E04 terminée et fusionnée (PR #49, D040) ; `dans_region` gardée avec un contrôle bloquant
+- **Fait :** 36 912 communes ; 2 792 gares ; 3 213 trajets, 31 148 passages, 10 383 jours de circulation (fenêtre au 01/11) ; 268 025 liaisons directes (5 344 paires, ≈ 17 s) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` → `liaisons` ; `pnpm verifier` 151 tests, `pnpm test:integration` 46
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **gares d'une même ville (Paris Gare de Lyon / Bercy) : une carte par commune ou par gare, avant E08** ; légende de la carte (avant E11) ; commune des lieux (audit E05)
+- **Bloquant :** rien ; jalon « données en base » du 01/11 non tenu (E05 → E07 restent), jalon « API complète » du 08/11 menacé
+- **Prochaine action précise :** Hardy vérifie l'URL du CSV DATAtourisme de la région et teste une extraction GéoDataMine (`A-FAIRE` § 2) ; puis lire `docs/etapes/E05-lieux.md`, lancer l'audit E05 (dont le lien `lieu` → `commune`) et proposer le plan
 
 ---
 
@@ -322,7 +323,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 4. **Fiche d'étape** : cocher l'avancement.
 5. **`docs/BACKLOG.md`** : passer à ✅ les fonctionnalités dont toutes les tâches sont fusionnées.
 6. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
-7. **`docs/DECISIONS.md`** : décisions de la session.
+7. **`docs/DECISIONS.md`** : décisions de la session (avec la ligne « En clair ») ; **`docs/LECONS.md`** seulement si la session apporte une leçon réutilisable.
 8. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
 9. **Historique** de chaque document d'architecture modifié.
 10. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
@@ -360,7 +361,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `gares`, `gtfs_sncf`, `liaisons` (dans cet ordre) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -389,3 +390,6 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
 | 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
 | 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |
+| 01/11/2026 | 1.20 | § 9 : sauvegarde de session (E04 fusionnée, E05 à lancer) |
+| 01/11/2026 | 1.21 | § 6, § 7, § 14 : `LECONS.md`, sommaire et ligne « En clair » de `DECISIONS.md` |
+| 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |

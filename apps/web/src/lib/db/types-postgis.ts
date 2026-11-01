@@ -47,3 +47,11 @@ export const geographyPoint = customType<{ data: PointGeo; driverData: string }>
   toDriver: ({ lon, lat }) => sql`ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography`,
   fromDriver: lirePointEwkb,
 });
+
+/**
+ * Colonne `geography(MultiPolygon, 4326)` : contour d'une commune (D041). Écrite par l'ETL en SQL
+ * (`ST_GeomFromGeoJSON`) et utilisée dans les requêtes ; jamais lue telle quelle par l'application.
+ */
+export const geographyMultiPolygone = customType<{ data: string; driverData: string }>({
+  dataType: () => 'geography(MultiPolygon, 4326)',
+});
