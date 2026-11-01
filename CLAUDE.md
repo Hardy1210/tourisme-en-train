@@ -126,7 +126,7 @@ tourisme-en-train/
 │  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
 │  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
 │  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
-│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md
+│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md · LECONS.md (leçons réutilisables, pour Hardy)
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
 ├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
@@ -172,7 +172,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | Toucher Docker, variables, santé | `07-contrat-infra.md` |
 | Écrire du code, des tests, un commit | `08-conventions-qualite.md` |
 | Relier une fonctionnalité à ses tâches, estimer, planifier un sprint | `BACKLOG.md` |
-| Savoir pourquoi un choix a été fait | `DECISIONS.md` |
+| Savoir pourquoi un choix a été fait | `DECISIONS.md` (sommaire par thème en tête) |
+| Réviser, préparer la soutenance, réutiliser une leçon ailleurs | `DECISIONS.md` + `LECONS.md` |
 | Reprendre une session | section 9 + dernière entrée de `JOURNAL.md` |
 
 **Ne lire que ce que l'étape en cours demande.** Chaque fiche d'étape liste ses documents.
@@ -322,7 +323,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 4. **Fiche d'étape** : cocher l'avancement.
 5. **`docs/BACKLOG.md`** : passer à ✅ les fonctionnalités dont toutes les tâches sont fusionnées.
 6. **`docs/JOURNAL.md`** : nouvelle entrée (date, étape, fait, décisions, problèmes, à valider).
-7. **`docs/DECISIONS.md`** : décisions de la session.
+7. **`docs/DECISIONS.md`** : décisions de la session (avec la ligne « En clair ») ; **`docs/LECONS.md`** seulement si la session apporte une leçon réutilisable.
 8. **`docs/A-FAIRE.md`** : à valider par Hardy, actions humaines, reporté, idées.
 9. **Historique** de chaque document d'architecture modifié.
 10. **Commit** `docs(contexte): sauvegarde de session du JJ/MM` puis **push**.
@@ -390,3 +391,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
 | 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |
 | 01/11/2026 | 1.20 | § 9 : sauvegarde de session (E04 fusionnée, E05 à lancer) |
+| 01/11/2026 | 1.21 | § 6, § 7, § 14 : `LECONS.md`, sommaire et ligne « En clair » de `DECISIONS.md` |

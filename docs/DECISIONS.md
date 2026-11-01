@@ -2,7 +2,19 @@
 
 > **Rôle :** garder la trace de **pourquoi** chaque choix a été fait. `CLAUDE.md` dit ce qui est vrai aujourd'hui ; ce fichier dit comment on y est arrivé.
 > **Règle :** on n'efface jamais une décision. Si elle change, on ajoute une nouvelle décision qui « remplace Dxxx », et on marque l'ancienne « Remplacée par Dyyy ».
-> **Format :** numéro, date, décision, raison, alternatives écartées, impact (documents touchés).
+> **Format :** numéro, date, **en clair** (une phrase sans jargon, depuis D041), décision, raison, alternatives écartées, impact (documents touchés).
+> **Pour réviser ou préparer la soutenance :** le sommaire ci-dessous range les décisions par thème. Les leçons réutilisables dans d'autres projets sont dans `LECONS.md`.
+
+## Sommaire par thème
+
+| Thème | Décisions |
+|---|---|
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur |
+| **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
+| **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux |
+| **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel |
+| **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
 
@@ -249,6 +261,7 @@
 ```
 ## Dxxx — Titre court
 - **Date :** JJ/MM/AAAA
+- **En clair :** une phrase sans jargon, à pouvoir dire devant le jury
 - **Décision :**
 - **Raison :**
 - **Écarté :**
@@ -349,3 +362,18 @@
 - **Raison :** l'interface (`06` § 3.4) affiche dernier retour, prochain train et « Faisable dans la journée » sur chaque carte de destination, que `/api/destinations` ne pouvait pas fournir. Fait avant la création de `liaison_directe` : le coût est faible (≈ 1 jour, choix A de Hardy). Jumelage relevé en E03 (139 départs en double le 26/10 ; 12 314 couples gare, date, heures en double au 01/11) : sans regroupement, un même train serait compté et affiché deux fois. `dans_region` : discutée après la remarque du professeur sur la normalisation (dépendance transitive gare → commune → département → région). La supprimer obligerait chaque requête à joindre `commune` et à recevoir la liste des départements en paramètre ; le contrôle garantit qu'elle ne diverge pas.
 - **Écarté :** choix B (dernier retour seul, reste reporté) et C (retirer ces informations de la carte) ; `dernier_retour_s` stocké (copie de la liaison inverse) ; « prochain train » précalculé (dépend de l'heure) ou demandé carte par carte (60 requêtes) ; compter les trajets (`COUNT(DISTINCT trajet_id)`) ; supprimer `dans_region` et la calculer par jointure (≈ 2 à 3 h, un paramètre à ne pas oublier dans chaque requête, aucun effet visible).
 - **Impact :** `01` § 5 ; `03` § 2, § 3.1, § 3.5, § 5 ; `04` § 4.1, § 4.3, § 6 ; `05` § 3.4, § 3.8 ; `GLOSSAIRE` ; fiche E04 ; `CLAUDE.md` § 16 ; `A-FAIRE` § 1. Migrations `0006_liaison_directe`, `0007_liaison_directe_index_arrivee` (index par gare d'arrivée : chargement des gares à 60 s sans lui).
+
+## D041 — Lieux (E05) : Overpass seul, commune par contour, événements écartés
+- **Date :** 01/11/2026
+- **En clair :** on prend les lieux OpenStreetMap avec un seul outil (Overpass), on retrouve la commune de chaque lieu en regardant dans quel contour de commune il tombe, et on garde les lieux qu'on peut visiter, pas les événements datés.
+- **Décision :**
+  1. **OpenStreetMap par Overpass uniquement**, pour toutes les familles de lieux. La requête est **construite à partir des règles OSM de `categories.csv`** : une seule liste de tags.
+  2. **Contours des communes de la région** (geo.api.gouv.fr, nouvelle source `contours`), rattachés à la table **`commune`** (une colonne de contour, vide hors région), **pas à `lieu`**. La commune d'un lieu = le contour qui contient son point, quelle que soit la source. `lieu.commune` (texte) est supprimée, et `lieu.code_insee` devient une clé vers `commune`. Les lieux dont le point tombe hors des contours de la région sont écartés.
+  3. **Événements DATAtourisme écartés en v1** (3 826 lignes datées), ainsi que les hébergements, la restauration et les commerces. Les circuits ne sont écartés que s'ils n'ont aucune autre catégorie de lieu.
+  4. **Lieux culturels et festivals (P1) reportés** après le P0.
+  5. **Photos en v1** : tags OSM (`image`, `wikimedia_commons`) quand ils existent, sinon une illustration par catégorie (E10–E12). Le flux complet DATAtourisme sera évalué plus tard, sans bloquer E05.
+  6. **Patrimoine OSM** : seulement les éléments **nommés** qui sont un vrai lieu (château, ruines, site archéologique…), un Monument historique (`ref:mhs`) ou qui ont un lien Wikipédia.
+  7. **Plans d'eau** : seulement ceux qui ont un signe de sortie (Wikipédia ou Wikidata, étiquette tourisme ou loisirs, baignade), 111 sur 3 035 au 01/11, dont le lac des Settons.
+- **Raison :** l'audit du 01/11 montre que GéoDataMine ne couvre que 2 des 5 familles (aires de jeux, patrimoine) : il aurait fallu deux programmes et deux formats pour une même source. La commune arrive sous trois formes (code INSEE chez GéoDataMine, « code postal#nom » chez DATAtourisme, rien chez Overpass) ; le croisement code postal + nom laisse 8,4 % de DATAtourisme ambigu ou introuvable (communes déléguées, fusionnées, code postal d'un autre département). Le contour décrit la **commune**, pas le lieu : rattaché à `commune`, il sert une seule fois à tous ceux qui en ont besoin (lieux, plus tard gares ou arrêts), sans copie dans chaque lieu ; une table séparée, liée une à une, n'apporterait qu'une jointure de plus pour une seule colonne. Il donne aussi le filtre « dans la région » exact.
+- **Écarté :** GéoDataMine + Overpass (deux adaptateurs) ; code postal + nom de commune (incomplet, ajoutait une colonne « commune parente » à `commune`) ; contour stocké dans `lieu` (copie de la commune) ou dans une table `commune_contour` à part ; garder tous les plans d'eau nommés (surtout des étangs) ou tous les écarter (perdre le lac des Settons) ; garder les événements (datés, ce sont des sorties ponctuelles, pas des lieux).
+- **Impact :** `02` § 1, § 2.1 bis, § 2.3, § 2.4 ; `03` § 3.1 bis, § 3.6 ; `04` § 4.4, § 4.5 ; `GLOSSAIRE` ; `config/sources.json` ; `config/parametres.json` (longueur de description) ; fiche E05 ; `CLAUDE.md` § 16 ; `A-FAIRE`.

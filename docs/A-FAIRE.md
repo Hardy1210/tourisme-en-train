@@ -17,9 +17,8 @@
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
 | **Plusieurs gares dans une même ville** : depuis Dijon, Paris apparaît en deux destinations (Paris Gare de Lyon : 14 trains, 1 h 36 ; Paris Bercy : 6 trains, 2 h 52, dont le premier départ à 05:35). SNCF Connect les regroupe sous « Paris ». Choix d'affichage : une carte par commune (via `gare.code_insee` → `commune`, arrondissements déjà rattachés à « Paris ») avec ses gares, ou une carte par gare | Relevé le 01/11 en comparant les liaisons E04 avec SNCF Connect ; les liaisons restent calculées par gare (aucun changement en E04) | **Avant E08** (forme de `/api/destinations`) |
-| **Photos des lieux** : le CSV régional DATAtourisme (`datatourisme-reg-bfc.csv`, choisi pour E05) n'a **ni photo, ni horaires détaillés, ni code INSEE**. Hardy juge les photos importantes. Pistes : (a) **flux complet de la « plateforme diffuseur » DATAtourisme**, téléchargé la nuit comme le CSV (photos comprises, rien n'est demandé pendant l'utilisation) : compte gratuit et adresse du flux à garder secrète, format JSON plus lourd, à vérifier ; (b) **API seulement à l'ouverture d'une fiche** : clé à protéger, fiche plus lente, photo absente si l'API ne répond pas, ou hors ligne pendant la soutenance, sauf mise en cache, limite de requêtes ; (c) photos de Wikimedia Commons via les tags OSM `wikimedia_commons`/`wikidata` (gratuit, seulement pour une partie des lieux). Dans tous les cas : **crédit et licence de chaque photo** à afficher (droits propres à chaque image, distincts de la Licence Ouverte), et une illustration par catégorie quand il n'y a pas de photo | Relevé le 01/11 en regardant les colonnes du CSV ; l'API pour les seules images, suggérée par Hardy | **Audit de E05** (choix de la piste) ; réalisation au plus tard avec E12 (fiche) |
+| **Photos des lieux, au-delà d'OpenStreetMap** : en v1, photo OSM (`image`, `wikimedia_commons`) quand elle existe, sinon illustration par catégorie (D041). Pour en avoir plus : le **flux complet de la « plateforme diffuseur » DATAtourisme** (photos comprises, téléchargé la nuit comme le CSV ; compte gratuit, adresse du flux à garder secrète, JSON plus lourd). Dans tous les cas : **crédit et licence de chaque photo** à afficher | Le CSV régional n'a aucune photo ; Hardy juge les photos importantes. L'API seule pour les images a été écartée (clé, fiche plus lente, rien hors ligne) | Hardy crée le compte diffuseur s'il le souhaite ; évaluation au plus tard avec E12 (fiche) |
 | **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
-| **Commune des lieux** : relier `lieu` à `commune` (clé étrangère sur `code_insee`, colonne `lieu.commune` supprimée) si les sources donnent le code INSEE ; sinon choisir comment le retrouver (code postal + nom) | D038 : `gare` est déjà reliée à `commune`, `lieu` laissé tel quel faute de connaître les sources | **Audit de E05** |
 | Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
@@ -30,7 +29,6 @@
 |---|---|---|
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
-| Tester une extraction GéoDataMine pour les aires de jeux (`playground`) et le patrimoine (`historic`) : GéoDataMine n'a **pas** de thème pour les parcs, la nature, les musées, les zoos ni les théâtres (relevé le 01/11) ; ce qui manque viendra d'Overpass (`02` § 2.4) | E05 | Début E05 |
 | Relire `categories_non_classees_*.csv` et compléter `categories.csv` | E05–E06 | Après chaque chargement de lieux |
 | Choisir les réseaux urbains (GTFS/GBFS) sur transport.data.gouv.fr, et relever les URL `station_status.json` des vélos | E07 | Début E07 |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
@@ -66,6 +64,8 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Extension nationale | Volume et temps | P0 + P1 terminés avant le gel (27/11) |
 | Carte hors ligne (PMTiles régional) | Optionnel pour la démo | E16, si réseau incertain le jour J |
 | Faille esbuild 0.18.20 (GHSA-67mh-4wv8-2f99) amenée par drizzle-kit 0.31.11 : alerte Dependabot n° 2 fermée « code non utilisé » le 23/10 (fonction `serve` jamais lancée, outil de développement uniquement) | Aucune version corrigée de drizzle-kit ; forcer la version d'esbuild = risque sans gain | Prochaine mise à jour de drizzle-kit : vérifier `pnpm why esbuild -r` |
+| **Lieux culturels et festivals** (sources P1 `lieux_culturels`, `festivals`) | Retard sur le calendrier ; le P0 passe d'abord (D041) | P0 terminé |
+| Ligne « En clair » pour les décisions D001 → D040 (révision et soutenance) | Utile pour Hardy, sans effet sur le développement ; ≈ 1 h | Un moment calme, au plus tard avant E13 (pitch) |
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |
 
 ## 4. Idées d'évolution
@@ -76,3 +76,4 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Espace pour les offices de tourisme (mise en avant de lieux) | Objectif « collectivités » du défi |
 | Accidents évités (statistique indicative) | Bénéfice cité par le défi |
 | Notifications de retard pour une sortie enregistrée | Utile avec comptes |
+| « Où manger près de la gare d'arrivée » : restaurants, producteurs, dégustations, marchés de DATAtourisme (déjà dans le CSV chargé, écartés par `categories.csv`) | Compléter une sortie ; quelques lignes de règles + peut-être une catégorie (décision) |
