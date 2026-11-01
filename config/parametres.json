@@ -11,7 +11,9 @@
     "communesFranceMin": 34000,
     "garesFranceMin": 2500,
     "garesRegionMin": 100,
-    "rapprochementGtfsMinPct": 90
+    "rapprochementGtfsMinPct": 90,
+    "contoursRegionMin": 3000,
+    "lieuxSourceMin": 1000
   },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
@@ -31,6 +33,7 @@
     "tranchesTempsMin": [30, 60, 120]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
+  "lieux": { "descriptionMaxCaracteres": 500 },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,

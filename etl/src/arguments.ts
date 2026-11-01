@@ -5,6 +5,7 @@ import { parseArgs } from 'node:util';
 export const SOURCES = [
   'sources',
   'communes',
+  'contours',
   'gares',
   'gtfs_sncf',
   'liaisons',

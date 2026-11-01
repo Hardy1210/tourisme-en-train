@@ -78,9 +78,9 @@ FROM (VALUES
 JOIN gare g ON g.uic = p.uic;
 
 -- 30 lieux inventés près des gares. `Exemple` dans le nom : impossible de les confondre avec de vrais lieux.
-INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, commune, code_insee, geom)
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom)
 SELECT 'echantillon', l.id_source, l.nom, l.categorie, l.sous_categorie, 'Donnée d''exemple.',
-       l.commune, l.insee, ST_SetSRID(ST_MakePoint(l.lon, l.lat), 4326)::geography
+       l.insee, ST_SetSRID(ST_MakePoint(l.lon, l.lat), 4326)::geography
 FROM (VALUES
   ('ECH_L01', 'Exemple - Aire de jeux du centre',      'enfants',    'aire de jeux',     'Dijon',            '21231', 5.0330, 47.3240),
   ('ECH_L02', 'Exemple - Jardin botanique',            'parcs',      'jardin',           'Dijon',            '21231', 5.0300, 47.3260),

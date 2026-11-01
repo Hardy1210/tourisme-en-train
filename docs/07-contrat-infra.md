@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 1.7 · **Date** 22/10/2026
+> **Version** 1.8 · **Date** 01/11/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `docs/equipe/guide-SR.md` ; `infra/CLAUDE.md` (résumé) ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -69,6 +69,7 @@
 | `etl` | construite depuis `etl/Dockerfile` | — | `etl` | `docker compose run --rm etl all` |
 | `web` | construite depuis `apps/web/Dockerfile` | `127.0.0.1:3000` | `demo` | Application complète (soutenance) |
 
+- **Planification de l'ETL (I15) : ne pas lancer `all` chaque nuit.** Chaque nuit, les commandes une par une **sauf `osm`** ; **`osm` une fois par semaine au plus** : le service public Overpass n'est pas fait pour un usage automatique fréquent. Entre deux extractions, le fichier `data/brut/osm/overpass.json` est gardé, et `docker compose run --rm etl osm --hors-ligne` recharge depuis lui (D041).
 - Volumes : `donnees_db` (base), `./data` monté dans `etl` sur `/data`.
 - Réseau interne unique ; seuls les ports ci-dessus sont exposés, **et uniquement sur 127.0.0.1**.
 - Les ports côté hôte de `db` et d'`adminer` sont réglables (`BDD_PORT_HOTE`, `ADMINER_PORT_HOTE`) pour éviter un conflit avec un autre projet sur le poste ; **cela ne concerne que l'environnement local** : en production, la base n'expose aucun port (§ 6) — D030.
@@ -111,3 +112,4 @@
 | 11/10/2026 | 1.5 | Commande de migration dans l'image web : `node scripts/migrer.ts` au lieu de `.mjs` ; version d'Adminer fixée — D033. Pour les SR : rien ne change dans leur travail |
 | 11/10/2026 | 1.6 | Local uniquement : port d'Adminer côté hôte réglable (`ADMINER_PORT_HOTE`, 8080 par défaut), sur le modèle de D030 |
 | 22/10/2026 | 1.7 | `etl/Dockerfile` créé (utilisateur `node`), `.dockerignore`, `DOSSIER_DONNEES` relatif — D035. Pour les SR : `docker compose run --rm etl <source|all>` fonctionne (sources disponibles : `sources`, `gares`) |
+| 01/11/2026 | 1.8 | § 5 : `osm` une fois par semaine au plus, jamais `all` chaque nuit — D041. Pour les SR : à respecter dans la planification (I15) |

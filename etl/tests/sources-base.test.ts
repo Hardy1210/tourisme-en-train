@@ -7,7 +7,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { SourceDonnees } from '@tourisme/commun';
 import { resoudreDossierDonnees } from '../src/config';
 import {
+  avecReessais,
   cheminFichierBrut,
+  ErreurTelechargement,
   empreinteFichier,
   estInchange,
   obtenirFichier,
@@ -137,5 +139,52 @@ describe('obtenirFichier', () => {
     await expect(
       obtenirFichier(source(null), { ...options, dossierDonnees: dossier }),
     ).rejects.toThrow(/Adresse de téléchargement absente/);
+  });
+});
+
+describe('avecReessais', () => {
+  /** Action qui échoue avec les statuts donnés, puis réussit. */
+  function action(statuts: number[]): () => Promise<string> {
+    const restants = [...statuts];
+    return async () => {
+      const statut = restants.shift();
+      if (statut !== undefined) throw new ErreurTelechargement(statut, 'http://exemple');
+      return 'ok';
+    };
+  }
+
+  it('serveur saturé (502) : réessaie en doublant l’attente, puis réussit', async () => {
+    const attentes: number[] = [];
+    const resultat = await avecReessais(action([502, 429]), {
+      tentatives: 3,
+      premiereAttenteMs: 1000,
+      attendre: async (ms) => {
+        attentes.push(ms);
+      },
+    });
+    expect(resultat).toBe('ok');
+    expect(attentes).toEqual([1000, 2000]);
+  });
+
+  it('abandonne après la dernière tentative', async () => {
+    await expect(
+      avecReessais(action([503, 503, 503]), {
+        tentatives: 3,
+        premiereAttenteMs: 1,
+        attendre: async () => {},
+      }),
+    ).rejects.toMatchObject({ statut: 503 });
+  });
+
+  it('ne réessaie pas une erreur définitive (404)', async () => {
+    let appels = 0;
+    const echec = async () => {
+      appels += 1;
+      throw new ErreurTelechargement(404, 'http://exemple');
+    };
+    await expect(
+      avecReessais(echec, { tentatives: 5, premiereAttenteMs: 1, attendre: async () => {} }),
+    ).rejects.toMatchObject({ statut: 404 });
+    expect(appels).toBe(1);
   });
 });

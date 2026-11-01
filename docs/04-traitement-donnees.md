@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.10 · **Date** 01/11/2026
+> **Version** 1.11 · **Date** 01/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -35,7 +35,10 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
-  "controles": { "communesFranceMin": 34000, "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90 },
+  "controles": {
+    "communesFranceMin": 34000, "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90,
+    "contoursRegionMin": 3000, "lieuxSourceMin": 1000
+  },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "marche":  { "vitesseKmH": 4.5, "coefDetour": 1.3 },
@@ -54,6 +57,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "tranchesTempsMin": [30, 60, 120]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
+  "lieux": { "descriptionMaxCaracteres": 500 },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
@@ -97,20 +101,23 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 |---|---|---|---|---|
 | 1 | `sources` | Enregistre/à jour `source_donnees` (métadonnées, licences) | — | E02 |
 | 1 bis | `communes` | Charge `commune` (COG INSEE) | 1 | D038 |
+| 1 ter | `contours` | Contour des communes de la région (`commune.contour`) | 1 bis | E05 |
 | 2 | `gares` | Charge toutes les gares de France, marque `dans_region`, les relie à `commune` | 1, 1 bis | E02 |
 | 3 | `gtfs_sncf` | Charge `trajet`, `passage`, `service_jour` | 2 | E03 |
 | 4 | `liaisons` | Calcule `liaison_directe` | 3 | E04 |
 | 5 | `regles` | Charge `categorie_regle` depuis `regles/categories.csv` | — | E05 |
-| 6 | `datatourisme` | Charge les lieux DATAtourisme | 5 | E05 |
-| 7 | `osm` | Charge les lieux OSM | 5 | E05 |
-| 8 | `lieux_culturels` | Charge les lieux culturels (P1) | 5 | E05 |
-| 9 | `festivals` | Charge les festivals (P1) | 5 | E05 |
+| 6 | `datatourisme` | Charge les lieux DATAtourisme | 1 ter, 5 | E05 |
+| 7 | `osm` | Charge les lieux OSM (Overpass) | 1 ter, 5 | E05 |
+| 8 | `lieux_culturels` | Charge les lieux culturels (P1) | 1 ter, 5 | après le P0 |
+| 9 | `festivals` | Charge les festivals (P1) | 1 ter, 5 | après le P0 |
 | 10 | `rattachements` | Doublons, Qualité Tourisme, `lieu_gare`, `gare_stats` | 2, 6–9 | E06 |
 | 11 | `transport_local` | Charge `mobilite_locale` | 2 | E07 |
 | 12 | `lignes` | Charge `ligne_ferroviaire` (P1) | — | E07 |
 | 13 | `cyclable` | Charge `amenagement_cyclable` (P1) | — | E07 |
 
 Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `data/brut/` (démo, E16).
+
+**Fréquence :** `osm` **une fois par semaine au plus** (service public Overpass, pas fait pour un usage automatique fréquent) ; entre deux extractions, `pnpm etl osm --hors-ligne` relit `data/brut/osm/overpass.json`. Les autres sources peuvent être rechargées chaque nuit (`07` § 5, D041).
 
 ---
 
@@ -125,6 +132,13 @@ Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `
 **Contrôles (bloquants) :** codes ≥ `controles.communesFranceMin` ; aucun département de la région sans commune.
 
 **Nouveau millésime du COG :** lancer ensuite `pnpm etl gares --force`, pour qu'une gare dont le code vient d'apparaître soit reliée à sa commune.
+
+### 4.0 bis Contours des communes (E05, D041)
+1. Télécharger → `data/brut/contours/communes.geojson` (`02` § 2.1 ter) ; lu d'un bloc (≈ 23 Mo) et validé (Zod : code INSEE, contour `Polygon` ou `MultiPolygon`).
+2. Copier dans une table temporaire (code, nom, contour en GeoJSON).
+3. Mettre à jour `commune.contour` par code INSEE (`ST_MakeValid`, surfaces seules, `MultiPolygon`) ; une commune absente du fichier perd son contour.
+
+**Contrôles :** au moins `controles.contoursRegionMin` contours ; aucun contour dont la commune est absente de `commune` (bloquant : ses lieux disparaîtraient en silence) ; aucun doublon ; contours hors des départements de la région (non bloquant). Au 01/11 : 3 685 contours, ≈ 7 s.
 
 ### 4.1 Gares (E02)
 1. Télécharger → `data/brut/gares/`.
@@ -229,23 +243,32 @@ LEFT JOIN tmp_liaison r ON r.dep = l.arr AND r.arr = l.dep AND r.date_service = 
 **Constats (rapport) :** liaisons, paires de gares, destinations hors région, liaisons faisables dans la journée, trains en jumelage regroupés.
 *Une paire sans train direct connu ne peut pas exister* : chaque liaison vient d'un passage (construction). *Dijon ↔ Beaune* reste un critère d'acceptation vérifié à la main (fiche E04) : un nom de gare écrit dans le code ne vaudrait que pour la région pilote.
 
-### 4.4 Lieux : DATAtourisme, OSM, lieux culturels, festivals (E05)
-Commun aux quatre sources :
-1. Télécharger (ou extraire) la région → `data/brut/<source>/`.
-2. Lire, valider, **normaliser** vers le format commun : `id_source`, `nom`, `categorie`, `sous_categorie`, `description`, `adresse`, `commune`, `code_insee`, `url`, `image_url`, `horaires`, `periode`, position.
-3. **Classer** (§ 4.5). Lieu sans catégorie → exclu et compté.
-4. **Nettoyer** : description sans HTML, tronquée à 500 caractères au mot près ; URL validée ; nom en casse normale si tout en majuscules.
-5. Garder uniquement les lieux dont la position est dans la région (département du code INSEE ou emprise régionale).
+### 4.4 Lieux : DATAtourisme, OSM, lieux culturels, festivals (E05, D041)
+Commun aux sources (`sources/lieux.ts`, `chargement/lieux.ts`) :
+1. Lire les règles de la source dans `categorie_regle` (aucune → « lancez `pnpm etl regles` »).
+2. Télécharger → `data/brut/<source>/`. **Empreinte = fichier + règles** : des règles modifiées reclassent la source même si son fichier n'a pas changé.
+3. Lire, valider (Zod), **classer** (§ 4.5) et **normaliser** chaque ligne : `id_source`, `nom`, `categorie`, `sous_categorie`, `description`, `adresse`, `url`, `image_url`, `horaires`, `qualite_tourisme`, position. Ligne écartée → comptée par raison (exclue par une règle, sans règle, condition non remplie, sans position, identifiant déjà lu).
+4. **Nettoyer** (`transformations/lieux.ts`) : description sans HTML, entités décodées, coupée au mot près au-delà de `lieux.descriptionMaxCaracteres` ; adresse web http(s) validée ; nom en casse normale s'il est tout en majuscules (« CHÂTEAU DE BUSSY-RABUTIN » → « Château de Bussy-Rabutin »).
+5. Copier dans `tmp_lieu`, puis **commune par contour** : `code_insee` = commune dont `contour` couvre le point (`ST_Covers`, plus petit code en cas de limite). Aucun contour → **hors région, écarté**.
+6. **Contrôles :** communes de la région avec contour ≥ `controles.contoursRegionMin` ; lieux dans la région ≥ `controles.lieuxSourceMin` ; aucun identifiant en double (bloquants) ; lieux hors contours (non bloquant).
+7. Mettre à jour `lieu` **par (`source`, `id_source`)**, puis supprimer les lieux de la source qui n'y sont plus : l'`id` d'un lieu reste stable.
+8. Écrire `data/traite/rapports/categories_non_classees_<source>.csv` (§ 4.5) et le rapport (écarts par raison, nombre par catégorie).
 
 Spécifique :
-- **DATAtourisme :** séparer `Categories_de_POI` sur `|` ; appliquer toutes les règles ; garder la meilleure priorité.
-- **OSM :** centroïde pour les surfaces ; élément sans nom gardé uniquement pour `leisure=playground` → nom « Aire de jeux » ; `id_source` = `type/id` (ex. `way/123456`).
-- **Festivals :** `periode` = mois de début–fin en texte (« juin–juillet »).
+- **DATAtourisme (`sources/datatourisme.ts`) :** CSV lu en flux ; classes de `Categories_de_POI` séparées sur `|`, fin de l'adresse gardée (`…core#Museum` → `Museum`) ; site web = première adresse de `Contacts_du_POI` qui n'est pas un réseau social ; `qualite_tourisme` si « Qualité Tourisme » figure dans `Classements_du_POI` ; un `URI_ID_du_POI` déjà lu (même lieu publié par deux diffuseurs) est ignoré. Au 01/11 : 34 033 lignes → 4 256 lieux, ≈ 10 s.
+- **OSM (`sources/osm.ts`) :** requêtes Overpass **construites à partir des règles OSM** (`transformations/osm.ts`) : **une requête `nwr[clé=valeur]["name"](area.region)` par règle qui classe**, sans `["name"]` pour la condition `sans_nom`, `[clé]` pour la valeur `*` (une règle `clé=valeur` couverte par `clé=*` est sautée) ; aire de la région par `ref:INSEE` ; délai serveur 180 s par requête (sous les 300 s d'attente de Node) ; éléments réunis sans doublon dans `overpass.json`. Toutes les étiquettes de l'élément sont confrontées aux règles (une exclusion comme `access=private` l'emporte). Position = point, ou centre (`out center`) d'une surface ; `id_source` = `type/id` (ex. `way/123456`) ; élément sans nom → nom = sous-catégorie (« Aire de jeux ») ; photo = `image`, sinon fichier `wikimedia_commons`. **Serveur saturé (429, 502, 503, 504) ou réponse interrompue (`remark`)** : jusqu'à 6 tentatives de la requête concernée, attente de 30 s doublée à chaque fois ; puis échec, jamais un chargement partiel. `--hors-ligne` relit `overpass.json`.
+- **Festivals (P1, après le P0) :** `periode` = mois de début–fin en texte (« juin–juillet »).
 
 ### 4.5 Catégorisation
-- **Source de vérité :** `etl/src/regles/categories.csv` (colonnes `source;cle;valeur;categorie;sous_categorie;priorite`), versionné, **modifiable sans code**.
-- `categorie` vide = **à exclure** (hébergement, restauration, commerce…).
-- Toute valeur rencontrée **sans règle** est écrite dans `data/traite/rapports/categories_non_classees_<source>.csv` avec son nombre d'occurrences. **Hardy relit ce fichier** et complète le CSV de règles (action humaine, E05–E06).
+- **Source de vérité :** `etl/src/regles/categories.csv` (colonnes `source;cle;valeur;categorie;sous_categorie;priorite;condition`, lignes `#` = commentaires), versionné, **modifiable sans code**, chargé par `pnpm etl regles` dans `categorie_regle` (remplacée en entier ; une ligne illisible ou une règle en double bloque le chargement).
+- **Clés :** DATAtourisme `categorie` + nom de classe (`Museum`) ; OSM nom du tag + valeur, `*` = toute valeur.
+- **Une règle par étiquette ; la plus petite priorité gagne** parmi les règles des étiquettes du lieu dont la condition est remplie. À égalité, l'exclusion l'emporte, puis l'ordre alphabétique (résultat stable).
+  - `10` **exclusion forte** (hébergement, restauration, commerce, événement) : écarte le lieu même s'il est aussi un château ;
+  - `15` lieu phare (lac, cascade, château, abbaye, zoo…) ; `20` classement précis ; `45`–`50` classement large (« site culturel », « site naturel ») ; `150`–`200` règles OSM larges (`ref:mhs=*`, `historic=*`) ;
+  - `900` **exclusion faible** (étiquette générique, circuit, sport) : une vraie catégorie l'emporte (la Roche de Solutré, aussi circuit, reste en `nature`).
+- `categorie` vide = **à exclure**.
+- **Conditions (OSM) :** aucune = nom obligatoire ; `sans_nom` = gardé même sans nom ; `notable` = nommé **et** avec un signe de sortie (`wikipedia`, `wikidata`, `ref:mhs`, `tourism`, `leisure`, `sport=swimming`). Lieu dont aucune règle de catégorie n'a sa condition remplie → écarté.
+- Toute étiquette d'une clé qui classe **sans règle** est écrite dans `data/traite/rapports/categories_non_classees_<source>.csv` (`source;cle;valeur;occurrences`), réécrit à chaque chargement (vide = tout est classé). **Hardy relit ce fichier** et complète le CSV de règles (action humaine, E05–E06).
 - Catégories autorisées : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` (voir `GLOSSAIRE.md`). En ajouter une = décision + mise à jour de `03`, `06`, `globals.css`.
 
 ### 4.6 Rattachements (E06)
@@ -329,3 +352,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 23/10/2026 | 1.8 | § 3 et § 4.0 : commande `communes` et table `commune` ; § 4.1 : `commune` et `departement` ne sont plus stockés dans `gare`, contrôle « gares de la région sans commune » ; § 2 : `controles.communesFranceMin` — D038 |
 | 23/10/2026 | 1.9 | § 4.1 : gare reconnue par un code UIC commun ; contrôles « code UIC dans plusieurs lignes » et « ligne correspondant à plusieurs gares » — D039 |
 | 01/11/2026 | 1.10 | § 4.3 réécrit : départ ou arrivée dans la région, `premiere_arrivee_s`, `faisable_journee`, trains en jumelage, contrôles ; § 4.1 : contrôle de `dans_region` ; § 6 : faisable dans la journée calculé par l'ETL — D040 |
+| 01/11/2026 | 1.11 | § 2 : `controles.contoursRegionMin`, `controles.lieuxSourceMin`, `lieux.descriptionMaxCaracteres` ; § 3 : `contours` ; § 4.0 bis contours des communes ; § 4.4 et § 4.5 réécrits après E05 (empreinte fichier + règles, commune par contour, mise à jour par identifiant, requête Overpass tirée des règles, priorités et conditions) — D041 |

@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.7 · **Date** 01/11/2026
+> **Version** 1.8 · **Date** 01/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -24,13 +24,16 @@
 | **Code UIC** | Identifiant international d'une gare, 8 chiffres (ex. `87713040`) | `uic` | `uic` | Code INSEE (commune) |
 | **Commune** | Commune française du Code officiel géographique (INSEE) ; porte le nom et le département | `Commune` | table `commune` | Ville saisie par l'utilisateur (→ API Adresse) |
 | **Code INSEE** | Code officiel d'une commune, 5 caractères (ex. `21231` Dijon, `2A004` Ajaccio) | `codeInsee` | `code_insee` | Code postal, code UIC |
+| **Contour** | Limite d'une commune de la région ; un lieu appartient à la commune dont le contour contient son point (D041) | `contour` | `commune.contour` | Emprise (rectangle de la région, `parametres.region.emprise`) |
 | **Gare de départ** | Gare d'où part l'utilisateur (la plus proche ou choisie) | `gareDepart` | `gare_depart_id` | — |
 | **Gare d'arrivée** | Gare de la destination | `gareArrivee` | `gare_arrivee_id` | — |
 | **Destination** | Une gare d'arrivée atteignable en train direct, avec ses lieux | `Destination` | *(vue calculée, pas de table)* | Lieu |
 | **Lieu** | Point d'intérêt : musée, château, parc, aire de jeux, festival… | `Lieu`, `lieuId` | table `lieu`, `lieu_id` | « POI » (terme interdit dans le code) |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
 | **Sous-catégorie** | Précision libre dans une catégorie (ex. « aire de jeux », « château ») | `sousCategorie` | `sous_categorie` | — |
-| **Règle de catégorie** | Correspondance « valeur d'une source → catégorie » | `RegleCategorie` | table `categorie_regle` | — |
+| **Règle de catégorie** | Correspondance « valeur d'une source → catégorie » ; sans catégorie, elle écarte le lieu (exclusion) | `RegleCategorie` | table `categorie_regle` | — |
+| **Étiquette** | Une valeur d'un lieu confrontée aux règles : classe DATAtourisme (`Museum`) ou tag OSM (`leisure=park`) | `Etiquette` | `cle`, `valeur` | Catégorie, sous-catégorie |
+| **Signe de sortie** | Indice qu'un élément OSM vaut le déplacement : lien Wikipédia ou Wikidata, Monument historique, tag tourisme ou loisirs, baignade (condition `notable`) | `estNotable` | `condition = 'notable'` | Nom seul |
 | **Autour de moi** | Lieux et gares à distance de marche de la position de l'utilisateur | `autour` | — | Destination |
 | **Rayon** | Distance maximale de recherche, en mètres | `rayonM` | `rayon_m` | — |
 | **Distance à pied** | Distance estimée de marche : distance à vol d'oiseau × coefficient de détour | `distanceMarcheM` | `distance_m` | Distance à vol d'oiseau |
@@ -117,3 +120,4 @@
 | 22/10/2026 | 1.5 | Montée et descente interdites ; type de train renvoie à `04` § 4.2 (E03) |
 | 23/10/2026 | 1.6 | Commune et code INSEE (table `commune`) — D038 |
 | 01/11/2026 | 1.7 | Trains en jumelage, première arrivée ; dernier retour et faisable dans la journée précisés (E04) — D040 |
+| 01/11/2026 | 1.8 | Contour, étiquette, signe de sortie ; règle de catégorie d'exclusion (E05) — D041 |

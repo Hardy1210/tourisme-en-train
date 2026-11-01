@@ -24,6 +24,17 @@
       "verifie": true
     },
     {
+      "code": "contours",
+      "nom": "Contours des communes de la région",
+      "producteur": "IGN (Admin Express) via l'API Découpage administratif",
+      "mode": "base",
+      "page": "https://geo.api.gouv.fr/decoupage-administratif",
+      "telechargement": "https://geo.api.gouv.fr/communes?codeRegion=27&format=geojson&geometry=contour&fields=code,nom",
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "IGN — Admin Express, via geo.api.gouv.fr (Licence Ouverte)",
+      "verifie": true
+    },
+    {
       "code": "gtfs_sncf",
       "nom": "Horaires SNCF (TER, Intercités, TGV)",
       "producteur": "SNCF Voyageurs",
@@ -36,14 +47,14 @@
     },
     {
       "code": "datatourisme",
-      "nom": "DATAtourisme — points d'intérêt de la région",
+      "nom": "DATAtourisme — points d'intérêt de Bourgogne-Franche-Comté",
       "producteur": "ADN Tourisme",
       "mode": "base",
-      "page": "https://www.datatourisme.fr",
-      "telechargement": null,
+      "page": "https://www.data.gouv.fr/datasets/datatourisme-la-base-nationale-des-donnees-publiques-dinformation-touristique-en-open-data",
+      "telechargement": "https://www.data.gouv.fr/fr/datasets/r/d92f0184-e9cb-4bc9-81b0-b43fbcf2a0d2",
       "licence": "Licence Ouverte 2.0",
       "attribution": "DATAtourisme / ADN Tourisme (Licence Ouverte)",
-      "verifie": false
+      "verifie": true
     },
     {
       "code": "osm",
@@ -51,10 +62,10 @@
       "producteur": "Contributeurs OpenStreetMap",
       "mode": "base",
       "page": "https://www.openstreetmap.org/copyright",
-      "telechargement": null,
+      "telechargement": "https://overpass-api.de/api/interpreter",
       "licence": "ODbL",
       "attribution": "© les contributeurs d'OpenStreetMap (ODbL)",
-      "verifie": false
+      "verifie": true
     },
     {
       "code": "transport_local",

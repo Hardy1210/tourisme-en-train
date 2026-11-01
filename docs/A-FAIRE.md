@@ -29,7 +29,7 @@
 |---|---|---|
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
-| Relire `categories_non_classees_*.csv` et compléter `categories.csv` | E05–E06 | Après chaque chargement de lieux |
+| Relire `data/traite/rapports/categories_non_classees_*.csv` et compléter `etl/src/regles/categories.csv` (puis `pnpm etl regles` et `pnpm etl osm --hors-ligne` : pas besoin de réinterroger Overpass). Au 01/11 : DATAtourisme 0 valeur ; OSM 59, dont `amenity=place_of_worship` (931, déjà gardés comme Monuments historiques), `tourism=attraction` (241), `natural=cave_entrance` (34), `natural=peak` (12), `tourism=picnic_site` (10) | E05–E06 | Avant E06 |
 | Choisir les réseaux urbains (GTFS/GBFS) sur transport.data.gouv.fr, et relever les URL `station_status.json` des vélos | E07 | Début E07 |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
 | Relever les facteurs CO₂ manquants et une source de prix au km | E09 | Début E09 |
@@ -42,7 +42,6 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Seuil | Où dans la doc | Étape |
 |---|---|---|
-| Longueur maximale d'une description (500 caractères) | `04` § 4.4, E05 | E05 |
 | Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
 | Regroupement des quais de même nom (100 m) | `04` § 4.7, E07 | E07 |
 | Bornes de position France métropolitaine (lat 41–51,5, lon −5,5–10) | `05` § 1.6 | E08 |

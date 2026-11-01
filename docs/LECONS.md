@@ -68,6 +68,13 @@
 - **À retenir :** quand plusieurs sources se contredisent, chercher une méthode qui ne dépend d'aucune d'elles (ici, la géographie).
 - **Origine :** audit E05, D041.
 
+### L13 — Plusieurs petites requêtes plutôt qu'une grosse vers un service partagé
+- **Problème :** une seule requête Overpass pour toute la région échouait (délai dépassé à 306 s), sur le serveur principal comme sur deux miroirs.
+- **Cause :** un service gratuit et partagé limite le temps de chaque requête, et il était saturé ce jour-là ; Node coupe aussi une réponse qui ne commence pas en 300 s.
+- **Solution :** une requête par famille de lieux, chacune avec son délai et ses nouvelles tentatives (attente doublée), puis réunion des résultats.
+- **À retenir :** découper un gros téléchargement en morceaux qu'on peut refaire un par un ; ne jamais charger une réponse marquée incomplète.
+- **Origine :** E05, D041.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -104,4 +111,4 @@
 
 | Date | Version | Modification |
 |---|---|---|
-| 01/11/2026 | 1.0 | Création : L01 → L12 |
+| 01/11/2026 | 1.0 | Création : L01 → L13 |

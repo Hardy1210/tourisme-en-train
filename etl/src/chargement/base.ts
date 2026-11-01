@@ -34,12 +34,18 @@ export interface BilanLecture {
 export function lireCsv<T>(
   chemin: string,
   schema: z.ZodType<T>,
-  options: { delimiteur: string },
+  options: { delimiteur: string; commentaire?: string },
 ): { lignes: AsyncGenerator<T>; bilan: BilanLecture } {
   const bilan: BilanLecture = { lues: 0, rejets: [] };
   async function* lignes(): AsyncGenerator<T> {
     const lecteur = createReadStream(chemin).pipe(
-      parse({ columns: true, bom: true, delimiter: options.delimiteur, info: true }),
+      parse({
+        columns: true,
+        bom: true,
+        delimiter: options.delimiteur,
+        info: true,
+        ...(options.commentaire ? { comment: options.commentaire } : {}),
+      }),
     );
     for await (const { record, info } of lecteur as AsyncIterable<{
       record: unknown;
@@ -83,6 +89,8 @@ export interface PlanChargement<T> {
   tableTemporaire: { nom: string; colonnes: readonly (readonly [nom: string, type: string])[] };
   lignes: AsyncIterable<T>;
   versValeurs: (ligne: T) => readonly ValeurCopie[];
+  /** Complète la table temporaire avant les contrôles (ex. commune d'un lieu par son contour). */
+  preparer?: (client: pg.ClientBase) => Promise<void>;
   controles: readonly Controle[];
   /** Recopie la table temporaire dans la vraie table ; renvoie le nombre de lignes chargées. */
   fusionner: (client: pg.ClientBase) => Promise<number>;
@@ -117,6 +125,7 @@ export async function charger<T>(
     }
     const noms = colonnes.map(([colonne]) => colonne);
     const copiees = await copierCsv(client, nom, noms, Readable.from(enCsv()));
+    await plan.preparer?.(client);
 
     const controles = await executerControles(client, plan.controles);
     if (echecsBloquants(controles).length > 0) throw new ErreurControles(controles);
