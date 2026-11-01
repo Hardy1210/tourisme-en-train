@@ -1,7 +1,7 @@
 # E04 — Trains directs (liaisons entre gares)
 
 > **Semaine :** S3 (19/10 → 25/10) · **Priorité :** P0 · **Branche :** `etape/E04-trains-directs`
-> **Étapes préalables :** E03 · **État :** 🟡 en cours (vérification SNCF Connect de Hardy)
+> **Étapes préalables :** E03 · **État :** ✅ terminée (01/11/2026)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -20,7 +20,7 @@ Table `liaison_directe` complète sur la fenêtre, avec distance estimée ; dur�
 
 ## Actions de Hardy
 - [x] Valider le plan (01/11).
-- [ ] Vérifier 3 liaisons à la main contre SNCF Connect.
+- [x] Vérifier 3 liaisons à la main contre SNCF Connect. (01/11 : Dijon → Beaune, → Lyon Part-Dieu conformes ; → Paris Gare de Lyon conforme, le 05:35 vu sur SNCF Connect va à Paris Bercy : `A-FAIRE` § 1)
 
 ## Phase d'audit
 1. Mesurer le nombre de paires par trajet et le volume attendu.
@@ -44,7 +44,7 @@ Table `liaison_directe` complète sur la fenêtre, avec distance estimée ; dur�
 - [x] La requête de référence *destinations depuis une gare à une date* (`03-base-de-donnees.md` § 5) tourne sur les vraies données ; elle répond en **moins de 300 ms** ; temps mesuré et noté dans `JOURNAL.md`. (1,3 ms depuis Dijon le 03/11, dernier retour compris)
 
 ## Vérifications manuelles
-- 3 liaisons comparées à SNCF Connect (durée, premier et dernier train).
+- [x] 3 liaisons comparées à SNCF Connect (durée, premier et dernier train).
 
 ## À ne pas toucher
 - Tables d'horaires (E03).

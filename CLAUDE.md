@@ -189,7 +189,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E01 | Docker local, PostGIS, schéma initial, migrations | S1 | ✅ |
 | E02 | Gares | S2 | ✅ |
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
-| E04 | Trains directs (liaisons entre gares) | S3 | ⬜ |
+| E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ⬜ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ⬜ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
@@ -388,4 +388,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 23/10/2026 | 1.16 | § 16 : `pnpm etl communes` — D038 |
 | 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
 | 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
-| 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` — D040 |
+| 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |
