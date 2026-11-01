@@ -214,12 +214,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E04 (trains directs) pas commencée ; branche `etape/E04-trains-directs` (sauvegardes du 23/10 et du 30/10)
-- **Dernière session :** 30/10/2026 — reprise ; proposition « cartes de destination » réexpliquée avec son coût (≈ 1 jour) et trois choix A / B / C ; Hardy en déplacement (Nantes, peu de réseau), décision reportée au retour à Dijon ; aucun code modifié
-- **Fait :** 36 912 communes ; 2 792 gares ; 3 467 trajets, 33 275 passages, 11 231 jours de circulation (fenêtre au 23/10) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` ; `pnpm verifier` 149 tests, `pnpm test:integration` 35 (23/10)
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **cartes de destination : choix A (tout), B (minimum) ou C (rien), devient D040** ; **trains en jumelage : compter une fois une même paire (gare, heure de départ, gare, heure d'arrivée), oui / non** ; légende de la carte (avant E11), commune des lieux (audit E05)
-- **Bloquant :** E04 attend ces deux réponses (forme de `liaison_directe`, calcul de `nb_trains`) ; E04 est en retard (prévue en S3) et le jalon « données en base » du 01/11 ne sera pas tenu
-- **Prochaine action précise :** au retour de Hardy, recueillir A / B / C et la réponse sur le jumelage ; écrire D040 puis `03` § 3.5, `04` § 4.3, `05` § 3.4 ; recharger le GTFS (`pnpm etl gtfs_sncf`, fenêtre du 23/10 périmée) ; lire `docs/etapes/E04-trains-directs.md` et lancer l'audit E04
+- **Étape en cours :** E05 (lieux DATAtourisme + OSM) pas commencée ; branche `etape/E05-lieux` (sauvegarde du 01/11)
+- **Dernière session :** 01/11/2026 — E04 terminée et fusionnée (PR #49, D040) ; `dans_region` gardée avec un contrôle bloquant
+- **Fait :** 36 912 communes ; 2 792 gares ; 3 213 trajets, 31 148 passages, 10 383 jours de circulation (fenêtre au 01/11) ; 268 025 liaisons directes (5 344 paires, ≈ 17 s) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` → `liaisons` ; `pnpm verifier` 151 tests, `pnpm test:integration` 46
+- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **gares d'une même ville (Paris Gare de Lyon / Bercy) : une carte par commune ou par gare, avant E08** ; légende de la carte (avant E11) ; commune des lieux (audit E05)
+- **Bloquant :** rien ; jalon « données en base » du 01/11 non tenu (E05 → E07 restent), jalon « API complète » du 08/11 menacé
+- **Prochaine action précise :** Hardy vérifie l'URL du CSV DATAtourisme de la région et teste une extraction GéoDataMine (`A-FAIRE` § 2) ; puis lire `docs/etapes/E05-lieux.md`, lancer l'audit E05 (dont le lien `lieu` → `commune`) et proposer le plan
 
 ---
 
@@ -389,3 +389,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
 | 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
 | 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |
+| 01/11/2026 | 1.20 | § 9 : sauvegarde de session (E04 fusionnée, E05 à lancer) |

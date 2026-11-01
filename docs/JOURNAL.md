@@ -24,6 +24,34 @@
 
 ---
 
+## 01/11/2026 — Étape E04 — trains directs, terminée
+**Fait :**
+- Réponses de Hardy : cartes de destination **choix A** ; jumelage : un train compté une fois, deux numéros gardés pour l'affichage. Question sur `gare.dans_region` (dépendance transitive gare → commune → département) : expliquée, **gardée** avec un contrôle bloquant et une ligne dans `03`.
+- Audit E04 : GTFS rechargé (fenêtre 01/11 → 31/12 : 3 213 trajets, 31 148 passages) ; 128 912 paires, 268 025 lignes attendues, 12 314 doublons de jumelage.
+- E04 : migrations `0006_liaison_directe` et `0007_liaison_directe_index_arrivee`, `pnpm etl liaisons` (`transformations/liaisons.sql`, `chargement/liaisons.ts`), contrôles, tests en paires ; contrôle `dans_region` au chargement des gares. Fonctionne aussi dans Docker.
+- Résultat : 268 025 liaisons, 5 344 paires, 155 destinations hors région, 188 540 liaisons faisables dans la journée, ≈ 17 s. Requête de référence « destinations depuis une gare » : **1,3 ms** (Dijon, 03/11, dernier retour compris).
+- Vérification SNCF Connect par Hardy : Dijon → Beaune et → Lyon conformes ; → Paris Gare de Lyon conforme, le 05:35 vu sur SNCF Connect va à **Paris Bercy** (SNCF Connect regroupe les gares de Paris) → `A-FAIRE` § 1.
+- PR #49 fusionnée (ticket #6 fermé) ; explication du contournement de la relecture obligatoire pour ses propres PR.
+
+**Décisions :** D040 (liaisons dans les deux sens, `premiere_arrivee_s`, `faisable_journee`, dernier retour par jointure sur la liaison inverse, jumelage, `dans_region` gardée et contrôlée).
+
+**Problèmes rencontrés :**
+- Docker non joignable depuis WSL en début de session : relancé par Hardy.
+- Protection « gare référencée par une liaison » sans index : chargement des gares de 4 s à 60 s ; index `gare_arrivee_id` (migration `0007` plutôt que réinitialiser la base locale).
+- Test d'intégration « tables P0 » à compléter avec `liaison_directe` (il a bien détecté la nouvelle table).
+- Écarts assumés avec la fiche : contrôle « Dijon ↔ Beaune » vérifié à la main (nom propre à la région) ; tests sur l'échantillon de la base de test plutôt que sur le GTFS miniature.
+
+**À valider par Hardy :**
+- Gares d'une même ville : une carte par commune ou par gare (avant E08) ; légende de la carte (avant E11).
+
+**Prochaine action :**
+- Hardy : URL du CSV DATAtourisme, extraction GéoDataMine ; puis audit E05.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (151) · intégration ✅ (46)
+**Commit :** `e25e0b4` (fusion de E04) ; sauvegarde sur `etape/E05-lieux`
+
+---
+
 ## 30/10/2026 — Avant E04 — reprise, cartes de destination réexpliquées
 **Fait :**
 - Reprise après une semaine d'arrêt ; situation résumée à Hardy.
