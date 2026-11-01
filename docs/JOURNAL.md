@@ -24,6 +24,37 @@
 
 ---
 
+## 01/11/2026 — Étape E05 — lieux DATAtourisme et OpenStreetMap, terminée
+**Fait :**
+- Questions de Hardy sur DATAtourisme : CSV ou API (réponse selon le besoin : croiser tous les lieux avec toutes les gares → fichier complet en base) ; photos jugées importantes → `A-FAIRE` § 1.
+- Test GéoDataMine par Hardy (aires de jeux, patrimoine) : code INSEE présent, mais 2 thèmes seulement sur 5.
+- Audit E05 : CSV DATAtourisme régional (34 033 lignes, 269 classes, aucune photo ni code INSEE) ; code postal + nom de commune → 8,4 % ambigus ou introuvables ; contours des communes testés (geo.api.gouv.fr, 3 685) ; Overpass compté par tag. Six recommandations validées, avec deux précisions de Hardy (plans d'eau avec un signe de sortie ; contour dans `commune`, pas dans `lieu`).
+- Pour Hardy (révision, soutenance) : sommaire par thème et ligne « En clair » dans `DECISIONS.md` ; nouveau `LECONS.md` (leçons réutilisables) ; « En clair » des décisions D001 → D040 reporté (`A-FAIRE` § 3).
+- E05 : migration `0008` (`commune.contour`, `lieu.code_insee` → `commune`, `categorie_regle.condition`, `doublon_de` ON DELETE SET NULL) ; `pnpm etl contours`, `regles`, `datatourisme`, `osm` ; `categories.csv` (priorités 10 → 900, conditions OSM) ; tests en paires sur le vrai fichier de règles ; Docker vérifié.
+- Résultat : **12 566 lieux** (DATAtourisme 4 256, OSM 8 310), 0 sans commune, 0 sans catégorie, 0 hors région ; 106 plans d'eau dont le lac des Settons ; Jardin de l'Arquebuse et Hospices de Beaune présents.
+- Règles d'usage d'Overpass, relevées par Hardy : `osm` une fois par semaine au plus (`07` § 5), `User-Agent` avec l'adresse du dépôt, Geofabrik noté comme solution écartée.
+- PR #50 fusionnée (ticket #7 fermé).
+
+**Décisions :** D041 (Overpass seul, une requête par règle ; commune par contour ; événements écartés ; P1 culture reportés ; photos OSM en v1 ; patrimoine et plans d'eau filtrés ; usage poli d'Overpass).
+
+**Problèmes rencontrés :**
+- Même lieu publié deux fois par deux diffuseurs (16 identifiants) : bloqué par le contrôle d'unicité, puis premier gardé et compté.
+- « Lac de Narlay » classé « tourbière » (égalité de priorité) : priorité 15 « lieu phare ».
+- Overpass saturé (502 « file d'attente pleine »), puis une seule grosse requête au-delà du délai (306 s), sur le serveur principal et deux miroirs : nouvelles tentatives à attente doublée, puis une requête par règle (16 requêtes, ≈ 17 min).
+- Petits monuments (monuments aux morts, croix) gardés grâce à un lien Wikidata : exclus sauf Monument historique, reclassés depuis le fichier gardé (`--hors-ligne`).
+- Cascades OSM : 0, mauvais tag (`natural` au lieu de `waterway=waterfall`) ; règle corrigée, prise à la prochaine extraction.
+
+**À valider par Hardy :**
+- Relire `categories_non_classees_osm.csv` (59 valeurs) et compléter `categories.csv` avant E06.
+
+**Prochaine action :**
+- `pnpm etl regles` puis `pnpm etl osm --hors-ligne` après la relecture ; puis audit E06.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (184 unitaires, 50 intégration)
+**Commit :** 5400b3d (fusion de la PR #50)
+
+---
+
 ## 01/11/2026 — Étape E04 — trains directs, terminée
 **Fait :**
 - Réponses de Hardy : cartes de destination **choix A** ; jumelage : un train compté une fois, deux numéros gardés pour l'affichage. Question sur `gare.dans_region` (dépendance transitive gare → commune → département) : expliquée, **gardée** avec un contrôle bloquant et une ligne dans `03`.

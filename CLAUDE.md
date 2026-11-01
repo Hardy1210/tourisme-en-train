@@ -215,13 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E05 (lieux DATAtourisme + OSM) pas commencée ; branche `etape/E05-lieux` (sauvegarde du 01/11)
-- **Dernière session :** 01/11/2026 — E04 terminée et fusionnée (PR #49, D040) ; `dans_region` gardée avec un contrôle bloquant
-- **Fait :** 36 912 communes ; 2 792 gares ; 3 213 trajets, 31 148 passages, 10 383 jours de circulation (fenêtre au 01/11) ; 268 025 liaisons directes (5 344 paires, ≈ 17 s) ; `pnpm etl` : `sources` → `communes` → `gares` → `gtfs_sncf` → `liaisons` ; `pnpm verifier` 151 tests, `pnpm test:integration` 46
-- **À valider par Hardy :** `docs/A-FAIRE.md` § 1 — **gares d'une même ville (Paris Gare de Lyon / Bercy) : une carte par commune ou par gare, avant E08** ; légende de la carte (avant E11) ; commune des lieux (audit E05)
-- **Bloquant :** rien ; jalon « données en base » du 01/11 non tenu (E05 → E07 restent), jalon « API complète » du 08/11 menacé
-- **Prochaine action précise :** Hardy vérifie l'URL du CSV DATAtourisme de la région et teste une extraction GéoDataMine (`A-FAIRE` § 2) ; puis lire `docs/etapes/E05-lieux.md`, lancer l'audit E05 (dont le lien `lieu` → `commune`) et proposer le plan
-
+- **Étape en cours :** E06 (doublons, Qualité Tourisme, lieux → gares, statistiques) pas commencée ; branche `etape/E06-rattachements` (sauvegarde du 01/11)
+- **Dernière session :** 01/11/2026 — E05 terminée et fusionnée (PR #50, D041) ; `LECONS.md` et sommaire de `DECISIONS.md` créés
+- **Fait :** 36 912 communes, dont 3 685 avec contour ; 2 792 gares ; 3 213 trajets, 31 148 passages (fenêtre au 01/11) ; 268 025 liaisons directes ; **12 566 lieux** (DATAtourisme 4 256, OSM 8 310), tous avec commune et catégorie ; `pnpm etl` : `sources` → `communes` → `contours` → `gares` → `gtfs_sncf` → `liaisons` → `regles` → `datatourisme` → `osm` ; `pnpm verifier` 184 tests, `pnpm test:integration` 50
+- **À valider par Hardy :** relire `data/traite/rapports/categories_non_classees_osm.csv` (59 valeurs) et compléter `etl/src/regles/categories.csv` (**avant E06**) ; `A-FAIRE` § 1 — gares d'une même ville (avant E08), légende de la carte (avant E11), photos au-delà d'OSM (avant E12)
+- **Bloquant :** rien ; Overpass saturé le 01/11 (extraction réussie en ≈ 17 min, `osm` une fois par semaine au plus) ; jalon « données en base » du 01/11 non tenu (E06, E07 restent), « API complète » du 08/11 décalé
+- **Prochaine action précise :** après la relecture des règles par Hardy, `pnpm etl regles` puis `pnpm etl osm --hors-ligne` ; puis lire `docs/etapes/E06-categories-rattachement.md`, auditer (seuils `dedoublonnage`, Qualité Tourisme déjà lu dans DATAtourisme, `lieu_gare`, `gare_stats`) et proposer le plan
 ---
 
 ## 10. Réaliser une étape
@@ -393,3 +392,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.20 | § 9 : sauvegarde de session (E04 fusionnée, E05 à lancer) |
 | 01/11/2026 | 1.21 | § 6, § 7, § 14 : `LECONS.md`, sommaire et ligne « En clair » de `DECISIONS.md` |
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
+| 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |

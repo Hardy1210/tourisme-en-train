@@ -30,6 +30,7 @@
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
 | Relire `data/traite/rapports/categories_non_classees_*.csv` et compléter `etl/src/regles/categories.csv` (puis `pnpm etl regles` et `pnpm etl osm --hors-ligne` : pas besoin de réinterroger Overpass). Au 01/11 : DATAtourisme 0 valeur ; OSM 59, dont `amenity=place_of_worship` (931, déjà gardés comme Monuments historiques), `tourism=attraction` (241), `natural=cave_entrance` (34), `natural=peak` (12), `tourism=picnic_site` (10) | E05–E06 | Avant E06 |
+| Relancer `pnpm etl osm` (extraction Overpass, ≈ 17 min si le serveur est saturé) **une fois par semaine au plus** ; la prochaine ajoutera les cascades (`waterway=waterfall`, règle corrigée le 01/11) | E05 → E16 | Au plus tôt le 08/11 ; dernière extraction avant le gel des données (E16) |
 | Choisir les réseaux urbains (GTFS/GBFS) sur transport.data.gouv.fr, et relever les URL `station_status.json` des vélos | E07 | Début E07 |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
 | Relever les facteurs CO₂ manquants et une source de prix au km | E09 | Début E09 |
