@@ -1,7 +1,7 @@
 # E07 — Transports sur place, tracés des lignes, aménagements cyclables
 
 > **Semaine :** S4 (26/10 → 01/11) · **Priorité :** P0 (transports sur place) · P1 (lignes, cyclable) · **Branche :** `etape/E07-mobilites`
-> **Étapes préalables :** E02 · **État :** 🟡 P0 terminé, PR ouverte (P1 reporté après le P0, D046)
+> **Étapes préalables :** E02 · **État :** ✅ P0 terminé (PR #53 fusionnée le 02/11) ; P1 reporté après le P0 (D046)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal

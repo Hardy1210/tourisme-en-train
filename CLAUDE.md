@@ -193,7 +193,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
-| E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | 🟡 |
+| E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ✅ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
 | E10 | Socle interface : design system, mise en page, composants | S6 | ⬜ |
@@ -399,3 +399,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 02/11/2026 | 1.27 | § 8 : E06 terminée (PR #52) |
 | 02/11/2026 | 1.28 | § 8 et § 9 : sauvegarde de session (audit E07, décisions de Hardy, D046) |
 | 02/11/2026 | 1.29 | § 16 : `pnpm etl transport_local` — D046 |
+| 02/11/2026 | 1.30 | § 8 : E07 terminée (P0, PR #53) |
