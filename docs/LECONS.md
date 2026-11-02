@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.2 · **Date** 02/11/2026
+> **Version** 1.3 · **Date** 02/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -130,6 +130,19 @@
 - **À retenir :** avant de classer un élément, se demander quel rôle il joue pour l'utilisateur : le but du déplacement, ou un service autour.
 - **Origine :** D042, `A-FAIRE` § 3.
 
+### L25 — Regrouper « de proche en proche » enchaîne tout un centre-ville
+- **Problème :** regrouper les lieux voisins en « sites » semblait simple : tout ce qui est à moins de 150 m.
+- **Cause :** le regroupement de proche en proche (DBSCAN) relie A à B, B à C… : 92 monuments du centre de Dijon formaient un seul « site ».
+- **Solution :** une liste fermée de sous-catégories, chacune avec sa distance (grottes 500 m, sites archéologiques 300 m, aires de jeux 50 m) ; jamais tout le patrimoine.
+- **À retenir :** un seuil de distance ne suffit pas à définir « le même endroit » ; mesurer le plus gros groupe obtenu avant d'adopter une règle.
+- **Origine :** D043.
+
+### L26 — Quand l'algorithme hésite, une décision humaine versionnée
+- **Problème :** entre 0,5 et 0,6 de similarité, les paires mêlent vrais doublons (« Atelier Courbet » / « Atelier de Gustave Courbet ») et faux (« Escape game au Château » / le château) ; aucun seuil ne les sépare.
+- **Solution :** un fichier `doublons_manuels.csv` (oui / non), versionné et relu à chaque chargement ; les paires sont repérées par **identifiant**, jamais par le nom ; le rapport à relire a les mêmes colonnes, une ligne se recopie telle quelle. 193 décisions ont ramené la liste à relire de 201 à 8 paires.
+- **À retenir :** garder l'automatique pour les cas sûrs, et rendre la décision humaine reproductible (fichier, pas modification à la main dans la base).
+- **Origine :** D044.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -187,3 +200,4 @@
 | 01/11/2026 | 1.0 | Création : L01 → L13 |
 | 01/11/2026 | 1.1 | L14 → L21 (E05 : résultat à zéro, règles d'usage d'Overpass, doublons de diffuseurs, règles dans un tableau, fichier brut gardé, table d'une information, identifiant stable, plan de secours écarté) |
 | 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
+| 02/11/2026 | 1.3 | L25, L26 (regroupement de proche en proche, décisions humaines versionnées) |

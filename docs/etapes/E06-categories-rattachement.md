@@ -21,7 +21,7 @@ Chaque gare de la région connaît ses lieux à pied et leur nombre par catégor
 
 ## Actions de Hardy
 - [x] ~~(P1) URL du fichier Qualité Tourisme~~ : sans objet, label lu dans DATAtourisme (D043).
-- [ ] Relire le rapport des doublons et des correspondances incertaines.
+- [x] Relire le rapport des doublons et des correspondances incertaines (193 décisions le 02/11 ; 8 paires restantes).
 
 ## Phase d'audit
 1. Mesurer combien de paires de lieux proches (< 75 m) existent entre sources ; examiner 20 cas.
@@ -62,3 +62,4 @@ Voir `_MODELE.md`.
 - 02/11/2026 : audit élargi au regroupement en site et aux lieux en longueur (demande de Hardy, après D042).
 - 02/11/2026 : E06 réalisée : doublons en deux paliers, sites, lieux en longueur, rayon mesuré à pied, Qualité Tourisme lu dans DATAtourisme (D043).
 - 02/11/2026 : décisions manuelles (`regles/doublons_manuels.csv`), doublons dans une même source (noms identiques), Monuments historiques fermés au public écartés (D044).
+- 02/11/2026 : 193 décisions manuelles de Hardy appliquées (965 doublons, 2 114 lieux à pied) ; PR #52 ouverte ; quatre corrections proposées (noms « fermé », activités, objets, château et parc) en attente de validation (`A-FAIRE` § 1).

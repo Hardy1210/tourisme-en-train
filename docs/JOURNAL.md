@@ -24,6 +24,35 @@
 
 ---
 
+## 02/11/2026 — Étape E06 — rattachements, PR #52 ouverte
+**Fait :**
+- PR Dependabot #51 (Next.js 16.4.1, 6 alertes de sécurité) testée dans un dossier séparé (vérifications, build, démarrage) puis fusionnée par Hardy ; `main` intégrée à la branche E06.
+- Audit E06 sur les vraies données : paires de lieux proches, regroupement en site (92 monuments enchaînés à Dijon avec une distance seule), canaux, rayon (810 liens au-delà de 1,5 km à pied).
+- `pnpm etl rattachements` : doublons en deux paliers (noms sans accents, `unaccent`), sites (`lieu.site_de`), lieux en longueur (`lieu.trace`, tracés Overpass des canaux, tronçons réunis), `lieu_gare` au rayon **à pied**, `gare_stats`, contrôles et rapports ; migration `0009`.
+- Après relecture de Hardy : fichier versionné `regles/doublons_manuels.csv` (193 décisions : 116 oui, 77 non), doublons d'une même source (noms identiques seulement), 32 Monuments historiques fermés au public écartés (priorité 140), rapport des fusions limité à la paire retenue.
+- Résultat : 12 323 lieux, 965 doublons (133 dans une même source), 293 sites (Arcy-sur-Cure 29 → 1, Bibracte 17 → 1), **2 114 lieux à pied d'une gare**, 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
+- Docker : `docker compose run --rm etl rattachements` vérifié (mêmes chiffres).
+- Quatre problèmes relevés par Hardy, mesurés et chiffrés sans correction (noms « fermé », activités, objets, château et parc).
+
+**Décisions :** D043 (doublons, sites, lieux en longueur, rayon à pied, Qualité Tourisme lu dans DATAtourisme), D044 (décisions manuelles, même source prudente, lieux fermés au public).
+
+**Problèmes rencontrés :**
+- Une requête de contrôle groupée par nom de représentant faisait croire à un site de 393 aires de jeux (même nom « Aire de jeux ») : recompté par identifiant, 6 au plus.
+- `ST_Collect` de lignes multiples donnait une collection mixte : `ST_Union`.
+- 699 paires « Aire de jeux » / « Aire de jeux » dans la liste à relire : noms génériques exclus des paires d'une même source.
+- Exclure les classes DATAtourisme d'activité (`Visit`, `Product`, `Practice`) ne retire aucun lieu : elles portent aussi une classe précise.
+
+**À valider par Hardy :**
+- Les quatre corrections proposées (`A-FAIRE` § 1), avant la fusion de la PR #52 ; les 8 paires restantes.
+
+**Prochaine action :**
+- Selon la réponse de Hardy : coder les corrections sur la branche E06 (même PR), relancer `rattachements`, puis fusion de la PR #52 et E07.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (195 unitaires, 63 intégration) · Docker ✅
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11` (PR #52)
+
+---
+
 ## 02/11/2026 — Avant E06 — relecture des règles de catégories
 **Fait :**
 - Relecture par Hardy des 59 valeurs OSM non classées : grottes, sommets, sources, lavoirs, observatoires d'oiseaux, canal, barrage (condition « notable »), baignade, port de plaisance, galerie, abbaye gardés ; le reste en exclusion faible.
