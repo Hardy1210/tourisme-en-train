@@ -18,6 +18,8 @@ export const schemaElementOsm = z.object({
   lon: z.number().optional(),
   /** Centre d'une surface ou d'une relation (`out center`). */
   center: z.object({ lat: z.number(), lon: z.number() }).optional(),
+  /** Tracé d'une ligne (`out geom`), demandé pour les lieux en longueur seulement (D043). */
+  geometry: z.array(z.object({ lat: z.number(), lon: z.number() })).optional(),
   tags: z.record(z.string(), z.string()).default({}),
 });
 export type ElementOsm = z.infer<typeof schemaElementOsm>;
@@ -40,20 +42,30 @@ function filtreDe(regle: RegleCategorie): string {
   return regle.condition === 'sans_nom' ? tag : `${tag}["name"]`;
 }
 
+/** Règle d'un lieu en longueur (`lieux.enLongueurOsm`, ex. `waterway=canal`) : tracé demandé. */
+const estEnLongueur = (regle: RegleCategorie, enLongueur: readonly string[]): boolean =>
+  enLongueur.includes(`${regle.cle}=${regle.valeur}`);
+
 /**
  * Requêtes Overpass, **une par règle qui classe** (catégorie non nulle), limitées à la région
  * (`ref:INSEE` de la région, parametres.json). Petites requêtes plutôt qu'une seule : chacune a son
  * propre délai côté serveur, et un échec ne fait refaire qu'elle. Une règle `clé=valeur` couverte
  * par la règle `clé=*` de même condition de nom est sautée (mêmes éléments, déjà demandés).
+ * Lieu en longueur (`enLongueur`, D043) : lignes seulement (`way`), avec leur tracé (`out geom`).
  */
 export function requetesOverpass(
   regles: readonly RegleCategorie[],
   codeInseeRegion: string,
   delaiS: number,
+  enLongueur: readonly string[] = [],
 ): { filtre: string; requete: string }[] {
   const classantes = regles.filter((r) => r.categorie !== null);
   const filtres = new Set<string>();
   for (const regle of classantes) {
+    if (estEnLongueur(regle, enLongueur)) {
+      filtres.add(`way${filtreDe(regle)}`);
+      continue;
+    }
     const couverte =
       regle.valeur !== '*' &&
       classantes.some(
@@ -70,8 +82,8 @@ export function requetesOverpass(
     requete: [
       `[out:json][timeout:${delaiS}];`,
       aire,
-      `nwr${filtre}(area.region);`,
-      'out center tags;',
+      filtre.startsWith('way') ? `${filtre}(area.region);` : `nwr${filtre}(area.region);`,
+      filtre.startsWith('way') ? 'out geom tags;' : 'out center tags;',
     ].join('\n'),
   }));
 }
@@ -100,6 +112,13 @@ function adresseDe(tags: Readonly<Record<string, string>>): string | null {
   return texteOuNull([rue, ville].filter(Boolean).join(', '));
 }
 
+/** Tracé GeoJSON (LineString) d'une ligne lue avec `out geom` ; null pour un point ou une surface. */
+export function traceDe(element: ElementOsm): string | null {
+  const points = element.geometry ?? [];
+  if (element.type !== 'way' || points.length < 2) return null;
+  return JSON.stringify({ type: 'LineString', coordinates: points.map((p) => [p.lon, p.lat]) });
+}
+
 const majuscule = (texte: string): string => texte.charAt(0).toUpperCase() + texte.slice(1);
 
 export function lireElementOsm(
@@ -114,8 +133,10 @@ export function lireElementOsm(
   const classement = classer(index, etiquettes, { aNom: nom !== '', notable: estNotable(tags) });
   if (classement.type !== 'classe') return { type: 'ecarte', raison: classement.type, nonClassees };
 
-  const lat = element.lat ?? element.center?.lat;
-  const lon = element.lon ?? element.center?.lon;
+  const trace = traceDe(element);
+  const milieu = element.geometry?.[Math.floor((element.geometry.length - 1) / 2)];
+  const lat = element.lat ?? element.center?.lat ?? milieu?.lat;
+  const lon = element.lon ?? element.center?.lon ?? milieu?.lon;
   if (lat === undefined || lon === undefined) {
     return { type: 'ecarte', raison: 'sans_position', nonClassees };
   }
@@ -137,6 +158,7 @@ export function lireElementOsm(
       qualiteTourisme: false,
       lon,
       lat,
+      trace,
     },
   };
 }

@@ -28,7 +28,7 @@ import {
   unique,
 } from 'drizzle-orm/pg-core';
 
-import { geographyMultiPolygone, geographyPoint } from './types-postgis';
+import { geographyMultiLigne, geographyMultiPolygone, geographyPoint } from './types-postgis';
 
 /** `colonne IN ('A', 'B')` à partir d'une liste partagée de @tourisme/commun (jamais recopiée). */
 function parmi(colonne: AnyPgColumn, valeurs: readonly string[]): SQL {
@@ -188,7 +188,14 @@ export const lieu = pgTable(
     doublonDe: bigint({ mode: 'number' }).references((): AnyPgColumn => lieu.id, {
       onDelete: 'set null',
     }),
+    // Représentant du site dont ce lieu fait partie (29 grottes d'Arcy-sur-Cure → 1 site), recalculé
+    // par `pnpm etl rattachements` (D043).
+    siteDe: bigint({ mode: 'number' }).references((): AnyPgColumn => lieu.id, {
+      onDelete: 'set null',
+    }),
     geom: geographyPoint().notNull(),
+    // Tracé d'un lieu en longueur (canal) : rattaché aux gares proches de son tracé (D043).
+    trace: geographyMultiLigne(),
     maj: maj(),
   },
   (t) => [

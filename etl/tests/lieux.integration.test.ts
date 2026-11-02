@@ -171,6 +171,52 @@ describe('trouverCommunes + fusionnerLieux', () => {
   });
 });
 
+describe('raccorderTroncons (lieux en longueur, D043)', () => {
+  it('deux tronçons de même nom qui se touchent : un seul lieu avec tout le tracé ; même nom à 20 km : un autre lieu', async () => {
+    await dansTransactionAnnulee(async (client) => {
+      await client.query(`INSERT INTO source_donnees (code, nom, producteur, url, licence, attribution)
+        VALUES ('osm', 'OSM (essai)', 'essai', 'https://example.org', 'ODbL', 'essai')
+        ON CONFLICT (code) DO NOTHING`);
+      await poserContours(client);
+      await creerTable(client, TABLE_LIEUX);
+      const troncon = (id: string, coordonnees: number[][]) =>
+        client.query(
+          `INSERT INTO tmp_lieu (id_source, nom, categorie, sous_categorie, qualite_tourisme, lon, lat, trace)
+           VALUES ($1, 'Canal de Test', 'nature', 'canal', false, $2, $3, $4)`,
+          [
+            id,
+            coordonnees[0]?.[0],
+            coordonnees[0]?.[1],
+            JSON.stringify({ type: 'LineString', coordinates: coordonnees }),
+          ],
+        );
+      await troncon('way/2', [
+        [5.03, 47.32],
+        [5.04, 47.32],
+      ]);
+      await troncon('way/1', [
+        [5.04, 47.32],
+        [5.05, 47.32],
+      ]);
+      await troncon('way/3', [
+        [4.84, 47.02],
+        [4.85, 47.02],
+      ]);
+      await trouverCommunes(client);
+      await fusionnerLieux(client, 'osm');
+      const { rows } = await client.query(
+        `SELECT id_source, round(ST_Length(trace)::numeric, -2)::int AS longueur_m
+         FROM lieu WHERE source = 'osm' ORDER BY id_source`,
+      );
+      // 2 × 0,01° de longitude à 47° ≈ 1 500 m ; un tronçon seul ≈ 800 m.
+      expect(rows).toEqual([
+        { id_source: 'way/1', longueur_m: 1500 },
+        { id_source: 'way/3', longueur_m: 800 },
+      ]);
+    });
+  });
+});
+
 describe('remplacerRegles', () => {
   it('remplace toutes les règles ; une règle en double est bloquante', async () => {
     await dansTransactionAnnulee(async (client) => {

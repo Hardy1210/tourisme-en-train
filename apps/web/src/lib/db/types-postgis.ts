@@ -55,3 +55,11 @@ export const geographyPoint = customType<{ data: PointGeo; driverData: string }>
 export const geographyMultiPolygone = customType<{ data: string; driverData: string }>({
   dataType: () => 'geography(MultiPolygon, 4326)',
 });
+
+/**
+ * Colonne `geography(MultiLineString, 4326)` : tracé d'un lieu en longueur, ex. un canal (D043).
+ * Écrite par l'ETL en SQL et utilisée dans les requêtes ; jamais lue telle quelle par l'application.
+ */
+export const geographyMultiLigne = customType<{ data: string; driverData: string }>({
+  dataType: () => 'geography(MultiLineString, 4326)',
+});

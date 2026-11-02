@@ -24,6 +24,93 @@
 
 ---
 
+## 02/11/2026 — Étape E06 — rattachements, PR #52 ouverte
+**Fait :**
+- PR Dependabot #51 (Next.js 16.4.1, 6 alertes de sécurité) testée dans un dossier séparé (vérifications, build, démarrage) puis fusionnée par Hardy ; `main` intégrée à la branche E06.
+- Audit E06 sur les vraies données : paires de lieux proches, regroupement en site (92 monuments enchaînés à Dijon avec une distance seule), canaux, rayon (810 liens au-delà de 1,5 km à pied).
+- `pnpm etl rattachements` : doublons en deux paliers (noms sans accents, `unaccent`), sites (`lieu.site_de`), lieux en longueur (`lieu.trace`, tracés Overpass des canaux, tronçons réunis), `lieu_gare` au rayon **à pied**, `gare_stats`, contrôles et rapports ; migration `0009`.
+- Après relecture de Hardy : fichier versionné `regles/doublons_manuels.csv` (193 décisions : 116 oui, 77 non), doublons d'une même source (noms identiques seulement), 32 Monuments historiques fermés au public écartés (priorité 140), rapport des fusions limité à la paire retenue.
+- Résultat : 12 323 lieux, 965 doublons (133 dans une même source), 293 sites (Arcy-sur-Cure 29 → 1, Bibracte 17 → 1), **2 114 lieux à pied d'une gare**, 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
+- Docker : `docker compose run --rm etl rattachements` vérifié (mêmes chiffres).
+- Quatre problèmes relevés par Hardy, mesurés et chiffrés sans correction (noms « fermé », activités, objets, château et parc).
+
+**Décisions :** D043 (doublons, sites, lieux en longueur, rayon à pied, Qualité Tourisme lu dans DATAtourisme), D044 (décisions manuelles, même source prudente, lieux fermés au public).
+
+**Problèmes rencontrés :**
+- Une requête de contrôle groupée par nom de représentant faisait croire à un site de 393 aires de jeux (même nom « Aire de jeux ») : recompté par identifiant, 6 au plus.
+- `ST_Collect` de lignes multiples donnait une collection mixte : `ST_Union`.
+- 699 paires « Aire de jeux » / « Aire de jeux » dans la liste à relire : noms génériques exclus des paires d'une même source.
+- Exclure les classes DATAtourisme d'activité (`Visit`, `Product`, `Practice`) ne retire aucun lieu : elles portent aussi une classe précise.
+
+**À valider par Hardy :**
+- Les quatre corrections proposées (`A-FAIRE` § 1), avant la fusion de la PR #52 ; les 8 paires restantes.
+
+**Prochaine action :**
+- Selon la réponse de Hardy : coder les corrections sur la branche E06 (même PR), relancer `rattachements`, puis fusion de la PR #52 et E07.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (195 unitaires, 63 intégration) · Docker ✅
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11` (PR #52)
+
+---
+
+## 02/11/2026 — Avant E06 — relecture des règles de catégories
+**Fait :**
+- Relecture par Hardy des 59 valeurs OSM non classées : grottes, sommets, sources, lavoirs, observatoires d'oiseaux, canal, barrage (condition « notable »), baignade, port de plaisance, galerie, abbaye gardés ; le reste en exclusion faible.
+- Question de Hardy sur le filtre des grottes, attractions, lavoirs : aucun filtre au-delà du nom → condition « notable » ajoutée ; simulation sur `overpass.json` : `tourism=attraction` laissé sans règle (102 Monuments historiques renommés sinon).
+- Pique-nique, caves, cinémas, pêche, écluses, puis cinémas (59) et bibliothèques (156) DATAtourisme retirés des destinations : idée de « compléments de destination » chiffrée dans `A-FAIRE` § 3 (≈ 1 jour, après le P0).
+- `pnpm etl regles`, `osm --hors-ligne`, `datatourisme --hors-ligne` : **12 355 lieux** (DATAtourisme 4 256 → 4 045, OSM 8 310 inchangé, sous-catégories précisées : 32 grottes, 24 lavoirs, 9 sommets…).
+- Fiche E06 : audit élargi au regroupement en site (29 grottes à Arcy-sur-Cure) et aux lieux en longueur (canal rattaché aux gares de son tracé, une fois par gare).
+- `LECONS.md` : L22 → L24.
+
+**Décisions :** D042 (attractions sans règle, condition « notable », compléments écartés, priorité 40).
+
+**Problèmes rencontrés :**
+- Bibliothèques DATAtourisme : toutes portent `CulturalSite` (50), l'exclusion faible ne les retirait pas → priorité 40.
+- Cinémas DATAtourisme classés aussi par `MovieTheater` (schema.org) : seconde règle à passer en exclusion.
+- Commande `docker` absente dans WSL (intégration Docker Desktop) ; la base répond quand même sur le port local.
+
+**À valider par Hardy :**
+- Plan de l'audit E06 (à venir).
+
+**Prochaine action :**
+- Lire `docs/etapes/E06-categories-rattachement.md` et les documents cités, auditer, proposer le plan.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (187 unitaires, 50 intégration)
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11`
+
+---
+
+## 01/11/2026 — Étape E05 — lieux DATAtourisme et OpenStreetMap, terminée
+**Fait :**
+- Questions de Hardy sur DATAtourisme : CSV ou API (réponse selon le besoin : croiser tous les lieux avec toutes les gares → fichier complet en base) ; photos jugées importantes → `A-FAIRE` § 1.
+- Test GéoDataMine par Hardy (aires de jeux, patrimoine) : code INSEE présent, mais 2 thèmes seulement sur 5.
+- Audit E05 : CSV DATAtourisme régional (34 033 lignes, 269 classes, aucune photo ni code INSEE) ; code postal + nom de commune → 8,4 % ambigus ou introuvables ; contours des communes testés (geo.api.gouv.fr, 3 685) ; Overpass compté par tag. Six recommandations validées, avec deux précisions de Hardy (plans d'eau avec un signe de sortie ; contour dans `commune`, pas dans `lieu`).
+- Pour Hardy (révision, soutenance) : sommaire par thème et ligne « En clair » dans `DECISIONS.md` ; nouveau `LECONS.md` (leçons réutilisables) ; « En clair » des décisions D001 → D040 reporté (`A-FAIRE` § 3).
+- E05 : migration `0008` (`commune.contour`, `lieu.code_insee` → `commune`, `categorie_regle.condition`, `doublon_de` ON DELETE SET NULL) ; `pnpm etl contours`, `regles`, `datatourisme`, `osm` ; `categories.csv` (priorités 10 → 900, conditions OSM) ; tests en paires sur le vrai fichier de règles ; Docker vérifié.
+- Résultat : **12 566 lieux** (DATAtourisme 4 256, OSM 8 310), 0 sans commune, 0 sans catégorie, 0 hors région ; 106 plans d'eau dont le lac des Settons ; Jardin de l'Arquebuse et Hospices de Beaune présents.
+- Règles d'usage d'Overpass, relevées par Hardy : `osm` une fois par semaine au plus (`07` § 5), `User-Agent` avec l'adresse du dépôt, Geofabrik noté comme solution écartée.
+- PR #50 fusionnée (ticket #7 fermé).
+
+**Décisions :** D041 (Overpass seul, une requête par règle ; commune par contour ; événements écartés ; P1 culture reportés ; photos OSM en v1 ; patrimoine et plans d'eau filtrés ; usage poli d'Overpass).
+
+**Problèmes rencontrés :**
+- Même lieu publié deux fois par deux diffuseurs (16 identifiants) : bloqué par le contrôle d'unicité, puis premier gardé et compté.
+- « Lac de Narlay » classé « tourbière » (égalité de priorité) : priorité 15 « lieu phare ».
+- Overpass saturé (502 « file d'attente pleine »), puis une seule grosse requête au-delà du délai (306 s), sur le serveur principal et deux miroirs : nouvelles tentatives à attente doublée, puis une requête par règle (16 requêtes, ≈ 17 min).
+- Petits monuments (monuments aux morts, croix) gardés grâce à un lien Wikidata : exclus sauf Monument historique, reclassés depuis le fichier gardé (`--hors-ligne`).
+- Cascades OSM : 0, mauvais tag (`natural` au lieu de `waterway=waterfall`) ; règle corrigée, prise à la prochaine extraction.
+
+**À valider par Hardy :**
+- Relire `categories_non_classees_osm.csv` (59 valeurs) et compléter `categories.csv` avant E06.
+
+**Prochaine action :**
+- `pnpm etl regles` puis `pnpm etl osm --hors-ligne` après la relecture ; puis audit E06.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (184 unitaires, 50 intégration)
+**Commit :** 5400b3d (fusion de la PR #50)
+
+---
+
 ## 01/11/2026 — Étape E04 — trains directs, terminée
 **Fait :**
 - Réponses de Hardy : cartes de destination **choix A** ; jumelage : un train compté une fois, deux numéros gardés pour l'affichage. Question sur `gare.dans_region` (dépendance transitive gare → commune → département) : expliquée, **gardée** avec un contrôle bloquant et une ligne dans `03`.

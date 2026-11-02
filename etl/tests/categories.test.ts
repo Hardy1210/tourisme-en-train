@@ -68,6 +68,13 @@ describe('classer — DATAtourisme', () => {
       sousCategorie: 'musée',
     });
   });
+  it('bibliothèque, cinéma : écartés (compléments) ; cinéma qui est aussi un théâtre : gardé', () => {
+    expect(classer(index.datatourisme, dt('Library', 'CulturalSite'), nomme).type).toBe('exclu');
+    expect(classer(index.datatourisme, dt('Cinema', 'MovieTheater'), nomme).type).toBe('exclu');
+    expect(
+      classer(index.datatourisme, dt('Cinema', 'MovieTheater', 'Theater'), nomme),
+    ).toMatchObject({ categorie: 'culture', sousCategorie: 'théâtre' });
+  });
   it('une classe inconnue est signalée « non classée »', () => {
     expect(etiquettesNonClassees(index.datatourisme, dt('Museum', 'ClasseInventee'))).toEqual([
       'categorie=ClasseInventee',
@@ -128,6 +135,33 @@ describe('classer — OSM', () => {
     // Un autre élément historique notable reste gardé.
     expect(classer(index.osm, [['historic', 'mine']], notable)).toMatchObject({
       categorie: 'patrimoine',
+    });
+  });
+  it('grotte nommée : gardée avec un signe de sortie, écartée sans', () => {
+    const grotte = [['natural', 'cave_entrance']] as const;
+    expect(classer(index.osm, grotte, { aNom: true, notable: true })).toMatchObject({
+      categorie: 'nature',
+      sousCategorie: 'grotte',
+    });
+    expect(classer(index.osm, grotte, nomme).type).toBe('condition');
+  });
+  it('aire de pique-nique seule : écartée ; dans un parc nommé : le parc reste gardé', () => {
+    expect(classer(index.osm, [['tourism', 'picnic_site']], nomme).type).toBe('exclu');
+    const parc = [
+      ['leisure', 'park'],
+      ['tourism', 'picnic_site'],
+    ] as const;
+    expect(classer(index.osm, parc, nomme)).toMatchObject({ categorie: 'parcs' });
+  });
+  it('école Monument historique : écartée ; château Monument historique qui abrite une école : gardé', () => {
+    const ecole = [
+      ['amenity', 'school'],
+      ['ref:mhs', 'PA00112233'],
+    ] as const;
+    expect(classer(index.osm, ecole, nomme).type).toBe('exclu');
+    expect(classer(index.osm, [...ecole, ['historic', 'castle']], nomme)).toMatchObject({
+      categorie: 'patrimoine',
+      sousCategorie: 'château',
     });
   });
 });

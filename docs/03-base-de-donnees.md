@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.12 · **Date** 01/11/2026
+> **Version** 1.13 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -285,14 +285,16 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `horaires` | text | | Texte tel que fourni |
 | `periode` | text | | Festivals : période de l'année |
 | `qualite_tourisme` | boolean | NN, défaut false | |
-| `doublon_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Rempli si fusionné dans un autre lieu ; remis à nul si ce lieu disparaît au rechargement de sa source |
-| `geom` | geography(Point, 4326) | NN | |
+| `doublon_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Rempli si fusionné dans un autre lieu ; remis à nul si ce lieu disparaît au rechargement de sa source. Recalculé par `pnpm etl rattachements` (D043) |
+| `site_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Représentant du **site** dont le lieu fait partie (29 grottes d'Arcy-sur-Cure → 1 site) ; recalculé par `pnpm etl rattachements` (D043) |
+| `geom` | geography(Point, 4326) | NN | Lieu en longueur : point de son tracé le plus proche de son centre |
+| `trace` | geography(MultiLineString, 4326) | | Tracé d'un **lieu en longueur** (canal), tronçons de même nom réunis ; nul sinon (D043) |
 | `maj` | timestamptz | NN, défaut now() | |
 
 Contraintes : UQ(`source`, `id_source`).
 Index : GIST(`geom`), (`categorie`), GIN(`nom` gin_trgm_ops).
 Chargement par source : mise à jour **par (`source`, `id_source`)**, puis suppression des lieux disparus de la source : l'`id` d'un lieu reste stable d'un chargement à l'autre (D041). Seuls les lieux situés dans un contour de commune de la région sont chargés.
-Les requêtes de l'application ignorent les lignes où `doublon_de` n'est pas nul.
+Les requêtes de l'application ignorent les lignes où `doublon_de` **ou** `site_de` n'est pas nul (un site apparaît une fois, par son représentant).
 
 ### 3.7 `categorie_regle`
 | Colonne | Type | Contraintes | Description |
@@ -314,7 +316,7 @@ Source de vérité : `etl/src/regles/categories.csv` (versionné, éditable sans
 |---|---|---|---|
 | `lieu_id` | bigint | PK (1/2), FK → lieu ON DELETE CASCADE | |
 | `gare_id` | integer | PK (2/2), FK → gare | |
-| `distance_m` | integer | NN | Distance à pied estimée |
+| `distance_m` | integer | NN | Distance à pied estimée (≤ `rayons.lieuxGareM`) ; lieu en longueur : jusqu'au point de son tracé le plus proche (D043) |
 | `duree_marche_min` | smallint | NN | |
 
 Index : (`gare_id`, `distance_m`).
@@ -477,3 +479,4 @@ ORDER BY a.depart_s;
 | 23/10/2026 | 1.10 | § 3.1 : gare reconnue par un code UIC commun, plus par le seul `uic` — D039 |
 | 01/11/2026 | 1.11 | § 3.5 : `liaison_directe` créée en E04 (deux sens, `premiere_arrivee_s`, `faisable_journee`, jumelage, dernier retour par jointure) ; § 3.1 : `dans_region` valeur calculée assumée et contrôlée ; § 2 et § 5 — D040 |
 | 01/11/2026 | 1.12 | § 3.1 bis : `commune.contour` (communes de la région) ; § 3.6 : `lieu.commune` supprimée, `lieu.code_insee` → `commune`, `doublon_de` ON DELETE SET NULL, mise à jour par (`source`, `id_source`) ; § 3.7 : `categorie_regle.condition` ; § 2 — D041 |
+| 02/11/2026 | 1.13 | § 3.6 : `lieu.site_de`, `lieu.trace`, requêtes qui ignorent aussi les membres d'un site ; § 3.8 : distance à pied au tracé ; migration `0009` (extension `unaccent`) — D043 |

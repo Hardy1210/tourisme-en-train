@@ -24,16 +24,26 @@ import {
 } from '../transformations/categories';
 import type { ResultatLigne } from '../transformations/datatourisme';
 import { LIBELLES_ECART, type LieuNormalise } from '../transformations/lieux';
+import { motifQuiExclut, type MotifExclu } from '../transformations/noms-exclus';
+import { ecrireLieuxExclus, lireNomsExclus, type LieuExclu } from '../chargement/noms-exclus';
 import { estInchange, lireEmpreinteConnue, type FichierBrut } from './base';
 
 const nombre = (n: number): string => n.toLocaleString('fr-FR');
 
 /**
- * Empreinte du fichier ET des règles : des règles modifiées doivent reclasser la source, même
- * quand son fichier n'a pas changé.
+ * Empreinte du fichier, des règles ET des noms exclus : une règle modifiée doit reclasser la
+ * source, même quand son fichier n'a pas changé.
  */
-export function empreinteLieux(fichier: string, regles: readonly RegleCategorie[]): string {
-  return createHash('sha256').update(fichier).update(JSON.stringify(regles)).digest('hex');
+export function empreinteLieux(
+  fichier: string,
+  regles: readonly RegleCategorie[],
+  nomsExclus: readonly MotifExclu[] = [],
+): string {
+  return createHash('sha256')
+    .update(fichier)
+    .update(JSON.stringify(regles))
+    .update(JSON.stringify(nomsExclus))
+    .digest('hex');
 }
 
 export async function chargerLieux(options: {
@@ -52,12 +62,14 @@ export async function chargerLieux(options: {
     lireRegles(client, source),
     lireEmpreinteConnue(client, source),
   ]).finally(() => client.release());
-  const empreinte = empreinteLieux(options.fichier.empreinte, regles);
+  const nomsExclus = await lireNomsExclus();
+  const empreinte = empreinteLieux(options.fichier.empreinte, regles, nomsExclus);
   if (estInchange(empreinte, connue, options.force)) return 'IGNORE';
 
   const index = indexerRegles(regles);
   const compte = nouveauCompte();
   const lus = new Set<string>();
+  const exclusParNom: LieuExclu[] = [];
   async function* lieux(): AsyncGenerator<LieuNormalise> {
     for await (const resultat of options.lire(index, parametres.lieux.descriptionMaxCaracteres)) {
       if (resultat.type === 'ecarte') {
@@ -65,6 +77,13 @@ export async function chargerLieux(options: {
       } else if (lus.has(resultat.lieu.idSource)) {
         compter(compte, 'doublon', []);
       } else {
+        const motif = motifQuiExclut(resultat.lieu.nom, nomsExclus);
+        if (motif) {
+          const { idSource, nom } = resultat.lieu;
+          exclusParNom.push({ idSource, nom, motif: motif.texte, raison: motif.raison });
+          compter(compte, 'nom_exclu', resultat.nonClassees);
+          continue;
+        }
         lus.add(resultat.lieu.idSource);
         compter(compte, null, resultat.nonClassees);
         yield resultat.lieu;
@@ -104,6 +123,8 @@ export async function chargerLieux(options: {
         .join(' · ')}`,
     );
   }
+  const exclus = await ecrireLieuxExclus(options.dossierDonnees, source, exclusParNom);
+  suivi.remarques.push(`Écartés par leur nom, liste à relire : ${exclus}`);
   const chemin = await ecrireNonClassees(options.dossierDonnees, source, compte.nonClassees);
   suivi.remarques.push(
     `Valeurs sans règle : ${nombre(compte.nonClassees.size)} (à relire : ${chemin})`,

@@ -1,0 +1,31 @@
+# Lieux écartés par leur nom (docs/04-traitement-donnees.md § 4.5, D045). Modifiable sans code.
+# Appliqué à toutes les sources de lieux, après le classement par catégories.
+# motif : comparé sans majuscules, sans accents ni ponctuation. Par défaut, cherché PARTOUT dans le nom ;
+#   commençant par ^ : seulement en DÉBUT de nom (après « le », « la », « les », « l' ») : « ^trésor de » écarte
+#   « Trésor de la cathédrale » mais garde « Musée du Pays Châtillonnais - Trésor de Vix ».
+# raison : libellé du rapport traite/rapports/lieux_exclus_par_nom_<source>.csv (à relire par Hardy).
+motif;raison
+fermé temporairement;fermé
+fermé définitivement;fermé
+visite guidée;activité
+visite commentée;activité
+offre groupe;activité
+escape game;activité
+chasse au trésor;activité
+jeu de piste;activité
+^location de;activité
+^application;activité
+^retable;objet
+^retables;objet
+^orgue;objet
+^grand orgue;objet
+^trésor de;objet
+^vitrail;objet
+^vitraux;objet
+^cloche;objet
+^tapisserie;objet
+^cadran solaire;objet
+^chaire;objet
+^gisant;objet
+^reliquaire;objet
+^stalles;objet

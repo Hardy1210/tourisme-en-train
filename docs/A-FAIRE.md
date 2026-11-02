@@ -29,7 +29,9 @@
 |---|---|---|
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
-| Relire `data/traite/rapports/categories_non_classees_*.csv` et compléter `etl/src/regles/categories.csv` (puis `pnpm etl regles` et `pnpm etl osm --hors-ligne` : pas besoin de réinterroger Overpass). Au 01/11 : DATAtourisme 0 valeur ; OSM 59, dont `amenity=place_of_worship` (931, déjà gardés comme Monuments historiques), `tourism=attraction` (241), `natural=cave_entrance` (34), `natural=peak` (12), `tourism=picnic_site` (10) | E05–E06 | Avant E06 |
+| Fusionner la PR Dependabot `minimatch` quand elle arrivera (alerte n° 10, gravité moyenne, outils ESLint seulement) — accord de Hardy le 02/11 | — | À l'ouverture de la PR |
+| Relancer `pnpm etl osm` (extraction Overpass, ≈ 17 min si le serveur est saturé) **une fois par semaine au plus** ; la prochaine ajoutera les cascades (`waterway=waterfall`, règle corrigée le 01/11) et les nouvelles règles du 02/11 (grottes, sommets, sources, canaux, barrages, lavoirs, D042) : **compter les éléments reçus par règle**, surtout les canaux (un canal = plusieurs tronçons dans OSM, traitement prévu dans l'audit E06) | E05 → E16 | Au plus tôt le 08/11 ; dernière extraction avant le gel des données (E16) |
+| Décider les **8 paires** restantes de `data/traite/rapports/doublons_a_relire.csv` (Musée de l'Ours, Musée de Bibracte / Bibracte, Espace musée / Église Sainte-Madeleine, La Grange, belvédères de Saint-Jean-d'Etreux, Pierrier / Perrier ×2, Borne-colonne de Brienne) : colonne `decision`, lignes recopiées dans `etl/src/regles/doublons_manuels.csv` (193 décisions déjà appliquées le 02/11, D044) | E06 | Au fil de l'eau ; le fichier est relu à chaque `pnpm etl rattachements` |
 | Choisir les réseaux urbains (GTFS/GBFS) sur transport.data.gouv.fr, et relever les URL `station_status.json` des vélos | E07 | Début E07 |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
 | Relever les facteurs CO₂ manquants et une source de prix au km | E09 | Début E09 |
@@ -42,7 +44,6 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Seuil | Où dans la doc | Étape |
 |---|---|---|
-| Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
 | Regroupement des quais de même nom (100 m) | `04` § 4.7, E07 | E07 |
 | Bornes de position France métropolitaine (lat 41–51,5, lon −5,5–10) | `05` § 1.6 | E08 |
 | Fenêtre du temps réel (3 prochaines heures) | `05` § A.2, `06` § 4, D021, E09 | E09 |
@@ -63,6 +64,7 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Extension nationale | Volume et temps | P0 + P1 terminés avant le gel (27/11) |
 | Carte hors ligne (PMTiles régional) | Optionnel pour la démo | E16, si réseau incertain le jour J |
 | Faille esbuild 0.18.20 (GHSA-67mh-4wv8-2f99) amenée par drizzle-kit 0.31.11 : alerte Dependabot n° 2 fermée « code non utilisé » le 23/10 (fonction `serve` jamais lancée, outil de développement uniquement) | Aucune version corrigée de drizzle-kit ; forcer la version d'esbuild = risque sans gain | Prochaine mise à jour de drizzle-kit : vérifier `pnpm why esbuild -r` |
+| **Compléments de destination** : services utiles autour d'une destination, sans en faire des destinations (« aire de pique-nique à 300 m », « 3 caves de dégustation à proximité », surtout le vin en Bourgogne). **Stockage** : table séparée `complement` (type, nom, position, source, lien) + migration + index géographique ; pas de 6ᵉ catégorie dans `lieu` (chaque requête d'Explorer devrait l'exclure : un oubli = des sites secondaires au niveau des principaux). **Sources** : caves DATAtourisme (`Winery`, 293 dans le fichier régional, aujourd'hui écartées comme commerces, rien à télécharger) + OSM (`craft=winery`, `tourism=wine_cellar`) ; pique-nique OSM seul (`tourism=picnic_site`, 0 dans DATAtourisme) ; cinémas (59) et bibliothèques (156) DATAtourisme, retirés des destinations le 02/11 (D042), à reprendre ici ; OSM `amenity=cinema`, `amenity=library` déjà écartés. **Traitement** : colonne « cible » (destination ou complément) dans `categories.csv` (aujourd’hui : exclusion à priorité 40 pour DATAtourisme, 900 pour OSM), étape de chargement. **Fiche destination** : bloc « À proximité » sous les lieux à pied (type, nom, distance calculée à la demande). **Coût** ≈ 1 jour (½ traitement + migration, ¼ API, ¼ interface) | Pas une destination : ne doit pas apparaître dans Explorer (Hardy, 02/11) ; le P0 passe d'abord | P0 terminé (22/11) et du temps avant le gel du 27/11 ; premier P1 proposé |
 | **Lieux culturels et festivals** (sources P1 `lieux_culturels`, `festivals`) | Retard sur le calendrier ; le P0 passe d'abord (D041) | P0 terminé |
 | Ligne « En clair » pour les décisions D001 → D040 (révision et soutenance) | Utile pour Hardy, sans effet sur le développement ; ≈ 1 h | Un moment calme, au plus tard avant E13 (pitch) |
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |

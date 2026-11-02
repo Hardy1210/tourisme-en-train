@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.0 · **Date** 01/11/2026
+> **Version** 1.3 · **Date** 02/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -75,6 +75,74 @@
 - **À retenir :** découper un gros téléchargement en morceaux qu'on peut refaire un par un ; ne jamais charger une réponse marquée incomplète.
 - **Origine :** E05, D041.
 
+### L14 — Zéro résultat n'est pas une erreur… mais c'est suspect
+- **Problème :** aucune cascade OpenStreetMap trouvée dans toute la région, sans aucun message d'erreur.
+- **Cause :** la règle cherchait `natural=waterfall`, alors que les cascades sont décrites par `waterway=waterfall`.
+- **Solution :** règle corrigée ; le journal affiche le nombre d'éléments reçus pour chaque requête.
+- **À retenir :** compter les résultats de chaque règle ; un total à zéro dans une région entière se vérifie toujours dans la documentation de la source.
+- **Origine :** E05, D041.
+
+### L15 — Un service public gratuit a des règles d'usage
+- **Problème :** Overpass répondait « serveur saturé » ; sa page précise qu'il n'est pas fait pour un usage automatique fréquent.
+- **Cause :** service partagé par tout le monde, financé par des bénévoles.
+- **Solution :** extraction une fois par semaine au plus, fichier gardé entre-temps (`--hors-ligne`), requêtes une par une, programme identifié par son nom et l'adresse du dépôt.
+- **À retenir :** lire les conditions d'usage d'un service avant de le programmer chaque nuit, et prévoir de travailler sur une copie locale.
+- **Origine :** E05, D041 point 10.
+
+### L16 — Le même objet peut arriver deux fois dans un fichier officiel
+- **Problème :** 16 lieux DATAtourisme avaient deux lignes identiques.
+- **Cause :** le même lieu était publié par deux diffuseurs (un office de tourisme et une plateforme régionale).
+- **Solution :** le contrôle d'unicité a bloqué le chargement ; on garde la première ligne et on compte les autres dans le rapport.
+- **À retenir :** un contrôle bloquant qui échoue est une bonne nouvelle : il montre un défaut de la source avant qu'il n'arrive en base.
+- **Origine :** E05.
+
+## Traitement des données
+
+### L17 — Des règles dans un tableau, pas dans le code
+- **Problème :** classer 269 classes DATAtourisme et des dizaines de tags OSM en 5 catégories, et pouvoir corriger sans programmer.
+- **Solution :** un fichier `categories.csv` éditable, une règle par valeur, avec une priorité : **exclusion forte** (un hôtel installé dans un château reste un hôtel), **exclusion faible** (un circuit qui passe par un sommet reste un site naturel). Les tests vérifient le vrai fichier.
+- **À retenir :** séparer les connaissances métier (les règles) du mécanisme (le code) ; la personne qui connaît le métier peut alors corriger seule.
+- **Origine :** E05, `04` § 4.5.
+
+### L18 — Garder le fichier brut pour retraiter sans retélécharger
+- **Problème :** corriger une règle ne devait pas obliger à réinterroger Overpass (17 minutes, service saturé).
+- **Solution :** fichier brut gardé dans `data/brut/` ; empreinte = fichier **+ règles**, donc une règle modifiée suffit à relancer le classement ; `--hors-ligne` relit le fichier.
+- **À retenir :** séparer « télécharger » et « traiter » ; le traitement doit pouvoir se rejouer à volonté sur la même copie.
+- **Origine :** E05, D041 point 8.
+
+### L22 — Une donnée ouverte brute n'est pas une donnée utile
+- **Problème :** le fichier régional DATAtourisme compte 34 033 lignes, mais beaucoup ne sont pas des sorties.
+- **Cause :** une source publique sert de nombreux usages (hébergement, commerce, agenda) ; aucune n'est faite pour notre question.
+- **Solution :** trier par règles (événements, hébergements, commerces, puis cinémas et bibliothèques écartés) : 4 045 lieux gardés, soit 12 % ; compléter avec OpenStreetMap, qui apporte ce que DATAtourisme n'a pas (8 310 lieux : aires de jeux, grottes, sommets, Monuments historiques).
+- **À retenir :** aucune source ouverte n'est pertinente telle quelle pour un projet précis : trier une source, puis la compléter avec une autre.
+- **Origine :** E05, D041, D042.
+
+### L23 — Essayer une règle sur les vraies données avant de l'ajouter
+- **Problème :** la règle « attraction » OSM semblait utile ; l'exclusion faible des bibliothèques semblait suffire.
+- **Cause :** l'étiquette `tourism=attraction` se validait elle-même (la condition « signe de sortie » acceptait toute étiquette `tourism`) ; et toutes les bibliothèques portaient aussi « site culturel », qui l'emportait sur l'exclusion faible.
+- **Solution :** simulation avant / après sur l'extraction réelle : la règle « attraction » aurait renommé 102 Monuments historiques et réintégré 5 éléments de petit patrimoine, elle n'est pas ajoutée ; les bibliothèques reçoivent une exclusion plus forte (priorité 40).
+- **À retenir :** compter l'avant et l'après sur les données réelles, et écrire les chiffres dans la décision : c'est aussi un argument prêt pour le jury.
+- **Origine :** D042.
+
+### L24 — Distinguer le but de sortie et le service utile
+- **Problème :** caves, aires de pique-nique, cinémas, bibliothèques auraient été affichés au même niveau qu'un château.
+- **Solution :** écartés des destinations ; gardés comme idée de « compléments de destination » (« caves de dégustation à proximité ») dans une table séparée, après le P0.
+- **À retenir :** avant de classer un élément, se demander quel rôle il joue pour l'utilisateur : le but du déplacement, ou un service autour.
+- **Origine :** D042, `A-FAIRE` § 3.
+
+### L25 — Regrouper « de proche en proche » enchaîne tout un centre-ville
+- **Problème :** regrouper les lieux voisins en « sites » semblait simple : tout ce qui est à moins de 150 m.
+- **Cause :** le regroupement de proche en proche (DBSCAN) relie A à B, B à C… : 92 monuments du centre de Dijon formaient un seul « site ».
+- **Solution :** une liste fermée de sous-catégories, chacune avec sa distance (grottes 500 m, sites archéologiques 300 m, aires de jeux 50 m) ; jamais tout le patrimoine.
+- **À retenir :** un seuil de distance ne suffit pas à définir « le même endroit » ; mesurer le plus gros groupe obtenu avant d'adopter une règle.
+- **Origine :** D043.
+
+### L26 — Quand l'algorithme hésite, une décision humaine versionnée
+- **Problème :** entre 0,5 et 0,6 de similarité, les paires mêlent vrais doublons (« Atelier Courbet » / « Atelier de Gustave Courbet ») et faux (« Escape game au Château » / le château) ; aucun seuil ne les sépare.
+- **Solution :** un fichier `doublons_manuels.csv` (oui / non), versionné et relu à chaque chargement ; les paires sont repérées par **identifiant**, jamais par le nom ; le rapport à relire a les mêmes colonnes, une ligne se recopie telle quelle. 193 décisions ont ramené la liste à relire de 201 à 8 paires.
+- **À retenir :** garder l'automatique pour les cas sûrs, et rendre la décision humaine reproductible (fichier, pas modification à la main dans la base).
+- **Origine :** D044.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -91,6 +159,18 @@
 - **À retenir :** comparer le temps avant et après chaque étape ; une régression se remarque tout de suite ou jamais. `EXPLAIN` montre ce que la base fait vraiment.
 - **Origine :** E04, migration `0007`.
 
+### L19 — Une information vit dans la table de ce qu'elle décrit
+- **Problème :** où ranger le contour d'une commune, qui sert à trouver la commune d'un lieu ?
+- **Solution :** dans `commune`, pas dans `lieu` : le contour décrit la commune. Il est stocké une fois et sert aux lieux, et plus tard aux gares ou aux arrêts.
+- **À retenir :** se demander « de quoi cette donnée parle-t-elle ? » avant de choisir sa table (normalisation).
+- **Origine :** D041, point 2.
+
+### L20 — Un identifiant qui ne change pas à chaque chargement
+- **Problème :** supprimer puis réinsérer tous les lieux à chaque chargement change leur identifiant, ce qui casse les liens et les favoris.
+- **Solution :** mettre à jour chaque lieu par son identifiant dans la source (`source`, `id_source`), puis supprimer seulement ceux qui ont disparu.
+- **À retenir :** un identifiant exposé à l'extérieur (adresse web, favori) doit rester stable.
+- **Origine :** D041, point 8.
+
 ## Méthode de travail
 
 ### L11 — Les commandes Git qui « annulent » effacent le travail non enregistré
@@ -98,6 +178,12 @@
 - **Cause :** elles reviennent au dernier commit, pas à « l'état d'avant ».
 - **Solution :** copier le fichier ailleurs avant de le casser pour tester, puis restaurer depuis la copie ; `git status` avant toute commande qui jette des changements.
 - **Origine :** leçon reprise du projet Lexio, `CLAUDE.md` § 11.
+
+### L21 — Ne pas coder un plan de secours pour un risque déjà couvert
+- **Problème :** fallait-il prévoir le fichier Geofabrik au cas où Overpass resterait en panne ?
+- **Solution :** non : il aurait fallu une nouvelle bibliothèque et un deuxième programme pour la même source, alors que le fichier gardé couvre déjà le risque. La solution est seulement notée comme écartée, avec la condition qui la rendrait utile.
+- **À retenir :** noter les alternatives écartées et pourquoi ; coder seulement ce qui répond à un risque réel. C'est aussi une réponse prête pour le jury.
+- **Origine :** D041, rubrique « Écarté ».
 
 ### L12 — Un seuil écrit à deux endroits finit par diverger
 - **Problème :** un rayon ou une durée copiés dans l'application et dans le traitement des données ne restent pas égaux.
@@ -112,3 +198,6 @@
 | Date | Version | Modification |
 |---|---|---|
 | 01/11/2026 | 1.0 | Création : L01 → L13 |
+| 01/11/2026 | 1.1 | L14 → L21 (E05 : résultat à zéro, règles d'usage d'Overpass, doublons de diffuseurs, règles dans un tableau, fichier brut gardé, table d'une information, identifiant stable, plan de secours écarté) |
+| 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
+| 02/11/2026 | 1.3 | L25, L26 (regroupement de proche en proche, décisions humaines versionnées) |

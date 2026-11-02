@@ -10,13 +10,14 @@ import { traiterGares } from './sources/gares';
 import { traiterGtfsSncf } from './sources/gtfs-sncf';
 import { traiterLiaisons } from './sources/liaisons';
 import { traiterOsm } from './sources/osm';
+import { traiterRattachements } from './sources/rattachements';
 import { traiterRegles } from './sources/regles';
 import { traiterSources } from './sources/registre';
 
 type Traitement = (options: { force: boolean; horsLigne: boolean }) => Promise<void>;
 
 // Rempli au fil des étapes : E02 (sources, gares), E03 (gtfs_sncf), D038 (communes), E04 (liaisons),
-// E05 (contours, regles, datatourisme, osm)…
+// E05 (contours, regles, datatourisme, osm), E06 (rattachements)…
 const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   sources: traiterSources,
   communes: traiterCommunes,
@@ -27,6 +28,7 @@ const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   regles: traiterRegles,
   datatourisme: traiterDatatourisme,
   osm: traiterOsm,
+  rattachements: traiterRattachements,
 };
 
 async function executer(argv: readonly string[]): Promise<number> {

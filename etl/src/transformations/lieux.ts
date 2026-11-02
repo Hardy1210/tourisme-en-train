@@ -15,10 +15,13 @@ export interface LieuNormalise {
   qualiteTourisme: boolean;
   lon: number;
   lat: number;
+  /** Tracé d'un lieu en longueur (canal), GeoJSON LineString ; null sinon (D043). */
+  trace: string | null;
 }
 
 /** Pourquoi une ligne de source n'est pas devenue un lieu (compté dans le rapport). */
-export type RaisonEcart = 'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon';
+export type RaisonEcart =
+  'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon' | 'nom_exclu';
 
 export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   exclu: 'écartés par une règle (hébergement, restauration, commerce, événement, générique…)',
@@ -26,6 +29,7 @@ export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   condition: 'sans nom, ou sans signe de sortie quand la règle en demande un',
   sans_position: 'sans position',
   doublon: 'identifiant déjà lu dans le fichier (même lieu publié par deux diffuseurs)',
+  nom_exclu: 'écartés par leur nom (activité, objet, fermé : regles/noms_exclus.csv)',
 };
 
 const ENTITES: Readonly<Record<string, string>> = {
