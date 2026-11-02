@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.11 · **Date** 01/11/2026
+> **Version** 1.12 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -264,7 +264,7 @@ Spécifique :
 - **Clés :** DATAtourisme `categorie` + nom de classe (`Museum`) ; OSM nom du tag + valeur, `*` = toute valeur.
 - **Une règle par étiquette ; la plus petite priorité gagne** parmi les règles des étiquettes du lieu dont la condition est remplie. À égalité, l'exclusion l'emporte, puis l'ordre alphabétique (résultat stable).
   - `10` **exclusion forte** (hébergement, restauration, commerce, événement) : écarte le lieu même s'il est aussi un château ;
-  - `15` lieu phare (lac, cascade, château, abbaye, zoo…) ; `20` classement précis ; `45`–`50` classement large (« site culturel », « site naturel ») ; `150`–`200` règles OSM larges (`ref:mhs=*`, `historic=*`) ;
+  - `15` lieu phare (lac, cascade, château, abbaye, zoo…) ; `20` classement précis ; `40` **complément de destination écarté** (cinéma, bibliothèque DATAtourisme : l’emporte sur « site culturel », cède à « théâtre » ou « musée », D042) ; `45`–`50` classement large (« site culturel », « site naturel ») ; `150`–`200` règles OSM larges (`ref:mhs=*`, `historic=*`) ;
   - `900` **exclusion faible** (étiquette générique, circuit, sport) : une vraie catégorie l'emporte (la Roche de Solutré, aussi circuit, reste en `nature`).
 - `categorie` vide = **à exclure**.
 - **Conditions (OSM) :** aucune = nom obligatoire ; `sans_nom` = gardé même sans nom ; `notable` = nommé **et** avec un signe de sortie (`wikipedia`, `wikidata`, `ref:mhs`, `tourism`, `leisure`, `sport=swimming`). Lieu dont aucune règle de catégorie n'a sa condition remplie → écarté.
@@ -353,3 +353,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 23/10/2026 | 1.9 | § 4.1 : gare reconnue par un code UIC commun ; contrôles « code UIC dans plusieurs lignes » et « ligne correspondant à plusieurs gares » — D039 |
 | 01/11/2026 | 1.10 | § 4.3 réécrit : départ ou arrivée dans la région, `premiere_arrivee_s`, `faisable_journee`, trains en jumelage, contrôles ; § 4.1 : contrôle de `dans_region` ; § 6 : faisable dans la journée calculé par l'ETL — D040 |
 | 01/11/2026 | 1.11 | § 2 : `controles.contoursRegionMin`, `controles.lieuxSourceMin`, `lieux.descriptionMaxCaracteres` ; § 3 : `contours` ; § 4.0 bis contours des communes ; § 4.4 et § 4.5 réécrits après E05 (empreinte fichier + règles, commune par contour, mise à jour par identifiant, requête Overpass tirée des règles, priorités et conditions) — D041 |
+| 02/11/2026 | 1.12 | § 4.5 : priorité `40` (complément de destination écarté) — D042 |

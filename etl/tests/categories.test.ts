@@ -68,6 +68,13 @@ describe('classer — DATAtourisme', () => {
       sousCategorie: 'musée',
     });
   });
+  it('bibliothèque, cinéma : écartés (compléments) ; cinéma qui est aussi un théâtre : gardé', () => {
+    expect(classer(index.datatourisme, dt('Library', 'CulturalSite'), nomme).type).toBe('exclu');
+    expect(classer(index.datatourisme, dt('Cinema', 'MovieTheater'), nomme).type).toBe('exclu');
+    expect(
+      classer(index.datatourisme, dt('Cinema', 'MovieTheater', 'Theater'), nomme),
+    ).toMatchObject({ categorie: 'culture', sousCategorie: 'théâtre' });
+  });
   it('une classe inconnue est signalée « non classée »', () => {
     expect(etiquettesNonClassees(index.datatourisme, dt('Museum', 'ClasseInventee'))).toEqual([
       'categorie=ClasseInventee',

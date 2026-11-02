@@ -2,6 +2,7 @@
 # categorie vide = lieu écarté. priorite : plus petit = gagne quand plusieurs règles s'appliquent à un lieu.
 #   10 = exclusion forte (hébergement, restauration, commerce, événement) · 15 = lieu phare (lac, château…) · 20 = classement précis
 #   OSM : 150 = Monument historique (ref:mhs) · 180 = petit patrimoine écarté sauf s'il est Monument historique · 200 = autre historic notable
+#   40 = complément de destination écarté (cinéma, bibliothèque) : l'emporte sur le classement large, cède au précis.
 #   50 = classement large · 900 = exclusion faible (étiquette générique, circuit, sport) : une vraie catégorie l'emporte.
 # DATAtourisme : cle = categorie, valeur = nom de la classe (fin de l'adresse, ex. Museum pour …core#Museum).
 # OSM : cle = tag, valeur = valeur du tag (* = toute valeur). condition : vide = nom obligatoire ;
@@ -219,9 +220,9 @@ datatourisme;categorie;PigeonLoft;patrimoine;pigeonnier;20;
 datatourisme;categorie;InterpretationCentre;patrimoine;centre d'interprétation;20;
 datatourisme;categorie;Theater;culture;théâtre;20;
 datatourisme;categorie;Opera;culture;opéra;20;
-datatourisme;categorie;MovieTheater;culture;cinéma;20;
-datatourisme;categorie;Cinema;culture;cinéma;20;
-datatourisme;categorie;Library;culture;bibliothèque;20;
+datatourisme;categorie;MovieTheater;;;40;
+datatourisme;categorie;Cinema;;;40;
+datatourisme;categorie;Library;;;40;
 datatourisme;categorie;CircusPlace;culture;cirque;20;
 datatourisme;categorie;Cirque;culture;cirque;20;
 datatourisme;categorie;Cabaret;culture;cabaret;20;

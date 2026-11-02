@@ -26,7 +26,9 @@ Chaque gare de la région connaît ses lieux à pied et leur nombre par catégor
 ## Phase d'audit
 1. Mesurer combien de paires de lieux proches (< 75 m) existent entre sources ; examiner 20 cas.
 2. Vérifier la cohérence des seuils ; proposer des ajustements **dans `parametres.json`** si besoin.
-3. Proposer le plan ; attendre la validation.
+3. **Regroupement en site** (demande de Hardy, 02/11) : plusieurs lieux de la même catégorie très proches deviennent une seule destination (ex. 29 grottes à Arcy-sur-Cure). Proposer une règle et un seuil de distance (`parametres.json`), avec des exemples.
+4. **Lieux en longueur** (canaux, voies vertes) : les rattacher aux gares proches de leur tracé, **une seule fois par gare**, au lieu d’un point (centre du tracé). Mesurer les canaux et proposer le traitement.
+5. Proposer le plan ; attendre la validation.
 
 ## Tâches
 - [ ] `transformations/rattachements.ts` + fichiers `.sql` : exécute dans l'ordre (`04` § 4.6) doublons (P1) → Qualité Tourisme (P1) → `lieu_gare` → `gare_stats`.
@@ -56,3 +58,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
+- 02/11/2026 : audit élargi au regroupement en site et aux lieux en longueur (demande de Hardy, après D042).
