@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.9 · **Date** 02/11/2026
+> **Version** 1.10 · **Date** 02/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -58,6 +58,7 @@
 | **Durée de trajet** | Durée minimale d'un train direct entre deux gares, en minutes | `dureeTrajetMin` | `duree_min` | — |
 | **Fréquence** | Nombre de trains directs dans la journée (trains en jumelage comptés une fois) | `nbTrains` | `nb_trains` | — |
 | **Mobilité locale** | Moyen de transport à l'arrivée : arrêt de bus, arrêt de tram, station de vélos ou de trottinettes | `MobiliteLocale` | table `mobilite_locale` | Train |
+| **Car régional** | Ligne de car interurbain (Mobigo) desservant une gare : **transport sur place** (type `CAR`), jamais un trajet vers la destination, qui se fait en train (D046) | `'CAR'` | `mobilite_locale.type` | Car SNCF (exclu des trajets, E03) |
 | **Type de mobilité** | `BUS`, `TRAM`, `VELO`, `TROTTINETTE`, `AUTRE` | `TypeMobilite` | `type` | — |
 | **Vélos disponibles** | Nombre de vélos libres en direct dans une station (GBFS), jamais stocké | `velosDisponibles` | — | Station (emplacement, stocké) |
 | **Début du week-end** | Samedi à venir, ou aujourd'hui si on est samedi ou dimanche | `debutDuWeekEnd` | — | — |
@@ -125,3 +126,4 @@
 | 01/11/2026 | 1.7 | Trains en jumelage, première arrivée ; dernier retour et faisable dans la journée précisés (E04) — D040 |
 | 01/11/2026 | 1.8 | Contour, étiquette, signe de sortie ; règle de catégorie d'exclusion (E05) — D041 |
 | 02/11/2026 | 1.9 | Doublon, site, lieu en longueur (E06) — D043 |
+| 02/11/2026 | 1.10 | Car régional (type `CAR`, E07) — D046 |

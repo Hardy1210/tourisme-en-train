@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements` (dans cet ordre) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -398,3 +398,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 02/11/2026 | 1.26 | § 9 : sauvegarde de session (E06 codée, PR #52 ouverte, corrections à valider) — D043, D044 |
 | 02/11/2026 | 1.27 | § 8 : E06 terminée (PR #52) |
 | 02/11/2026 | 1.28 | § 8 et § 9 : sauvegarde de session (audit E07, décisions de Hardy, D046) |
+| 02/11/2026 | 1.29 | § 16 : `pnpm etl transport_local` — D046 |

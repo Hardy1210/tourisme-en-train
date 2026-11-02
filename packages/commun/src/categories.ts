@@ -17,7 +17,8 @@ export const TYPES_TRAIN = ['TER', 'INTERCITES', 'TGV', 'AUTRE'] as const;
 export const schemaTypeTrain = z.enum(TYPES_TRAIN);
 export type TypeTrain = z.infer<typeof schemaTypeTrain>;
 
-export const TYPES_MOBILITE = ['BUS', 'TRAM', 'VELO', 'TROTTINETTE', 'AUTRE'] as const;
+/** `CAR` : cars régionaux (Mobigo), pour se déplacer sur place (D046). */
+export const TYPES_MOBILITE = ['BUS', 'TRAM', 'CAR', 'VELO', 'TROTTINETTE', 'AUTRE'] as const;
 export const schemaTypeMobilite = z.enum(TYPES_MOBILITE);
 export type TypeMobilite = z.infer<typeof schemaTypeMobilite>;
 

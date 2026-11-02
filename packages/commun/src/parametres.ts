@@ -92,6 +92,8 @@ export const schemaParametres = z
       }),
     /** « Parc / jardin… du <nom complet du château> » à moins de cette distance : partie du site du château (D045). */
     regroupementParcChateau: z.strictObject({ distanceM: schemaDistanceM }),
+    /** Arrêts de même nom d'un réseau à moins de cette distance (quais opposés) : un seul arrêt (D046). */
+    mobilite: z.strictObject({ regroupementQuaisM: schemaDistanceM }),
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),

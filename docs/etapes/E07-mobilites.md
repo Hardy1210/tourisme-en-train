@@ -1,7 +1,7 @@
 # E07 — Transports sur place, tracés des lignes, aménagements cyclables
 
 > **Semaine :** S4 (26/10 → 01/11) · **Priorité :** P0 (transports sur place) · P1 (lignes, cyclable) · **Branche :** `etape/E07-mobilites`
-> **Étapes préalables :** E02 · **État :** 🟡 en cours (audit fait, plan validé le 02/11)
+> **Étapes préalables :** E02 · **État :** 🟡 P0 terminé, PR ouverte (P1 reporté après le P0, D046)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -29,19 +29,19 @@ Pour chaque grande gare de la région, la liste des arrêts et stations proches,
 3. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] Liste des réseaux dans **`config/sources.json`** (section des réseaux locaux : code, nom, URL GTFS, URL GBFS `station_information`, **URL GBFS `station_status`** pour les vélos disponibles en P1, licence) ; `etl/src/sources/reseaux-urbains.ts` ne fait que la lire.
-- [ ] Remplir `mobilite_locale.id_source` avec l'identifiant GBFS (`station_id`) de chaque station, pour pouvoir lire sa disponibilité en direct (P1).
-- [ ] `sources/transport-local.ts` (+ SQL pour la proximité et le regroupement) : pour chaque réseau, arrêts dans `rayons.mobiliteM` d'une gare de la région, lignes par arrêt, type (`TRAM`/`BUS`/`AUTRE`), regroupement des quais de même nom < 100 m ; stations GBFS (`VELO`/`TROTTINETTE`).
-- [ ] Chargement dans `mobilite_locale` avec `gare_id` (gare la plus proche) et distance à pied.
-- [ ] (P1) Migration : tables `ligne_ferroviaire`, `amenagement_cyclable` ; mise à jour de `03`.
-- [ ] (P1) `sources/lignes.ts`, `sources/cyclable.ts` : géométries filtrées sur l'emprise régionale.
-- [ ] Tests : regroupement de quais (deux arrêts « République » à 30 m → un seul **et** deux arrêts de noms différents → deux).
+- [x] Liste des réseaux dans **`config/sources.json`** (section des réseaux locaux : code, nom, URL GTFS, URL GBFS `station_information`, **URL GBFS `station_status`** pour les vélos disponibles en P1, licence) ; `etl/src/sources/reseaux-urbains.ts` ne fait que la lire.
+- [x] Remplir `mobilite_locale.id_source` avec l'identifiant GBFS (`station_id`) de chaque station, pour pouvoir lire sa disponibilité en direct (P1).
+- [x] `sources/transport-local.ts` (+ SQL pour la proximité et le regroupement) : pour chaque réseau, arrêts dans `rayons.mobiliteM` d'une gare de la région, lignes par arrêt, type (`TRAM`/`BUS`/`AUTRE`), regroupement des quais de même nom < 100 m ; stations GBFS (`VELO`/`TROTTINETTE`).
+- [x] Chargement dans `mobilite_locale` : une ligne par couple (arrêt, gare) à pied, distance à pied (D046).
+- [ ] (P1, reporté après le P0) Migration : tables `ligne_ferroviaire`, `amenagement_cyclable` ; mise à jour de `03`.
+- [ ] (P1, reporté après le P0) `sources/lignes.ts`, `sources/cyclable.ts` : géométries filtrées sur l'emprise régionale.
+- [x] Tests : regroupement de quais (deux arrêts « République » à 30 m → un seul **et** deux arrêts de noms différents → deux).
 
 ## Critères d'acceptation
-- [ ] Dijon-Ville : au moins une ligne de tram et plusieurs lignes de bus listées.
-- [ ] Aucun arrêt au-delà de `rayons.mobiliteM`.
-- [ ] Chaque réseau a sa licence dans `source_donnees`.
-- [ ] (P1) Les tracés s'affichent dans Adminer / une requête GeoJSON.
+- [x] Dijon-Ville : au moins une ligne de tram et plusieurs lignes de bus listées.
+- [x] Aucun arrêt au-delà de `rayons.mobiliteM`.
+- [x] Chaque réseau a sa licence dans `source_donnees`.
+- [ ] (P1, reporté après le P0) Les tracés s'affichent dans Adminer / une requête GeoJSON.
 
 ## Vérifications manuelles
 - Comparer les arrêts listés autour de Dijon-Ville avec le plan du réseau Divia.
@@ -59,3 +59,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 02/11/2026 : audit fait ; réseaux retenus, licence obligatoire, type `CAR` (Mobigo), une ligne par couple arrêt-gare, rayon à pied, P1 reporté après le P0 (D046).
+- 02/11/2026 : P0 réalisé : `pnpm etl transport_local`, 16 réseaux, 553 couples arrêt-gare, 122 gares de la région desservies (D046). `etl/src/sources/reseaux-urbains.ts` de la fiche fusionné dans `sources/transport-local.ts` (lecture de `sources.json` via `reseaux()` de `@tourisme/commun`).

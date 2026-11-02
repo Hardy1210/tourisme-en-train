@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.15 · **Date** 02/11/2026
+> **Version** 1.16 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -72,6 +72,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     { "sousCategorie": "aire de jeux", "distanceM": 50 }
   ],
   "regroupementParcChateau": { "distanceM": 500 },
+  "mobilite": { "regroupementQuaisM": 100 },
   "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",
@@ -302,12 +303,18 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
 Au 02/11 (après D044, D045 et la relecture de Hardy : 116 « oui », 77 « non ») : 72 lieux écartés par leur nom, 964 doublons (dont 133 dans une même source), 319 sites (525 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure, 16 lieux de Bibracte et 26 parcs de château), **2 092 lieux à pied d'une gare** (2 210 liens), 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
 
 ### 4.7 Transports locaux (E07)
-1. Pour chaque réseau GTFS urbain retenu : arrêts à moins de `rayons.mobiliteM` d'une gare `dans_region` ; lignes desservant chaque arrêt (via `stop_times` → `trips` → `routes`) ; type par `route_type` (0 → `TRAM`, 3 → `BUS`, autre → `AUTRE`).
-2. Regrouper les arrêts de même nom à moins de 100 m (quais opposés) en une seule entrée.
-3. GBFS : stations à moins de `rayons.mobiliteM` ; type `VELO` (ou `TROTTINETTE` si le flux l'indique).
-4. `gare_id` = gare la plus proche ; `distance_m` = distance à pied estimée.
+Commande `pnpm etl transport_local [--hors-ligne]` (D046) : réseaux lus dans `config/sources.json` (entrées avec un champ `reseau`), fichiers gardés dans `data/brut/<code du réseau>/`, toujours recalculé (≈ 20 s).
+1. **Licence** : un réseau dont la licence n'est pas dans `LICENCES_RESEAU` (`packages/commun`) n'est pas chargé (remarque dans le rapport).
+2. **GTFS** (dans le ZIP) : arrêts (pas les stations parentes) desservis par au moins une ligne (`stop_times` → `trips` → `routes`) ; ligne de tram (`route_type` 0) → `TRAM`, sinon le type du réseau (`BUS`, ou `CAR` pour Mobigo) ; **transport à la demande exclu** (`route_type` 715, D020) ; numéros de ligne triés (2 avant 10) ; nom nettoyé (tiret final de Mobigo).
+3. **GBFS** : stations de `station_information.json` (nom texte ou traduit), type `VELO`, `id_source` = `station_id`.
+4. **Quais** (SQL) : arrêts d'un même réseau de même nom (sans accents ni majuscules), de proche en proche à moins de `mobilite.regroupementQuaisM` → un arrêt (plus petit identifiant, lignes réunies, centre des quais).
+5. **Une ligne par couple (arrêt, gare de la région)** à moins de `rayons.mobiliteM` **à pied** (vol d'oiseau × `marche.coefDetour`) ; `mobilite_locale` remplacée en entier dans une transaction.
 
-### 4.8 Lignes et aménagements cyclables (E07, P1)
+**Contrôles** : au moins un réseau chargé ; aucun arrêt au-delà du rayon à pied ; aucun arrêt de bus, tram ou car sans ligne ; réseau sans arrêt près d'une gare (avertissement). **Tests en paires** : deux quais « République » à 30 m → un arrêt / deux noms différents → deux ; 790 m à pied gardé / 810 m écarté ; tram → `TRAM` / bus seul → type du réseau ; transport à la demande écarté ; licence reconnue / non reconnue.
+
+Au 02/11 : 16 réseaux, **553 couples arrêt-gare**, 122 gares de la région sur 196 avec au moins un transport (Mobigo : 84 gares) ; Dijon : tram T1, T2 et 13 arrêts de bus.
+
+### 4.8 Lignes et aménagements cyclables (P1, reporté après le P0, D046)
 Chargement direct des géométries filtrées sur l'emprise régionale. Pas de rattachement : l'application interroge par distance au moment de la demande.
 
 ---
@@ -370,3 +377,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.13 | § 2 : `dedoublonnage` en deux paliers, `regroupementSites`, `lieux.enLongueurOsm`, `lieux.raccordTronconsM`, `rayons.lieuxGareM` mesuré à pied ; § 4.6 réécrit (doublons, sites, lieux en longueur, contrôles, chiffres) — D043 |
 | 02/11/2026 | 1.14 | § 4.5 : priorité `140` (fermé au public) ; § 4.6 : doublons dans une même source, décisions manuelles `doublons_manuels.csv`, rapports aux colonnes du fichier de décisions — D044 |
 | 02/11/2026 | 1.15 | § 2 : `regroupementParcChateau` ; § 4.5 : noms exclus (`noms_exclus.csv`) ; § 4.6 : parc d'un château — D045 |
+| 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
