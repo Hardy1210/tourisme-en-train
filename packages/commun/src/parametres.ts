@@ -90,6 +90,8 @@ export const schemaParametres = z
       .refine((l) => new Set(l.map((r) => r.sousCategorie)).size === l.length, {
         message: 'Sous-catégorie en double dans regroupementSites',
       }),
+    /** « Parc / jardin… du <nom complet du château> » à moins de cette distance : partie du site du château (D045). */
+    regroupementParcChateau: z.strictObject({ distanceM: schemaDistanceM }),
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),

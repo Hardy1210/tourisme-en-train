@@ -146,6 +146,25 @@ FROM (
 ) r
 WHERE l.id = r.id AND r.representant <> r.id;
 
+-- @sites_parc_chateau
+-- Parc ou jardin d'un château (D045) : « Parc du château de Commarin », « Les Jardins du Château de
+-- Pommard » → partie du site du « Château de … » dont il contient le nom COMPLET, à moins de
+-- parc_chateau_m. Pas de règle large « un nom contenu dans un autre » (trop de faux positifs).
+UPDATE lieu b SET site_de = m.chateau
+FROM (
+  SELECT DISTINCT ON (p.id) p.id, c.id AS chateau
+  FROM tmp_nom p
+  JOIN lieu lp ON lp.id = p.id AND lp.doublon_de IS NULL AND lp.site_de IS NULL
+  JOIN tmp_nom c ON c.id <> p.id AND ST_DWithin(p.geom, c.geom, :parc_chateau_m::float8)
+  JOIN lieu lc ON lc.id = c.id AND lc.doublon_de IS NULL AND lc.site_de IS NULL
+  WHERE p.nom_comparable ~ '^(les? )?(parcs?|jardins?|potager|verger|roseraie|domaine)( |$)'
+    AND c.nom_comparable ~ '^(le )?chateau [a-z0-9]'
+    AND (' ' || p.nom_comparable || ' ')
+        LIKE ('% ' || regexp_replace(c.nom_comparable, '^le ', '') || ' %')
+  ORDER BY p.id, ST_Distance(p.geom, c.geom), c.id
+) m
+WHERE b.id = m.id;
+
 -- @vider_lieu_gare
 DELETE FROM lieu_gare;
 

@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.14 · **Date** 02/11/2026
+> **Version** 1.15 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -71,6 +71,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     { "sousCategorie": "site archéologique", "distanceM": 300 },
     { "sousCategorie": "aire de jeux", "distanceM": 50 }
   ],
+  "regroupementParcChateau": { "distanceM": 500 },
   "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",
@@ -275,6 +276,7 @@ Spécifique :
   - `15` lieu phare (lac, cascade, château, abbaye, zoo…) ; `20` classement précis ; `40` **complément de destination écarté** (cinéma, bibliothèque DATAtourisme : l’emporte sur « site culturel », cède à « théâtre » ou « musée », D042) ; `45`–`50` classement large (« site culturel », « site naturel ») ; `140` **fermé au public même Monument historique** (école, hôpital, établissement social, administration, D044) ; `150`–`200` règles OSM larges (`ref:mhs=*`, `historic=*`) ;
   - `900` **exclusion faible** (étiquette générique, circuit, sport) : une vraie catégorie l'emporte (la Roche de Solutré, aussi circuit, reste en `nature`).
 - `categorie` vide = **à exclure**.
+- **Noms exclus** (D045) : `etl/src/regles/noms_exclus.csv` (`motif;raison`), modifiable sans code, appliqué à toutes les sources après le classement. Motif comparé sans majuscules, accents ni ponctuation, par mots entiers ; partout dans le nom par défaut, **en début de nom** s'il commence par `^` (après un article) : `^trésor de` écarte « Le trésor de la Cathédrale Saint-Lazare » mais garde « Musée du Pays Châtillonnais – Trésor de Vix ». Raisons : activité (visite guidée, escape game, offre groupe…), objet (retable, orgue, statue…), fermé. Lieux écartés listés dans `traite/rapports/lieux_exclus_par_nom_<source>.csv` (à relire) ; le fichier entre dans l'empreinte de la source. Ligne illisible : échec du chargement.
 - **Conditions (OSM) :** aucune = nom obligatoire ; `sans_nom` = gardé même sans nom ; `notable` = nommé **et** avec un signe de sortie (`wikipedia`, `wikidata`, `ref:mhs`, `tourism`, `leisure`, `sport=swimming`). Lieu dont aucune règle de catégorie n'a sa condition remplie → écarté.
 - Toute étiquette d'une clé qui classe **sans règle** est écrite dans `data/traite/rapports/categories_non_classees_<source>.csv` (`source;cle;valeur;occurrences`), réécrit à chaque chargement (vide = tout est classé). **Hardy relit ce fichier** et complète le CSV de règles (action humaine, E05–E06).
 - Catégories autorisées : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` (voir `GLOSSAIRE.md`). En ajouter une = décision + mise à jour de `03`, `06`, `globals.css`.
@@ -289,6 +291,7 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
    Le lieu de la source prioritaire (même source : le plus petit `id`) est gardé, l'autre reçoit `doublon_de` (décision « oui » d'abord, puis meilleure similarité, puis le plus proche). Les champs vides du lieu gardé sont complétés depuis le doublon (photo, site, horaires, Qualité Tourisme). Paires non fusionnées et non décidées : `traite/rapports/doublons_a_relire.csv` ; paire retenue pour chaque doublon : `doublons_fusionnes.csv` (une ligne s'y marque `non` pour annuler la fusion).
 2. **Qualité Tourisme** : lu dans le champ `Classements_du_POI` de DATAtourisme (§ 4.4) ; le fichier séparé de 2024 n'est pas utilisé (D043).
 3. **Sites** : pour chaque sous-catégorie de `regroupementSites` (grotte, site archéologique, aire de jeux), lieux non doublons à moins de sa distance l'un de l'autre (de proche en proche, `ST_ClusterDBSCAN`) → un **site**. Représentant : la source la plus prioritaire, puis le lieu le plus proche du centre du groupe ; les autres reçoivent `site_de`. **Jamais tout le patrimoine** : avec 150 m, les monuments du centre de Dijon formeraient un seul site de 92 lieux.
+   **Parc d'un château** (D045) : un lieu dont le nom commence par parc, jardin(s), potager, verger, roseraie ou domaine et contient le **nom complet** d'un « Château de … » à moins de `regroupementParcChateau.distanceM` devient une partie du site du château (« Parc du château de Commarin »). Pas de règle large « un nom contenu dans un autre » (182 liens, trop de faux positifs).
 4. **`lieu_gare`** : lieux ni doublons ni membres d'un site, dont la **distance à pied** (vol d'oiseau × `marche.coefDetour`) est ≤ `rayons.lieuxGareM` ; durée = ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉. **Lieu en longueur** (`lieu.trace`, canal) : distance au point de son tracé le plus proche de la gare, une ligne par gare.
 5. **`gare_stats`** : `COUNT(*)` par gare et catégorie depuis `lieu_gare`.
 
@@ -296,7 +299,7 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
 
 **Contrôles** (bloquants sauf mention) : lignes illisibles dans `doublons_manuels.csv` ; décision dont un lieu n'existe plus (avertissement) ; lieu doublon de lui-même ; sources de lieux absentes de `prioriteSources` ; sous-catégorie de `regroupementSites` sans aucun lieu (avertissement) ; doublon d'un doublon ; lieu à la fois doublon et membre d'un site ; doublon ou membre de site dans `lieu_gare` ; rattachement au-delà du rayon à pied ; `gare_stats` qui ne totalise pas les lignes de `lieu_gare` d'une gare. **Tests en paires** (base de test) : lieu à 1 430 m à pied rattaché / à 1 625 m non ; même château à 20 m fusionné / noms différents à 20 m non ; même nom à 200 m fusionné / autre catégorie non ; grottes à moins de 500 m regroupées / monuments jamais / grotte à 600 m non ; canal rattaché aux gares de son tracé / sans tracé, à aucune.
 
-Au 02/11 (après D044 et la relecture de Hardy : 116 « oui », 77 « non ») : 965 doublons (dont 133 dans une même source), 293 sites (500 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure et 16 lieux de Bibracte), **2 114 lieux à pied d'une gare** (2 233 liens), 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
+Au 02/11 (après D044, D045 et la relecture de Hardy : 116 « oui », 77 « non ») : 79 lieux écartés par leur nom, 964 doublons (dont 133 dans une même source), 319 sites (525 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure, 16 lieux de Bibracte et 26 parcs de château), **2 087 lieux à pied d'une gare** (2 204 liens), 174 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
 
 ### 4.7 Transports locaux (E07)
 1. Pour chaque réseau GTFS urbain retenu : arrêts à moins de `rayons.mobiliteM` d'une gare `dans_region` ; lignes desservant chaque arrêt (via `stop_times` → `trips` → `routes`) ; type par `route_type` (0 → `TRAM`, 3 → `BUS`, autre → `AUTRE`).
@@ -366,3 +369,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.12 | § 4.5 : priorité `40` (complément de destination écarté) — D042 |
 | 02/11/2026 | 1.13 | § 2 : `dedoublonnage` en deux paliers, `regroupementSites`, `lieux.enLongueurOsm`, `lieux.raccordTronconsM`, `rayons.lieuxGareM` mesuré à pied ; § 4.6 réécrit (doublons, sites, lieux en longueur, contrôles, chiffres) — D043 |
 | 02/11/2026 | 1.14 | § 4.5 : priorité `140` (fermé au public) ; § 4.6 : doublons dans une même source, décisions manuelles `doublons_manuels.csv`, rapports aux colonnes du fichier de décisions — D044 |
+| 02/11/2026 | 1.15 | § 2 : `regroupementParcChateau` ; § 4.5 : noms exclus (`noms_exclus.csv`) ; § 4.6 : parc d'un château — D045 |

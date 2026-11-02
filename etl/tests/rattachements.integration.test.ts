@@ -324,3 +324,71 @@ describe('rattachements — même source et décisions manuelles (D044)', () => 
     expect(pourC3.map((p) => p.id_garde)).toEqual(['C1']);
   });
 });
+
+describe('rattachements — parc d’un château (D045)', () => {
+  const sites = (client: pg.PoolClient) =>
+    lignes(
+      client,
+      `SELECT l.id_source, s.id_source AS site FROM lieu l
+       LEFT JOIN lieu s ON s.id = l.site_de ORDER BY 1`,
+    );
+
+  it('« Parc du château de Testville » à 300 m : partie du site du château ; « Parc de la ville » à 50 m : non', async () => {
+    const resultat = await apres(
+      [
+        [
+          'C',
+          'datatourisme',
+          'Château de Testville',
+          'patrimoine',
+          'château',
+          DIJON.lon,
+          nord(100),
+        ],
+        [
+          'P',
+          'datatourisme',
+          'Parc du château de Testville',
+          'parcs',
+          'parc',
+          DIJON.lon,
+          nord(400),
+        ],
+        ['V', 'osm', 'Parc de la ville', 'parcs', 'parc', DIJON.lon, nord(150)],
+      ],
+      sites,
+    );
+    expect(resultat).toEqual([
+      { id_source: 'C', site: null },
+      { id_source: 'P', site: 'C' },
+      { id_source: 'V', site: null },
+    ]);
+  });
+
+  it('même parc à 600 m du château : pas le même site', async () => {
+    const resultat = await apres(
+      [
+        [
+          'C',
+          'datatourisme',
+          'Château de Testville',
+          'patrimoine',
+          'château',
+          DIJON.lon,
+          nord(100),
+        ],
+        [
+          'P',
+          'datatourisme',
+          'Les Jardins du Château de Testville',
+          'parcs',
+          'jardin',
+          DIJON.lon,
+          nord(700),
+        ],
+      ],
+      sites,
+    );
+    expect(resultat.every((l) => l.site === null)).toBe(true);
+  });
+});
