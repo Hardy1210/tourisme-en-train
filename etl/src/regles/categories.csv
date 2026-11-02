@@ -308,6 +308,70 @@ osm;ref:mhs;*;patrimoine;monument historique;150;
 osm;tourism;museum;patrimoine;musée;20;
 osm;amenity;theatre;culture;théâtre;20;
 osm;amenity;arts_centre;culture;centre d'art;20;
+# Relecture des valeurs OSM non classées (02/11, Hardy). Éléments naturels courants : notable (nom + signe de sortie).
+osm;natural;cave_entrance;nature;grotte;20;notable
+osm;natural;peak;nature;sommet;20;notable
+osm;natural;spring;nature;source;20;notable
+osm;leisure;bird_hide;nature;observatoire d'oiseaux;20;notable
+osm;leisure;swimming_area;nature;baignade;20;
+osm;leisure;beach_resort;nature;baignade;20;
+osm;waterway;canal;nature;canal;50;notable
+osm;waterway;dam;nature;barrage;50;notable
+osm;leisure;marina;nature;port de plaisance;50;
+osm;amenity;lavoir;patrimoine;lavoir;20;notable
+osm;amenity;wash_house;patrimoine;lavoir;20;notable
+osm;amenity;monastery;patrimoine;abbaye;20;
+osm;tourism;gallery;culture;galerie d'art;20;
+# Compléments de destination (pique-nique, caves, cinéma, pêche, écluse) : pas des destinations, A-FAIRE § 3.
+osm;tourism;picnic_site;;;900;
+osm;tourism;wine_cellar;;;900;
+osm;amenity;cinema;;;900;
+osm;leisure;fishing;;;900;
+osm;waterway;lock_gate;;;900;
+# Pas une sortie, petit patrimoine ou étiquette trop vague : exclusion faible, une vraie catégorie l'emporte.
+osm;amenity;place_of_worship;;;900;
+osm;amenity;fountain;;;900;
+osm;amenity;townhall;;;900;
+osm;amenity;school;;;900;
+osm;amenity;college;;;900;
+osm;amenity;university;;;900;
+osm;amenity;music_school;;;900;
+osm;amenity;social_facility;;;900;
+osm;amenity;hospital;;;900;
+osm;amenity;courthouse;;;900;
+osm;amenity;library;;;900;
+osm;amenity;community_centre;;;900;
+osm;amenity;public_building;;;900;
+osm;amenity;marketplace;;;900;
+osm;amenity;markethall;;;900;
+osm;amenity;events_venue;;;900;
+osm;amenity;waiting_area;;;900;
+osm;amenity;shelter;;;900;
+osm;amenity;clock;;;900;
+osm;amenity;weighbridge;;;900;
+osm;amenity;public_bookcase;;;900;
+osm;amenity;rouissoir;;;900;
+osm;amenity;baking_oven;;;900;
+osm;amenity;crypt;;;900;
+osm;amenity;grave_yard;;;900;
+osm;amenity;public_bath;;;900;
+osm;amenity;watering_place;;;900;
+osm;amenity;animal_breeding;;;900;
+osm;tourism;information;;;900;
+osm;tourism;yes;;;900;
+osm;tourism;artwork;;;900;
+osm;leisure;bandstand;;;900;
+osm;leisure;bowling_alley;;;900;
+osm;leisure;fitness_centre;;;900;
+osm;leisure;summer_camp;;;900;
+osm;natural;rock;;;900;
+osm;natural;stone;;;900;
+osm;natural;tree;;;900;
+osm;natural;grassland;;;900;
+osm;natural;wood;;;900;
+osm;natural;scrub;;;900;
+osm;natural;wetland;;;900;
+osm;waterway;yes;;;900;
 osm;amenity;restaurant;;;10;
 osm;amenity;fast_food;;;10;
 osm;amenity;cafe;;;10;

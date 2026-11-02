@@ -130,4 +130,20 @@ describe('classer — OSM', () => {
       categorie: 'patrimoine',
     });
   });
+  it('grotte nommée : gardée avec un signe de sortie, écartée sans', () => {
+    const grotte = [['natural', 'cave_entrance']] as const;
+    expect(classer(index.osm, grotte, { aNom: true, notable: true })).toMatchObject({
+      categorie: 'nature',
+      sousCategorie: 'grotte',
+    });
+    expect(classer(index.osm, grotte, nomme).type).toBe('condition');
+  });
+  it('aire de pique-nique seule : écartée ; dans un parc nommé : le parc reste gardé', () => {
+    expect(classer(index.osm, [['tourism', 'picnic_site']], nomme).type).toBe('exclu');
+    const parc = [
+      ['leisure', 'park'],
+      ['tourism', 'picnic_site'],
+    ] as const;
+    expect(classer(index.osm, parc, nomme)).toMatchObject({ categorie: 'parcs' });
+  });
 });
