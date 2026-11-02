@@ -24,6 +24,29 @@
 
 ---
 
+## 02/11/2026 — E06 fusionnée, audit E07 — décisions de Hardy
+**Fait :**
+- Relecture par Hardy de la liste des lieux écartés par leur nom : statues gardées, `^retables` et `^application` ajoutés (72 lieux écartés) ; PR #52 fusionnée (E06 ✅, ticket #8 fermé) ; branche `etape/E07-mobilites`.
+- 8 dernières paires de doublons décidées (6 oui dont Sainte-Madeleine, musée dans l'église ; 2 non) : 968 doublons, plus aucune paire à relire. Référence MH et Wikidata notées dans A-FAIRE (doublons automatiques, photos Wikidata).
+- Audit E07 : 813 jeux de transport.data.gouv.fr filtrés sur la région ; 13 réseaux urbains, Mobigo (7 fichiers départementaux), 2 flux vélos (Besançon, Belfort) téléchargés et analysés (arrêts à pied des gares, types de lignes, tram de Dijon, licences, `station_status`).
+
+**Décisions :** D046 (réseaux retenus, licence obligatoire, type `CAR`, une ligne par couple arrêt-gare, rayon à pied, P1 reporté).
+
+**Problèmes rencontrés :**
+- Branche créée sous le mauvais nom (`etape/E07-transports`) : renommée `etape/E07-mobilites` comme la fiche.
+- Homonymes hors région dans le catalogue (Tanéo de Nouméa, Sablons Bus dans l'Oise, TCL, SITAC) : écartés.
+
+**À valider par Hardy :**
+- Rien : plan E07 validé.
+
+**Prochaine action :**
+- Coder le plan E07 (`sources.json`, migration, `pnpm etl transport_local`, tests, Docker).
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (200 unitaires, 65 intégration)
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11` (branche `etape/E07-mobilites`)
+
+---
+
 ## 02/11/2026 — Étape E06 — rattachements, PR #52 ouverte
 **Fait :**
 - PR Dependabot #51 (Next.js 16.4.1, 6 alertes de sécurité) testée dans un dossier séparé (vérifications, build, démarrage) puis fusionnée par Hardy ; `main` intégrée à la branche E06.

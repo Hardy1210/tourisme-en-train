@@ -1,7 +1,7 @@
 # E07 — Transports sur place, tracés des lignes, aménagements cyclables
 
 > **Semaine :** S4 (26/10 → 01/11) · **Priorité :** P0 (transports sur place) · P1 (lignes, cyclable) · **Branche :** `etape/E07-mobilites`
-> **Étapes préalables :** E02 · **État :** ⬜ à faire
+> **Étapes préalables :** E02 · **État :** 🟡 en cours (audit fait, plan validé le 02/11)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -20,8 +20,8 @@ Le troisième frein du défi est « se déplacer sans voiture une fois sur place
 Pour chaque grande gare de la région, la liste des arrêts et stations proches, avec leurs lignes.
 
 ## Actions de Hardy
-- [ ] Sur transport.data.gouv.fr, choisir les réseaux urbains à charger (au minimum Dijon, Besançon ; puis Chalon-sur-Saône, Belfort–Montbéliard, Mâcon, Auxerre selon disponibilité) : URL GTFS et GBFS, licences.
-- [ ] (P1) URL des fichiers « Lignes par région » et « Aménagements cyclables ».
+- [x] Sur transport.data.gouv.fr, choisir les réseaux urbains à charger (02/11 : 13 urbains, Mobigo, 2 flux vélos, D046) (au minimum Dijon, Besançon ; puis Chalon-sur-Saône, Belfort–Montbéliard, Mâcon, Auxerre selon disponibilité) : URL GTFS et GBFS, licences.
+- [ ] (P1, **reporté après le P0**, D046) URL des fichiers « Lignes par région » et « Aménagements cyclables ».
 
 ## Phase d'audit
 1. Pour chaque réseau retenu : lire `stops`, `routes`, vérifier `route_type` ; pour GBFS : `station_information.json`.
@@ -58,3 +58,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
+- 02/11/2026 : audit fait ; réseaux retenus, licence obligatoire, type `CAR` (Mobigo), une ligne par couple arrêt-gare, rayon à pied, P1 reporté après le P0 (D046).

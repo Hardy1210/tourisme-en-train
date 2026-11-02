@@ -53,6 +53,7 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Quoi | Pourquoi reporté | Déclencheur |
 |---|---|---|
+| **1ʳᵉ piste après le P0 — Aménagements cyclables** (source `cyclable`, Geovelo, table `amenagement_cyclable`, F17) : voies vertes et pistes près de la gare d'arrivée. **En tête parce que le défi cite les voies vertes comme premier exemple de livrable.** Puis les **tracés des lignes de train** (source `lignes`, table `ligne_ferroviaire`, carte) | Fichier Geovelo France entière, volumineux ; jalon « API complète » déjà dépassé : le P0 passe d'abord (D046, décision de Hardy le 02/11) | P0 terminé (22/11) |
 | **Plusieurs régions / plusieurs clients** : un dossier de configuration par région (`config/regions/<code>/` : paramètres, sources, marque, couleurs, logo, choisi par une variable `REGION`) et une instance par client (application + base séparées) | Intérêt commercial non encore validé ; déjà préparé à moindre coût (D027) : il resterait environ 1 jour de travail | Une autre région ou un client intéressé, ou retours positifs après le défi |
 | Favoris (F27) | Non essentiel au parcours | P0 et P1 terminés |
 | Badge « pépite méconnue » (F22) | Données Insee à croiser | Après la soutenance |
