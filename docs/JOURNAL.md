@@ -24,6 +24,33 @@
 
 ---
 
+## 02/11/2026 — Avant E06 — relecture des règles de catégories
+**Fait :**
+- Relecture par Hardy des 59 valeurs OSM non classées : grottes, sommets, sources, lavoirs, observatoires d'oiseaux, canal, barrage (condition « notable »), baignade, port de plaisance, galerie, abbaye gardés ; le reste en exclusion faible.
+- Question de Hardy sur le filtre des grottes, attractions, lavoirs : aucun filtre au-delà du nom → condition « notable » ajoutée ; simulation sur `overpass.json` : `tourism=attraction` laissé sans règle (102 Monuments historiques renommés sinon).
+- Pique-nique, caves, cinémas, pêche, écluses, puis cinémas (59) et bibliothèques (156) DATAtourisme retirés des destinations : idée de « compléments de destination » chiffrée dans `A-FAIRE` § 3 (≈ 1 jour, après le P0).
+- `pnpm etl regles`, `osm --hors-ligne`, `datatourisme --hors-ligne` : **12 355 lieux** (DATAtourisme 4 256 → 4 045, OSM 8 310 inchangé, sous-catégories précisées : 32 grottes, 24 lavoirs, 9 sommets…).
+- Fiche E06 : audit élargi au regroupement en site (29 grottes à Arcy-sur-Cure) et aux lieux en longueur (canal rattaché aux gares de son tracé, une fois par gare).
+- `LECONS.md` : L22 → L24.
+
+**Décisions :** D042 (attractions sans règle, condition « notable », compléments écartés, priorité 40).
+
+**Problèmes rencontrés :**
+- Bibliothèques DATAtourisme : toutes portent `CulturalSite` (50), l'exclusion faible ne les retirait pas → priorité 40.
+- Cinémas DATAtourisme classés aussi par `MovieTheater` (schema.org) : seconde règle à passer en exclusion.
+- Commande `docker` absente dans WSL (intégration Docker Desktop) ; la base répond quand même sur le port local.
+
+**À valider par Hardy :**
+- Plan de l'audit E06 (à venir).
+
+**Prochaine action :**
+- Lire `docs/etapes/E06-categories-rattachement.md` et les documents cités, auditer, proposer le plan.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (187 unitaires, 50 intégration)
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11`
+
+---
+
 ## 01/11/2026 — Étape E05 — lieux DATAtourisme et OpenStreetMap, terminée
 **Fait :**
 - Questions de Hardy sur DATAtourisme : CSV ou API (réponse selon le besoin : croiser tous les lieux avec toutes les gares → fichier complet en base) ; photos jugées importantes → `A-FAIRE` § 1.

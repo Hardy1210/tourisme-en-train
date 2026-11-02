@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.1 · **Date** 01/11/2026
+> **Version** 1.2 · **Date** 02/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -110,6 +110,26 @@
 - **À retenir :** séparer « télécharger » et « traiter » ; le traitement doit pouvoir se rejouer à volonté sur la même copie.
 - **Origine :** E05, D041 point 8.
 
+### L22 — Une donnée ouverte brute n'est pas une donnée utile
+- **Problème :** le fichier régional DATAtourisme compte 34 033 lignes, mais beaucoup ne sont pas des sorties.
+- **Cause :** une source publique sert de nombreux usages (hébergement, commerce, agenda) ; aucune n'est faite pour notre question.
+- **Solution :** trier par règles (événements, hébergements, commerces, puis cinémas et bibliothèques écartés) : 4 045 lieux gardés, soit 12 % ; compléter avec OpenStreetMap, qui apporte ce que DATAtourisme n'a pas (8 310 lieux : aires de jeux, grottes, sommets, Monuments historiques).
+- **À retenir :** aucune source ouverte n'est pertinente telle quelle pour un projet précis : trier une source, puis la compléter avec une autre.
+- **Origine :** E05, D041, D042.
+
+### L23 — Essayer une règle sur les vraies données avant de l'ajouter
+- **Problème :** la règle « attraction » OSM semblait utile ; l'exclusion faible des bibliothèques semblait suffire.
+- **Cause :** l'étiquette `tourism=attraction` se validait elle-même (la condition « signe de sortie » acceptait toute étiquette `tourism`) ; et toutes les bibliothèques portaient aussi « site culturel », qui l'emportait sur l'exclusion faible.
+- **Solution :** simulation avant / après sur l'extraction réelle : la règle « attraction » aurait renommé 102 Monuments historiques et réintégré 5 éléments de petit patrimoine, elle n'est pas ajoutée ; les bibliothèques reçoivent une exclusion plus forte (priorité 40).
+- **À retenir :** compter l'avant et l'après sur les données réelles, et écrire les chiffres dans la décision : c'est aussi un argument prêt pour le jury.
+- **Origine :** D042.
+
+### L24 — Distinguer le but de sortie et le service utile
+- **Problème :** caves, aires de pique-nique, cinémas, bibliothèques auraient été affichés au même niveau qu'un château.
+- **Solution :** écartés des destinations ; gardés comme idée de « compléments de destination » (« caves de dégustation à proximité ») dans une table séparée, après le P0.
+- **À retenir :** avant de classer un élément, se demander quel rôle il joue pour l'utilisateur : le but du déplacement, ou un service autour.
+- **Origine :** D042, `A-FAIRE` § 3.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -166,3 +186,4 @@
 |---|---|---|
 | 01/11/2026 | 1.0 | Création : L01 → L13 |
 | 01/11/2026 | 1.1 | L14 → L21 (E05 : résultat à zéro, règles d'usage d'Overpass, doublons de diffuseurs, règles dans un tableau, fichier brut gardé, table d'une information, identifiant stable, plan de secours écarté) |
+| 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
