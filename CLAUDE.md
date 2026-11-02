@@ -192,7 +192,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
-| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | 🟡 |
+| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
@@ -396,3 +396,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 02/11/2026 | 1.24 | § 9 : sauvegarde de session (règles de catégories relues, D042 ; audit E06 à lancer) |
 | 02/11/2026 | 1.25 | § 16 : `pnpm etl rattachements` ; § 8 : E06 en cours — D043 |
 | 02/11/2026 | 1.26 | § 9 : sauvegarde de session (E06 codée, PR #52 ouverte, corrections à valider) — D043, D044 |
+| 02/11/2026 | 1.27 | § 8 : E06 terminée (PR #52) |
