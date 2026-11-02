@@ -68,12 +68,28 @@ export const schemaParametres = z
     lieux: z.strictObject({
       /** Description coupée au mot près au-delà de cette longueur (docs/04 § 4.4). */
       descriptionMaxCaracteres: z.number().int().positive(),
+      /** Tags OSM `clé=valeur` des lieux en longueur (canal) : tracé gardé, pas seulement un point (D043). */
+      enLongueurOsm: z.array(z.string().regex(/^[^=\s]+=[^=\s]+$/, 'clé=valeur attendu')),
+      /** Tronçons de même nom à moins de cette distance : un seul lieu en longueur (D043). */
+      raccordTronconsM: schemaDistanceM,
     }),
+    /** Doublons entre sources, en deux paliers (docs/04 § 4.6, D043). Noms comparés sans accents. */
     dedoublonnage: z.strictObject({
       distanceM: schemaDistanceM,
       similariteNom: z.number().min(0).max(1),
+      /** Palier large (grands lieux dont le point diffère selon la source) : nom presque identique et même catégorie. */
+      distanceLargeM: schemaDistanceM,
+      similariteNomLarge: z.number().min(0).max(1),
+      /** Paires du palier proche entre ce seuil et `similariteNom` : rapport à relire, pas de fusion. */
+      similariteARelire: z.number().min(0).max(1),
       prioriteSources: z.array(z.string().min(1)).min(1),
     }),
+    /** Sous-catégories regroupées en un site, avec leur distance (D043). Jamais tout le patrimoine. */
+    regroupementSites: z
+      .array(z.strictObject({ sousCategorie: z.string().min(1), distanceM: schemaDistanceM }))
+      .refine((l) => new Set(l.map((r) => r.sousCategorie)).size === l.length, {
+        message: 'Sous-catégorie en double dans regroupementSites',
+      }),
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),
@@ -110,6 +126,14 @@ export const schemaParametres = z
             'Prix calibré (aCalibrer = false) : la source et tous les prix au km sont obligatoires.',
         },
       ),
+  })
+  .refine((p) => p.dedoublonnage.distanceLargeM > p.dedoublonnage.distanceM, {
+    message: 'Le palier large du dédoublonnage doit dépasser le palier proche.',
+    path: ['dedoublonnage', 'distanceLargeM'],
+  })
+  .refine((p) => p.dedoublonnage.similariteARelire < p.dedoublonnage.similariteNom, {
+    message: 'Le seuil « à relire » doit être sous la similarité de fusion.',
+    path: ['dedoublonnage', 'similariteARelire'],
   })
   .refine((p) => p.rayons.autourDeMoiOptionsM.includes(p.rayons.autourDeMoiDefautM), {
     message: 'Le rayon « autour de moi » par défaut doit faire partie des options.',

@@ -15,6 +15,8 @@ export interface LieuNormalise {
   qualiteTourisme: boolean;
   lon: number;
   lat: number;
+  /** Tracé d'un lieu en longueur (canal), GeoJSON LineString ; null sinon (D043). */
+  trace: string | null;
 }
 
 /** Pourquoi une ligne de source n'est pas devenue un lieu (compté dans le rapport). */

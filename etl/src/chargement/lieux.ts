@@ -8,6 +8,7 @@ import type pg from 'pg';
 import { parametres } from '../config';
 import { aucune, auMoins, type Controle } from '../controles/base';
 import type { ValeurCopie } from './base';
+import { raccorderTroncons } from './troncons';
 import type { LieuNormalise, RaisonEcart } from '../transformations/lieux';
 
 export const TABLE_TEMPORAIRE = {
@@ -25,6 +26,7 @@ export const TABLE_TEMPORAIRE = {
     ['qualite_tourisme', 'boolean'],
     ['lon', 'float8'],
     ['lat', 'float8'],
+    ['trace', 'text'],
   ],
 } as const;
 
@@ -41,10 +43,12 @@ export const versValeurs = (l: LieuNormalise): readonly ValeurCopie[] => [
   l.qualiteTourisme,
   l.lon,
   l.lat,
+  l.trace,
 ];
 
 /** Point du lieu, puis commune dont le contour le contient (seules les communes de la région en ont un). */
 export async function trouverCommunes(client: pg.ClientBase): Promise<void> {
+  await raccorderTroncons(client);
   await client.query(`ALTER TABLE tmp_lieu
     ADD COLUMN geom geography(Point, 4326), ADD COLUMN code_insee char(5)`);
   await client.query(
@@ -96,16 +100,16 @@ export async function fusionnerLieux(
 ): Promise<BilanFusionLieux> {
   const { rowCount } = await client.query(
     `INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, adresse,
-       code_insee, url, image_url, horaires, qualite_tourisme, geom)
+       code_insee, url, image_url, horaires, qualite_tourisme, geom, trace)
      SELECT $1, id_source, nom, categorie, sous_categorie, description, adresse,
-       code_insee, url, image_url, horaires, qualite_tourisme, geom
+       code_insee, url, image_url, horaires, qualite_tourisme, geom, trace_geo
      FROM tmp_lieu WHERE code_insee IS NOT NULL
      ON CONFLICT (source, id_source) DO UPDATE SET
        nom = EXCLUDED.nom, categorie = EXCLUDED.categorie, sous_categorie = EXCLUDED.sous_categorie,
        description = EXCLUDED.description, adresse = EXCLUDED.adresse,
        code_insee = EXCLUDED.code_insee, url = EXCLUDED.url, image_url = EXCLUDED.image_url,
        horaires = EXCLUDED.horaires, qualite_tourisme = EXCLUDED.qualite_tourisme,
-       geom = EXCLUDED.geom, maj = now()`,
+       geom = EXCLUDED.geom, trace = EXCLUDED.trace, maj = now()`,
     [source],
   );
   const supprimees = await client.query(

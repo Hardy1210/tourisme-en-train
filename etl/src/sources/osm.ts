@@ -79,10 +79,12 @@ async function telechargerOsm(
     );
     for (const brut of lus) {
       const element = schemaElementOsm.safeParse(brut);
-      elements.set(
-        element.success ? `${element.data.type}/${element.data.id}` : `?${i}/${elements.size}`,
-        brut,
-      );
+      const cle = element.success
+        ? `${element.data.type}/${element.data.id}`
+        : `?${i}/${elements.size}`;
+      // Même élément reçu par deux requêtes : réunies, pour garder à la fois centre et tracé.
+      const deja = elements.get(cle);
+      elements.set(cle, deja && typeof deja === 'object' ? { ...deja, ...(brut as object) } : brut);
     }
     journal.info('Requête Overpass', {
       filtre,
@@ -113,7 +115,12 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
           })
         : await telechargerOsm(
             dossierDonnees,
-            requetesOverpass(regles, parametres.region.codeInsee, DELAI_OVERPASS_S),
+            requetesOverpass(
+              regles,
+              parametres.region.codeInsee,
+              DELAI_OVERPASS_S,
+              parametres.lieux.enLongueurOsm,
+            ),
           );
       suivi.fichier = { nom: 'overpass.json', ...fichier };
       return chargerLieux({

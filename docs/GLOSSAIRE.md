@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.8 · **Date** 01/11/2026
+> **Version** 1.9 · **Date** 02/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -31,6 +31,9 @@
 | **Lieu** | Point d'intérêt : musée, château, parc, aire de jeux, festival… | `Lieu`, `lieuId` | table `lieu`, `lieu_id` | « POI » (terme interdit dans le code) |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
 | **Sous-catégorie** | Précision libre dans une catégorie (ex. « aire de jeux », « château ») | `sousCategorie` | `sous_categorie` | — |
+| **Doublon** | Même lieu publié par deux sources (DATAtourisme et OSM) : le lieu de la source prioritaire est gardé, l'autre pointe vers lui (D043) | `doublonDe` | `lieu.doublon_de` | Site ; trains en jumelage |
+| **Site** | Plusieurs lieux d'une même sous-catégorie très proches qui forment une seule destination (29 grottes d'Arcy-sur-Cure, Bibracte) ; affiché par son **représentant** (D043) | `siteDe` | `lieu.site_de` | Doublon (même lieu en double) |
+| **Lieu en longueur** | Lieu décrit par un tracé plutôt qu'un point (canal) ; rattaché aux gares proches de son tracé, une fois par gare (D043) | `trace` | `lieu.trace` | Aménagement cyclable (table à part, E07) |
 | **Règle de catégorie** | Correspondance « valeur d'une source → catégorie » ; sans catégorie, elle écarte le lieu (exclusion) | `RegleCategorie` | table `categorie_regle` | — |
 | **Étiquette** | Une valeur d'un lieu confrontée aux règles : classe DATAtourisme (`Museum`) ou tag OSM (`leisure=park`) | `Etiquette` | `cle`, `valeur` | Catégorie, sous-catégorie |
 | **Signe de sortie** | Indice qu'un élément OSM vaut le déplacement : lien Wikipédia ou Wikidata, Monument historique, tag tourisme ou loisirs, baignade (condition `notable`) | `estNotable` | `condition = 'notable'` | Nom seul |
@@ -121,3 +124,4 @@
 | 23/10/2026 | 1.6 | Commune et code INSEE (table `commune`) — D038 |
 | 01/11/2026 | 1.7 | Trains en jumelage, première arrivée ; dernier retour et faisable dans la journée précisés (E04) — D040 |
 | 01/11/2026 | 1.8 | Contour, étiquette, signe de sortie ; règle de catégorie d'exclusion (E05) — D041 |
+| 02/11/2026 | 1.9 | Doublon, site, lieu en longueur (E06) — D043 |

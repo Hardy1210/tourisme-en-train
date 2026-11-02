@@ -42,7 +42,6 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Seuil | Où dans la doc | Étape |
 |---|---|---|
-| Similarité de nom Qualité Tourisme (0,6, zone incertaine 0,5–0,6) | `04` § 4.6 | E06 |
 | Regroupement des quais de même nom (100 m) | `04` § 4.7, E07 | E07 |
 | Bornes de position France métropolitaine (lat 41–51,5, lon −5,5–10) | `05` § 1.6 | E08 |
 | Fenêtre du temps réel (3 prochaines heures) | `05` § A.2, `06` § 4, D021, E09 | E09 |

@@ -50,4 +50,20 @@ describe('schéma de config/parametres.json', () => {
     p.prix.parKm = { TER: 0.1, INTERCITES: 0.12, TGV: 0.15 } as unknown as typeof p.prix.parKm;
     expect(schemaParametres.safeParse(p).success).toBe(true);
   });
+
+  it('dédoublonnage : palier large au-delà du proche accepté ; palier large plus court refusé', () => {
+    const p = copie();
+    p.dedoublonnage.distanceLargeM = p.dedoublonnage.distanceM + 1;
+    expect(schemaParametres.safeParse(p).success).toBe(true);
+    p.dedoublonnage.distanceLargeM = p.dedoublonnage.distanceM;
+    expect(schemaParametres.safeParse(p).success).toBe(false);
+  });
+
+  it('regroupementSites : sous-catégories distinctes acceptées ; en double refusées', () => {
+    const p = copie();
+    const [premier] = p.regroupementSites;
+    expect(premier).toBeDefined();
+    p.regroupementSites = [...p.regroupementSites, { ...premier!, distanceM: 10 }];
+    expect(schemaParametres.safeParse(p).success).toBe(false);
+  });
 });

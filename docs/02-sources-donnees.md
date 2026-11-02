@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.7 · **Date** 01/11/2026
+> **Version** 1.8 · **Date** 02/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -140,6 +140,7 @@
 - **Où :** data.gouv.fr. Données de 2024.
 - **Usage :** **enrichissement** : met `qualite_tourisme = true` sur les lieux correspondants (rapprochement nom + commune). Ne crée pas de lieu.
 - **Licence :** Licence Ouverte.
+- **Non utilisé (D043)** : le label est déjà lu dans le champ `Classements_du_POI` de DATAtourisme (60 lieux au 02/11), plus récent ; le fichier de 2024 n'apporterait qu'un rapprochement par nom incertain. Entrée gardée dans `sources.json` (non chargée) ; à retirer de l'écran Sources (E13) si elle reste inutilisée.
 
 ### 2.9 `lignes` — Lignes par région administrative (P1)
 - **Où :** data.gouv.fr (SNCF). Données de 2022 (les tracés changent peu).
@@ -234,3 +235,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 22/10/2026 | 1.5 | § 2.2 réécrit après l'audit E03 : pas de `calendar.txt`, type de train lu dans le `stop_id`, cars exclus, montée et descente interdites, licence ODbL confirmée — D036 |
 | 23/10/2026 | 1.6 | § 2.1 bis : `communes` remplit la table `commune` (colonne `DEP` lue) — D038 |
 | 01/11/2026 | 1.7 | Audit E05 : § 2.1 ter `contours` (nouvelle source) ; § 2.3 colonnes réelles DATAtourisme ; § 2.4 Overpass seul, requête tirée des règles, GéoDataMine écarté ; lieux culturels et festivals après le P0 — D041 |
+| 02/11/2026 | 1.8 | § 2.8 : fichier Qualité Tourisme non utilisé, label lu dans DATAtourisme — D043 |

@@ -11,6 +11,7 @@ import {
   imageDe,
   lireElementOsm,
   requetesOverpass,
+  traceDe,
   type ElementOsm,
 } from '../src/transformations/osm';
 
@@ -74,6 +75,7 @@ describe('DATAtourisme', () => {
         qualiteTourisme: true,
         lon: 5.04,
         lat: 47.32,
+        trace: null,
       },
     });
   });
@@ -121,6 +123,22 @@ describe('OSM', () => {
     expect(historique?.requete).toContain('out center tags;');
   });
 
+  it('requetesOverpass : lieu en longueur → lignes seulement, avec tracé ; les autres gardent le centre', () => {
+    const canal = regle({
+      cle: 'waterway',
+      valeur: 'canal',
+      categorie: 'nature',
+      condition: 'notable',
+    });
+    const requetes = requetesOverpass([...regles, canal], '27', 180, ['waterway=canal']);
+    const ligne = requetes.find((r) => r.filtre === 'way["waterway"="canal"]["name"]');
+    expect(ligne?.requete).toContain('way["waterway"="canal"]["name"](area.region);');
+    expect(ligne?.requete).toContain('out geom tags;');
+    expect(requetes.find((r) => r.filtre === '["leisure"="playground"]')?.requete).toContain(
+      'out center tags;',
+    );
+  });
+
   it('estNotable : Wikipédia, Monument historique, baignade oui ; nom seul non', () => {
     expect(estNotable({ name: 'Lac des Settons', wikipedia: 'fr:Lac des Settons' })).toBe(true);
     expect(estNotable({ 'ref:mhs': 'PA00112233' })).toBe(true);
@@ -164,5 +182,31 @@ describe('OSM', () => {
       type: 'ecarte',
       raison: 'sans_position',
     });
+  });
+
+  it('ligne avec tracé : trace GeoJSON et point au milieu du tracé ; point seul : pas de trace', () => {
+    const regleCanal = regle({ cle: 'waterway', valeur: 'canal', categorie: 'nature' });
+    const canal: ElementOsm = {
+      type: 'way',
+      id: 9,
+      geometry: [
+        { lat: 47.0, lon: 5.0 },
+        { lat: 47.1, lon: 5.1 },
+        { lat: 47.2, lon: 5.2 },
+      ],
+      tags: { waterway: 'canal', name: 'Canal de Test' },
+    };
+    const lu = lireElementOsm(canal, indexerRegles([regleCanal]), 500);
+    expect(lu).toMatchObject({ type: 'lieu', lieu: { lon: 5.1, lat: 47.1 } });
+    const trace = lu.type === 'lieu' ? lu.lieu.trace : null;
+    expect(JSON.parse(trace ?? 'null')).toEqual({
+      type: 'LineString',
+      coordinates: [
+        [5.0, 47.0],
+        [5.1, 47.1],
+        [5.2, 47.2],
+      ],
+    });
+    expect(traceDe(aire)).toBeNull();
   });
 });

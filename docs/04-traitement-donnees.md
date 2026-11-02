@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.12 · **Date** 02/11/2026
+> **Version** 1.13 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -57,12 +57,20 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "tranchesTempsMin": [30, 60, 120]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
-  "lieux": { "descriptionMaxCaracteres": 500 },
+  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000 },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
+    "distanceLargeM": 300,
+    "similariteNomLarge": 0.8,
+    "similariteARelire": 0.5,
     "prioriteSources": ["datatourisme", "lieux_culturels", "festivals", "osm"]
   },
+  "regroupementSites": [
+    { "sousCategorie": "grotte", "distanceM": 500 },
+    { "sousCategorie": "site archéologique", "distanceM": 300 },
+    { "sousCategorie": "aire de jeux", "distanceM": 50 }
+  ],
   "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",
@@ -110,7 +118,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | 7 | `osm` | Charge les lieux OSM (Overpass) | 1 ter, 5 | E05 |
 | 8 | `lieux_culturels` | Charge les lieux culturels (P1) | 1 ter, 5 | après le P0 |
 | 9 | `festivals` | Charge les festivals (P1) | 1 ter, 5 | après le P0 |
-| 10 | `rattachements` | Doublons, Qualité Tourisme, `lieu_gare`, `gare_stats` | 2, 6–9 | E06 |
+| 10 | `rattachements` | Doublons, sites, `lieu_gare`, `gare_stats` (Qualité Tourisme déjà lu dans DATAtourisme) | 2, 6–9 | E06 |
 | 11 | `transport_local` | Charge `mobilite_locale` | 2 | E07 |
 | 12 | `lignes` | Charge `ligne_ferroviaire` (P1) | — | E07 |
 | 13 | `cyclable` | Charge `amenagement_cyclable` (P1) | — | E07 |
@@ -272,21 +280,21 @@ Spécifique :
 - Catégories autorisées : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` (voir `GLOSSAIRE.md`). En ajouter une = décision + mise à jour de `03`, `06`, `globals.css`.
 
 ### 4.6 Rattachements (E06)
-Dans l'ordre :
-1. **Doublons (P1)** : deux lieux actifs à moins de `dedoublonnage.distanceM` avec `similarity(nom) ≥ dedoublonnage.similariteNom` → on garde celui de la source la plus prioritaire, l'autre reçoit `doublon_de`. Les champs vides du lieu gardé sont complétés depuis le doublon (image, URL, horaires).
-2. **Qualité Tourisme (P1)** : même commune + `similarity(nom) ≥ 0.6` → `qualite_tourisme = true`. Rapport des correspondances incertaines (similarité entre 0,5 et 0,6) à relire.
-3. **`lieu_gare`** :
-   ```sql
-   INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
-   SELECT l.id, g.id,
-          ROUND(ST_Distance(l.geom, g.geom) * :coef_detour_marche)::int,
-          CEIL(ST_Distance(l.geom, g.geom) * :coef_detour_marche / (:vitesse_marche_kmh * 1000 / 60))::smallint
-   FROM lieu l JOIN gare g ON ST_DWithin(l.geom, g.geom, :rayon_lieux_gare_m)
-   WHERE l.doublon_de IS NULL;
-   ```
-4. **`gare_stats`** : `COUNT(*)` par gare et catégorie depuis `lieu_gare`.
+Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécuté **dans une transaction** par `chargement/rattachements.ts`, tout recalculé à chaque fois (≈ 2 s). Dans l'ordre (D043) :
+1. **Doublons entre sources (P1)** : noms comparés **sans accents ni ponctuation** (`unaccent`), similarité trigramme. Une paire (source prioritaire `dedoublonnage.prioriteSources`, autre source) est fusionnée :
+   - **palier proche** : à moins de `dedoublonnage.distanceM` et similarité ≥ `dedoublonnage.similariteNom` ;
+   - **palier large** (grands lieux dont le point diffère selon la source : château, parc) : à moins de `dedoublonnage.distanceLargeM`, similarité ≥ `dedoublonnage.similariteNomLarge`, **même catégorie**, nom non générique (pas seulement la sous-catégorie, « Aire de jeux »).
+   Le lieu de la source prioritaire est gardé, l'autre reçoit `doublon_de` (meilleure similarité, puis le plus proche). Les champs vides du lieu gardé sont complétés depuis le doublon (photo, site, horaires, Qualité Tourisme). Paires du palier proche entre `similariteARelire` et `similariteNom` : **non fusionnées**, écrites dans `traite/rapports/doublons_a_relire.csv` ; paires fusionnées dans `doublons_fusionnes.csv`.
+2. **Qualité Tourisme** : lu dans le champ `Classements_du_POI` de DATAtourisme (§ 4.4) ; le fichier séparé de 2024 n'est pas utilisé (D043).
+3. **Sites** : pour chaque sous-catégorie de `regroupementSites` (grotte, site archéologique, aire de jeux), lieux non doublons à moins de sa distance l'un de l'autre (de proche en proche, `ST_ClusterDBSCAN`) → un **site**. Représentant : la source la plus prioritaire, puis le lieu le plus proche du centre du groupe ; les autres reçoivent `site_de`. **Jamais tout le patrimoine** : avec 150 m, les monuments du centre de Dijon formeraient un seul site de 92 lieux.
+4. **`lieu_gare`** : lieux ni doublons ni membres d'un site, dont la **distance à pied** (vol d'oiseau × `marche.coefDetour`) est ≤ `rayons.lieuxGareM` ; durée = ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉. **Lieu en longueur** (`lieu.trace`, canal) : distance au point de son tracé le plus proche de la gare, une ligne par gare.
+5. **`gare_stats`** : `COUNT(*)` par gare et catégorie depuis `lieu_gare`.
 
-**Contrôles (en paires) :** le Jardin de l'Arquebuse est rattaché à Dijon-Ville **et** un lieu situé à 1,6 km d'une gare ne lui est pas rattaché ; aucune gare de la région avec 0 lieu n'est signalée comme anomalie (c'est possible), mais le nombre est dans le rapport.
+**Lieux en longueur (OSM)** : les tags de `lieux.enLongueurOsm` (`waterway=canal`) sont demandés à Overpass en lignes avec leur tracé (`way…; out geom tags;`) ; au chargement, les tronçons de même nom à moins de `lieux.raccordTronconsM` sont réunis en un lieu (plus petit identifiant), dont le point est le point du tracé le plus proche de son centre.
+
+**Contrôles** (bloquants sauf mention) : sources de lieux absentes de `prioriteSources` ; sous-catégorie de `regroupementSites` sans aucun lieu (avertissement) ; doublon d'un doublon ; lieu à la fois doublon et membre d'un site ; doublon ou membre de site dans `lieu_gare` ; rattachement au-delà du rayon à pied ; `gare_stats` qui ne totalise pas les lignes de `lieu_gare` d'une gare. **Tests en paires** (base de test) : lieu à 1 430 m à pied rattaché / à 1 625 m non ; même château à 20 m fusionné / noms différents à 20 m non ; même nom à 200 m fusionné / autre catégorie non ; grottes à moins de 500 m regroupées / monuments jamais / grotte à 600 m non ; canal rattaché aux gares de son tracé / sans tracé, à aucune.
+
+Au 02/11 : 760 doublons, 296 sites (511 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure et 16 lieux de Bibracte), **2 187 lieux à pied d'une gare** (2 312 liens), 175 gares de la région sur 196 avec au moins un lieu.
 
 ### 4.7 Transports locaux (E07)
 1. Pour chaque réseau GTFS urbain retenu : arrêts à moins de `rayons.mobiliteM` d'une gare `dans_region` ; lignes desservant chaque arrêt (via `stop_times` → `trips` → `routes`) ; type par `route_type` (0 → `TRAM`, 3 → `BUS`, autre → `AUTRE`).
@@ -354,3 +362,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 01/11/2026 | 1.10 | § 4.3 réécrit : départ ou arrivée dans la région, `premiere_arrivee_s`, `faisable_journee`, trains en jumelage, contrôles ; § 4.1 : contrôle de `dans_region` ; § 6 : faisable dans la journée calculé par l'ETL — D040 |
 | 01/11/2026 | 1.11 | § 2 : `controles.contoursRegionMin`, `controles.lieuxSourceMin`, `lieux.descriptionMaxCaracteres` ; § 3 : `contours` ; § 4.0 bis contours des communes ; § 4.4 et § 4.5 réécrits après E05 (empreinte fichier + règles, commune par contour, mise à jour par identifiant, requête Overpass tirée des règles, priorités et conditions) — D041 |
 | 02/11/2026 | 1.12 | § 4.5 : priorité `40` (complément de destination écarté) — D042 |
+| 02/11/2026 | 1.13 | § 2 : `dedoublonnage` en deux paliers, `regroupementSites`, `lieux.enLongueurOsm`, `lieux.raccordTronconsM`, `rayons.lieuxGareM` mesuré à pied ; § 4.6 réécrit (doublons, sites, lieux en longueur, contrôles, chiffres) — D043 |

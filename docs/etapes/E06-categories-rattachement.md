@@ -1,7 +1,7 @@
 # E06 — Doublons, Qualité Tourisme, lieux → gares, statistiques
 
 > **Semaine :** S4 (26/10 → 01/11) · **Priorité :** P0 (rattachement, statistiques) · P1 (doublons, Qualité Tourisme) · **Branche :** `etape/E06-rattachements`
-> **Étapes préalables :** E05 · **État :** ⬜ à faire
+> **Étapes préalables :** E05 · **État :** 🟡 en cours (code terminé, relecture des rapports par Hardy)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -20,7 +20,7 @@ Les lieux sont en base (E05). Il faut les relier aux gares (lieux à distance de
 Chaque gare de la région connaît ses lieux à pied et leur nombre par catégorie.
 
 ## Actions de Hardy
-- [ ] (P1) URL du fichier Qualité Tourisme (à ajouter dans `config/sources.json`).
+- [x] ~~(P1) URL du fichier Qualité Tourisme~~ : sans objet, label lu dans DATAtourisme (D043).
 - [ ] Relire le rapport des doublons et des correspondances incertaines.
 
 ## Phase d'audit
@@ -31,18 +31,19 @@ Chaque gare de la région connaît ses lieux à pied et leur nombre par catégor
 5. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] `transformations/rattachements.ts` + fichiers `.sql` : exécute dans l'ordre (`04` § 4.6) doublons (P1) → Qualité Tourisme (P1) → `lieu_gare` → `gare_stats`.
-- [ ] Doublons : SQL avec `ST_DWithin` + `similarity()` ; priorité des sources depuis `parametres.json` ; complétion des champs vides du lieu gardé.
-- [ ] Qualité Tourisme : `sources/qualite-tourisme.ts` + rapprochement (commune + similarité) ; rapport des cas incertains.
-- [ ] `lieu_gare` : requête de `04` § 4.6 avec les paramètres.
-- [ ] `gare_stats` : agrégation.
-- [ ] Contrôles (en paires) et rapport.
+- [x] `transformations/rattachements.ts` + fichiers `.sql` : exécute dans l'ordre (`04` § 4.6) doublons (P1) → Qualité Tourisme (P1) → `lieu_gare` → `gare_stats`.
+- [x] Doublons : SQL avec `ST_DWithin` + `similarity()` ; priorité des sources depuis `parametres.json` ; complétion des champs vides du lieu gardé.
+- [x] ~~Qualité Tourisme : `sources/qualite-tourisme.ts` + rapprochement (commune + similarité) ; rapport des cas incertains.~~ Sans objet (D043).
+- [x] `lieu_gare` : requête de `04` § 4.6 avec les paramètres.
+- [x] `gare_stats` : agrégation.
+- [x] Contrôles (en paires) et rapport.
+- [x] Sites (`lieu.site_de`) et lieux en longueur (`lieu.trace`, canaux) — D043.
 
 ## Critères d'acceptation
-- [ ] Le Jardin de l'Arquebuse est rattaché à Dijon-Ville **et** un lieu à 1,6 km d'une gare ne l'est pas.
-- [ ] (P1) Deux lieux identiques DATAtourisme / OSM à 20 m sont fusionnés **et** deux lieux différents à 20 m (noms différents) ne le sont pas.
-- [ ] `gare_stats` : somme par gare = nombre de lignes de `lieu_gare` pour cette gare.
-- [ ] Aucun lieu marqué doublon n'apparaît dans `lieu_gare`.
+- [x] Le Jardin de l'Arquebuse est rattaché à Dijon-Ville **et** un lieu à 1,6 km d'une gare ne l'est pas.
+- [x] (P1) Deux lieux identiques DATAtourisme / OSM à 20 m sont fusionnés **et** deux lieux différents à 20 m (noms différents) ne le sont pas.
+- [x] `gare_stats` : somme par gare = nombre de lignes de `lieu_gare` pour cette gare.
+- [x] Aucun lieu marqué doublon n'apparaît dans `lieu_gare`.
 
 ## Vérifications manuelles
 - Pour Dijon-Ville, Beaune et une petite gare : liste des lieux rattachés, cohérente sur une carte.
@@ -59,3 +60,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 02/11/2026 : audit élargi au regroupement en site et aux lieux en longueur (demande de Hardy, après D042).
+- 02/11/2026 : E06 réalisée : doublons en deux paliers, sites, lieux en longueur, rayon mesuré à pied, Qualité Tourisme lu dans DATAtourisme (D043).

@@ -192,7 +192,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
-| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ⬜ |
+| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | 🟡 |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm` (dans cet ordre) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -394,3 +394,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 | § 9 : sauvegarde de session (règles de catégories relues, D042 ; audit E06 à lancer) |
+| 02/11/2026 | 1.25 | § 16 : `pnpm etl rattachements` ; § 8 : E06 en cours — D043 |

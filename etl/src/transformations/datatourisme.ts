@@ -80,6 +80,7 @@ export function lireLigneDatatourisme(
       imageUrl: null,
       horaires: null,
       qualiteTourisme: ligne.Classements_du_POI.includes('Qualité Tourisme'),
+      trace: null,
       lon: ligne.Longitude,
       lat: ligne.Latitude,
     },
