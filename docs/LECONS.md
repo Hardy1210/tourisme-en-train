@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.3 · **Date** 02/11/2026
+> **Version** 1.4 · **Date** 02/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -143,6 +143,19 @@
 - **À retenir :** garder l'automatique pour les cas sûrs, et rendre la décision humaine reproductible (fichier, pas modification à la main dans la base).
 - **Origine :** D044.
 
+### L27 — Dans un catalogue national, filtrer par territoire, pas par nom
+- **Problème :** chercher les réseaux de la région par mots-clés ramenait « Tanéo » de Nouméa, « TCL » de Limoges, « SITAC » de Châlons-en-Champagne, « Sablons Bus » dans l'Oise.
+- **Cause :** un même nom de réseau existe dans plusieurs régions ; le texte ne dit pas où est le réseau.
+- **Solution :** filtrer sur la zone couverte (région, département, commune) déclarée par le jeu, puis vérifier le résultat sur les vraies données (arrêts à pied d'une gare : « ça roule » à Autun n'en a aucun).
+- **À retenir :** un nom n'est pas un lieu ; s'appuyer sur un code géographique, puis mesurer.
+- **Origine :** audit E07, D046.
+
+### L28 — Un lien de téléchargement stable plutôt qu'un fichier daté
+- **Problème :** les fichiers GTFS sont publiés à des adresses datées (`…/20261029-152009/gtfs.zip`), remplacées à chaque mise à jour.
+- **Solution :** garder dans `sources.json` le lien stable qui redirige vers la dernière version (`data.gouv.fr/api/1/datasets/r/<identifiant>`).
+- **À retenir :** une adresse de source doit survivre aux mises à jour de la source ; sinon le traitement casse en silence quelques semaines plus tard.
+- **Origine :** E07, D046.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -201,3 +214,4 @@
 | 01/11/2026 | 1.1 | L14 → L21 (E05 : résultat à zéro, règles d'usage d'Overpass, doublons de diffuseurs, règles dans un tableau, fichier brut gardé, table d'une information, identifiant stable, plan de secours écarté) |
 | 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
 | 02/11/2026 | 1.3 | L25, L26 (regroupement de proche en proche, décisions humaines versionnées) |
+| 02/11/2026 | 1.4 | L27, L28 (catalogue national filtré par territoire, lien de téléchargement stable) |
