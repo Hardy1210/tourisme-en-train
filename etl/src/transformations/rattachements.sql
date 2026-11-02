@@ -1,5 +1,5 @@
--- Rattachements (docs/04-traitement-donnees.md § 4.6, D043) : doublons → sites → lieu_gare → gare_stats.
--- Entrée : lieu, gare (E02, E05). Sortie : lieu.doublon_de, lieu.site_de, lieu_gare, gare_stats.
+-- Rattachements (docs/04-traitement-donnees.md § 4.6, D043, D044) : doublons → sites → lieu_gare → gare_stats.
+-- Entrée : lieu, gare (E02, E05), tmp_decision (décisions manuelles, créée par le code). Sortie : lieu.doublon_de, lieu.site_de, lieu_gare, gare_stats.
 -- Paramètres (parametres.json) : :distance_m, :similarite, :distance_large_m, :similarite_large,
 -- :similarite_relire, :priorites (dedoublonnage) ; :sites (regroupementSites, JSON) ;
 -- :rayon_m (rayons.lieuxGareM, distance À PIED), :coef_detour, :vitesse_kmh (marche).
@@ -26,37 +26,78 @@ FROM lieu l;
 CREATE INDEX ON tmp_nom USING gist (geom);
 
 -- @paires
--- Paires entre sources différentes : g = source prioritaire (gardée), d = doublon possible.
--- Palier proche : < distance_m et nom semblable. Palier large : < distance_large_m, nom presque
--- identique, même catégorie, nom non générique (château dont le point diffère selon la source).
+-- Paires de lieux proches : g = gardé, d = doublon possible.
+-- Entre sources (g = source prioritaire) : palier proche (< distance_m, nom semblable) ou palier large
+-- (< distance_large_m, nom presque identique, même catégorie, nom non générique).
+-- Dans une même source (g = plus petit id) : fusion seulement si les noms sont IDENTIQUES (non
+-- génériques, < distance_m) ; nom seulement semblable = souvent une partie du lieu (« Parc du
+-- château de X » et « Château de X ») : rapport à relire, jamais fusionné sans décision manuelle.
 CREATE TEMP TABLE tmp_paire ON COMMIT DROP AS
-SELECT g.id AS garde, d.id AS doublon,
-       round(ST_Distance(g.geom, d.geom))::int AS distance_m,
-       similarity(g.nom_comparable, d.nom_comparable) AS similarite,
-       (ST_DWithin(g.geom, d.geom, :distance_m::float8)
-          AND similarity(g.nom_comparable, d.nom_comparable) >= :similarite::float8)
-       OR (similarity(g.nom_comparable, d.nom_comparable) >= :similarite_large::float8
-          AND g.categorie = d.categorie AND NOT g.generique AND NOT d.generique) AS fusion
-FROM tmp_nom g
-JOIN tmp_nom d ON d.rang > g.rang AND ST_DWithin(g.geom, d.geom, :distance_large_m::float8)
-WHERE (ST_DWithin(g.geom, d.geom, :distance_m::float8)
-         AND similarity(g.nom_comparable, d.nom_comparable) >= :similarite_relire::float8)
-   OR (similarity(g.nom_comparable, d.nom_comparable) >= :similarite_large::float8
-         AND g.categorie = d.categorie AND NOT g.generique AND NOT d.generique);
+WITH c AS (
+  SELECT g.id AS garde, d.id AS doublon, g.source = d.source AS meme_source,
+         ST_Distance(g.geom, d.geom) AS distance,
+         similarity(g.nom_comparable, d.nom_comparable) AS similarite,
+         g.nom_comparable = d.nom_comparable AS identique,
+         g.categorie = d.categorie AS meme_categorie,
+         g.generique OR d.generique AS generique
+  FROM tmp_nom g
+  JOIN tmp_nom d ON ST_DWithin(g.geom, d.geom, :distance_large_m::float8)
+   AND (d.rang > g.rang OR (d.source = g.source AND d.id > g.id))
+)
+SELECT garde, doublon, meme_source, round(distance)::int AS distance_m, similarite,
+       CASE WHEN meme_source THEN identique AND NOT generique AND distance < :distance_m::float8
+            ELSE (distance < :distance_m::float8 AND similarite >= :similarite::float8)
+              OR (similarite >= :similarite_large::float8 AND meme_categorie AND NOT generique)
+       END AS fusion,
+       NULL::text AS decision
+FROM c
+-- Même source et nom générique (« Aire de jeux ») : ni fusion ni relecture, le regroupement en site s'en charge.
+WHERE CASE WHEN meme_source THEN distance < :distance_m::float8 AND similarite >= :similarite::float8
+                                AND NOT generique
+           ELSE (distance < :distance_m::float8 AND similarite >= :similarite_relire::float8)
+             OR (similarite >= :similarite_large::float8 AND meme_categorie AND NOT generique)
+      END;
+
+-- @decisions
+-- Décisions manuelles (regles/doublons_manuels.csv, D044) : lieux retrouvés par source + identifiant.
+CREATE TEMP TABLE tmp_decision_id ON COMMIT DROP AS
+SELECT g.id AS garde, d.id AS doublon, t.decision
+FROM tmp_decision t
+JOIN lieu g ON g.source = t.source_garde AND g.id_source = t.id_garde
+JOIN lieu d ON d.source = t.source_doublon AND d.id_source = t.id_doublon
+WHERE g.id <> d.id;
+
+-- @retirer_paires_decidees
+-- Une paire décidée remplace la paire calculée, quel que soit son sens.
+DELETE FROM tmp_paire p USING tmp_decision_id t
+WHERE (p.garde = t.garde AND p.doublon = t.doublon) OR (p.garde = t.doublon AND p.doublon = t.garde);
+
+-- @ajouter_paires_decidees
+-- « oui » : fusion, même loin ou peu semblable ; « non » : jamais fusionnée.
+INSERT INTO tmp_paire (garde, doublon, meme_source, distance_m, similarite, fusion, decision)
+SELECT t.garde, t.doublon, g.source = d.source, round(ST_Distance(g.geom, d.geom))::int,
+       similarity(g.nom_comparable, d.nom_comparable), t.decision = 'oui', t.decision
+FROM tmp_decision_id t
+JOIN tmp_nom g ON g.id = t.garde
+JOIN tmp_nom d ON d.id = t.doublon;
+
+-- @choix
+-- Chaque doublon pointe vers un seul lieu gardé : décision « oui » d'abord, puis nom le plus
+-- semblable, puis le plus proche. 20 lieux OSM avaient deux candidats au 02/11 (château et parc du château).
+CREATE TEMP TABLE tmp_choix ON COMMIT DROP AS
+SELECT DISTINCT ON (doublon) doublon, garde
+FROM tmp_paire WHERE fusion
+ORDER BY doublon, (decision = 'oui') DESC NULLS LAST, similarite DESC, distance_m, garde;
 
 -- @doublons
--- Chaque doublon pointe vers son meilleur lieu gardé : nom le plus semblable, puis le plus proche.
-UPDATE lieu l SET doublon_de = m.garde
-FROM (SELECT DISTINCT ON (doublon) doublon, garde
-      FROM tmp_paire WHERE fusion
-      ORDER BY doublon, similarite DESC, distance_m, garde) m
-WHERE l.id = m.doublon;
+UPDATE lieu l SET doublon_de = c.garde FROM tmp_choix c WHERE l.id = c.doublon;
 
 -- @doublons_en_chaine
--- Trois sources ou plus : un lieu gardé peut lui-même être le doublon d'un lieu plus prioritaire.
+-- Un lieu gardé peut lui-même être le doublon d'un autre (trois sources, même source, décision) :
+-- exécuté plusieurs fois, chaque passe remonte d'un cran.
 UPDATE lieu l SET doublon_de = c.doublon_de
 FROM lieu c
-WHERE l.doublon_de = c.id AND c.doublon_de IS NOT NULL;
+WHERE l.doublon_de = c.id AND c.doublon_de IS NOT NULL AND c.doublon_de <> l.id;
 
 -- @completer
 -- Champs vides du lieu gardé complétés depuis ses doublons (photo, site web, horaires).

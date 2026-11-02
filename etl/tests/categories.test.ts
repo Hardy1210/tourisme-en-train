@@ -153,4 +153,15 @@ describe('classer — OSM', () => {
     ] as const;
     expect(classer(index.osm, parc, nomme)).toMatchObject({ categorie: 'parcs' });
   });
+  it('école Monument historique : écartée ; château Monument historique qui abrite une école : gardé', () => {
+    const ecole = [
+      ['amenity', 'school'],
+      ['ref:mhs', 'PA00112233'],
+    ] as const;
+    expect(classer(index.osm, ecole, nomme).type).toBe('exclu');
+    expect(classer(index.osm, [...ecole, ['historic', 'castle']], nomme)).toMatchObject({
+      categorie: 'patrimoine',
+      sousCategorie: 'château',
+    });
+  });
 });

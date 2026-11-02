@@ -1,0 +1,6 @@
+# Décisions manuelles sur les doublons (docs/04-traitement-donnees.md § 4.6, D044). Modifiable sans code.
+# Relu à chaque `pnpm etl rattachements`. Une ligne = une paire de lieux, repérés par source + identifiant.
+# Pour remplir : copier des lignes de data/traite/rapports/doublons_a_relire.csv (ou doublons_fusionnes.csv),
+# puis écrire dans la colonne decision : oui = même lieu, fusionné ; non = lieux différents, jamais fusionnés.
+# decision vide = pas encore décidé, ligne ignorée. Les colonnes nom_*, distance_m, similarite servent seulement à relire.
+source_garde;id_garde;nom_garde;source_doublon;id_doublon;nom_doublon;distance_m;similarite;decision

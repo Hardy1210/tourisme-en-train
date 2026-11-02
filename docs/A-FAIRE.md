@@ -30,6 +30,7 @@
 | Inviter le second membre SR, si l'équipe en compte deux (seul ethan21000 est collaborateur au 09/10) — `equipe/travail-en-equipe.md` § 3.2 | — | Dès que son identifiant GitHub est connu |
 | Annoncer aux SR la fusion de E01 : c'est le signal de départ de leur tâche I01 | E01 | À la fusion de E01 |
 | Relancer `pnpm etl osm` (extraction Overpass, ≈ 17 min si le serveur est saturé) **une fois par semaine au plus** ; la prochaine ajoutera les cascades (`waterway=waterfall`, règle corrigée le 01/11) et les nouvelles règles du 02/11 (grottes, sommets, sources, canaux, barrages, lavoirs, D042) : **compter les éléments reçus par règle**, surtout les canaux (un canal = plusieurs tronçons dans OSM, traitement prévu dans l'audit E06) | E05 → E16 | Au plus tôt le 08/11 ; dernière extraction avant le gel des données (E16) |
+| Relire `data/traite/rapports/doublons_a_relire.csv` (201 paires au 02/11 : 115 entre sources, 86 dans une même source) et, si besoin, `doublons_fusionnes.csv` ; recopier les lignes décidées dans `etl/src/regles/doublons_manuels.csv` avec `oui` ou `non` dans la colonne `decision`, puis `pnpm etl rattachements` (D044) | E06 | Avant la PR d'E06 (ou au fil de l'eau, le fichier est relu à chaque chargement) |
 | Choisir les réseaux urbains (GTFS/GBFS) sur transport.data.gouv.fr, et relever les URL `station_status.json` des vélos | E07 | Début E07 |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
 | Relever les facteurs CO₂ manquants et une source de prix au km | E09 | Début E09 |

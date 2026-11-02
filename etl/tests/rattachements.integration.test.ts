@@ -3,7 +3,11 @@
 // annule tout. Lieux inventés (nom « Test … ») près de Dijon-Ville (5.0272, 47.3233).
 import type pg from 'pg';
 import { afterAll, describe, expect, it } from 'vitest';
-import { calculerRattachementsDans } from '../src/chargement/rattachements';
+import type { Decision } from '../src/chargement/decisions-doublons';
+import {
+  calculerRattachementsDans,
+  type BilanRattachements,
+} from '../src/chargement/rattachements';
 import { creerPool, enTransaction } from '../src/db';
 
 function urlTestEtl(): string {
@@ -40,8 +44,9 @@ function inserer(lieux: readonly LieuTest[]): string {
 /** Calcule les rattachements après `preparation`, puis exécute `lire` ; tout est annulé. */
 async function apres<T>(
   lieux: readonly LieuTest[],
-  lire: (client: pg.PoolClient) => Promise<T>,
+  lire: (client: pg.PoolClient, bilan: BilanRattachements) => Promise<T>,
   preparation = '',
+  decisions: Decision[] = [],
 ): Promise<T> {
   let resultat: T | undefined;
   await expect(
@@ -53,8 +58,8 @@ async function apres<T>(
         ON CONFLICT (code) DO NOTHING;`);
       await client.query(inserer(lieux));
       if (preparation) await client.query(preparation);
-      await calculerRattachementsDans(client);
-      resultat = await lire(client);
+      const bilan = await calculerRattachementsDans(client, { decisions, rejets: [] });
+      resultat = await lire(client, bilan);
       throw new Annulation();
     }),
   ).rejects.toBeInstanceOf(Annulation);
@@ -252,5 +257,70 @@ describe('rattachements — lieux en longueur', () => {
       rattaches,
     );
     expect(liens).toEqual([]);
+  });
+});
+
+describe('rattachements — même source et décisions manuelles (D044)', () => {
+  const doublons = (client: pg.PoolClient) =>
+    lignes(
+      client,
+      `SELECT l.id_source, g.id_source AS garde FROM lieu l
+       LEFT JOIN lieu g ON g.id = l.doublon_de ORDER BY 1`,
+    );
+  const decision = (
+    garde: string,
+    doublon: string,
+    d: 'oui' | 'non',
+    source = 'osm',
+  ): Decision => ({
+    source_garde: source,
+    id_garde: garde,
+    source_doublon: 'osm',
+    id_doublon: doublon,
+    decision: d,
+  });
+
+  it('même source, nom identique à 30 m : fusionné ; « Parc du château de X » et « Château de X » : à relire, non fusionnés', async () => {
+    const { liste, bilan } = await apres(
+      [
+        ['A1', 'osm', 'Château des Forges', 'patrimoine', 'château', DIJON.lon, nord(300)],
+        ['A2', 'osm', 'Château des Forges', 'patrimoine', 'château', DIJON.lon, nord(330)],
+        ['B1', 'osm', 'Château de Ray', 'patrimoine', 'château', DIJON.lon, nord(800)],
+        ['B2', 'osm', 'Parc du château de Ray', 'parcs', 'parc', DIJON.lon, nord(810)],
+      ],
+      async (client, b) => ({ liste: await doublons(client), bilan: b }),
+    );
+    expect(liste).toContainEqual({ id_source: 'A2', garde: 'A1' });
+    expect(liste).toContainEqual({ id_source: 'B2', garde: null });
+    expect(bilan.aRelire.map((p) => [p.id_garde, p.id_doublon])).toContainEqual(['B1', 'B2']);
+  });
+
+  it('décision « oui » : fusion même à 200 m et noms différents ; décision « non » : une paire automatique n’est plus fusionnée', async () => {
+    const liste = await apres(
+      [
+        ['P1', 'datatourisme', 'Parc Buffon', 'parcs', 'parc', DIJON.lon, nord(300)],
+        ['P2', 'osm', 'Musée et Parc Buffon', 'patrimoine', 'musée', DIJON.lon, nord(500)],
+        ['J1', 'datatourisme', 'Jardin Test', 'parcs', 'jardin', DIJON.lon, nord(900)],
+        ['J2', 'osm', 'Jardin Test', 'parcs', 'jardin', DIJON.lon, nord(910)],
+      ],
+      doublons,
+      '',
+      [decision('P1', 'P2', 'oui', 'datatourisme'), decision('J1', 'J2', 'non', 'datatourisme')],
+    );
+    expect(liste).toContainEqual({ id_source: 'P2', garde: 'P1' });
+    expect(liste).toContainEqual({ id_source: 'J2', garde: null });
+  });
+
+  it('doublon avec deux candidats : une seule paire dans le rapport des fusions, la plus semblable', async () => {
+    const bilan = await apres(
+      [
+        ['C1', 'datatourisme', 'Château de Drée', 'patrimoine', 'château', DIJON.lon, nord(300)],
+        ['C2', 'datatourisme', 'Parc du Château de Drée', 'parcs', 'parc', DIJON.lon, nord(300)],
+        ['C3', 'osm', 'Château de Drée', 'patrimoine', 'château', DIJON.lon, nord(320)],
+      ],
+      async (_client, b) => b,
+    );
+    const pourC3 = bilan.fusions.filter((p) => p.id_doublon === 'C3');
+    expect(pourC3.map((p) => p.id_garde)).toEqual(['C1']);
   });
 });

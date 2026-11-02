@@ -61,3 +61,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : adresses des sources dans `config/sources.json` au lieu du code (D027).
 - 02/11/2026 : audit élargi au regroupement en site et aux lieux en longueur (demande de Hardy, après D042).
 - 02/11/2026 : E06 réalisée : doublons en deux paliers, sites, lieux en longueur, rayon mesuré à pied, Qualité Tourisme lu dans DATAtourisme (D043).
+- 02/11/2026 : décisions manuelles (`regles/doublons_manuels.csv`), doublons dans une même source (noms identiques), Monuments historiques fermés au public écartés (D044).

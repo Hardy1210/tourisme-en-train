@@ -1,5 +1,5 @@
-// Rattachements (docs/04-traitement-donnees.md § 4.6, D043) dans UNE transaction :
-// sections de transformations/rattachements.sql → contrôles → constats et lignes des rapports.
+// Rattachements (docs/04-traitement-donnees.md § 4.6, D043, D044) dans UNE transaction :
+// décisions manuelles → sections de transformations/rattachements.sql → contrôles → constats et rapports.
 // Un contrôle bloquant en échec annule tout : doublons, sites, lieu_gare et gare_stats restent intacts.
 import type pg from 'pg';
 import { parametres } from '../config';
@@ -13,13 +13,22 @@ import {
 } from '../controles/base';
 import { enTransaction } from '../db';
 import { lireSections, preparer } from '../transformations/sql';
+import { poserDecisions, type DecisionsLues } from './decisions-doublons';
+import { constatsRattachements, pairesRapport, type PaireRapport } from './rattachements-rapports';
 
 const SECTIONS = [
   'reinitialiser',
   'noms',
   'index_noms',
   'paires',
+  'decisions',
+  'retirer_paires_decidees',
+  'ajouter_paires_decidees',
+  'choix',
   'doublons',
+  // Une passe remonte d'un cran : trois passes couvrent trois sources plus une décision manuelle.
+  'doublons_en_chaine',
+  'doublons_en_chaine',
   'doublons_en_chaine',
   'completer',
   'groupes',
@@ -51,9 +60,29 @@ export function valeursRattachements(p = parametres): Record<string, unknown> {
   };
 }
 
-export function controlesRattachements(): Controle[] {
+export function controlesRattachements(rejetsDecisions = 0): Controle[] {
   const { rayons } = parametres;
   return [
+    {
+      nom: 'Lignes illisibles dans regles/doublons_manuels.csv',
+      bloquant: true,
+      verifier: async () => ({
+        reussi: rejetsDecisions === 0,
+        detail: String(rejetsDecisions),
+      }),
+    },
+    aucune(
+      'Décisions manuelles dont un lieu n’existe plus (ligne à retirer)',
+      `SELECT count(*)::int AS n FROM tmp_decision t WHERE
+         NOT EXISTS (SELECT 1 FROM lieu l WHERE l.source = t.source_garde AND l.id_source = t.id_garde)
+         OR NOT EXISTS (SELECT 1 FROM lieu l WHERE l.source = t.source_doublon AND l.id_source = t.id_doublon)`,
+      [],
+      false,
+    ),
+    aucune(
+      'Lieux doublons d’eux-mêmes (décisions manuelles en boucle)',
+      'SELECT count(*)::int AS n FROM lieu WHERE doublon_de = id',
+    ),
     aucune(
       'Sources de lieux absentes de dedoublonnage.prioriteSources (jamais dédoublonnées)',
       'SELECT count(DISTINCT source)::int AS n FROM tmp_nom WHERE rang IS NULL',
@@ -95,13 +124,6 @@ export function controlesRattachements(): Controle[] {
   ];
 }
 
-export interface PaireRapport {
-  garde: string;
-  doublon: string;
-  distance_m: number;
-  similarite: number;
-}
-
 export interface BilanRattachements {
   controles: ResultatControle[];
   constats: string[];
@@ -110,44 +132,16 @@ export interface BilanRattachements {
   fusions: PaireRapport[];
 }
 
-const nombre = (n: number): string => n.toLocaleString('fr-FR');
-
-const REQUETE_PAIRES = `
-  SELECT g.source || ' : ' || g.nom AS garde, d.source || ' : ' || d.nom AS doublon,
-         p.distance_m, round(p.similarite::numeric, 2)::float8 AS similarite
-  FROM tmp_paire p JOIN lieu g ON g.id = p.garde JOIN lieu d ON d.id = p.doublon
-  WHERE %CONDITION% ORDER BY p.similarite, p.distance_m`;
-
-async function constatsRattachements(client: pg.ClientBase): Promise<string[]> {
-  const { rows } = await client.query<Record<string, number>>(
-    `SELECT
-       (SELECT count(*)::int FROM lieu WHERE doublon_de IS NOT NULL) AS doublons,
-       (SELECT count(DISTINCT site_de)::int FROM lieu WHERE site_de IS NOT NULL) AS sites,
-       (SELECT count(*)::int FROM lieu WHERE site_de IS NOT NULL) AS membres,
-       (SELECT count(*)::int FROM lieu_gare) AS liens,
-       (SELECT count(DISTINCT lieu_id)::int FROM lieu_gare) AS lieux_rattaches,
-       (SELECT count(*)::int FROM gare WHERE dans_region) AS gares_region,
-       (SELECT count(DISTINCT lg.gare_id)::int FROM lieu_gare lg JOIN gare g ON g.id = lg.gare_id
-        WHERE g.dans_region) AS gares_region_avec_lieux`,
-  );
-  const c = rows[0];
-  if (!c) return [];
-  return [
-    `Doublons marqués : ${nombre(c.doublons ?? 0)}`,
-    `Sites : ${nombre(c.sites ?? 0)} (${nombre(c.membres ?? 0)} lieux rattachés à un représentant)`,
-    `Lieux à pied d’une gare : ${nombre(c.lieux_rattaches ?? 0)} (${nombre(c.liens ?? 0)} liens)`,
-    `Gares de la région avec au moins un lieu : ${nombre(c.gares_region_avec_lieux ?? 0)} sur ${nombre(c.gares_region ?? 0)}`,
-  ];
-}
-
 /** Tout le calcul, dans la transaction de `client`. */
 export async function calculerRattachementsDans(
   client: pg.ClientBase,
+  lues: DecisionsLues = { decisions: [], rejets: [] },
 ): Promise<BilanRattachements> {
   const sections = await lireSections(
     new URL('../transformations/rattachements.sql', import.meta.url),
   );
   const valeurs = valeursRattachements();
+  await poserDecisions(client, lues.decisions);
   let lienGare = 0;
   for (const nom of SECTIONS) {
     const sql = sections.get(nom);
@@ -157,21 +151,21 @@ export async function calculerRattachementsDans(
     if (nom === 'lieu_gare') lienGare = rowCount ?? 0;
   }
 
-  const controles = await executerControles(client, controlesRattachements());
+  const controles = await executerControles(client, controlesRattachements(lues.rejets.length));
   if (echecsBloquants(controles).length > 0) throw new ErreurControles(controles);
 
-  const paires = async (condition: string) =>
-    (await client.query<PaireRapport>(REQUETE_PAIRES.replace('%CONDITION%', condition))).rows;
   return {
     controles,
     constats: await constatsRattachements(client),
     lienGare,
-    aRelire: await paires('NOT p.fusion'),
-    fusions: await paires('p.fusion'),
+    ...(await pairesRapport(client)),
   };
 }
 
 /** Calcul dans sa propre transaction. */
-export function calculerRattachements(pool: pg.Pool): Promise<BilanRattachements> {
-  return enTransaction(pool, (client) => calculerRattachementsDans(client));
+export function calculerRattachements(
+  pool: pg.Pool,
+  lues: DecisionsLues,
+): Promise<BilanRattachements> {
+  return enTransaction(pool, (client) => calculerRattachementsDans(client, lues));
 }

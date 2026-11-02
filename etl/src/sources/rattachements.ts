@@ -3,10 +3,15 @@
 // toujours recalculé depuis les lieux et les gares en base (quelques secondes).
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { calculerRattachements, type PaireRapport } from '../chargement/rattachements';
+import { lireDecisions } from '../chargement/decisions-doublons';
+import { calculerRattachements } from '../chargement/rattachements';
+import type { PaireRapport } from '../chargement/rattachements-rapports';
 import { executerSource } from '../chargement/execution';
 import { lireConfig, resoudreDossierDonnees } from '../config';
 import { creerPool } from '../db';
+
+const ENTETE =
+  'source_garde;id_garde;nom_garde;source_doublon;id_doublon;nom_doublon;distance_m;similarite;decision';
 
 /** Champ CSV entre guillemets (un nom de lieu peut contenir un point-virgule). */
 const champ = (texte: string): string => `"${texte.replaceAll('"', '""')}"`;
@@ -20,10 +25,21 @@ export async function ecrirePaires(
   const dossier = path.join(dossierDonnees, 'traite', 'rapports');
   await mkdir(dossier, { recursive: true });
   const chemin = path.join(dossier, `${nom}.csv`);
-  const lignes = paires.map(
-    (p) => `${champ(p.garde)};${champ(p.doublon)};${p.distance_m};${p.similarite}`,
+  const lignes = paires.map((p) =>
+    [
+      p.source_garde,
+      champ(p.id_garde),
+      champ(p.nom_garde),
+      p.source_doublon,
+      champ(p.id_doublon),
+      champ(p.nom_doublon),
+      p.distance_m,
+      p.similarite,
+      p.decision,
+    ].join(';'),
   );
-  await writeFile(chemin, ['garde;doublon;distance_m;similarite', ...lignes].join('\n') + '\n');
+  // Mêmes colonnes que regles/doublons_manuels.csv : une ligne se recopie telle quelle.
+  await writeFile(chemin, [ENTETE, ...lignes].join('\n') + '\n');
   return chemin;
 }
 
@@ -33,7 +49,7 @@ export async function traiterRattachements(): Promise<void> {
   const pool = creerPool(config.BDD_URL_ETL);
   try {
     await executerSource({ pool, dossierDonnees }, 'rattachements', async (suivi) => {
-      const bilan = await calculerRattachements(pool);
+      const bilan = await calculerRattachements(pool, await lireDecisions());
       suivi.chargees = bilan.lienGare;
       suivi.controles = bilan.controles;
       await ecrirePaires(dossierDonnees, 'doublons_fusionnes', bilan.fusions);
@@ -41,7 +57,7 @@ export async function traiterRattachements(): Promise<void> {
       suivi.remarques.push(
         ...bilan.constats,
         `Paires fusionnées : traite/rapports/doublons_fusionnes.csv (${bilan.fusions.length})`,
-        `Paires à relire, non fusionnées : traite/rapports/doublons_a_relire.csv (${bilan.aRelire.length})`,
+        `Paires à relire, non fusionnées : traite/rapports/doublons_a_relire.csv (${bilan.aRelire.length}) ; décisions dans regles/doublons_manuels.csv`,
       );
       return 'SUCCES';
     });

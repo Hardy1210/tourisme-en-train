@@ -1,7 +1,7 @@
 # Règles de catégories des lieux (docs/04-traitement-donnees.md § 4.5, D041). Modifiable sans code.
 # categorie vide = lieu écarté. priorite : plus petit = gagne quand plusieurs règles s'appliquent à un lieu.
 #   10 = exclusion forte (hébergement, restauration, commerce, événement) · 15 = lieu phare (lac, château…) · 20 = classement précis
-#   OSM : 150 = Monument historique (ref:mhs) · 180 = petit patrimoine écarté sauf s'il est Monument historique · 200 = autre historic notable
+#   OSM : 140 = fermé au public même Monument historique · 150 = Monument historique (ref:mhs) · 180 = petit patrimoine écarté sauf s'il est Monument historique · 200 = autre historic notable
 #   40 = complément de destination écarté (cinéma, bibliothèque) : l'emporte sur le classement large, cède au précis.
 #   50 = classement large · 900 = exclusion faible (étiquette générique, circuit, sport) : une vraie catégorie l'emporte.
 # DATAtourisme : cle = categorie, valeur = nom de la classe (fin de l'adresse, ex. Museum pour …core#Museum).
@@ -329,16 +329,19 @@ osm;tourism;wine_cellar;;;900;
 osm;amenity;cinema;;;900;
 osm;leisure;fishing;;;900;
 osm;waterway;lock_gate;;;900;
+# Lieux fermés au public, même Monument historique (école, hôpital, établissement social, administration, D044) :
+#   priorité 140, avant ref:mhs (150) ; un classement précis l'emporte (château ou musée installé dans une école).
+osm;amenity;school;;;140;
+osm;amenity;college;;;140;
+osm;amenity;university;;;140;
+osm;amenity;music_school;;;140;
+osm;amenity;social_facility;;;140;
+osm;amenity;hospital;;;140;
+osm;office;government;;;140;
 # Pas une sortie, petit patrimoine ou étiquette trop vague : exclusion faible, une vraie catégorie l'emporte.
 osm;amenity;place_of_worship;;;900;
 osm;amenity;fountain;;;900;
 osm;amenity;townhall;;;900;
-osm;amenity;school;;;900;
-osm;amenity;college;;;900;
-osm;amenity;university;;;900;
-osm;amenity;music_school;;;900;
-osm;amenity;social_facility;;;900;
-osm;amenity;hospital;;;900;
 osm;amenity;courthouse;;;900;
 osm;amenity;library;;;900;
 osm;amenity;community_centre;;;900;
