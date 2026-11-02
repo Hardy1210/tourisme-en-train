@@ -4,3 +4,196 @@
 # puis écrire dans la colonne decision : oui = même lieu, fusionné ; non = lieux différents, jamais fusionnés.
 # decision vide = pas encore décidé, ligne ignorée. Les colonnes nom_*, distance_m, similarite servent seulement à relire.
 source_garde;id_garde;nom_garde;source_doublon;id_doublon;nom_doublon;distance_m;similarite;decision
+datatourisme;"https://data.datatourisme.fr/6/d539508c-0f25-3fd0-a5d7-33d853d455dd";"Forge-musée";osm;"node/2647243377";"Forge-musée d'Étueffont";3;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/0fdd0937-255e-364e-9437-14d8060f0772";"Belvédère la Roche de Ruan";osm;"node/8420821334";"Roche de Ruan";7;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/4048566a-dd02-3167-9e8f-184020143cb8";"Musée de la Tour du Moulin";osm;"way/739571497";"Maison mitoyenne de la tour du Moulin";17;0.5;non
+datatourisme;"https://data.datatourisme.fr/6/0d51b20c-15db-3e95-9f95-b23c116d2c93";"Pavillon de l'Industrie - Académie François Bourdon";osm;"node/9961462178";"Pavillon de l'Industrie";18;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/7426390a-8fbb-3098-846e-de2c9bf7f677";"Musée de la Vigne et du Vieux Pressoir";osm;"node/11959795116";"Musée de la vigne";18;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/f72dbb9a-8f89-3d0b-a4b5-b38506060f3a";"Chapelle Sainte-Anne (Musée d'Art sacré)";osm;"node/5141876795";"Musée d'art sacré";18;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/ca3386c1-80dd-3fd1-99f3-77e42bf9c905";"Point de vue le Fondereau";osm;"node/5061554690";"Le Fondereau";23;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/2d517b74-b524-38f1-8fb9-5d3f9594b52f";"Orgue Banfield de l'église Saint-Léger";osm;"way/148001098";"Église Saint-Léger";28;0.5;non
+datatourisme;"https://data.datatourisme.fr/6/417a4a2d-e2f8-3151-a19f-ae45f068f437";"Prieuré Notre-Dame";osm;"way/252586198";"Prieuré Notre-Dame de Vaux-sur-Poligny";54;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/8c9ab0c5-8b2d-35c9-94c6-dd84e55801a4";"Keep Form & Kid Fun";osm;"node/9427956842";"Kid Fun";55;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/610a2649-f09a-3ed5-8e84-6374ac9f8f57";"Eglise abbatiale de Pontigny";osm;"relation/20146226";"Abbaye de Pontigny";61;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/74307b00-c033-3e43-99ce-0cb0d01a30af";"Ancienne abbaye cistercienne";osm;"relation/20374655";"Ancienne abbaye cistercienne Notre-Dame-de-la-Charité";62;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/d07e7198-c459-3d30-acb2-cac671ff45cb";"Belvédère de Châtel Véron";osm;"way/714717250";"Chatel-Véron";67;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/74307b00-c033-3e43-99ce-0cb0d01a30af";"Ancienne abbaye cistercienne";osm;"node/4829316078";"Ancienne abbaye cistercienne Notre-Dame-de-la-Charité";73;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/c419ef6e-2cf1-39d2-948e-5e1bf884640b";"Aire de jeux pour enfants";osm;"node/1206255445";"Aire de jeux";74;0.5;non
+datatourisme;"https://data.datatourisme.fr/6/e7cd0ac4-6950-34c3-92cd-dec3abc3593f";"Musée archéologique de Dijon – ancienne abbaye Saint-Bénigne";osm;"node/1493118991";"Musée archéologique de Dijon";7;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/9ea7edae-8780-381e-9797-d283d12ed213";"Ancienne Abbaye Saint-Bénigne - Musée archéologique de Dijon";osm;"node/1493118991";"Musée archéologique de Dijon";12;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/15db8e13-24e8-36c0-96b8-b83a719bd732";"Cloître des chanoines de la Cathédrale Saint-Vincent";osm;"way/121570436";"Cathédrale Saint-Vincent";57;0.51;non
+datatourisme;"https://data.datatourisme.fr/6/62dd29e6-2fe4-36f1-87cb-14ca90d47df0";"Musée des Beaux-Arts de Louhans";osm;"node/419359746";"Musée des Beaux-Arts et de l'Imprimerie";12;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/3586df4b-2cff-3445-9756-0909cbad335a";"Eglise Romane ""Saint-Pierre"" de Brancion";osm;"way/285443648";"Église Saint-Pierre";6;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/f0e21799-622d-3c21-ad93-7ab814ffd26a";"Eglise Saint Aignan de Ruffey sur Seille";osm;"way/128598344";"Église Saint-Aignan";17;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/c0b37016-cad0-3a0c-b7ef-1d99784cfb09";"Falaises de Baulme-la-roche";osm;"node/4112082331";"Panorama des Roches de Baulme la Roche";31;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/0b2bc206-fcae-3ff5-97a9-fcd1179d9e65";"Eglise Saint-Paul";osm;"way/259969524";"Église de la Conversion-de-Saint-Paul";5;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/378138c6-a4c4-30c9-b837-3be71f744701";"Parc et jardin du château de Talmay";osm;"node/1792406306";"Château de Talmay";7;0.51;non
+datatourisme;"https://data.datatourisme.fr/6/2946d590-6ec1-3f84-80c3-de14b7fa9174";"Belvédère Les Rochers du Bourbet";osm;"node/5061514733";"Rocher du Bourbet";41;0.52;oui
+datatourisme;"https://data.datatourisme.fr/6/15c7dd45-fdbe-3976-810b-73f8f0ce002b";"Musée archéologique Sabatier";osm;"node/8263047588";"Musée Sabatier";10;0.52;oui
+datatourisme;"https://data.datatourisme.fr/6/378f7ae9-e508-3b94-8117-f890dfa85856";"Ermitage de la Cordelle";osm;"way/179739524";"Chapelle de la Cordelle";23;0.52;oui
+datatourisme;"https://data.datatourisme.fr/6/5d99fc8d-274f-3e26-81e4-e8cad1cf5ab9";"Musée Saint-Nazaire";osm;"way/127201026";"Église Saint-Nazaire";27;0.52;non
+datatourisme;"https://data.datatourisme.fr/6/376c282a-d349-361e-890b-840cb0a910f8";"Ville de La Machine";osm;"way/228160124";"Musée de La Mine - La Machine";69;0.52;non
+datatourisme;"https://data.datatourisme.fr/6/9d7ed0ce-7732-3270-b90f-e1708c95e57a";"Maison Rouget de Lisle (donation André Lançon)";osm;"node/1785365692";"Maison natale de Rouget de Lisle";24;0.52;oui
+datatourisme;"https://data.datatourisme.fr/6/be48e342-01ca-3892-ba86-c7782852a604";"Musée départemental du Compagnonnage";osm;"node/6575800688";"Musée Guillon du Compagnonnage";33;0.52;oui
+datatourisme;"https://data.datatourisme.fr/6/c24ed0d2-f0b7-36e7-a6c3-3babf8015e40";"Arboretum du Lison";osm;"node/14133352350";"Arboretum";6;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/df10e4e4-69c9-33f6-9f7b-526238017ce1";"Tour de l'Horloge ou Tour Guy Coquille";osm;"way/131043166";"Tour de l'Horloge";11;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/ea8a7411-40b6-3227-b091-ba6a3bdd4b76";"Eglise de Touches";osm;"way/127365984";"Église Saint-Symphorien de Touches";19;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/0d846bec-476d-3f42-864d-74ec2cec0ee8";"La Rodia";osm;"way/712681329";"Parc de la Rodia";22;0.53;non
+datatourisme;"https://data.datatourisme.fr/6/4184f49e-1d14-3e8d-be43-63b544790157";"Château - Musée Baron Martin";osm;"way/40496791";"Parc du Musée Baron-Martin";58;0.53;non
+datatourisme;"https://data.datatourisme.fr/6/79d7d0aa-bf34-32c1-93f8-66fc65e7f8df";"Musée d'Art et d'Industrie Paul Charnoz";osm;"node/2430526351";"Musée Paul Charnoz - Céramique d'Art";8;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/9cf8b7ec-7a76-3721-b25f-6f0550f893f3";"Menhir dit la ""Pierre-aux-Fées""";osm;"node/8300872342";"Pierre aux Fées";4;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/ba6530be-8cf2-3c1f-b1ae-b5da584581ed";"Source de l'Ain et ses cascades";osm;"node/4463205601";"Source de l'Ain";25;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/9788412b-c752-3384-a39a-f6c3d669cff1";"Eglise Saint-Christophe de Champlitte-la-Ville";osm;"way/87526039";"Église Saint-Christophe";48;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/2855fbfa-a838-37ab-9d84-ac239d8618b1";"Musée de la Tournerie";osm;"node/5924895417";"Musée de la Tournerie - Artisanat sur Corne";19;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/6600e85c-8e41-34e7-88e4-7fde8fe76896";"Musée du Pays Châtillonnais - Trésor de Vix";osm;"node/1261033744";"Musée du trésor de Vix";43;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/d9f2dcb2-e719-3d4c-b0b6-fc7c6b1b36f7";"Musée Nicéphore Niépce";osm;"way/121572642";"Musée de la Photographie Nicéphore Nièpce";26;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/e7762416-c092-3eea-926f-b9fc49d35c2d";"Musée municipal";osm;"node/12791981955";"Musée municipal de Chaumont";50;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/a9fe6b0d-0f3f-319d-995b-84894a6fb6e6";"Base de loisirs de l'Etang Grenetier";osm;"way/491935064";"Plage de l'Étang Grenetier";65;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/545887d3-f715-38c4-acb0-94b5a13192d6";"Hôtel du Bouteiller";osm;"relation/539734";"Hôtel du Bouteiller, puis de Montureux";19;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/db40ed8e-fb2c-3812-be13-5ed08235b14a";"Musée rural ""Vie et métiers d'autrefois""";osm;"node/9398122342";"Musée Métiers d'Autrefois du Haut Jura";19;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/94cf5a2f-8085-34a6-af25-1f47eb90b7f7";"Château et Parc Vauvert";osm;"way/146812831";"Parc Vauvert";54;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/58260b03-dee8-3ff0-81ea-f316069a95aa";"Maison du Parc national & Maison de la Forêt";osm;"node/3481290525";"Maison de la Forêt";7;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/0df056bd-5a66-3893-b437-b69347e56252";"FERMÉ TEMPORAIREMENT - Musée du Vin de Bourgogne";osm;"node/365168495";"Musée du Vin de Bourgogne";8;0.54;oui
+datatourisme;"https://data.datatourisme.fr/6/d11934a5-ce1d-31f7-a125-a353aa9779f9";"La salle capitulaire du Prieuré de La Charité-sur-Loire";osm;"relation/20174818";"Prieuré Notre-Dame de La Charité-sur-Loire";0;0.55;non
+datatourisme;"https://data.datatourisme.fr/6/1e094537-8fe5-3dcb-9012-7509054606b4";"Église Notre-Dame";osm;"relation/4761020";"Église Notre-Dame-de-l'Assomption";3;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/aaa57715-2f5c-3e8f-8136-3c80f841e70d";"Site Archéologique d'Escolives";osm;"node/12432067196";"Site Archéologique de la Villa Scoliva";48;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/97957508-a6b9-37b0-8ece-fa5e2fd2f3b0";"Jardin de l'Arquebuse - Jardin botanique";osm;"relation/8735252";"Jardin botanique";26;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/46430a4f-c9bb-38fa-95c3-32b610cef6a5";"Musée Japy";osm;"node/8595468822";"Musée Frédéric Japy";4;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/9a253336-798f-3e20-b4fa-606b731be2db";"Maison de la Négritude et des Droits de l'Homme";osm;"node/10738938323";"Maison de la Négritude";10;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/e3ab7998-ca73-3d65-9a18-dc9d59aa7697";"L'Ouvrage G";osm;"way/30749006";"Ouvrage ""G"" de la DAT";26;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/7e940f09-ca85-3590-9f90-8cb011c6b519";"Pontarlier";osm;"way/34418085";"Musée de Pontarlier";48;0.55;non
+datatourisme;"https://data.datatourisme.fr/6/602923c0-7017-3756-ae7e-c586413242c0";"Abbaye de Gigny";osm;"way/81789256";"Abbaye Saint-Pierre de Gigny";14;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/31696f23-19ea-3e17-935a-5c4f8c9de753";"Belvédère le Saut de Gamache";osm;"node/2194632470";"Saut de Gamache";22;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/d94147af-9bd2-3dcb-bcdc-ea653b8c8828";"Ferme clouterie de clairegoutte";osm;"way/90704352";"Ferme-clouterie";40;0.55;oui
+datatourisme;"https://data.datatourisme.fr/6/f1869cee-5fab-39aa-a216-b0ec1b19894c";"Belvédère de la Roche Blanche";osm;"node/1273547604";"La Roche Blanche";25;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/4195191d-a0c5-3b9b-9056-a0df0c9c79f0";"Abbaye Saint-Philibert";osm;"way/124180040";"Église abbatiale Saint-Philibert";30;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/4d5ae9b9-8abb-31a8-80e5-63434517f1f1";"Belvédère des Roches à Crancot";osm;"node/2425338386";"Belvédère des Roches de Baume";39;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/ac06e8bc-c75c-319e-a672-9c178160e59f";"Eglise Saint Pierre à Cercy-la-Tour";osm;"way/133161064";"Église Saint-Pierre";47;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/4d5ae9b9-8abb-31a8-80e5-63434517f1f1";"Belvédère des Roches à Crancot";osm;"node/2425345378";"Belvédère des Roches de Baume";62;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/4d5ae9b9-8abb-31a8-80e5-63434517f1f1";"Belvédère des Roches à Crancot";osm;"node/495444380";"Belvédère des Roches de Baume";69;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/e1f2689f-fbc3-30ac-ae85-4910785e53e7";"Haut Fourneau de la forge de Montagney";osm;"node/5833468811";"Forge de Montagney";11;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/c697ced7-a5ed-380a-9146-3eece1c82d85";"Buffet d'orgue de la Basilique Saint-Pierre";osm;"way/128533926";"Basilique Saint-Pierre";1;0.56;non
+datatourisme;"https://data.datatourisme.fr/6/b05b8f89-074a-3a4e-aa6d-912992247bfd";"Réserve naturelle du lac de Remoray";osm;"way/193333846";"Maison de la réserve du lac de Remoray";3;0.56;non
+datatourisme;"https://data.datatourisme.fr/6/5cad1642-9433-3dc5-a019-8a4026f31b19";"Église Notre Dame - Saint-Lupicin";osm;"way/201670922";"Église Notre-Dame";10;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/b837aa12-17db-3ef2-afc4-f3da8a7dade3";"Parc et jardin du château de Bussy-Rabutin";osm;"way/72149901";"Domaine du château de Bussy-Rabutin";19;0.56;non
+datatourisme;"https://data.datatourisme.fr/6/f1019e73-8e6e-330b-b2aa-f4a720648170";"Château de Blagny";osm;"node/5536426871";"Château de Blagny-sur-Vingeanne";45;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/32215e14-210c-327e-af67-527d6f44e1e3";"L'Observatoire de Besançon";osm;"way/683389710";"Parc de l'observatoire";63;0.56;non
+datatourisme;"https://data.datatourisme.fr/6/e9e017f3-7a8b-319a-a492-fb55cd55da16";"Hôtel Particulier des Sires de Neufchâtel";osm;"way/65742737";"Hôtel des Sires de Neuchâtel";10;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/dfdd98b3-8f66-3211-8794-ba34adb48ef2";"Église romane de Laroche-Saint-Cydroine";osm;"way/67492659";"Église Saint-Cydroine";29;0.56;oui
+datatourisme;"https://data.datatourisme.fr/6/aa1d06b3-203d-3e37-8aae-c22a686a73cf";"Le Palais ducal";osm;"node/339392015";"Musée du Palais ducal";33;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/d31b36f1-5ac7-3d73-a1c9-9f0a7265118f";"Hôtel Coeur de Roy";osm;"node/4266219117";"Hôtel Coeurderoy";37;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/c1cd130e-6818-3b08-a798-795fafab940d";"Eglise saint-christophe d'hericourt";osm;"way/30833883";"Église luthérienne Saint-Christophe";40;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/db7c5739-415b-338b-bd33-1b968e63a5aa";"Abbaye impériale de Baume-les-Messieurs";osm;"node/2476100158";"Abbaye Saint-Pierre de Baume-les-Messieurs";10;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/3d36e10a-20ed-32e0-9dcc-d88a93e774f8";"Musée liturgique Saint-Joseph";osm;"node/3702700669";"Musée liturgique";12;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/06ea3b1b-971e-3e1c-b78f-581ec2db678f";"Musée de l'Ecole en Chalonnais";osm;"way/126236063";"Musée de l'École";21;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/1a20cf36-9eac-3fc4-b6e5-3d4ffe757618";"Musée national Magnin";osm;"node/2751550494";"Musée Magnin";2;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/98211772-cd51-3d84-9ad2-2fff049f45ae";"Espace muséal Jules Adler";osm;"node/12133894642";"Musée Jules Adler";24;0.57;oui
+datatourisme;"https://data.datatourisme.fr/6/44c36acd-4782-32cc-a195-107c965bcce1";"Portail de l'ancienne chapelle des Annonciades";osm;"way/30784444";"Chapelle des Annonciades";16;0.58;non
+datatourisme;"https://data.datatourisme.fr/6/5c5f3672-e4c5-3d61-85ea-9e6598fb1e41";"Abbaye de Corbigny";osm;"way/117656600";"Abbaye Saint-Léonard de Corbigny";14;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/3b6d803c-6951-3cad-9b55-a69166848596";"Jardin de l'abbaye d'Oigny";osm;"relation/20167800";"Abbaye d'Oigny";25;0.58;non
+datatourisme;"https://data.datatourisme.fr/6/a6be6bf3-6c51-3c4a-a627-b920a7c838e2";"Square des Ducs";osm;"way/23465056";"Square des Ducs de Bourgogne";26;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/f6ba6760-b61b-37dc-bf1d-2952c093d0e7";"Musée de l'imprimerie";osm;"node/419359746";"Musée des Beaux-Arts et de l'Imprimerie";26;0.58;non
+datatourisme;"https://data.datatourisme.fr/6/3a7f51e7-b8af-3fd2-9f23-dc74667f8f8a";"Exposition au Musée de l'Elevage et du Charolais";osm;"node/6418144071";"Maison de l'Elevage et du Charolais";4;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/fdd00380-0a69-3606-a13e-dc650c979317";"Musée de la Machine Agricole et de la Ruralité (le MUMAR) à Saint-Loup-des-Bois";osm;"node/11416946437";"Ecomusée de la Machine Agricole et de la Ruralité";19;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/a7bf286f-6120-3acf-a167-079a1e50b827";"Eglise de Saint-Gengoux-le-National";osm;"way/116190829";"Église Saint-Gengoux";20;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/ad164257-1132-3093-8878-e8612f739e17";"Musée Départemental d'Art Moderne - Collection Zervos";osm;"node/2628533133";"MDAM Musée Départemental d'Art Moderne";9;0.58;oui
+datatourisme;"https://data.datatourisme.fr/6/7ce66eb4-0dc6-3077-b267-7ecc304f2f4f";"Grottes d'Arcy-sur-Cure";osm;"node/14000063843";"Les Grottes Préhistoriques d'Arcy sur Cure";4;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/0ba19914-b291-3360-8cd9-e73bab65fd46";"Parc promenade Picquet-Bergere";osm;"way/130575703";"Promenade Picquet";24;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/d4fa0875-39bd-383b-9fe8-8ed75955663b";"Église romane de Mont-Saint-Vincent";osm;"way/226273670";"Église Saint-Vincent";11;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/61a5d9ce-aee8-3211-9020-e9351f5da254";"Escape game au Château de Rosières";osm;"way/152390504";"Château de Rosières";12;0.59;non
+datatourisme;"https://data.datatourisme.fr/6/73ab51f3-9aec-3f17-8b27-12eda7c5ec7d";"Eglise Romane Saint-Julien (ancienne)";osm;"way/126722782";"Église Saint-Julien";52;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/8fc6d111-722e-300a-89b7-927253c66616";"Chartreuse de Champmol et Puits de Moïse";osm;"relation/12840450";"Chartreuse de Champmol";58;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/d4ae15a2-18a9-3ac2-b718-aed779841d54";"Eglise de l'Assomption";osm;"way/128026471";"Église de l'Assomption-de-la-Sainte-Vierge";7;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/237b7f7c-63d4-34b4-8a9a-ab9381beec17";"Musée de l'Avallonnais Jean Després";osm;"node/3050054378";"Musée de l'Avallonnais ou Musée d'Avallon";40;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/01f65336-0be6-37eb-b0a5-3e54ea44ccc9";"Les vergers-potagers du château de Montigny-sur-Aube";osm;"way/186868012";"Château de Montigny-sur-Aube";68;0.59;non
+datatourisme;"https://data.datatourisme.fr/6/76f3ee2f-df7d-3fcf-b768-f4a6589b05f6";"Musée du Blé et du Pain";osm;"node/1840508168";"Maison du Blé et du Pain";14;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/7c38beca-8b07-337a-a6de-eaa56c1f47f9";"Château de Moncey";osm;"way/222739244";"Château du maréchal Moncey";21;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/abbbf9d0-a196-3499-ab9f-5238ca82aef0";"Atelier Courbet";osm;"node/11177707655";"Atelier de Gustave Courbet";26;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/39137420-c7e4-3de1-8074-9616ca14c29a";"Musée de la Mine";osm;"way/153902869";"Musée de la Mine et des Hommes";43;0.59;oui
+datatourisme;"https://data.datatourisme.fr/6/0976e718-50e9-323b-9975-58cb105914f3";"Sentier des savoir-faire";osm;"way/370245333";"L'Atelier des Savoir-Faire";13;0.59;non
+datatourisme;"https://data.datatourisme.fr/6/967f7d64-e34c-3fad-b8e8-2f3f4817a33d";"Château de Pommard";osm;"way/245622614";"Les Jardins du Château de Pommard";66;0.59;non
+datatourisme;"https://data.datatourisme.fr/6/9b329204-805e-3c91-b9d4-8598779d86f4";"Maison du Parc du Haut-Jura";osm;"node/8789667031";"Maison du parc naturel régional du Haut-Jura";15;0.6;oui
+datatourisme;"https://data.datatourisme.fr/6/c385c298-1041-3a0d-9ff4-cafc9e167820";"Museum d'Histoire Naturelle Jacques de La Comble";osm;"node/2566833009";"Muséum d'Histoire Naturelle";61;0.6;oui
+osm;"way/102599500";"Tour du Moulin";osm;"node/2690539792";"Musée de la Tour du Moulin";4;0.6;oui
+datatourisme;"https://data.datatourisme.fr/6/ac063600-2885-34fb-828c-3397e61af92e";"Lac du Bourdon";datatourisme;"https://data.datatourisme.fr/6/1a77e4a5-7d70-3df3-9061-efe6404fd79f";"Réservoir du lac du Bourdon";5;0.6;oui
+datatourisme;"https://data.datatourisme.fr/6/bfa798ea-f678-39ed-999b-d3638f09a5aa";"Retable de l'église Saint-Martin";datatourisme;"https://data.datatourisme.fr/6/0b77b26c-aee9-3d95-82e7-72b66ea8bf93";"Eglise Saint-Martin";0;0.61;non
+datatourisme;"https://data.datatourisme.fr/6/b837aa12-17db-3ef2-afc4-f3da8a7dade3";"Parc et jardin du château de Bussy-Rabutin";datatourisme;"https://data.datatourisme.fr/6/386f043c-da47-35b3-8ecf-4ae27960a9bb";"Château de Bussy-Rabutin";4;0.61;non
+osm;"node/2800998090";"Croix du 15e siècle du château de Bellecroix";osm;"way/246694341";"Château de Bellecroix";65;0.61;non
+osm;"node/4715211534";"Rocher du Moine";osm;"node/6907150767";"Belvédère Rocher du Moine";27;0.62;oui
+datatourisme;"https://data.datatourisme.fr/6/f0319992-38cc-39bc-ba3e-506662f65ede";"Château Saint-Hugues";datatourisme;"https://data.datatourisme.fr/6/65f9125e-bbb6-36e4-95eb-94405ae74339";"Jeu de piste ""Château Saint-Hugues""";6;0.62;non
+datatourisme;"https://data.datatourisme.fr/6/071c82fa-3511-3fa6-a5b1-11aebf3a1653";"Canoë Kayak - Morvan - Lac des Settons - ACTIVITAL";datatourisme;"https://data.datatourisme.fr/6/6c43f875-7c66-36bc-84d3-08a86583e1a3";"Funboat-morvan-Lac des Settons- ACTIVITAL";0;0.62;non
+datatourisme;"https://data.datatourisme.fr/6/ae20858e-ae96-34c2-b70c-a1be0eedb298";"Château de Rosières - Chasse au trésor";datatourisme;"https://data.datatourisme.fr/6/11a18a34-6548-3601-bcea-a216330afece";"Château de Rosières";0;0.63;non
+osm;"node/810222893";"La Tour Carrée";osm;"way/416597913";"Tour Carré";4;0.63;oui
+datatourisme;"https://data.datatourisme.fr/6/26562b7c-2f47-32dd-a342-b15195119297";"Château de Châteauneuf";datatourisme;"https://data.datatourisme.fr/6/2e3ef5fa-6eca-3698-a920-f68384e0fb34";"Village de Châteauneuf";31;0.63;non
+osm;"node/8450029309";"Hôtel de Vogüé";osm;"way/1416523264";"Jardin de l’hôtel de Vogüé";41;0.63;non
+datatourisme;"https://data.datatourisme.fr/6/4bff918b-0b2c-35f6-bf24-de11e4b0515b";"Visite guidée du Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/ceed591f-bbcf-33dc-9bf1-5c6ba63a562e";"Le cloître du Prieuré de La Charité-sur-Loire";47;0.63;non
+osm;"way/1199252924";"Aire de jeux pour les petits";osm;"way/1199252925";"Aire de jeux pour les grands";20;0.63;non
+datatourisme;"https://data.datatourisme.fr/6/01f65336-0be6-37eb-b0a5-3e54ea44ccc9";"Les vergers-potagers du château de Montigny-sur-Aube";datatourisme;"https://data.datatourisme.fr/6/40376e32-6865-3363-96f5-1faa2223a2f1";"Le parc du château de Montigny-sur-Aube";0;0.63;non
+osm;"node/8491886502";"La Grande Chaume";osm;"node/8491886503";"Glacière de la Grande Chaume";71;0.63;non
+datatourisme;"https://data.datatourisme.fr/6/78356fdc-3c79-3c89-b879-0b6299d4515d";"Atelier des Savoir-Faire";datatourisme;"https://data.datatourisme.fr/6/0976e718-50e9-323b-9975-58cb105914f3";"Sentier des savoir-faire";11;0.63;non
+datatourisme;"https://data.datatourisme.fr/6/d11934a5-ce1d-31f7-a125-a353aa9779f9";"La salle capitulaire du Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/ceed591f-bbcf-33dc-9bf1-5c6ba63a562e";"Le cloître du Prieuré de La Charité-sur-Loire";34;0.63;non
+datatourisme;"https://data.datatourisme.fr/6/1a20cf36-9eac-3fc4-b6e5-3d4ffe757618";"Musée national Magnin";datatourisme;"https://data.datatourisme.fr/6/2bffe755-90df-3ed0-8474-95d4c926146a";"Hôtel Lantin (Musée national Magnin)";18;0.64;oui
+datatourisme;"https://data.datatourisme.fr/6/cede799f-cb02-387f-81bf-69d7f915f469";"Musée de l'Espace des Mondes Polaires Paul-Émile Victor";datatourisme;"https://data.datatourisme.fr/6/cc5fc811-1578-39b9-8b9f-b3e6f46a0c16";"Patinoire/piste de roller de l'Espace des Mondes Polaires Paul-Émile Victor";29;0.64;non
+datatourisme;"https://data.datatourisme.fr/6/fb663313-648f-3875-9ae2-e9095ed65940";"Musée de la Tour des Echevins";datatourisme;"https://data.datatourisme.fr/6/7f2d1b81-040e-33f0-9b3f-5dabc7e87d84";"Tour des Echevins";6;0.64;oui
+osm;"way/1414661145";"Fanum I et II";osm;"way/1414661152";"Fanum III";64;0.64;non
+osm;"node/5545981175";"Roche du Pas-de-Saint-Martin";osm;"node/799314399";"Le Pas de Saint-Martin";5;0.65;oui
+osm;"node/9354259489";"Porte d'accès du château";osm;"node/9354259494";"Porte d'accès du château à l'extérieur";44;0.65;non
+osm;"way/127526216";"Palais ducal";osm;"node/339392015";"Musée du Palais ducal";39;0.65;oui
+datatourisme;"https://data.datatourisme.fr/6/4bff918b-0b2c-35f6-bf24-de11e4b0515b";"Visite guidée du Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/903c5e62-0e65-316b-9c7b-5c85f9396aca";"Le Prieuré de La Charité-sur-Loire";68;0.65;non
+datatourisme;"https://data.datatourisme.fr/6/a2173fe2-d30e-3079-9f90-360f3fa87262";"Belvédère du Fort du Mont-Bart";datatourisme;"https://data.datatourisme.fr/6/23df0537-a3d2-321f-ac6b-ceabb6a13a93";"Fort du Mont-Bart";0;0.65;oui
+datatourisme;"https://data.datatourisme.fr/6/068748e1-f841-325a-8b10-c3b57dc07cca";"Abbaye de Fontenay";datatourisme;"https://data.datatourisme.fr/6/bb532f19-d709-3adc-9ef2-ba232c904125";"Jardins de l'Abbaye de Fontenay";0;0.66;non
+datatourisme;"https://data.datatourisme.fr/6/903c5e62-0e65-316b-9c7b-5c85f9396aca";"Le Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/d11934a5-ce1d-31f7-a125-a353aa9779f9";"La salle capitulaire du Prieuré de La Charité-sur-Loire";59;0.66;non
+osm;"way/50913984";"Square Edgar Faure";osm;"node/10311243180";"Edgar Faure";16;0.67;non
+datatourisme;"https://data.datatourisme.fr/6/d7253aa4-0b2d-3da8-81eb-44b3cea80071";"Cathédrale Saint-Lazare";datatourisme;"https://data.datatourisme.fr/6/feec9226-e260-342d-a26e-b429e5c54465";"Le trésor de la Cathédrale Saint-Lazare";37;0.67;non
+datatourisme;"https://data.datatourisme.fr/6/6bd229b3-3b83-3fbb-9116-2be6f92c4cb7";"Puits n° 3";datatourisme;"https://data.datatourisme.fr/6/95a5113f-c7e0-3d36-a8b3-63e89be1dbbe";"Puits n° 2";50;0.67;non
+osm;"node/5539656418";"Château des Ducs de Bourgogne (ancien)";osm;"way/110425642";"Château des ducs de Bourgogne (ruines)";50;0.68;oui
+datatourisme;"https://data.datatourisme.fr/6/b585a797-53b0-32be-8ff9-81130b447843";"Aire de jeux parc de l'ile sauzay";datatourisme;"https://data.datatourisme.fr/6/ef503e6a-3ced-3b3d-91c8-ba83c2547c3e";"Parc de l'ile sauzay";0;0.68;non
+datatourisme;"https://data.datatourisme.fr/6/0005181b-6ec2-36b9-b318-428c5f6b3ef9";"Parc du Château de Drée";datatourisme;"https://data.datatourisme.fr/6/103264ce-108a-3103-a71d-2ab42edcb6e7";"Château de Drée";0;0.68;non
+datatourisme;"https://data.datatourisme.fr/6/dd4800fb-19a9-3267-b4ee-13b40d27e7cc";"Vestiges de l'Abbaye de Cherlieu";datatourisme;"https://data.datatourisme.fr/6/c13a9c17-17f5-303b-93d6-5f54b07c13af";"Vestiges du palais abbatial de l'abbaye de Cherlieu";0;0.68;non
+datatourisme;"https://data.datatourisme.fr/6/74888928-940a-377a-89e7-e689aca7b119";"Musée de la Vie bourguignonne Perrin de Puycousin";datatourisme;"https://data.datatourisme.fr/6/9e95054f-fcab-3aa8-a177-f8f7f50fbcdf";"Monastère des Bernardines (Musée de la Vie bourguignonne Perrin de Puycousin)";48;0.68;oui
+osm;"way/259792590";"Château d'Aine";osm;"way/445218258";"Parc du Château d'Aine";54;0.68;non
+datatourisme;"https://data.datatourisme.fr/6/7551930b-973b-3970-8a12-0ab6d22a17d0";"Eglise Saint Pierre de Saint-Pierre-le-Moûtier";datatourisme;"https://data.datatourisme.fr/6/5338297a-8159-30e0-ab4d-4e123faa4f71";"Ville de Saint-Pierre-le-Moûtier";53;0.68;non
+datatourisme;"https://data.datatourisme.fr/6/387e7aa6-b734-3e3b-ad6e-208cba0c9008";"Grande Forge de Buffon";datatourisme;"https://data.datatourisme.fr/6/d1db86fc-604f-39b3-a3cb-9c3013f33aef";"Jardin de la Grande Forge de Buffon";0;0.69;non
+osm;"way/129118839";"Chapelle de la Chartreuse de Champmol";osm;"relation/12840450";"Chartreuse de Champmol";22;0.69;non
+osm;"node/3692234500";"Table d'orientation nord";osm;"node/3692234501";"Table d'orientation sud";23;0.69;non
+datatourisme;"https://data.datatourisme.fr/6/28c2ed84-ee56-3efe-9c9e-e30168dd7de9";"Musée Baron Martin";datatourisme;"https://data.datatourisme.fr/6/4184f49e-1d14-3e8d-be43-63b544790157";"Château - Musée Baron Martin";25;0.69;oui
+osm;"way/40496791";"Parc du Musée Baron-Martin";osm;"node/7508378482";"Musée Baron-Martin";43;0.69;non
+osm;"relation/1758330";"Abbaye de Baume-les-Messieurs";osm;"node/2476100158";"Abbaye Saint-Pierre de Baume-les-Messieurs";23;0.7;oui
+osm;"way/546461335";"Château de Rochefort (vestiges)";osm;"relation/1635939";"Château de Rochefort";45;0.7;oui
+datatourisme;"https://data.datatourisme.fr/6/b7b6cb59-dc41-371b-9816-54bf6926451c";"Château de Nuits";datatourisme;"https://data.datatourisme.fr/6/70ce517f-0c4b-3a30-ae7d-b8d9437a4592";"Parc du Château de Nuits";0;0.71;non
+datatourisme;"https://data.datatourisme.fr/6/61b03bb0-3d04-30ab-bf49-144944d8cc41";"Jardin de l'Arquebuse";datatourisme;"https://data.datatourisme.fr/6/97957508-a6b9-37b0-8ece-fa5e2fd2f3b0";"Jardin de l'Arquebuse - Jardin botanique";0;0.71;oui
+osm;"way/127522941";"Avant-Porte du Croux";osm;"way/127522945";"Porte du Croux";33;0.71;non
+datatourisme;"https://data.datatourisme.fr/6/a0162505-3696-39ec-9c4a-281586ea3769";"Château de Tanlay";datatourisme;"https://data.datatourisme.fr/6/e9bf2b64-ff83-3a6b-81ce-c09adadc2ef9";"Parc du Château de Tanlay";14;0.72;non
+osm;"way/238382053";"Château de Verges";osm;"way/626411680";"Parc du Château de Verges";58;0.72;non
+datatourisme;"https://data.datatourisme.fr/6/1d13825c-e997-3127-b8e8-3e59852b3945";"Château de Digoine";datatourisme;"https://data.datatourisme.fr/6/2861d5b4-b30e-362f-bcf3-df85bb4005e4";"Parc du Château de Digoine";69;0.72;non
+osm;"node/14332030313";"La Roche du Bourbet";osm;"node/5061514733";"Rocher du Bourbet";35;0.73;oui
+datatourisme;"https://data.datatourisme.fr/6/11ee4fc2-1510-382a-bff6-3a5765d006d9";"Parc de la maison pour tous";datatourisme;"https://data.datatourisme.fr/6/9a977591-3d0f-3020-b1d9-c8b9a4e9fd45";"Aire de jeux parc de la maison pour tous";0;0.73;non
+datatourisme;"https://data.datatourisme.fr/6/64fca7fd-e59d-3131-8a2c-f7dd3ec38ee8";"Parc du Château de Chastellux";datatourisme;"https://data.datatourisme.fr/6/aa178cdc-609c-3436-b3c2-8acd00e7fa5c";"Château de Chastellux";0;0.73;non
+datatourisme;"https://data.datatourisme.fr/6/8f8335bf-5287-368d-b8ec-0f9eabbe8f91";"Château de Commarin";datatourisme;"https://data.datatourisme.fr/6/d38c41f6-43f3-377c-9dd6-c8ec5aa70dd4";"Parc du château de Commarin";4;0.73;non
+osm;"node/8485784516";"Petit menhir de Saint-Clément-sur-Guye";osm;"node/9074254874";"Grand menhir de Saint-Clément-sur-Guye";23;0.73;non
+osm;"way/408847794";"Château de Saint-Léger-de-Fougeret";osm;"way/408847795";"Château de Saint-Léger";57;0.74;oui
+osm;"node/5540965171";"Domaine du château d'Entre-Deux-Monts";osm;"way/117049382";"Château d'Entre Deux Monts";31;0.74;oui
+datatourisme;"https://data.datatourisme.fr/6/1e9a0005-0c01-310b-a71a-79e8160775a9";"Château de Montigny-sur-Aube";datatourisme;"https://data.datatourisme.fr/6/40376e32-6865-3363-96f5-1faa2223a2f1";"Le parc du château de Montigny-sur-Aube";0;0.74;non
+datatourisme;"https://data.datatourisme.fr/6/9ec6e4f1-363e-3abe-9964-7c457b37a68b";"Parc du château de Bourbilly";datatourisme;"https://data.datatourisme.fr/6/82f6b993-e3ff-349f-9d5e-0e8ad84ba0b1";"Château de Bourbilly";10;0.75;non
+datatourisme;"https://data.datatourisme.fr/6/fdeda780-685d-319a-b949-9e173c006092";"Parc du château Stephen Liégeard";datatourisme;"https://data.datatourisme.fr/6/c4f399a7-2c87-3fcd-83a8-9a5a9326a063";"Château Stephen Liégeard";22;0.76;non
+osm;"way/126373100";"Château de Cruzille";osm;"way/126369965";"Chapelle du Château de Cruzille";18;0.76;non
+osm;"way/675298349";"Château de Rosemont";osm;"way/699388445";"Château de Rosemont (ruines)";39;0.77;oui
+datatourisme;"https://data.datatourisme.fr/6/4bff918b-0b2c-35f6-bf24-de11e4b0515b";"Visite guidée du Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/869a3a45-eca6-3ce4-b31e-f3960e1c9f0b";"Visite guidée ""Groupe""du Prieuré et de la Ville de La Charité-sur-Loire";27;0.77;non
+datatourisme;"https://data.datatourisme.fr/6/5219cf30-bdad-3c6b-9285-74f589f3243b";"Chateau de Ray-sur-Saône";datatourisme;"https://data.datatourisme.fr/6/36f25ccb-78b1-3229-8264-eebf1740e8d3";"Parc du château de Ray-sur-Saône";0;0.77;non
+osm;"node/2727145830";"Abbaye de la Cour-Notre-Dame (ancienne)";osm;"relation/20146243";"Abbaye de la Cour-Notre-Dame";8;0.78;oui
+datatourisme;"https://data.datatourisme.fr/6/b8cb6516-3573-3091-a624-6680d7338c7b";"Chateau de Saint- Loup-Nantouard";datatourisme;"https://data.datatourisme.fr/6/b861a04e-8cdd-38a3-9417-52512f1b72d9";"Visite du Chateau de Saint-Loup-Nantouard";0;0.78;non
+osm;"node/3629664298";"Vestiges gallo-romains (également sur commune de Ballore)";osm;"node/3629664299";"Vestiges gallo-romains (également sur commune de Mornay)";20;0.78;non
+osm;"way/253449485";"Redoute de Saint-Apollinaire";osm;"way/304373451";"Parc de la Redoute de Saint-Apollinaire";17;0.78;non
+osm;"way/32429283";"Château des Ducs de Wurtemberg";osm;"node/12444762465";"Musée du Château des ducs de Wurtemberg";12;0.8;oui
+datatourisme;"https://data.datatourisme.fr/6/db8f978c-6e55-3ca1-a1ea-72c066e8b83a";"Ligne de démarcation - ancien poste de contrôle allemand - Poteau";datatourisme;"https://data.datatourisme.fr/6/92d0f945-c778-3f3f-bc26-439871ef210e";"Ligne de démarcation - ancien poste de contrôle allemand - Pupitre";18;0.8;non
+datatourisme;"https://data.datatourisme.fr/6/6a7fbcce-7b97-3526-9819-467824ade367";"Ligne de démarcation - ancien poste de contrôle allemand - Poteau";datatourisme;"https://data.datatourisme.fr/6/ef52fb14-5dc3-3423-8baa-936cfe89bd51";"Ligne de démarcation - ancien poste de contrôle allemand - pupitre";46;0.8;non
+osm;"way/37264634";"Couvent des Cordeliers de Dole";osm;"relation/1210899";"Couvent des Cordeliers";10;0.81;oui
+osm;"way/37264634";"Couvent des Cordeliers de Dole";osm;"relation/20380486";"Couvent des Cordeliers";26;0.81;oui
+osm;"way/361060686";"Monastère Sainte-Claire de Poligny";osm;"way/80782902";"Monastère Sainte-Claire des Clarisses de Poligny";43;0.81;oui
+datatourisme;"https://data.datatourisme.fr/6/4006d340-6911-3774-968c-edd20c79be94";"Ligne des Hirondelles de Saint-Laurent à Saint-Claude - Offre groupe";datatourisme;"https://data.datatourisme.fr/6/7d9dabff-8e9a-3dd1-9025-23be0682da9f";"Ligne des Hirondelles de Saint-Laurent à Morez - Offre groupe";0;0.82;non
+datatourisme;"https://data.datatourisme.fr/6/903c5e62-0e65-316b-9c7b-5c85f9396aca";"Le Prieuré de La Charité-sur-Loire";datatourisme;"https://data.datatourisme.fr/6/ceed591f-bbcf-33dc-9bf1-5c6ba63a562e";"Le cloître du Prieuré de La Charité-sur-Loire";38;0.82;non
+datatourisme;"https://data.datatourisme.fr/6/c193b36b-9840-3436-8b6a-d8d86d13725a";"Lac Saint Point Lamartine";datatourisme;"https://data.datatourisme.fr/6/c0b2b76e-cb9f-3344-b877-83443c6c6813";"Lac de Saint Point Lamartine";0;0.88;oui
+osm;"node/1874850316";"Dolmen du Bois de Monfarbeau nr. 1";osm;"node/1926810223";"Dolmen du Bois de Monfarbeau nr. 2";55;0.88;non
+osm;"node/5016467988";"Belvédère du grand saut";osm;"node/12878588976";"Belvédère du grand saut (haut)";16;0.89;oui
+datatourisme;"https://data.datatourisme.fr/6/ba68c3b8-75e9-345d-b0c3-2171e2f781ca";"Le château Montbéliard Wurtemberg";datatourisme;"https://data.datatourisme.fr/6/88b6bc47-556c-31db-8198-de887037c288";"Château Montbéliard Wurtemberg";32;0.91;oui
+datatourisme;"https://data.datatourisme.fr/6/9ea7edae-8780-381e-9797-d283d12ed213";"Ancienne Abbaye Saint-Bénigne - Musée archéologique de Dijon";datatourisme;"https://data.datatourisme.fr/6/e7cd0ac4-6950-34c3-92cd-dec3abc3593f";"Musée archéologique de Dijon – ancienne abbaye Saint-Bénigne";11;1;oui
