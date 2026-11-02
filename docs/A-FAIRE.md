@@ -21,7 +21,6 @@
 | **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
 | Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
-| Relire `data/traite/rapports/lieux_exclus_par_nom_datatourisme.csv` et `…_osm.csv` (79 lieux au 02/11) ; points à trancher : statues (7 OSM, 4 DATAtourisme, dont « Statue Quand-Même », « Statue du Mont Ardoux »), « Le trésor de la Cathédrale Saint-Lazare », « Les vitraux contemporains de Christopher Wool » ; non attrapés : « Retables Saint-Cyr et Sainte-Juliette » (pluriel), « Application "Princesse de Vix" ». Corriger = modifier `etl/src/regles/noms_exclus.csv` (D045) | Corrections codées le 02/11 sur la PR #52 | **Avant la fusion de la PR #52** |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
