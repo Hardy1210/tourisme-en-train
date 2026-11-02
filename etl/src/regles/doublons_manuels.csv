@@ -197,3 +197,11 @@ osm;"node/1874850316";"Dolmen du Bois de Monfarbeau nr. 1";osm;"node/1926810223"
 osm;"node/5016467988";"Belvédère du grand saut";osm;"node/12878588976";"Belvédère du grand saut (haut)";16;0.89;oui
 datatourisme;"https://data.datatourisme.fr/6/ba68c3b8-75e9-345d-b0c3-2171e2f781ca";"Le château Montbéliard Wurtemberg";datatourisme;"https://data.datatourisme.fr/6/88b6bc47-556c-31db-8198-de887037c288";"Château Montbéliard Wurtemberg";32;0.91;oui
 datatourisme;"https://data.datatourisme.fr/6/9ea7edae-8780-381e-9797-d283d12ed213";"Ancienne Abbaye Saint-Bénigne - Musée archéologique de Dijon";datatourisme;"https://data.datatourisme.fr/6/e7cd0ac4-6950-34c3-92cd-dec3abc3593f";"Musée archéologique de Dijon – ancienne abbaye Saint-Bénigne";11;1;oui
+datatourisme;"https://data.datatourisme.fr/6/49cd0820-6733-36d0-8c73-b606436edf78";"Musée de l'Ours";osm;"way/141616595";"Musée de l'Ours en peluche (privé)";16;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/434b2a77-7cda-3d81-ba2d-10548380544f";"Musée de Bibracte";osm;"way/181221386";"Bibracte";42;0.5;oui
+datatourisme;"https://data.datatourisme.fr/6/1e2ffaaf-bb54-352b-85e2-c7b3a244d51b";"Espace musée Sainte-Madeleine";osm;"way/32985841";"Église Sainte-Madeleine";37;0.51;oui
+datatourisme;"https://data.datatourisme.fr/6/3be42fce-07ed-3378-93e8-a6eec854a638";"La grange à ruffey";osm;"node/9685491560";"La Grange";23;0.53;oui
+datatourisme;"https://data.datatourisme.fr/6/6035fa21-3b06-33c1-b99e-4d1a2d806233";"Les belvédères de Saint-Jean-d'Etreux";osm;"node/2439760327";"Saint-Jean d'Etreux";18;0.56;oui
+osm;"node/2096361650";"Pierrier";osm;"node/8068060292";"Perrier";51;0.6;non
+osm;"node/3017636740";"Pierrier";osm;"node/8068060292";"Perrier";59;0.6;non
+osm;"node/3630073664";"Borne-colonne";osm;"node/6418517588";"Borne-colonne de Brienne";37;0.62;oui

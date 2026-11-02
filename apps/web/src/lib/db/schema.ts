@@ -278,6 +278,8 @@ export const mobiliteLocale = pgTable(
   },
   (t) => [
     index().on(t.gareId, t.distanceM),
+    // Une ligne par couple (arrêt, gare) dans le rayon, comme lieu_gare (D046).
+    unique('mobilite_locale_gare_source_id_unique').on(t.gareId, t.source, t.idSource),
     check('mobilite_locale_type_check', parmi(t.type, TYPES_MOBILITE)),
   ],
 );

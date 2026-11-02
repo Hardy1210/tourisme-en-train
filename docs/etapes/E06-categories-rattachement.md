@@ -1,7 +1,7 @@
 # E06 — Doublons, Qualité Tourisme, lieux → gares, statistiques
 
 > **Semaine :** S4 (26/10 → 01/11) · **Priorité :** P0 (rattachement, statistiques) · P1 (doublons, Qualité Tourisme) · **Branche :** `etape/E06-rattachements`
-> **Étapes préalables :** E05 · **État :** 🟡 en cours (code terminé, relecture des rapports par Hardy)
+> **Étapes préalables :** E05 · **État :** ✅ terminée (PR #52 fusionnée le 02/11)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal

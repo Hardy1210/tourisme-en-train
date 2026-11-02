@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.8 · **Date** 02/11/2026
+> **Version** 1.9 · **Date** 02/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -115,12 +115,16 @@
 - **Utilisés :**
   - GTFS : `stops.txt` (arrêts), `routes.txt` (numéros et types de lignes : `route_type` 0 = tram, 3 = bus), `trips.txt` + `stop_times.txt` pour savoir quelles lignes desservent quel arrêt.
   - GBFS : `station_information.json` (nom, position des stations).
-- **Rayon :** arrêts et stations à moins de `rayonMobiliteM` d'une gare.
+- **Rayon :** arrêts et stations à moins de `rayons.mobiliteM` **à pied** d'une gare de la région (D046).
 - **v1 :** emplacement et lignes stockés en base. **Disponibilité des vélos en direct (P1)** : lue au moment de la demande dans `station_status.json` (voir § 3.3), jamais stockée.
 - **À relever à l'E07 :** pour chaque réseau vélo, l'URL `station_status.json` si elle existe.
-- **Licence :** variable selon le jeu (souvent ODbL ou Licence Ouverte) — **relevée jeu par jeu à l'E07**.
+- **Licence :** relevée réseau par réseau (champ `licence` de chaque entrée, D046).
 - **Table cible :** `mobilite_locale`.
-- **Liste des réseaux retenus :** à établir à l'E07 (au minimum Dijon, Besançon, Chalon-sur-Saône, Belfort–Montbéliard si disponibles).
+- **Réseaux retenus (D046, audit du 02/11)** : une entrée par réseau dans `config/sources.json` (champ `reseau` : format, fichiers, `station_status`), licence vérifiée réseau par réseau ; **un réseau sans licence reconnue n'est pas chargé**.
+  - 13 réseaux urbains GTFS : DiviaMobilités (Dijon, tram), Ginko (Besançon, tram), Optymo (Belfort, ODbL), évolitY (Montbéliard, ODbL), Zoom (Chalon), TréMA (Mâcon, ODbL), Léo (Auxerre), Tanéo (Nevers), Grandole (Dole), Côte&Bus (Beaune), ECLA (Lons-le-Saunier), MonRéZO (Le Creusot – Montceau), moova (Vesoul) — Licence Ouverte 2.0 sauf mention.
+  - **Mobigo** (cars régionaux, 7 fichiers départementaux UT21 → UT89, Licence Ouverte 2.0) : type `CAR`, souvent le seul transport autour d'une petite gare.
+  - Vélos en libre-service GBFS : VéloCité (Besançon, Licence Ouverte 1.0), Optymo (Belfort, ODbL), avec `station_status`.
+  - Non retenus : « ça roule » (Autun, aucun arrêt près d'une gare) ; pas de réseau urbain publié pour Sens et Pontarlier (Mobigo les dessert), pas de flux vélos pour Dijon.
 
 ### 2.6 `lieux_culturels` — Base des lieux et équipements culturels (P1)
 - **Où :** data.gouv.fr (Ministère de la Culture).
@@ -142,12 +146,12 @@
 - **Licence :** Licence Ouverte.
 - **Non utilisé (D043)** : le label est déjà lu dans le champ `Classements_du_POI` de DATAtourisme (60 lieux au 02/11), plus récent ; le fichier de 2024 n'apporterait qu'un rapprochement par nom incertain. Entrée gardée dans `sources.json` (non chargée) ; à retirer de l'écran Sources (E13) si elle reste inutilisée.
 
-### 2.9 `lignes` — Lignes par région administrative (P1)
+### 2.9 `lignes` — Lignes par région administrative (P1, reporté après le P0, D046)
 - **Où :** data.gouv.fr (SNCF). Données de 2022 (les tracés changent peu).
 - **Usage :** tracé des lignes sur la carte.
 - **Table cible :** `ligne_ferroviaire`.
 
-### 2.10 `cyclable` — Aménagements cyclables (P1)
+### 2.10 `cyclable` — Aménagements cyclables (P1, reporté après le P0, D046 — première piste après le P0)
 - **Où :** data.gouv.fr (Geovelo), GeoJSON France métropolitaine, filtré sur la région.
 - **Usage :** voies vertes et pistes proches de la gare d'arrivée (premier exemple de livrable cité par le défi).
 - **Licence :** ODbL.
@@ -236,3 +240,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 23/10/2026 | 1.6 | § 2.1 bis : `communes` remplit la table `commune` (colonne `DEP` lue) — D038 |
 | 01/11/2026 | 1.7 | Audit E05 : § 2.1 ter `contours` (nouvelle source) ; § 2.3 colonnes réelles DATAtourisme ; § 2.4 Overpass seul, requête tirée des règles, GéoDataMine écarté ; lieux culturels et festivals après le P0 — D041 |
 | 02/11/2026 | 1.8 | § 2.8 : fichier Qualité Tourisme non utilisé, label lu dans DATAtourisme — D043 |
+| 02/11/2026 | 1.9 | § 2.5 : réseaux retenus, licences, Mobigo, vélos ; § 2.9 et § 2.10 reportés après le P0 — D046 |

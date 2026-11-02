@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.13 · **Date** 02/11/2026
+> **Version** 1.14 · **Date** 02/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -332,17 +332,17 @@ Index : (`gare_id`, `distance_m`).
 | Colonne | Type | Contraintes | Description |
 |---|---|---|---|
 | `id` | bigint | PK, identity | |
-| `gare_id` | integer | NN, FK → gare | Gare la plus proche |
-| `type` | text | NN, CHECK in (`BUS`,`TRAM`,`VELO`,`TROTTINETTE`,`AUTRE`) | |
+| `gare_id` | integer | NN, FK → gare | Gare de la région à moins de `rayons.mobiliteM` **à pied** ; une ligne par couple (arrêt, gare) : un arrêt entre deux gares apparaît pour les deux (D046) |
+| `type` | text | NN, CHECK in (`BUS`,`TRAM`,`CAR`,`VELO`,`TROTTINETTE`,`AUTRE`) | `CAR` : cars régionaux Mobigo (D046) ; `TRAM` si une ligne de tram dessert l'arrêt |
 | `nom` | text | NN | Nom de l'arrêt ou de la station |
 | `lignes` | text[] | | Numéros de lignes (bus/tram) |
-| `operateur` | text | | Réseau ou opérateur |
-| `source` | text | NN, FK → source_donnees(code) | |
-| `id_source` | text | | Identifiant dans la source (ex. `station_id` GBFS, pour lire la disponibilité des vélos en direct) |
-| `distance_m` | integer | NN | Distance à pied depuis la gare |
-| `geom` | geography(Point, 4326) | NN | |
+| `operateur` | text | | Producteur du réseau (`source_donnees.producteur`) |
+| `source` | text | NN, FK → source_donnees(code) | Code du réseau (`reseau_divia`, `reseau_mobigo`, `velos_besancon`…) |
+| `id_source` | text | | Identifiant dans la source (`stop_id` GTFS du premier quai ; `station_id` GBFS, pour lire la disponibilité des vélos en direct) |
+| `distance_m` | integer | NN | Distance à pied depuis la gare (vol d'oiseau × `marche.coefDetour`) |
+| `geom` | geography(Point, 4326) | NN | Centre des quais regroupés |
 
-Index : (`gare_id`, `distance_m`).
+Index : (`gare_id`, `distance_m`). Contrainte : UQ(`gare_id`, `source`, `id_source`) (migration `0010`, D046).
 
 ### 3.11 `source_donnees`
 | Colonne | Type | Contraintes | Description |
@@ -480,3 +480,4 @@ ORDER BY a.depart_s;
 | 01/11/2026 | 1.11 | § 3.5 : `liaison_directe` créée en E04 (deux sens, `premiere_arrivee_s`, `faisable_journee`, jumelage, dernier retour par jointure) ; § 3.1 : `dans_region` valeur calculée assumée et contrôlée ; § 2 et § 5 — D040 |
 | 01/11/2026 | 1.12 | § 3.1 bis : `commune.contour` (communes de la région) ; § 3.6 : `lieu.commune` supprimée, `lieu.code_insee` → `commune`, `doublon_de` ON DELETE SET NULL, mise à jour par (`source`, `id_source`) ; § 3.7 : `categorie_regle.condition` ; § 2 — D041 |
 | 02/11/2026 | 1.13 | § 3.6 : `lieu.site_de`, `lieu.trace`, requêtes qui ignorent aussi les membres d'un site ; § 3.8 : distance à pied au tracé ; migration `0009` (extension `unaccent`) — D043 |
+| 02/11/2026 | 1.14 | § 3.10 : une ligne par couple (arrêt, gare), type `CAR`, rayon à pied, contrainte d'unicité (migration `0010`) — D046 |

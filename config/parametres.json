@@ -52,6 +52,7 @@
     { "sousCategorie": "aire de jeux", "distanceM": 50 }
   ],
   "regroupementParcChateau": { "distanceM": 500 },
+  "mobilite": { "regroupementQuaisM": 100 },
   "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",

@@ -68,15 +68,279 @@
       "verifie": true
     },
     {
-      "code": "transport_local",
-      "nom": "Offres de mobilité locales (bus, tram, vélos)",
-      "producteur": "Autorités organisatrices de la mobilité",
+      "code": "reseau_divia",
+      "nom": "Réseau DiviaMobilités (Dijon)",
+      "producteur": "DiviaMobilités",
       "mode": "base",
-      "page": "https://transport.data.gouv.fr",
+      "page": "https://transport.data.gouv.fr/datasets/gtfs-diviamobilites",
       "telechargement": null,
-      "licence": "Selon le réseau (souvent ODbL)",
-      "attribution": "Réseaux locaux via transport.data.gouv.fr",
-      "verifie": false
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "DiviaMobilités — Réseau DiviaMobilités (Dijon) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/e0dbd217-15cd-4e28-9459-211a27511a34"
+        ]
+      }
+    },
+    {
+      "code": "reseau_ginko",
+      "nom": "Réseau Ginko (Besançon)",
+      "producteur": "Grand Besançon Métropole",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/gtfs-et-siri-du-reseau-ginko-besancon-lignes-urbaines-et-periurbaines",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Grand Besançon Métropole — Réseau Ginko (Besançon) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/e18e0aeb-8805-47fd-bcdb-c226d21c96fe"
+        ]
+      }
+    },
+    {
+      "code": "reseau_optymo",
+      "nom": "Réseau Optymo (Belfort)",
+      "producteur": "Optymo – Grand Belfort",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/arrets-circuits-et-horaires-du-reseau-optymo-de-belfort",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "Optymo – Grand Belfort — Réseau Optymo (Belfort) (ODbL)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/797c424e-7d28-4e65-84f6-6677e47d8a6e"
+        ]
+      }
+    },
+    {
+      "code": "reseau_evolity",
+      "nom": "Réseau évolitY (Montbéliard)",
+      "producteur": "Pays de Montbéliard Agglomération",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/evolity-horaires-theoriques-de-transport-public",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "Pays de Montbéliard Agglomération — Réseau évolitY (Montbéliard) (ODbL)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/b45aa8d8-4bd4-4528-99c7-acfc980fdb09"
+        ]
+      }
+    },
+    {
+      "code": "reseau_zoom",
+      "nom": "Réseau Zoom (Chalon-sur-Saône)",
+      "producteur": "Le Grand Chalon",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/reseauzoom-horaires-theoriques",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Le Grand Chalon — Réseau Zoom (Chalon-sur-Saône) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/f11a3766-1fe3-40ff-8d5a-27eacda3d9a7"
+        ]
+      }
+    },
+    {
+      "code": "reseau_trema",
+      "nom": "Réseau TréMA (Mâcon)",
+      "producteur": "Mâconnais Beaujolais Agglomération",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/offre-de-transport-du-reseau-trema-gtfs",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "Mâconnais Beaujolais Agglomération — Réseau TréMA (Mâcon) (ODbL)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/0a01b036-796f-43a3-9c64-a2f6024427b0"
+        ]
+      }
+    },
+    {
+      "code": "reseau_leo",
+      "nom": "Réseau Léo (Auxerre)",
+      "producteur": "Communauté d'agglomération de l'Auxerrois",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/reseau-de-transports-en-commun-de-la-communaute-dagglomeration-de-lauxerrois",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté d'agglomération de l'Auxerrois — Réseau Léo (Auxerre) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": ["https://transport.data.gouv.fr/resources/78934/download"]
+      }
+    },
+    {
+      "code": "reseau_taneo",
+      "nom": "Réseau Tanéo (Nevers)",
+      "producteur": "Communauté d'agglomération de Nevers",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/versions-des-horaires-theoriques-des-lignes-du-reseau-de-bus-au-format-gtfs",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté d'agglomération de Nevers — Réseau Tanéo (Nevers) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/0b65dda9-51d3-4d84-811b-8a11629a5e55"
+        ]
+      }
+    },
+    {
+      "code": "reseau_grandole",
+      "nom": "Réseau Grandole Mobilités (Dole)",
+      "producteur": "Communauté d'agglomération du Grand Dole",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/reseau-de-transport-du-grand-dole",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté d'agglomération du Grand Dole — Réseau Grandole Mobilités (Dole) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": ["https://transport.data.gouv.fr/resources/81254/download"]
+      }
+    },
+    {
+      "code": "reseau_cotebus",
+      "nom": "Réseau Côte&Bus (Beaune)",
+      "producteur": "Communauté d'agglomération Beaune Côte et Sud",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/offre-de-transport-de-la-c-a-beaune-cote-sud-gtfs",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté d'agglomération Beaune Côte et Sud — Réseau Côte&Bus (Beaune) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/c00d487c-4766-4ca1-b736-e7de110331d9"
+        ]
+      }
+    },
+    {
+      "code": "reseau_ecla",
+      "nom": "Réseau ECLA Mobilité (Lons-le-Saunier)",
+      "producteur": "Espace Communautaire Lons Agglomération",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/ecla-lons-agglo-mobilites",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Espace Communautaire Lons Agglomération — Réseau ECLA Mobilité (Lons-le-Saunier) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/ec61df69-830c-4ca7-9d78-9a81c515e9de"
+        ]
+      }
+    },
+    {
+      "code": "reseau_monrezo",
+      "nom": "Réseau MonRéZO (Le Creusot – Montceau)",
+      "producteur": "Communauté urbaine Creusot Montceau",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/arrets-horaires-et-parcours-theoriques-du-reseau-monrezo-cucm-gtfs-1",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté urbaine Creusot Montceau — Réseau MonRéZO (Le Creusot – Montceau) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/128b06bc-f263-4530-8e03-395402f87256"
+        ]
+      }
+    },
+    {
+      "code": "reseau_moova",
+      "nom": "Réseau moova (Vesoul)",
+      "producteur": "Communauté d'agglomération de Vesoul",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/horaires-theoriques-du-reseau-moova-communaute-dagglomeration-de-vesoul-gtfs",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Communauté d'agglomération de Vesoul — Réseau moova (Vesoul) (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://www.data.gouv.fr/api/1/datasets/r/0d6e6c56-8926-49b3-87e2-13c6f57c136b"
+        ]
+      }
+    },
+    {
+      "code": "reseau_mobigo",
+      "nom": "Cars régionaux Mobigo",
+      "producteur": "Région Bourgogne-Franche-Comté",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/reseau-de-transport-interurbain-mobigo-en-bourgogne-franche-comte",
+      "telechargement": null,
+      "licence": "Licence Ouverte 2.0",
+      "attribution": "Région Bourgogne-Franche-Comté — Cars régionaux Mobigo (Licence Ouverte 2.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gtfs",
+        "fichiers": [
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT21",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT25",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT39",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT58",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT70",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT71",
+          "https://exs.mobigo2.cityway.fr/gtfs.aspx?key=OPENDATA&operatorCode=UT89"
+        ],
+        "typeParDefaut": "CAR"
+      }
+    },
+    {
+      "code": "velos_besancon",
+      "nom": "Vélos en libre-service VéloCité (Besançon)",
+      "producteur": "Ville de Besançon",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/besancon-velos-en-libre-service-ginko-velo",
+      "telechargement": null,
+      "licence": "Licence Ouverte 1.0",
+      "attribution": "Ville de Besançon — Vélos en libre-service VéloCité (Besançon) (Licence Ouverte 1.0)",
+      "verifie": true,
+      "reseau": {
+        "format": "gbfs",
+        "fichiers": [
+          "https://api.cyclocity.fr/contracts/besancon/gbfs/v2/station_information.json"
+        ],
+        "stationStatus": "https://api.cyclocity.fr/contracts/besancon/gbfs/v2/station_status.json"
+      }
+    },
+    {
+      "code": "velos_belfort",
+      "nom": "Vélos en libre-service Optymo (Belfort)",
+      "producteur": "Optymo – Grand Belfort",
+      "mode": "base",
+      "page": "https://transport.data.gouv.fr/datasets/optymo-velo-en-libre-service",
+      "telechargement": null,
+      "licence": "ODbL",
+      "attribution": "Optymo – Grand Belfort — Vélos en libre-service Optymo (Belfort) (ODbL)",
+      "verifie": true,
+      "reseau": {
+        "format": "gbfs",
+        "fichiers": ["https://data.optymo.fr/vls/station_information.json"],
+        "stationStatus": "https://data.optymo.fr/vls/station_status.json"
+      }
     },
     {
       "code": "lieux_culturels",

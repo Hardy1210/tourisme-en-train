@@ -192,8 +192,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E03 | Horaires GTFS SNCF | S2 | ✅ |
 | E04 | Trains directs (liaisons entre gares) | S3 | ✅ |
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
-| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | 🟡 |
-| E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ⬜ |
+| E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
+| E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | 🟡 |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
 | E10 | Socle interface : design system, mise en page, composants | S6 | ⬜ |
@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E06 codée, **PR #52 ouverte, pas fusionnée** (branche `etape/E06-rattachements`) : Hardy doit d'abord répondre sur quatre corrections proposées
-- **Dernière session :** 02/11/2026 — E06 : `pnpm etl rattachements` (D043), décisions manuelles des doublons et lieux fermés au public (D044) ; Dependabot #51 (Next.js 16.4.1) fusionnée
-- **Fait :** 36 912 communes, dont 3 685 avec contour ; 2 792 gares ; 3 213 trajets, 31 148 passages (fenêtre au 01/11) ; 268 025 liaisons directes ; **12 323 lieux** (DATAtourisme 4 045, OSM 8 278) ; 965 doublons, 293 sites ; **2 114 lieux à pied d'une gare** (rayon à pied), 175 gares de la région sur 196 ; `pnpm etl` : `sources` → `communes` → `contours` → `gares` → `gtfs_sncf` → `liaisons` → `regles` → `datatourisme` → `osm` → `rattachements` ; `pnpm verifier` 195 tests, `pnpm test:integration` 63 ; ETL vérifié dans Docker
-- **À valider par Hardy :** quatre corrections (`A-FAIRE` § 1 : noms « fermé » 2, activités 58, objets 22 par un fichier `regles/noms_exclus.csv` ; château et parc 27 en site) ; 8 paires de doublons restantes ; `A-FAIRE` § 1 — gares d'une même ville (avant E08), légende de la carte (avant E11), photos (avant E12)
-- **Bloquant :** rien ; jalon « données en base » du 01/11 non tenu (E07 reste), « API complète » du 08/11 décalé ; prochaine extraction `osm` au plus tôt le 08/11 (compter les canaux et leurs tracés)
-- **Prochaine action précise :** selon la réponse de Hardy, coder les corrections validées sur la branche E06 (`etl/src/regles/noms_exclus.csv` + filtre dans `transformations/lieux.ts` ; site château/parc dans `transformations/rattachements.sql`), relancer `pnpm etl rattachements`, mettre à jour D044/D045 ; puis Hardy fusionne la PR #52, mise à jour de `main` en local, et lecture de `docs/etapes/E07-*.md`
+- **Étape en cours :** E07 (transports sur place), audit fait, **plan validé par Hardy** (D046), code pas commencé ; branche `etape/E07-mobilites`
+- **Dernière session :** 02/11/2026 — E06 fusionnée (PR #52) ; audit E07 et décisions de Hardy (D046)
+- **Fait :** 36 912 communes, dont 3 685 avec contour ; 2 792 gares ; 3 213 trajets, 31 148 passages (fenêtre au 01/11) ; 268 025 liaisons directes ; **12 323 lieux** ; 968 doublons, 319 sites ; **2 092 lieux à pied d'une gare**, 175 gares de la région sur 196 ; `pnpm etl` : `sources` → `communes` → `contours` → `gares` → `gtfs_sncf` → `liaisons` → `regles` → `datatourisme` → `osm` → `rattachements` ; `pnpm verifier` 200 tests, `pnpm test:integration` 65
+- **À valider par Hardy :** rien pour E07 ; `A-FAIRE` § 1 — gares d'une même ville (avant E08), légende de la carte (avant E11), photos (avant E12)
+- **Bloquant :** rien ; jalons « données en base » (01/11) et « API complète » (08/11) dépassés ; P1 tracés et cyclable reportés après le P0 ; prochaine extraction `osm` au plus tôt le 08/11
+- **Prochaine action précise :** coder le plan E07 (D046) : `config/sources.json` (13 urbains, Mobigo à 7 fichiers, 2 GBFS avec `station_status`, licences) et son schéma ; migration `mobilite_locale` (couple arrêt-gare, type `CAR`) ; `mobilite.regroupementQuaisM` ; `etl/src/sources/transport-local.ts` + SQL ; tests en paires ; Docker
 ---
 
 ## 10. Réaliser une étape
@@ -360,7 +360,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
-| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements` (dans cet ordre) |
+| Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
@@ -396,3 +396,6 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 02/11/2026 | 1.24 | § 9 : sauvegarde de session (règles de catégories relues, D042 ; audit E06 à lancer) |
 | 02/11/2026 | 1.25 | § 16 : `pnpm etl rattachements` ; § 8 : E06 en cours — D043 |
 | 02/11/2026 | 1.26 | § 9 : sauvegarde de session (E06 codée, PR #52 ouverte, corrections à valider) — D043, D044 |
+| 02/11/2026 | 1.27 | § 8 : E06 terminée (PR #52) |
+| 02/11/2026 | 1.28 | § 8 et § 9 : sauvegarde de session (audit E07, décisions de Hardy, D046) |
+| 02/11/2026 | 1.29 | § 16 : `pnpm etl transport_local` — D046 |
