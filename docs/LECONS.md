@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.4 · **Date** 02/11/2026
+> **Version** 1.5 · **Date** 03/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -204,6 +204,25 @@
 - **À retenir :** même règle pour les adresses des sources et le nom de marque.
 - **Origine :** D012, D027.
 
+### L29 — Le framework peut écrire des données personnelles dans ses journaux
+- **Problème :** notre journal ne contenait aucune position, mais le serveur Next.js écrivait chaque URL demandée (`GET /api/autour?lat=…&lon=…`) dans le sien.
+- **Cause :** les outils journalisent par défaut les requêtes entrantes ; la position voyage dans l'URL.
+- **Solution :** désactiver ce journal (`logging.incomingRequests: false`), puis appeler les routes et **chercher la position dans les journaux** pour le vérifier.
+- **À retenir :** « aucune donnée personnelle dans les journaux » se vérifie sur la sortie réelle de **tous** les composants (framework, proxy, base), pas seulement sur son propre code.
+- **Origine :** E08, D047 (point 10).
+
+### L30 — Mesurer un seuil sur les vraies données avant de le choisir
+- **Problème :** quelle durée minimale, quel nombre de lieux pour reléguer une destination ?
+- **Solution :** compter ce que chaque valeur retire (5, 10, 15 min ; 1, 3, 5 lieux) et donner des exemples nommés. La durée minimale a été abandonnée (même 5 min coupait Arc-et-Senans) ; le seuil de 3 lieux a été choisi parce qu'il relègue les gares TGV sans reléguer la moitié de la région.
+- **À retenir :** un seuil se choisit sur des exemples concrets ; la mesure devient la raison écrite dans la décision.
+- **Origine :** D047, D050.
+
+### L31 — Un test doit pouvoir échouer : casser le code exprès
+- **Problème :** un test qui passe ne prouve rien s'il passerait aussi avec un code faux.
+- **Cas réel :** le test « la gare qui a le plus de trains en tête » passait encore une fois la règle retirée, car Gare de Lyon était aussi la plus rapide ; il a fallu un cas où les deux critères divergent (Belfort et la halte de Danjoutin).
+- **À retenir :** casser volontairement la règle (sur une copie du fichier) et vérifier que le test échoue ; choisir des exemples où la règle testée est la seule à décider.
+- **Origine :** `08-conventions-qualite.md` § 7, E08.
+
 ---
 
 ## Historique
@@ -215,3 +234,4 @@
 | 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
 | 02/11/2026 | 1.3 | L25, L26 (regroupement de proche en proche, décisions humaines versionnées) |
 | 02/11/2026 | 1.4 | L27, L28 (catalogue national filtré par territoire, lien de téléchargement stable) |
+| 03/11/2026 | 1.5 | L29 → L31 (journaux du framework, seuil mesuré avant d'être choisi, test qui doit pouvoir échouer) |

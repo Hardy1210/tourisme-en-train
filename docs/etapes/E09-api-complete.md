@@ -28,7 +28,7 @@ Toutes les routes P0 de `05` répondent selon leur contrat ; l'impact est calcul
 3. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] `lib/impact/` : `co2(...)`, `prixEstime(...)` (purs, testés : TER vs voiture seule, voiture partagée, avion sous/au-dessus du seuil ; prix `null` si non calibré).
+- [x] `lib/impact/` : `co2(...)`, `prixEstime(...)` (purs, testés : TER vs voiture seule, voiture partagée, avion sous/au-dessus du seuil ; prix `null` si non calibré). *Fait en E08 (`impactLiaison`, `prixEstime`, D047, D048) : `/api/impact` les réutilise.*
 - [ ] `features/destinations/` : `/api/destinations/[gareId]`, `/api/destinations/[gareId]/lieux`.
 - [ ] `features/lieux/` : `/api/lieux/[id]` (404 si doublon ou inexistant).
 - [ ] `features/trains/` : `/api/trains` (aller, retour, dernier retour, `lendemain`).

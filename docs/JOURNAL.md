@@ -24,6 +24,35 @@
 
 ---
 
+## 03/11/2026 — Étape E08 — socle de l'API, terminée (P0)
+**Fait :**
+- Mesures avant décision (vraies données, 03/11) : 13 villes à plusieurs gares, 104 gares de départ sur 194 concernées ; durée minimale 5/10/15 min (143/434/699 cartes perdues) ; 20 gares de la région sans lieu ; limite 60 → Paris (73ᵉ) et Lyon (74ᵉ) coupées depuis Dijon ; seuil de lieux 1/3/5 (8/30/45 cartes reléguées depuis Dijon).
+- Maquette Explorer desktop v2 lue sur Claude Design (DesignSync) : champs de la carte de destination comparés au contrat ; CO₂, prix, prochaine arrivée et regroupement ajoutés.
+- CO₂ ImpactCO2 relevé (Intercités 8,98, avion 225 ; TER et TGV revérifiés) ; licence des tarifs TER non spécifiée → prix au km calibré sur les tarifs TGV SNCF (ODbL, 2 211 couples) : TGV 0,17 €/km, TER et Intercités 0,22 €/km.
+- Code : `lib/http`, `lib/geo`, `lib/dates/tranche-temps`, `lib/impact` (avancé d'E09), `lib/db/requetes-partagees` ; routes `/api/sante` (`features/sante`), `/api/gares/proches`, `/api/autour`, `/api/destinations` ; échantillon complété (Paris à deux gares, gares TGV, liaisons, `gare_stats`).
+- Vérifié sur les vraies données : 101 destinations depuis Dijon, 13 → 80 ms ; aucune position dans les journaux.
+- PR #54 fusionnée (E08 ✅, ticket #10 fermé) ; branche `etape/E09-api-complete` créée.
+
+**Décisions :** D047 (une carte par ville, gare en tête, aucune durée minimale, limite 150, CO₂ et prix dans `/api/destinations`, `features/sante`, journal des requêtes désactivé, cache 300 s), D048 (CO₂ une seule source, prix calibré), D049 (gare TGV : sa propre carte, au nom de la gare), D050 (moins de 3 lieux → fin de liste ; filtre des envies : 0 → retirée).
+
+**Problèmes rencontrés :**
+- `next dev` écrivait les URL (donc les positions) dans son journal : désactivé (`logging.incomingRequests: false`), vérifié après redémarrage (L29).
+- Les tests ETL comptaient les gares et communes de l'échantillon : attentes ajustées ; la requête « gares référencées » du test des gares élargie à `gare_stats` et `liaison_directe`, comme la règle de suppression.
+- Test de la gare en tête qui ne pouvait pas échouer (Gare de Lyon aussi la plus rapide) : cas Belfort / Danjoutin ajouté (L31).
+- Le conteneur `web` n'existe pas encore (Dockerfile prévu en E16) : vérification par `pnpm dev` sur la base Docker.
+
+**À valider par Hardy :**
+- Gevrey-Chambertin et Meursault n'ont qu'un lieu à pied (`A-FAIRE`, avec les compléments vins).
+- Restent de `A-FAIRE` § 1 : légende de la carte (avant E11), photos (avant E12), lien de billetterie (avant E12).
+
+**Prochaine action :**
+- Lire `docs/etapes/E09-api-complete.md` et `05` § 3.5 → 3.13, auditer, proposer le plan.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (252 unitaires, 93 intégration) · vraies données ✅
+**Commit :** voir `docs(contexte): sauvegarde de session du 03/11` (branche `etape/E09-api-complete`)
+
+---
+
 ## 02/11/2026 — Étape E07 — transports sur place, terminée (P0)
 **Fait :**
 - Sauvegarde des décisions de Hardy avant le code (D046).
