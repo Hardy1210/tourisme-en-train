@@ -111,16 +111,18 @@ describe('/api/trains', () => {
     expect(dernier?.arrivee).toEqual({ s: 87300, texte: '00:15', lendemain: true });
   });
 
-  it('retour et dernier retour Beaune → Dijon : 18:44', async () => {
+  it('retours après l’arrivée du premier aller (07:22) : 07:10 écarté, 18:44 proposé (D051)', async () => {
     const reponse = await lire(`date=${HIVER}`);
+    expect(reponse.aller[0]?.arrivee.texte).toBe('07:22');
     expect(reponse.retour.map((t) => t.depart.texte)).toEqual(['18:44']);
     expect(reponse.dernierRetour?.arrivee.texte).toBe('19:06');
   });
 
-  it('depuis=08:00 : le train de 07:00 disparaît, celui de 23:50 reste ; le retour ne change pas', async () => {
+  it('depuis=08:00 : le train de 07:00 disparaît ; premier aller 23:50 (arrivée 00:15) → plus aucun retour utile, dernier retour indiqué', async () => {
     const reponse = await lire(`date=${HIVER}&depuis=08:00`);
     expect(reponse.aller.map((t) => t.depart.texte)).toEqual(['23:50']);
-    expect(reponse.retour).toHaveLength(1);
+    expect(reponse.retour).toEqual([]);
+    expect(reponse.dernierRetour?.depart.texte).toBe('18:44');
   });
 
   it('aujourd’hui à 07:30 (sans « depuis ») : à partir de l’heure actuelle', async () => {

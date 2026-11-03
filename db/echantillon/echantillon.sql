@@ -243,6 +243,18 @@ FROM (VALUES ('ECH_T26', 1, 'EX000001', NULL, 25200), ('ECH_T26', 2, 'EX000002',
   AS p (trajet_id, sequence, uic, arrivee_s, depart_s)
 JOIN gare g ON g.uic = p.uic;
 
+-- Retour Beaune → Dijon à 07:10, AVANT l'arrivée du premier aller (07:22) : jamais proposé (D051).
+INSERT INTO trajet (id, service_id, type_train, nom_ligne, numero) VALUES
+  ('ECH_T27', 'ECH_SEMAINE', 'TER', 'Beaune - Dijon', '891098');
+INSERT INTO passage (trajet_id, sequence, gare_id, arrivee_s, depart_s)
+SELECT p.trajet_id, p.sequence, g.id, p.arrivee_s, p.depart_s
+FROM (VALUES ('ECH_T27', 1, 'EX000002', NULL, 25800), ('ECH_T27', 2, 'EX000001', 27120, NULL))
+  AS p (trajet_id, sequence, uic, arrivee_s, depart_s)
+JOIN gare g ON g.uic = p.uic;
+UPDATE liaison_directe l SET nb_trains = 2, premier_depart_s = 25800, premiere_arrivee_s = 27120
+FROM gare d, gare a
+WHERE l.gare_depart_id = d.id AND d.uic = 'EX000002' AND l.gare_arrivee_id = a.id AND a.uic = 'EX000001';
+
 -- Membre d'un site : jamais listé ; un lien vers lui mène au représentant (D052).
 UPDATE lieu SET site_de = (SELECT id FROM lieu WHERE id_source = 'ECH_L13')
 WHERE id_source = 'ECH_L16';

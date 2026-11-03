@@ -37,15 +37,17 @@ export async function trains(
     trainsDirects(gareDepart.id, gareArrivee.id, jour),
     trainsDirects(gareArrivee.id, gareDepart.id, jour),
   ]);
+  const allers = aller.filter((t) => t.depart_s >= depuisS).slice(0, limite);
+  // Retours utiles : ceux qui partent après l'arrivée du premier aller proposé (D051, règle de Hardy) ;
+  // sans aller, aucun retour à proposer. Le dernier retour du jour reste toujours indiqué.
+  const premiereArrivee = allers[0]?.arrivee_s;
+  const retours =
+    premiereArrivee === undefined ? [] : retour.filter((t) => t.depart_s > premiereArrivee);
   const dernier = retour.at(-1);
   return {
     date: jour,
-    aller: aller
-      .filter((t) => t.depart_s >= depuisS)
-      .slice(0, limite)
-      .map(versTrain),
-    // Les derniers retours du jour : ce sont eux qui comptent pour revenir (D051).
-    retour: retour.slice(-limite).map(versTrain),
+    aller: allers.map(versTrain),
+    retour: retours.slice(0, limite).map(versTrain),
     dernierRetour: dernier ? versTrain(dernier) : null,
   };
 }

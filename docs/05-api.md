@@ -180,7 +180,7 @@ type Train = { trajetIds: string[]; depart: Heure; arrivee: Heure;   // Heure : 
                dureeMin: number; typeTrain: TypeTrain; numeros: string[] }
 ```
 **Trains en jumelage** (D040) : les trajets aux mêmes heures de départ et d'arrivée forment **un seul** `Train`, avec tous leurs identifiants et numéros (affichés « TGV 12177 / 5537 ») ; `numeros` est vide si aucun n'est connu. La limite compte les trains, pas les trajets.
-`retour` = trains `arrivee → depart` le même jour, sans filtre `depuis`. Limite : `parametres.limites.trains` — les **premiers** allers à partir de `depuis`, les **derniers** retours du jour (ceux qui comptent pour revenir) ; `dernierRetour` est toujours le dernier du jour (D051). **Limite connue** (D051) : les trains du jour de service précédent qui roulent après minuit (« 24:52 ») ne sont pas proposés pour la date suivante. Cache : `public, max-age=900`.
+`retour` = trains `arrivee → depart` le même jour. Limite : `parametres.limites.trains` — les **premiers** allers à partir de `depuis` ; les retours **qui partent après l'arrivée du premier aller de la liste** (les précédents sont inutiles : on n'est pas encore arrivé), les premiers d'entre eux ; aucun retour s'il n'y a plus d'aller ; `dernierRetour` est toujours le dernier train retour du jour (D051). **Limite connue** (D051) : les trains du jour de service précédent qui roulent après minuit (« 24:52 ») ne sont pas proposés pour la date suivante. Cache : `public, max-age=900`.
 
 ### 3.9 `GET /api/mobilites/[uic]`
 ```ts
