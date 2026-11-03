@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E09 codée, testée et vérifiée sur les vraies données ; **PR pas encore ouverte** (avis de Hardy attendu) ; branche `etape/E09-api-complete` poussée (sauvegarde du 03/11)
+- **Étape en cours :** E09 codée, vérifiée par Hardy (horaires et prix comparés à SNCF Connect) ; **PR ouverte** (branche `etape/E09-api-complete`), fusion par Hardy
 - **Dernière session :** 03/11/2026 — E08 fusionnée (PR #54) ; E09 : D051 (contrats), D052 (identifiants publics stables, migration `0011_lieu_cle`)
 - **Fait :** données en base (jalon du 01/11) ; **API P0 complète** : `/api/sante`, `/api/gares/proches`, `/api/autour`, `/api/destinations`, `/api/destinations/[uic]` (+ `/lieux`), `/api/lieux/[cle]`, `/api/trains`, `/api/impact`, `/api/mobilites/[uic]`, `/api/sources`, `/api/geocodage` (+ `/inverse`) ; gares désignées par code UIC, lieux par clé de source ; 13 → 110 ms sur les vraies données ; `pnpm verifier` 257 tests, `pnpm test:integration` 124 ; `pnpm etl sources` relancé (34 sources, `tarifs_tgv` compris)
-- **À valider par Hardy :** **avant la PR E09** — `A-FAIRE` § 1 « Avis sur E09 » (3 horaires et 1 prix sur SNCF Connect ; derniers retours, gares en tête ; lieux-dits « Dijon ») ; puis `A-FAIRE` § 1 — légende de la carte (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault
+- **À valider par Hardy :** fusion de la PR E09 ; `A-FAIRE` § 1 — légende de la carte (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
 - **Bloquant :** rien ; jalon « API complète » du 08/11 : API P0 prête, en attente de fusion ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** recueillir l'avis de Hardy (`A-FAIRE` § 1, « Avis sur E09 ») ; corriger si besoin ; ouvrir la PR `etape/E09-api-complete` → `main` (ticket E09, `Closes #`), puis lire `docs/etapes/E10-*.md` (socle interface)
+- **Prochaine action précise :** après la fusion de la PR E09 par Hardy : mettre le local à jour, créer `etape/E10-…`, marquer E09 ✅ ; puis lire `docs/etapes/E10-*.md` (socle interface) et les documents qu'elle cite, auditer, proposer le plan
 ---
 
 ## 10. Réaliser une étape

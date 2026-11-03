@@ -52,7 +52,7 @@ Toutes les routes P0 de `05` répondent selon leur contrat ; l'impact est calcul
 - [x] Aucune valeur de facteur ou de prix en dur dans le code.
 
 ## Vérifications manuelles
-- Comparer 3 horaires et 1 fourchette de prix (si calibré) avec SNCF Connect.
+- Comparer 3 horaires et 1 fourchette de prix (si calibré) avec SNCF Connect. *Fait par Hardy le 03/11 : TGV 12177 Dijon 16:17 → Beaune 16:37 conforme (retard temps réel de 5 min affiché par SNCF Connect, hors périmètre P0), dernier retour 21:58 conforme, prix Dijon → Paris ≈ 40–66 € jugé correct ; règle des retours corrigée (D051).*
 
 ## À ne pas toucher
 - Interface (E10+).
