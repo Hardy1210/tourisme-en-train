@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -498,3 +498,31 @@
 - **Raison :** mesure du 03/11 depuis Dijon (76 cartes de la région) : N = 1 → 8 en fin de liste, **N = 3 → 30**, N = 5 → 45 (59 % de la région). Avec 3, les gares TGV (1 ou 2 lieux) et les haltes passent derrière les vraies villes (Les Auxons, 2 lieux, ne passe plus devant Besançon Viotte, 94 lieux), sans rejeter des petites villes comme Genlis (4 lieux, 27 trains).
 - **Écarté :** N = 1 (une gare TGV à 2 lieux reste devant la ville), N = 5 (trop de destinations reléguées) ; règle réservée aux gares TGV ; exception pour Gevrey-Chambertin et Meursault.
 - **Impact :** `config/parametres.json` (`destinations.lieuxMinEnTete`) et son schéma, `05` § 3.4, `GLOSSAIRE`, `features/destinations`, échantillon, fiche E08, `A-FAIRE`.
+
+## D051 — Contrats de l'API complète (E09) : fiche destination, heures, impact, recherche inverse, sources
+- **Date :** 03/11/2026
+- **En clair :** la fiche d'une destination affiche exactement les mêmes chiffres que sa carte ; la recherche de la commune de l'utilisateur ne garde aucune position, même en mémoire ; l'écran « Sources » cite toutes les sources réellement utilisées, avec l'attribution que leur licence impose.
+- **Décision :**
+  1. **Routes P1 hors E09** (tracés des lignes, aménagements cyclables, temps réel, vélos disponibles) : le P0 passe d'abord (D046).
+  2. **`/api/destinations/[uic]`** : gare (avec `titre`, `commune`, `horsVille`, D049), lieux par catégorie, et la liaison depuis `depuis` (durée, trains, horaires, faisable dans la journée, CO₂, prix) calculée comme la carte.
+  3. **Heures `{ s, texte, lendemain }`** partout, `/api/trains` compris (départ **et** arrivée : un train de 23:50 peut arriver le lendemain).
+  4. **`/api/impact`, type par défaut = le moins favorable** des types de la liaison (la base ne stocke pas la fréquence par type ; mêmes chiffres que la carte, D047). `404` sans liaison directe (règle 6).
+  5. **Recherche inverse sans cache** (le « cache 24 h par position arrondie » est retiré) : la réponse prend ≈ 110 ms ; aucune position gardée, même en mémoire.
+  6. **API Adresse de la Géoplateforme** (`data.geopf.fr/geocodage`) : l'ancien domaine `api-adresse.data.gouv.fr` est déclaré obsolète (en-tête `sunset` du 31/01/2026). Recherche inverse **sans filtre `type=municipality`**, qui ne renvoie rien (Talant). Adresse de l'API dans `config/sources.json` (champ `api`, règle 3).
+  7. **Écran « Sources »** : champ `affichee` dans `config/sources.json` (faux pour les sources P1 non activées et les sources non utilisées) ; `/api/sources` renvoie nom, producteur, page, licence, **attribution** (ODbL : « © les contributeurs d'OpenStreetMap ») et date des données.
+  8. **Trains de la veille après minuit** (aujourd'hui à 00:30, un train « 24:52 » du jour de service précédent) : **limite connue, documentée, non traitée** — très rare dans la région (Joigny).
+- **Raison :** audit E09 du 03/11 (contrats § 3.5 et § 3.12 sans forme écrite, fréquence des types absente de la base, API Adresse déplacée, recherche inverse vide avec le filtre de type).
+- **Écarté :** cache serveur des positions ; type « le plus fréquent » (exigerait une colonne de plus pour une différence invisible) ; liste des sources tirée de la base seule (la date y manque pour les réseaux et les valeurs locales).
+- **Impact :** `05` § 1.8, § 3.5 → 3.12, `02` § 3.1, `config/sources.json` (`api`, `affichee`) et son schéma, fiche E09.
+
+## D052 — Identifiants publics stables : code UIC pour les gares, clé de source pour les lieux
+- **Date :** 03/11/2026
+- **En clair :** un lien partagé vers une destination ou un lieu marche toujours, même sur une autre base (production, démo de la soutenance), parce qu'il utilise l'identifiant officiel de la gare ou du lieu, pas un numéro interne.
+- **Décision :**
+  1. **Gare : code UIC** (`uic`, ex. `87713040`). Les routes l'acceptent et le cherchent parmi **tous** les codes de la gare (`codes_uic`, index GIN) : le code principal peut changer d'un chargement à l'autre (D039), la gare non. Aucun code n'appartient à deux gares (vérifié le 03/11, contrôle bloquant de l'ETL).
+  2. **Lieu : clé de source** (`cle`) = `source-identifiant`, lisible dans une URL : `osm-way-123456` (OSM `way/123456`), `datatourisme-49c77017-…` (dernier segment de l'URI DATAtourisme). **Colonne générée** `lieu.cle` + **index unique** (migration) : calculée par la base, toute collision est refusée.
+  3. **Lien vers un doublon ou un membre de site** : la route renvoie le lieu gardé (ou le représentant du site), avec `demande` = la clé suivie ; `404` seulement si la clé est inconnue (remplace le « 404 si doublon » de `05` § 3.7).
+  4. L'`id` interne n'apparaît plus dans les réponses ni les URL : E08 ajustée (`/api/destinations?gare=<uic>`, `uic` dans les gares, `cle` dans les lieux).
+- **Raison :** l'`id` d'un lieu est stable d'un chargement à l'autre (mise à jour par source et identifiant, `04` § 4.4), mais **pas** quand la base est recréée (production des SR, données figées de E16, `pnpm db:reinitialiser`), ni pour un lieu qui disparaît de sa source puis revient ; un lieu devenu doublon renverrait `404`. Question de Hardy (liens partagés, favoris).
+- **Écarté :** garder l'`id` numérique ; clé construite par l'application (deux endroits pour une même règle) ; identifiant interne de la gare.
+- **Impact :** migration (`lieu.cle`), `03` § 3.6, `05` § 1.8 bis, § 3.2 → 3.10, `GLOSSAIRE` (clé de lieu, code UIC), `features/gares`, `features/lieux`, `features/destinations`, échantillon, fiches E08 (modifié après coup) et E09.

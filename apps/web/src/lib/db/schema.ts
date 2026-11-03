@@ -172,6 +172,15 @@ export const lieu = pgTable(
       .notNull()
       .references(() => sourceDonnees.code),
     idSource: text().notNull(),
+    // Clé publique stable (D052) : `osm-way-123`, `datatourisme-<uuid>` (dernier segment de l'URI).
+    // Calculée par la base : la même règle pour tous, et l'index unique refuse toute collision.
+    cle: text()
+      .notNull()
+      .generatedAlwaysAs(
+        (): SQL =>
+          sql`${lieu.source} || '-' || replace(regexp_replace(${lieu.idSource}, '^https?://.*/', ''), '/', '-')`,
+      )
+      .unique('lieu_cle_unique'),
     nom: text().notNull(),
     categorie: text().notNull(),
     sousCategorie: text(),

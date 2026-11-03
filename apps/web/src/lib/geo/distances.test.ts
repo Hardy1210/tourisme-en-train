@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   distanceMarcheM,
+  dureeMarcheDepuisAPiedMin,
   dureeMarcheMin,
   dureeVeloMin,
   dureeVoitureMin,
@@ -27,6 +28,11 @@ describe('distances et durées', () => {
   it('vélo et voiture : 6 km → 32 min à vélo, 10 min en voiture', () => {
     expect(dureeVeloMin(6000)).toBe(32);
     expect(dureeVoitureMin(6000)).toBe(10);
+  });
+
+  it('distance déjà à pied : 750 m → 10 min ; 751 m → 11 min (pas de second détour)', () => {
+    expect(dureeMarcheDepuisAPiedMin(750)).toBe(10);
+    expect(dureeMarcheDepuisAPiedMin(751)).toBe(11);
   });
 
   it('rayon à vol d’oiseau : 1 300 m à pied → 1 000 m', () => {

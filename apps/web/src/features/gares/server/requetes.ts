@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 
 const schemaLigne = z.object({
-  id: z.number().int(),
+  uic: z.string(),
   nom: z.string(),
   commune: z.string().nullable(),
   distance_m: z.coerce.number(),
@@ -22,7 +22,7 @@ export async function garesLesPlusProches(
 ): Promise<GareProcheBrute[]> {
   const point = sql`ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography`;
   const { rows } = await db.execute(sql`
-    SELECT g.id, g.nom, c.nom AS commune, ST_Distance(g.geom, ${point}) AS distance_m, g.dans_region
+    SELECT g.uic, g.nom, c.nom AS commune, ST_Distance(g.geom, ${point}) AS distance_m, g.dans_region
     FROM gare g LEFT JOIN commune c ON c.code_insee = g.code_insee
     ORDER BY g.geom <-> ${point}
     LIMIT ${limite}`);

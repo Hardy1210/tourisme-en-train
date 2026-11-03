@@ -19,7 +19,8 @@ export const schemaParametresGaresProches = z.object({
 });
 
 export const schemaGareProche = z.object({
-  id: z.number().int(),
+  /** Code UIC : identifiant public stable (D052). */
+  uic: z.string(),
   nom: z.string(),
   commune: z.string().nullable(),
   /** À vol d'oiseau. */

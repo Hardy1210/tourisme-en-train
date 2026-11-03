@@ -8,7 +8,8 @@ import { appeler, erreurDe, type Route } from './outils-api';
 
 let route: Route;
 let service: typeof import('@/features/destinations/server/service');
-let dijon: number;
+/** Dijon-Ville dans l'échantillon : désignée par son code UIC (D052). */
+const dijon = 'EX000001';
 
 const HIVER = '2026-11-18';
 const ETE = '2026-07-15';
@@ -27,11 +28,6 @@ const ville = (destinations: Destination[], titre: string) =>
 beforeAll(async () => {
   route = await import('@/app/api/destinations/route');
   service = await import('@/features/destinations/server/service');
-  const gares = await import('@/app/api/gares/proches/route');
-  const proches = await appeler(gares, '/api/gares/proches?lat=47.3233&lon=5.0272&limite=1');
-  const [premiere] = (proches.corps as { gares: { id: number }[] }).gares;
-  if (!premiere) throw new Error('Dijon-Ville absente de l’échantillon');
-  dijon = premiere.id;
 });
 
 describe('/api/destinations', () => {
@@ -46,7 +42,11 @@ describe('/api/destinations', () => {
     const destinations = await liste(`date=${HIVER}`);
     expect(villes(destinations).filter((v) => v === 'Paris')).toHaveLength(1);
     const paris = ville(destinations, 'Paris');
-    expect(paris?.gare).toMatchObject({ nom: 'Paris-Gare-de-Lyon', dansRegion: false });
+    expect(paris?.gare).toMatchObject({
+      uic: 'EX000021',
+      nom: 'Paris-Gare-de-Lyon',
+      dansRegion: false,
+    });
     expect(paris?.autresGares).toEqual([
       expect.objectContaining({ nom: 'Paris-Bercy', dureeMin: 172, nbTrains: 1 }),
     ]);
@@ -183,8 +183,11 @@ describe('/api/destinations', () => {
     expect(erreurDe(format.corps).message).toBe('La date doit être au format AAAA-MM-JJ.');
   });
 
-  it('gare inconnue → 404 ; gare absente → 400', async () => {
-    const inconnue = await appeler(route, `/api/destinations?gare=999999&date=${HIVER}`);
+  it('code UIC inconnu → 404 ; mal formé → 400 ; absent → 400', async () => {
+    const inconnue = await appeler(route, `/api/destinations?gare=87999999&date=${HIVER}`);
+    expect(
+      erreurDe((await appeler(route, `/api/destinations?gare=712&date=${HIVER}`)).corps).message,
+    ).toBe('Le code UIC de la gare doit compter 8 chiffres.');
     expect(inconnue.statut).toBe(404);
     expect(erreurDe(inconnue.corps).code).toBe('INTROUVABLE');
     const absente = await appeler(route, `/api/destinations?date=${HIVER}`);

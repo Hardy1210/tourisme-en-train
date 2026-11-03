@@ -21,6 +21,11 @@ export const dureeMarcheMin = (volOiseauM: number): number => dureeMin(volOiseau
 export const dureeVeloMin = (volOiseauM: number): number => dureeMin(volOiseauM, 'velo');
 export const dureeVoitureMin = (volOiseauM: number): number => dureeMin(volOiseauM, 'voiture');
 
+/** Durée de marche (min) pour une distance **déjà mesurée à pied** (`lieu_gare`, `mobilite_locale`). */
+export function dureeMarcheDepuisAPiedMin(distanceAPiedM: number): number {
+  return Math.ceil(distanceAPiedM / ((parametres.marche.vitesseKmH * 1000) / 60));
+}
+
 /** Rayon à vol d'oiseau qui correspond à une distance à pied (filtre SQL `ST_DWithin`, D043). */
 export function rayonVolOiseauM(distanceAPiedM: number): number {
   return distanceAPiedM / parametres.marche.coefDetour;

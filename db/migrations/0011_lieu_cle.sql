@@ -1,0 +1,2 @@
+ALTER TABLE "lieu" ADD COLUMN "cle" text GENERATED ALWAYS AS ("lieu"."source" || '-' || replace(regexp_replace("lieu"."id_source", '^https?://.*/', ''), '/', '-')) STORED NOT NULL;--> statement-breakpoint
+ALTER TABLE "lieu" ADD CONSTRAINT "lieu_cle_unique" UNIQUE("cle");

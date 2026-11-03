@@ -65,3 +65,13 @@ export function lireParametres<S extends z.ZodType>(requete: Request, schema: S)
       : (probleme?.message ?? 'Paramètres invalides.');
   throw new ParametreInvalide(message);
 }
+
+/** Code UIC d'une gare (identifiant public stable, D052) : 8 caractères (chiffres en production). */
+export const schemaUic = z
+  .string({ error: 'Le code UIC de la gare est obligatoire.' })
+  .regex(/^[0-9A-Z]{8}$/, 'Le code UIC de la gare doit compter 8 chiffres.');
+
+/** Clé publique d'un lieu (D052) : `<source>-<identifiant>`, ex. `osm-way-123456`. */
+export const schemaCleLieu = z
+  .string()
+  .regex(/^[a-z][a-z0-9_]*-[A-Za-z0-9-]{1,80}$/, 'Cette clé de lieu est invalide.');

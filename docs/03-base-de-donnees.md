@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.14 · **Date** 02/11/2026
+> **Version** 1.15 · **Date** 03/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -274,6 +274,7 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `id` | bigint | PK, identity | |
 | `source` | text | NN, FK → source_donnees(code) | |
 | `id_source` | text | NN | Identifiant dans la source |
+| `cle` | text | NN, UQ, **générée** | Clé publique stable (D052) : `source-identifiant` lisible dans une URL — `osm-way-123456` (OSM `way/123456`), `datatourisme-<uuid>` (dernier segment de l'URI). Colonne générée par la base (`GENERATED ALWAYS … STORED`) : jamais écrite par l'ETL, collision refusée par l'index unique (migration `0011_lieu_cle`) |
 | `nom` | text | NN | |
 | `categorie` | text | NN, CHECK in (`enfants`,`nature`,`parcs`,`patrimoine`,`culture`) | |
 | `sous_categorie` | text | | Libellé lisible (« aire de jeux »…) |
@@ -291,7 +292,7 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `trace` | geography(MultiLineString, 4326) | | Tracé d'un **lieu en longueur** (canal), tronçons de même nom réunis ; nul sinon (D043) |
 | `maj` | timestamptz | NN, défaut now() | |
 
-Contraintes : UQ(`source`, `id_source`).
+Contraintes : UQ(`source`, `id_source`), UQ(`cle`).
 Index : GIST(`geom`), (`categorie`), GIN(`nom` gin_trgm_ops).
 Chargement par source : mise à jour **par (`source`, `id_source`)**, puis suppression des lieux disparus de la source : l'`id` d'un lieu reste stable d'un chargement à l'autre (D041). Seuls les lieux situés dans un contour de commune de la région sont chargés.
 Les requêtes de l'application ignorent les lignes où `doublon_de` **ou** `site_de` n'est pas nul (un site apparaît une fois, par son représentant).
@@ -448,7 +449,7 @@ ORDER BY a.depart_s;
 
 ## 6. Données d'exemple
 
-`db/echantillon/echantillon.sql` contient un **petit jeu cohérent** (10 gares aux codes UIC fictifs `EX…`, 5 trajets sur une date d'été et une date d'hiver, 30 lieux dont un doublon, 3 transports sur place), rattaché à la source `echantillon`. Il est chargé uniquement dans la base de test `<base>_test` par `pnpm db:test:preparer` (lancé par `pnpm test:integration`). **Jamais** mélangé aux vraies données.
+`db/echantillon/echantillon.sql` contient un **petit jeu cohérent** (16 gares aux codes UIC fictifs `EX…` dont Paris à deux gares et deux gares TGV, 10 trajets sur une date d'été et une date d'hiver, liaisons au départ de Dijon-Ville, `gare_stats`, 30 lieux dont un doublon, 3 transports sur place), rattaché à la source `echantillon`. Il est chargé uniquement dans la base de test `<base>_test` par `pnpm db:test:preparer` (lancé par `pnpm test:integration`). **Jamais** mélangé aux vraies données.
 
 ---
 
@@ -481,3 +482,4 @@ ORDER BY a.depart_s;
 | 01/11/2026 | 1.12 | § 3.1 bis : `commune.contour` (communes de la région) ; § 3.6 : `lieu.commune` supprimée, `lieu.code_insee` → `commune`, `doublon_de` ON DELETE SET NULL, mise à jour par (`source`, `id_source`) ; § 3.7 : `categorie_regle.condition` ; § 2 — D041 |
 | 02/11/2026 | 1.13 | § 3.6 : `lieu.site_de`, `lieu.trace`, requêtes qui ignorent aussi les membres d'un site ; § 3.8 : distance à pied au tracé ; migration `0009` (extension `unaccent`) — D043 |
 | 02/11/2026 | 1.14 | § 3.10 : une ligne par couple (arrêt, gare), type `CAR`, rayon à pied, contrainte d'unicité (migration `0010`) — D046 |
+| 03/11/2026 | 1.15 | § 3.6 : `lieu.cle`, clé publique générée et unique (migration `0011`) ; § 6 : échantillon complété (E08) — D052 |

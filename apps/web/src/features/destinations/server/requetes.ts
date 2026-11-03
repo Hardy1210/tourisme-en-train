@@ -8,22 +8,9 @@ import { db } from '@/lib/db/client';
 /** Clé de la commune de rattachement (nom + département ; arrondissements = « Paris ») ; null si inconnue. */
 const CLE_COMMUNE = sql`c.nom || '|' || c.departement`;
 
-const schemaGareDepart = z.object({
-  id: z.number().int(),
-  nom: z.string(),
-  cle_commune: z.string().nullable(),
-});
-
-export async function gareDepart(id: number): Promise<z.infer<typeof schemaGareDepart> | null> {
-  const { rows } = await db.execute(sql`
-    SELECT g.id, g.nom, ${CLE_COMMUNE} AS cle_commune
-    FROM gare g LEFT JOIN commune c ON c.code_insee = g.code_insee
-    WHERE g.id = ${id}`);
-  return rows[0] ? schemaGareDepart.parse(rows[0]) : null;
-}
-
 const schemaGareAtteinte = z.object({
   gare_id: z.number().int(),
+  uic: z.string(),
   nom: z.string(),
   lat: z.number(),
   lon: z.number(),
@@ -59,7 +46,7 @@ export async function garesAtteintes(options: {
     sql`, `,
   );
   const { rows } = await db.execute(sql`
-    SELECT g.id AS gare_id, g.nom, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
+    SELECT g.id AS gare_id, g.uic, g.nom, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
            g.dans_region, ${CLE_COMMUNE} AS cle_commune, c.nom AS commune, g.code_insee,
            l.duree_min, l.nb_trains, l.premier_depart_s, r.dernier_depart_s AS dernier_retour_s,
            l.types_train, l.distance_km, l.faisable_journee,

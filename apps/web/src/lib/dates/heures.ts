@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 // Heures GTFS : secondes depuis minuit de la date de service, pouvant dépasser 86 400
 // (un train à « 25:10:00 » part à 1 h 10 le lendemain). Jamais converties en Date (CLAUDE.md § 3).
 
@@ -21,4 +23,21 @@ export function secondesVersHeure(secondes: number): HeureAffichee {
     texte: `${String(heures).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
     lendemain: secondes >= SECONDES_PAR_JOUR,
   };
+}
+
+/** Heure renvoyée par l'API (docs/05-api.md § 1.8) : secondes de la date de service + texte. */
+export const schemaHeure = z.object({
+  s: z.number().int(),
+  texte: z.string(),
+  lendemain: z.boolean(),
+});
+
+export type Heure = z.infer<typeof schemaHeure>;
+
+export function heure(secondes: number): Heure {
+  return { s: secondes, ...secondesVersHeure(secondes) };
+}
+
+export function heureOuNull(secondes: number | null | undefined): Heure | null {
+  return secondes === null || secondes === undefined ? null : heure(secondes);
 }

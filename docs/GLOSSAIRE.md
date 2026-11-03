@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.12 · **Date** 03/11/2026
+> **Version** 1.13 · **Date** 03/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -21,7 +21,8 @@
 | Terme (interface) | Définition | TypeScript | SQL | À ne pas confondre avec |
 |---|---|---|---|---|
 | **Gare** | Gare de voyageurs SNCF, identifiée par son code UIC | `Gare`, `gareId` | table `gare`, `gare_id` | Arrêt de bus (→ mobilité locale) |
-| **Code UIC** | Identifiant international d'une gare, 8 chiffres (ex. `87713040`) | `uic` | `uic` | Code INSEE (commune) |
+| **Code UIC** | Identifiant international d'une gare, 8 chiffres (ex. `87713040`) ; **identifiant public** d'une gare dans l'API et les liens, cherché parmi tous ses codes (D052) | `uic` | `uic`, `codes_uic` | Code INSEE (commune), `id` interne |
+| **Clé de lieu** | Identifiant public stable d'un lieu, tiré de sa source : `osm-way-123456`, `datatourisme-<uuid>` ; survit à une base recréée (D052) | `cle` | `lieu.cle` (générée) | `id` interne |
 | **Commune** | Commune française du Code officiel géographique (INSEE) ; porte le nom et le département | `Commune` | table `commune` | Ville saisie par l'utilisateur (→ API Adresse) |
 | **Code INSEE** | Code officiel d'une commune, 5 caractères (ex. `21231` Dijon, `2A004` Ajaccio) | `codeInsee` | `code_insee` | Code postal, code UIC |
 | **Contour** | Limite d'une commune de la région ; un lieu appartient à la commune dont le contour contient son point (D041) | `contour` | `commune.contour` | Emprise (rectangle de la région, `parametres.region.emprise`) |
@@ -132,3 +133,4 @@
 | 02/11/2026 | 1.10 | Car régional (type `CAR`, E07) — D046 |
 | 03/11/2026 | 1.11 | Destination = une ville ; gare en tête (E08) — D047 |
 | 03/11/2026 | 1.12 | Gare hors de la ville, peu de lieux — D049, D050 |
+| 03/11/2026 | 1.13 | Code UIC identifiant public, clé de lieu — D052 |

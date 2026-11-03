@@ -23,7 +23,7 @@ export async function autour({
   });
   return {
     lieux: lignes.map((l) => ({
-      id: l.id,
+      cle: l.cle,
       nom: l.nom,
       categorie: l.categorie,
       sousCategorie: l.sous_categorie,

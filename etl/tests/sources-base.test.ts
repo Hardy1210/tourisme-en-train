@@ -49,6 +49,7 @@ function source(telechargement: string | null): SourceDonnees {
     licence: 'Licence Ouverte',
     attribution: 'Test',
     verifie: true,
+    affichee: true,
   };
 }
 

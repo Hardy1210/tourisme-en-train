@@ -14,7 +14,7 @@ export async function garesProches({
   const gares = await garesLesPlusProches(lat, lon, limite);
   return {
     gares: gares.map((g) => ({
-      id: g.id,
+      uic: g.uic,
       nom: g.nom,
       commune: g.commune,
       distanceM: Math.round(g.distance_m),

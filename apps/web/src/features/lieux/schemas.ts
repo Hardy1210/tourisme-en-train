@@ -15,7 +15,8 @@ export const schemaParametresAutour = z.object({
 });
 
 export const schemaLieuResume = z.object({
-  id: z.number().int(),
+  /** Clé de source : identifiant public stable (D052). */
+  cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sousCategorie: z.string().nullable(),
