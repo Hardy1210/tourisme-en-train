@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   // Pas d'AGENTS.md généré par `next dev` : CLAUDE.md (racine) est le seul fichier maître du projet.
   agentRules: false,
   transpilePackages: ['@tourisme/commun'],
+  // Aucune URL de requête dans les journaux : elles contiennent la position (lat, lon) de l'utilisateur
+  // (CLAUDE.md § 2, règle 5). Les erreurs passent par le journal JSON de l'application.
+  logging: { incomingRequests: false },
   turbopack: { root: RACINE },
   outputFileTracingRoot: RACINE,
 };

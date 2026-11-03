@@ -18,7 +18,7 @@
    { "erreur": { "code": "PARAMETRE_INVALIDE", "message": "La date doit être au format AAAA-MM-JJ." } }
    ```
    Codes : `PARAMETRE_INVALIDE` (400) · `INTROUVABLE` (404) · `SERVICE_EXTERNE_INDISPONIBLE` (503, avec `"reessayable": true`) · `ERREUR_INTERNE` (500). Le message est en français, compréhensible, **sans détail technique**. Le détail va dans les journaux serveur.
-6. **Positions :** `lat` et `lon` en degrés décimaux, validés (France métropolitaine : lat 41–51,5, lon −5,5–10). **Jamais journalisés.**
+6. **Positions :** `lat` et `lon` en degrés décimaux, validés (France métropolitaine : `parametres.empriseFrance`, lat 41–51,5, lon −5,5–10). **Jamais journalisés** : le journal des requêtes de Next.js est désactivé (`logging.incomingRequests: false`), l'URL contenant la position.
 7. **Dates :** `date` au format `AAAA-MM-JJ`. Absente → **date du jour à Paris** calculée par `dateDuJour()` (`@tourisme/commun`). Doit être dans la fenêtre des horaires chargés, sinon `400` avec un message clair.
 8. **Heures en réponse :** secondes (`departS`) **et** texte prêt à afficher (`depart: "10:12"`, `lendemain: false`).
 9. **Catégories :** paramètre `categories=enfants,parcs` ; absent = toutes.
@@ -264,4 +264,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/10/2026 | 1.4 | Adresse des flux `station_status` lue dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.5 | `/api/impact` : CO₂ du train `null` si le facteur n'est pas relevé ; `/api/trains` : heure actuelle par `maintenantParis()` — D031 |
 | 01/11/2026 | 1.6 | § 3.4 : `prochainDepart`, `dernierRetour`, `distanceKm`, `faisableJournee` toujours rempli ; § 3.8 : trains en jumelage regroupés (`trajetIds`, `numeros`) — D040 |
-| 03/11/2026 | 1.7 | § 3.4 réécrit : une destination par ville (gare en tête, `autresGares`), heures `{ s, texte, lendemain }`, `prochaineArrivee`, `sansLieu` en fin de liste, même commune exclue, CO₂ et prix inclus, cache 300 s — D047, D048 |
+| 03/11/2026 | 1.7 | § 3.4 réécrit : une destination par ville (gare en tête, `autresGares`), heures `{ s, texte, lendemain }`, `prochaineArrivee`, `sansLieu` en fin de liste, même commune exclue, CO₂ et prix inclus, cache 300 s — D047, D048 ; § 1.6 : `empriseFrance`, journal des requêtes désactivé |

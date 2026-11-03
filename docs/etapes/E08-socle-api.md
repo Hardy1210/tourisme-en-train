@@ -31,29 +31,29 @@ Socle `lib/http` réutilisable ; 4 routes testées en intégration sur l'échant
 
 ## Tâches
 **Socle**
-- [ ] `lib/http/erreurs.ts` : classes `ParametreInvalide`, `Introuvable`, `ServiceExterneIndisponible` + traduction en réponse (`05` § 1.5).
-- [ ] `lib/http/valider.ts` : lecture et validation Zod des paramètres de requête.
-- [ ] `lib/http/reponse.ts` : réponse JSON + `Cache-Control` selon la route.
-- [ ] `lib/db/requetes-partagees.ts` si une requête sert à plusieurs fonctionnalités.
-- [ ] `lib/geo/` : `distanceMarche`, `dureeMarche`, `dureeVelo`, `dureeVoiture` (purs, testés en paires).
-- [ ] `lib/dates/` : `trancheTemps(dureeMin)` (pur, testé aux bornes 29/30/59/60/119/120).
+- [x] `lib/http/erreurs.ts` : classes `ParametreInvalide`, `Introuvable`, `ServiceExterneIndisponible` + traduction en réponse (`05` § 1.5).
+- [x] `lib/http/valider.ts` : lecture et validation Zod des paramètres de requête.
+- [x] `lib/http/reponse.ts` : réponse JSON + `Cache-Control` selon la route.
+- [x] `lib/db/requetes-partagees.ts` si une requête sert à plusieurs fonctionnalités.
+- [x] `lib/geo/` : `distanceMarche`, `dureeMarche`, `dureeVelo`, `dureeVoiture` (purs, testés en paires).
+- [x] `lib/dates/` : `trancheTemps(dureeMin)` (pur, testé aux bornes 29/30/59/60/119/120).
 
 **Routes**
-- [ ] `/api/sante` (`05` § 3.1).
-- [ ] `features/gares/` : schémas, service, requêtes → `/api/gares/proches`.
-- [ ] `features/lieux/` (partie « autour ») → `/api/autour`.
-- [ ] `features/destinations/` → `/api/destinations` (liaison + `gare_stats` + tranche + `lieuxCharges`).
-- [ ] Tests d'intégration sur la base de test (échantillon) pour chaque route : cas valide, paramètre invalide, cas limite.
+- [x] `/api/sante` (`05` § 3.1).
+- [x] `features/gares/` : schémas, service, requêtes → `/api/gares/proches`.
+- [x] `features/lieux/` (partie « autour ») → `/api/autour`.
+- [x] `features/destinations/` → `/api/destinations` (liaison + `gare_stats` + tranche + `lieuxCharges`).
+- [x] Tests d'intégration sur la base de test (échantillon) pour chaque route : cas valide, paramètre invalide, cas limite.
 
 ## Critères d'acceptation
-- [ ] Contrats de `05` respectés à la lettre (noms des champs, types, codes d'erreur).
-- [ ] Position hors France → `400` **et** position à Dijon → `200`.
-- [ ] Date hors fenêtre → `400` avec message clair **et** date absente → date du jour à Paris.
-- [ ] `/api/destinations` depuis Dijon-Ville : Beaune dans la tranche `<30`.
-- [ ] Depuis Dijon : une seule carte « Paris » (Gare de Lyon en tête, Bercy dans `autresGares`) et une seule « Lyon » ; Dijon Porte Neuve absente ; Paris et Lyon présentes (limite 150).
-- [ ] Destination de la région sans lieu en fin de liste **et** retirée par un filtre d'envies ; destination hors région gardée par ce filtre.
-- [ ] Temps de réponse < 300 ms en local sur les vraies données.
-- [ ] Aucune position dans les journaux (vérifié).
+- [x] Contrats de `05` respectés à la lettre (noms des champs, types, codes d'erreur).
+- [x] Position hors France → `400` **et** position à Dijon → `200`.
+- [x] Date hors fenêtre → `400` avec message clair **et** date absente → date du jour à Paris.
+- [x] `/api/destinations` depuis Dijon-Ville : Beaune dans la tranche `<30`.
+- [x] Depuis Dijon : une seule carte « Paris » (Gare de Lyon en tête, Bercy dans `autresGares`) et une seule « Lyon » ; Dijon Porte Neuve absente ; Paris et Lyon présentes (limite 150).
+- [x] Destination de la région sans lieu en fin de liste **et** retirée par un filtre d'envies ; destination hors région gardée par ce filtre.
+- [x] Temps de réponse < 300 ms en local sur les vraies données.
+- [x] Aucune position dans les journaux (vérifié).
 
 ## Vérifications manuelles
 - Appeler chaque route avec les coordonnées de la place Darcy (Dijon) et comparer à la réalité.
@@ -67,4 +67,5 @@ Voir `_MODELE.md`. Mettre à jour `05` si un contrat a dû évoluer (avec décis
 
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
-- 03/11/2026 : audit et décisions de Hardy avant le code — D047 (une destination par ville, gare en tête, aucune durée minimale, sans lieu en fin de liste, limite 150, CO₂ et prix dans `/api/destinations`, `features/sante`), D048 (CO₂ Intercités et avion, prix calibré sur les tarifs TGV). `lib/impact` avancé d'E09 à E08. L'échantillon reçoit liaisons, `gare_stats` et `lieu_gare`.
+- 03/11/2026 : audit et décisions de Hardy avant le code — D047 (une destination par ville, gare en tête, aucune durée minimale, sans lieu en fin de liste, limite 150, CO₂ et prix dans `/api/destinations`, `features/sante`), D048 (CO₂ Intercités et avion, prix calibré sur les tarifs TGV). `lib/impact` avancé d'E09 à E08. L'échantillon reçoit liaisons et `gare_stats` (`lieu_gare` attendra E09, qui en a besoin).
+- 03/11/2026 : vérifié sur les vraies données (Dijon, 03/11) : 101 destinations (durée max 180 min), Paris (+ Bercy) et Lyon (+ Perrache) une fois, Dijon absente, 8 sans lieu en fin de liste ; temps de réponse 13 → 80 ms ; aucune position dans les journaux après désactivation du journal des requêtes de Next.js. Relevé : les gares TGV hors de leur ville donnent leur commune comme nom de carte (« Meroux-Moval » pour Belfort - Montbéliard TGV) — à décider (`A-FAIRE`).

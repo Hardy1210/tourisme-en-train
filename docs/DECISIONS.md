@@ -456,6 +456,8 @@
   7. **CO₂ économisé, prix estimé et prochaine arrivée dans `/api/destinations`**, calculés par les fonctions pures de `lib/impact` que réutilisera `/api/impact` : une carte n'appelle pas une route de plus (60 à 150 appels évités). CO₂ comparé à la voiture seule, avec le facteur **le moins favorable** des types de train de la liaison.
   8. Le filtre « faisable dans la journée » de la maquette se fait **côté interface**.
   9. **Route `/api/sante`** dans `features/sante/` (une route ne peut pas importer `lib/db` directement).
+  10. **Aucune URL de requête dans les journaux** : `next dev` écrivait `GET /api/autour?lat=…&lon=…` ; journal des requêtes de Next.js désactivé (`logging.incomingRequests: false`, règle 5). Positions acceptées : `parametres.empriseFrance` (règle 3).
+  11. **Cache de `/api/destinations` : 300 s** au lieu de 3 600 (le prochain départ dépend de l'heure).
 - **Raison :** relevé du 01/11 (Paris en deux cartes depuis Dijon) ; mesure du 03/11 : 13 villes concernées, 104 gares de départ sur 194 avec au moins un doublon, jusqu'à 4 cartes « Lyon » depuis Mâcon ; maquette Explorer desktop v2 (carte de destination). La gare en tête « la plus rapide » mettait en avant des haltes rattachées à la commune voisine (Danjoutin pour Belfort).
 - **Écarté :** une carte par gare (Paris et Lyon en double, la moitié des listes touchées) ; tout par ville (la fiche réunirait des lieux à pied de gares différentes : un musée près de Bercy n'est pas à pied de Gare de Lyon) ; durée minimale de 5, 10 ou 15 min ; appel de `/api/impact` par carte.
 - **Impact :** `05` § 3.4, `config/parametres.json` (`limites.destinations`), `GLOSSAIRE` (gare en tête), `CLAUDE.md` § 6 (`features/sante`), fiche E08, `A-FAIRE`.
