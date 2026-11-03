@@ -1,7 +1,7 @@
 # E10 — Socle de l'interface : design system, mise en page, composants
 
 > **Semaine :** S6 (09/11 → 15/11) · **Priorité :** P0 (mode sombre P1) · **Branche :** `etape/E10-socle-interface`
-> **Étapes préalables :** E00 (peut commencer en parallèle de E08–E09) · **État :** ⬜ à faire
+> **Étapes préalables :** E00 (peut commencer en parallèle de E08–E09) · **État :** 🟡 auditée, plan à valider
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -55,3 +55,4 @@ Voir `_MODELE.md`. Mettre à jour `06` § 2 (composants réels).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 05/10/2026 : bouton « Mes sorties » retiré de la navigation (favoris en P2, voir `06` § 4 bis).
 - 09/10/2026 : la mention « Pas Loin » n'existe plus dans `design/globals.css` : la tâche de remplacement est sans objet (vérifier seulement à l'intégration). `06` § 3 et `design/prompts-ecrans.md` alignés sur la navigation de cette fiche.
+- 04/11/2026 : audit fait (phase d'audit 1 et 2) ; plan, écarts du kit et dépendances dans `A-FAIRE` § 1. Hardy refait les maquettes : l'aspect des composants et de la mise en page attend la nouvelle version.

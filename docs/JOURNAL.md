@@ -24,6 +24,28 @@
 
 ---
 
+## 04/11/2026 — Étape E10 — audit du socle de l'interface
+**Fait :**
+- Reprise ; réponse à Hardy : la géolocalisation est demandée à l'ouverture, refus → recherche de ville (F01, interface en E11), position jamais enregistrée.
+- Audit de E10 : `apps/web/src/styles/globals.css` encore provisoire, `components/ui/` vide, aucune dépendance d'interface installée. Comparaison de `design/globals.css` avec la version du projet Claude Design (tokens de fond de carte, `--map-time-1…4`, animation des squelettes, correctif de `eco` en mode sombre) et lecture du « Kit de composants Wagoo » (02/10) : 7 écarts à régler dans la refonte des maquettes (`A-FAIRE` § 1).
+- Plan de E10 proposé (`A-FAIRE` § 1) ; avis sur l'idée de Hardy : favoris et « Carnet de voyage » montrés au jury en aperçu « Bientôt », non fonctionnels, après le P0.
+
+**Décisions :** aucune (plan, dépendances et aperçus à valider).
+
+**Problèmes rencontrés :**
+- Hardy demandait seulement si les maquettes étaient nécessaires à l'audit (il va les refaire) : Claude Code les a lues sans attendre la réponse. Ce qui ne dépend pas des maquettes reste valable ; l'aspect des composants attendra la nouvelle version.
+
+**À valider par Hardy :**
+- Plan de E10 et dépendances ; design system changé ou seulement les écrans ; aperçus favoris et carnet.
+
+**Prochaine action :**
+- Validation du plan, puis D053 et la partie de E10 indépendante des maquettes.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (257) ; aucun code modifié
+**Commit :** voir `docs(contexte): sauvegarde de session du 04/11` (branche `etape/E10-socle-interface`)
+
+---
+
 ## 03/11/2026 — Étape E09 — terminée (P0), avis de Hardy intégré
 **Fait :**
 - Vérification de Hardy sur SNCF Connect : TGV 12177 Dijon 16:17 → Beaune 16:37 conforme (SNCF Connect affichait un retard temps réel de 5 min, hors P0), dernier retour 21:58 conforme, prix Dijon → Paris ≈ 40–66 € cohérent.
