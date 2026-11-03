@@ -24,6 +24,31 @@
 
 ---
 
+## 03/11/2026 — Étape E09 — API complète, codée (PR en attente de l'avis de Hardy)
+**Fait :**
+- Audit : trains Dijon → Beaune (45, identiques à `liaison_directe`), jumelage (TGV 12177 / 5537), train après minuit (Joigny) ; API Adresse : ancien domaine obsolète (`sunset` 31/01/2026) → Géoplateforme, sans clé ; recherche inverse vide avec `type=municipality` ; contrats § 3.5 et § 3.12 sans forme écrite.
+- Décisions de Hardy : routes P1 hors E09, fiche = mêmes chiffres que la carte, heures `{ s, texte, lendemain }`, impact au type le moins favorable, recherche inverse sans cache, sources affichées (champ `affichee`), lieu membre d'un site ; puis **identifiants publics stables** (question de Hardy sur les liens partagés) : code UIC pour les gares, clé de source pour les lieux.
+- Code : migration `0011_lieu_cle` (colonne générée unique) ; `gareParUic`, `verifierDateDansFenetre` partagées ; E08 ajustée (`uic`, `cle`) ; routes `/api/destinations/[uic]` (+ `/lieux`), `/api/lieux/[cle]`, `/api/trains`, `/api/impact`, `/api/mobilites/[uic]`, `/api/sources`, `/api/geocodage` (+ `/inverse`) ; adaptateur `lib/external/adresse.ts` ; `debutDuWeekEnd` ; échantillon complété (jumelage, code UIC secondaire, membre de site, `lieu_gare`).
+- Vérifié sur les vraies données : fiche Beaune = carte (18 min, 45 trains, ≈ 7–12 €) ; doublon OSM → fiche DATAtourisme gardée ; Talant trouvée ; 26 sources, attribution OpenStreetMap ; 13 → 110 ms.
+
+**Décisions :** D051 (contrats de l'API complète ; précisions du codage : derniers retours, gares en tête de la recherche), D052 (identifiants publics stables).
+
+**Problèmes rencontrés :**
+- Les routes Next.js reçoivent leurs segments (`[uic]`, `[cle]`) en second argument : `gererRoute` transmet le contexte, `validerSegment` le valide.
+- Clé des lieux de l'échantillon (`echantillon-ECH_L11`) refusée par la première version de la validation (`_`) : corrigée.
+- `CLAUDE.md` à la limite de 400 lignes : entrées d'historique du 03/11 regroupées.
+
+**À valider par Hardy :**
+- Avant la PR : 3 horaires et 1 prix sur SNCF Connect ; derniers retours et gares en tête ; lieux-dits « Dijon » dans la recherche (`A-FAIRE` § 1).
+
+**Prochaine action :**
+- Avis de Hardy → corrections éventuelles → PR E09 → E10.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (257 unitaires, 124 intégration) · vraies données ✅
+**Commit :** voir `docs(contexte): sauvegarde de session du 03/11 (E09)` (branche `etape/E09-api-complete`)
+
+---
+
 ## 03/11/2026 — Étape E08 — socle de l'API, terminée (P0)
 **Fait :**
 - Mesures avant décision (vraies données, 03/11) : 13 villes à plusieurs gares, 104 gares de départ sur 194 concernées ; durée minimale 5/10/15 min (143/434/699 cartes perdues) ; 20 gares de la région sans lieu ; limite 60 → Paris (73ᵉ) et Lyon (74ᵉ) coupées depuis Dijon ; seuil de lieux 1/3/5 (8/30/45 cartes reléguées depuis Dijon).
