@@ -1,7 +1,7 @@
 # E08 — Socle de l'API + routes gares, autour, destinations
 
 > **Semaine :** S5 (02/11 → 08/11) · **Priorité :** P0 · **Branche :** `etape/E08-socle-api`
-> **Étapes préalables :** E04, E06 · **État :** 🟡 en cours
+> **Étapes préalables :** E04, E06 · **État :** ✅ terminée (PR #54)
 > **Version de la fiche** 1.1 · **Date** 03/11/2026
 
 ## Contexte minimal
