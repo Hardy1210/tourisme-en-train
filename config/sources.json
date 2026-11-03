@@ -451,6 +451,17 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "ADEME — Impact CO2 (Licence Ouverte)",
       "verifie": false
+    },
+    {
+      "code": "tarifs_tgv",
+      "nom": "Tarifs TGV INOUI et OUIGO (calibrage du prix estimé)",
+      "producteur": "SNCF",
+      "mode": "local",
+      "page": "https://www.data.gouv.fr/datasets/tarifs-tgv-inoui-et-ouigo",
+      "telechargement": "https://www.data.gouv.fr/api/1/datasets/r/cffcec3b-1c13-4e92-b530-1db00bb3ac1b",
+      "licence": "ODbL",
+      "attribution": "SNCF — Tarifs TGV INOUI et OUIGO (ODbL)",
+      "verifie": true
     }
   ]
 }

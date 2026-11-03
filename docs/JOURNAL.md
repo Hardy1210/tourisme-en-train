@@ -24,6 +24,32 @@
 
 ---
 
+## 02/11/2026 — Étape E07 — transports sur place, terminée (P0)
+**Fait :**
+- Sauvegarde des décisions de Hardy avant le code (D046).
+- `config/sources.json` : 16 réseaux (13 urbains, Mobigo à 7 fichiers, 2 GBFS avec `station_status`), liens stables data.gouv.fr, licence vérifiée ; schéma `reseau` dans `packages/commun`, `LICENCES_RESEAU`.
+- Migration `0010` (type `CAR`, unicité gare-source-arrêt) ; `mobilite.regroupementQuaisM` ; `pnpm etl transport_local` (GTFS lus dans le ZIP, GBFS, transport à la demande exclu, quais regroupés, couple arrêt-gare à pied).
+- Résultat : 553 couples arrêt-gare, 122 gares de la région sur 196 (Mobigo : 84) ; Dijon-Ville : tram T1, T2 et 13 arrêts de bus. Docker vérifié.
+- PR #53 fusionnée (E07 ✅, ticket #9 fermé) ; branche `etape/E08-socle-api` créée. **Jalon « données en base » atteint le 02/11.**
+
+**Décisions :** D046 (réseaux, licence obligatoire, `CAR`, couple arrêt-gare, rayon à pied, P1 reporté, cyclable en tête après le P0).
+
+**Problèmes rencontrés :**
+- Noms d'arrêts Mobigo terminés par « - » : nettoyés (`nettoyerNomArret`), testés.
+- Liens de téléchargement datés sur static.data.gouv.fr : remplacés par les liens stables `data.gouv.fr/api/1/datasets/r/…`.
+
+**À valider par Hardy :**
+- Avant E08 : une destination par ville ou par gare (`A-FAIRE` § 1, Paris Gare de Lyon / Paris Bercy).
+- Vérification manuelle de la fiche E07 : arrêts autour de Dijon-Ville comparés au plan Divia.
+
+**Prochaine action :**
+- Décision « ville ou gare », puis lire `docs/etapes/E08-socle-api.md`, auditer, proposer le plan.
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (206 unitaires, 67 intégration) · Docker ✅
+**Commit :** voir `docs(contexte): sauvegarde de session du 02/11` (branche `etape/E08-socle-api`)
+
+---
+
 ## 02/11/2026 — E06 fusionnée, audit E07 — décisions de Hardy
 **Fait :**
 - Relecture par Hardy de la liste des lieux écartés par leur nom : statues gardées, `^retables` et `^application` ajoutés (72 lieux écartés) ; PR #52 fusionnée (E06 ✅, ticket #8 fermé) ; branche `etape/E07-mobilites`.

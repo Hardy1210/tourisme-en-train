@@ -31,24 +31,25 @@ describe('schéma de config/parametres.json', () => {
 
   it('accepte un prix à null tant que le prix est à calibrer', () => {
     const p = copie();
-    expect(p.prix.aCalibrer).toBe(true);
+    p.prix.aCalibrer = true;
+    p.prix.source = null as unknown as string;
+    p.prix.dateCalibrage = null as unknown as string;
+    p.prix.parKm = { TER: null, INTERCITES: null, TGV: null } as unknown as typeof p.prix.parKm;
     expect(schemaParametres.safeParse(p).success).toBe(true);
   });
 
   it('refuse un prix à null une fois le prix calibré', () => {
     const p = copie();
-    p.prix.aCalibrer = false;
-    p.prix.source = 'Barème TER' as unknown as null;
+    expect(p.prix.aCalibrer).toBe(false);
     p.prix.parKm = { TER: 0.1, INTERCITES: null, TGV: 0.15 } as unknown as typeof p.prix.parKm;
     expect(schemaParametres.safeParse(p).success).toBe(false);
   });
 
-  it('accepte un prix calibré complet', () => {
+  it('refuse un prix calibré sans date de calibrage ; complet, il est accepté', () => {
     const p = copie();
-    p.prix.aCalibrer = false;
-    p.prix.source = 'Barème TER' as unknown as null;
-    p.prix.parKm = { TER: 0.1, INTERCITES: 0.12, TGV: 0.15 } as unknown as typeof p.prix.parKm;
     expect(schemaParametres.safeParse(p).success).toBe(true);
+    p.prix.dateCalibrage = null as unknown as string;
+    expect(schemaParametres.safeParse(p).success).toBe(false);
   });
 
   it('dédoublonnage : palier large au-delà du proche accepté ; palier large plus court refusé', () => {

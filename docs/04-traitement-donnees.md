@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.16 · **Date** 02/11/2026
+> **Version** 1.17 · **Date** 03/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -35,6 +35,8 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
+  "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
+  "destinations": { "lieuxMinEnTete": 3, "motGareHorsVille": "TGV" },
   "controles": {
     "communesFranceMin": 34000, "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90,
     "contoursRegionMin": 3000, "lieuxSourceMin": 1000
@@ -73,26 +75,27 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
+  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",
-    "dateReleve": "2026-09-30",
-    "facteursCo2GParKm": { "TGV": 2.93, "TER": 27.7, "INTERCITES": null, "VOITURE": 142, "AVION": null },
+    "dateReleve": "2026-11-03",
+    "facteursCo2GParKm": { "TGV": 2.93, "TER": 27.7, "INTERCITES": 8.98, "VOITURE": 142, "AVION": 225 },
     "occupantsVoiturePartagee": 3,
     "distanceMinAvionKm": 300
   },
   "prix": {
-    "aCalibrer": true,
-    "source": null,
-    "parKm": { "TER": null, "INTERCITES": null, "TGV": null },
+    "aCalibrer": false,
+    "source": "SNCF — Tarifs TGV INOUI et OUIGO (ODbL), …",
+    "dateCalibrage": "2026-11-03",
+    "parKm": { "TER": 0.22, "INTERCITES": 0.22, "TGV": 0.17 },
     "margeFourchette": 0.25
   }
 }
 ```
 
-- Les valeurs `null` sont **à renseigner à l'E09** (D031) :
+- Les valeurs `null` (D031) — toutes renseignées le 03/11/2026 (D048) ; la règle reste pour une région ou une source future :
   - **facteur CO₂ à `null`** (valeur pas encore relevée) : toujours accepté par le schéma ; `/api/impact` renvoie alors `co2Kg.train: null` pour ce type de train ;
-  - **prix au kilomètre à `null`** : accepté **seulement** tant que `prix.aCalibrer` est vrai ; le schéma le refuse une fois `aCalibrer` passé à `false`.
+  - **prix au kilomètre à `null`** : accepté **seulement** tant que `prix.aCalibrer` est vrai ; le schéma le refuse une fois `aCalibrer` passé à `false`, de même qu'une `source` ou une `dateCalibrage` absentes.
 - Modifier une valeur = modifier ce fichier + une ligne dans `DECISIONS.md` si la valeur change le comportement visible.
 - Ajouter une clé = la déclarer dans le schéma de `packages/commun` dans le même commit. *Un test vérifie que le fichier est accepté par le schéma.*
 
@@ -350,8 +353,8 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | CO₂ voiture seule | 2 × distance_km × `VOITURE` / 1000 | |
 | CO₂ voiture partagée (par personne) | CO₂ voiture seule / `occupantsVoiturePartagee` | |
 | CO₂ avion | affiché seulement si distance ≥ `distanceMinAvionKm` | |
-| CO₂ économisé | CO₂ voiture seule − CO₂ train | |
-| Prix estimé | distance_km × `prix.parKm[type]` ± `margeFourchette` → fourchette arrondie à l'euro | tant que `aCalibrer = true`, **le prix n'est pas affiché** |
+| CO₂ économisé | CO₂ voiture seule − CO₂ train ; pour une carte de destination, facteur **le moins favorable** des types de train de la liaison (D047) | |
+| Prix estimé (aller simple) | distance_km × `prix.parKm[type]` ± `margeFourchette` → fourchette arrondie à l'euro ; pour une carte de destination, type le plus cher de la liaison | calibré sur les tarifs TGV de la SNCF (D048) ; si `aCalibrer = true`, **le prix n'est pas affiché** |
 | Heure affichée | secondes → « HH:MM » ; si ≥ 86 400 → heure du lendemain + mention « +1 » | |
 | Date du jour | date courante **dans le fuseau `Europe/Paris`**, au format `AAAA-MM-JJ` | `fuseau` |
 
@@ -378,3 +381,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.14 | § 4.5 : priorité `140` (fermé au public) ; § 4.6 : doublons dans une même source, décisions manuelles `doublons_manuels.csv`, rapports aux colonnes du fichier de décisions — D044 |
 | 02/11/2026 | 1.15 | § 2 : `regroupementParcChateau` ; § 4.5 : noms exclus (`noms_exclus.csv`) ; § 4.6 : parc d'un château — D045 |
 | 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
+| 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |

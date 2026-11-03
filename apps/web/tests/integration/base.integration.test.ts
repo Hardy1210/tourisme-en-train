@@ -64,14 +64,14 @@ describe('schéma', () => {
     await migrerBase(urlTest('BDD_URL_MIGRATIONS'), lireEnvBase());
     expect(await compter()).toBe(avant);
     const gares = await proprietaire.query('SELECT count(*)::int AS n FROM gare');
-    expect(gares.rows[0].n).toBe(10);
+    expect(gares.rows[0].n).toBe(16);
   });
 });
 
 describe('droits', () => {
   it('app_lecture peut lire', async () => {
     const { rows } = await appLecture.query('SELECT count(*)::int AS n FROM gare');
-    expect(rows[0].n).toBe(10);
+    expect(rows[0].n).toBe(16);
   });
 
   it('app_lecture ne peut pas écrire', async () => {

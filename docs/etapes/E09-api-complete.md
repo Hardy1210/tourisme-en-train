@@ -17,8 +17,8 @@ Le socle de l'API existe (E08). On termine les routes nécessaires à la fiche d
 Toutes les routes P0 de `05` répondent selon leur contrat ; l'impact est calculé localement.
 
 ## Actions de Hardy
-- [ ] **Relever les facteurs CO₂ manquants** (Intercités, avion) sur Impact CO2 (ADEME) et les reporter dans `parametres.json` avec la date.
-- [ ] **Trouver une base de prix au kilomètre** (tarifs TER publiés de la région ou autre source publique) ; si rien de fiable : laisser `prix.aCalibrer = true` (le prix ne s'affiche pas) et le noter dans `A-FAIRE.md`.
+- [x] **Relever les facteurs CO₂ manquants** (Intercités, avion) sur Impact CO2 (ADEME) et les reporter dans `parametres.json` avec la date. *Fait en E08 le 03/11 (D048).*
+- [x] **Trouver une base de prix au kilomètre** (tarifs TER publiés de la région ou autre source publique) ; si rien de fiable : laisser `prix.aCalibrer = true` (le prix ne s'affiche pas) et le noter dans `A-FAIRE.md`. *Fait en E08 le 03/11 : calibré sur les tarifs TGV de la SNCF (D048).*
 - [ ] (P1) Demander une clé API SNCF ; la mettre dans `.env` (`SNCF_CLE_API`).
 - [ ] Vérifier si l'API Adresse demande une clé (a priori non).
 

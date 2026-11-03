@@ -10,6 +10,13 @@ const schemaMode = z.strictObject({
   coefDetour: z.number().min(1),
 });
 
+const schemaEmprise = z.strictObject({
+  latMin: z.number().min(-90).max(90),
+  latMax: z.number().min(-90).max(90),
+  lonMin: z.number().min(-180).max(180),
+  lonMax: z.number().min(-180).max(180),
+});
+
 // Facteur CO₂ à null = pas encore relevé : toujours accepté (D031).
 const schemaFacteurCo2 = z.number().positive().nullable();
 // Prix au km à null : accepté seulement tant que prix.aCalibrer est vrai (règle plus bas).
@@ -24,13 +31,10 @@ export const schemaParametres = z
       nom: z.string().min(1),
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
       /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
-      emprise: z.strictObject({
-        latMin: z.number().min(-90).max(90),
-        latMax: z.number().min(-90).max(90),
-        lonMin: z.number().min(-180).max(180),
-        lonMax: z.number().min(-180).max(180),
-      }),
+      emprise: schemaEmprise,
     }),
+    /** Positions acceptées par l'API (`lat`, `lon`) : France métropolitaine (docs/05-api.md § 1). */
+    empriseFrance: schemaEmprise,
     /** Seuils des contrôles bloquants de l'ETL (docs/04-traitement-donnees.md § 4). */
     controles: z.strictObject({
       /** Codes INSEE dans `commune` (communes, arrondissements, communes déléguées, D038). */
@@ -94,6 +98,13 @@ export const schemaParametres = z
     regroupementParcChateau: z.strictObject({ distanceM: schemaDistanceM }),
     /** Arrêts de même nom d'un réseau à moins de cette distance (quais opposés) : un seul arrêt (D046). */
     mobilite: z.strictObject({ regroupementQuaisM: schemaDistanceM }),
+    /** Classement des destinations (D049, D050). */
+    destinations: z.strictObject({
+      /** Moins de lieux à pied que ce seuil (catégories demandées) → en fin de liste, jamais supprimée. */
+      lieuxMinEnTete: z.number().int().min(1),
+      /** Mot entier qui, dans le nom d'une gare, en fait une arrivée hors de la ville (gare TGV) : sa propre carte. */
+      motGareHorsVille: z.string().regex(/^[A-Za-zÀ-ÿ-]+$/, 'Un seul mot attendu'),
+    }),
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),
@@ -118,16 +129,20 @@ export const schemaParametres = z
       .strictObject({
         aCalibrer: z.boolean(),
         source: z.string().min(1).nullable(),
+        /** Date du calibrage des prix au km (D048). */
+        dateCalibrage: z.iso.date().nullable(),
         parKm: z.strictObject({ TER: schemaPrixKm, INTERCITES: schemaPrixKm, TGV: schemaPrixKm }),
         margeFourchette: z.number().min(0).max(1),
       })
       .refine(
         (prix) =>
           prix.aCalibrer ||
-          (prix.source !== null && Object.values(prix.parKm).every((v) => v !== null)),
+          (prix.source !== null &&
+            prix.dateCalibrage !== null &&
+            Object.values(prix.parKm).every((v) => v !== null)),
         {
           message:
-            'Prix calibré (aCalibrer = false) : la source et tous les prix au km sont obligatoires.',
+            'Prix calibré (aCalibrer = false) : la source, la date du calibrage et tous les prix au km sont obligatoires.',
         },
       ),
   })

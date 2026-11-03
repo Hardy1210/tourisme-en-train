@@ -7,6 +7,7 @@
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
+  "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
   "controles": {
     "communesFranceMin": 34000,
     "garesFranceMin": 2500,
@@ -53,24 +54,26 @@
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "destinations": 60, "trains": 20, "mobilites": 20 },
+  "destinations": { "lieuxMinEnTete": 3, "motGareHorsVille": "TGV" },
+  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20 },
   "impact": {
     "source": "ADEME — Impact CO2",
-    "dateReleve": "2026-09-30",
+    "dateReleve": "2026-11-03",
     "facteursCo2GParKm": {
       "TGV": 2.93,
       "TER": 27.7,
-      "INTERCITES": null,
+      "INTERCITES": 8.98,
       "VOITURE": 142,
-      "AVION": null
+      "AVION": 225
     },
     "occupantsVoiturePartagee": 3,
     "distanceMinAvionKm": 300
   },
   "prix": {
-    "aCalibrer": true,
-    "source": null,
-    "parKm": { "TER": null, "INTERCITES": null, "TGV": null },
+    "aCalibrer": false,
+    "source": "SNCF — Tarifs TGV INOUI et OUIGO (ODbL), tarifs INOUI au 01/04/2026 ; TGV : Tarif Normal, TER et Intercités : Tarif Réglementé (D048)",
+    "dateCalibrage": "2026-11-03",
+    "parKm": { "TER": 0.22, "INTERCITES": 0.22, "TGV": 0.17 },
     "margeFourchette": 0.25
   }
 }

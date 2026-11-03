@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.6 · **Date** 01/11/2026
+> **Version** 1.8 · **Date** 03/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -18,7 +18,7 @@
    { "erreur": { "code": "PARAMETRE_INVALIDE", "message": "La date doit être au format AAAA-MM-JJ." } }
    ```
    Codes : `PARAMETRE_INVALIDE` (400) · `INTROUVABLE` (404) · `SERVICE_EXTERNE_INDISPONIBLE` (503, avec `"reessayable": true`) · `ERREUR_INTERNE` (500). Le message est en français, compréhensible, **sans détail technique**. Le détail va dans les journaux serveur.
-6. **Positions :** `lat` et `lon` en degrés décimaux, validés (France métropolitaine : lat 41–51,5, lon −5,5–10). **Jamais journalisés.**
+6. **Positions :** `lat` et `lon` en degrés décimaux, validés (France métropolitaine : `parametres.empriseFrance`, lat 41–51,5, lon −5,5–10). **Jamais journalisés** : le journal des requêtes de Next.js est désactivé (`logging.incomingRequests: false`), l'URL contenant la position.
 7. **Dates :** `date` au format `AAAA-MM-JJ`. Absente → **date du jour à Paris** calculée par `dateDuJour()` (`@tourisme/commun`). Doit être dans la fenêtre des horaires chargés, sinon `400` avec un message clair.
 8. **Heures en réponse :** secondes (`departS`) **et** texte prêt à afficher (`depart: "10:12"`, `lendemain: false`).
 9. **Catégories :** paramètre `categories=enfants,parcs` ; absent = toutes.
@@ -94,25 +94,42 @@ Cache : aucun (position).
 | `date` | `AAAA-MM-JJ` | date du jour (Paris) |
 | `categories` | liste | toutes |
 | `dureeMax` | une valeur de `durees.trainMaxOptionsMin` | la plus grande |
+
+**Une destination = une ville** (D047) : les gares d'arrivée sont regroupées par commune de rattachement (`gare.code_insee` → `commune` : nom + département ; arrondissements = « Paris »). **Exception : une gare hors de la ville** (nom contenant le mot `destinations.motGareHorsVille`, « TGV ») forme **toujours sa propre carte**, au nom de la gare, même dans la commune d'une gare de ville (Mâcon Loché TGV, « à Mâcon ») — D049. Les valeurs de la carte sont celles de la **gare en tête** (le plus de trains ; à égalité, la plus rapide) ; la fiche (§ 3.5) reste celle d'une gare.
 ```ts
+type Heure = { s: number; texte: string; lendemain: boolean };   // règle 8 (§ 1)
 { gareDepart: { id: number; nom: string },
   date: string,
   destinations: Array<{
-    gare: { id: number; nom: string; lat: number; lon: number; dansRegion: boolean };
+    titre: string;                     // nom de la carte : la commune ; le nom de la gare si horsVille ou commune inconnue
+    commune: { nom: string | null; codeInsee: string | null };
+    horsVille: boolean;                // gare TGV : afficher « à <commune> » sous le titre (D049)
+    gare: { id: number; nom: string; lat: number; lon: number; dansRegion: boolean };  // gare en tête
+    autresGares: Array<{ id: number; nom: string; dureeMin: number; nbTrains: number }>;
     dureeMin: number; trancheTemps: "<30" | "<60" | "<120" | ">=120";
-    nbTrains: number; premierDepart: string; dernierDepart: string;
-    prochainDepart: string | null;   // à partir de l'heure actuelle si date = aujourd'hui ; null s'il n'y en a plus
-    dernierRetour: string | null;    // dernier départ de la liaison inverse ; null si aucun retour direct
+    nbTrains: number;
+    premierDepart: Heure;
+    dernierRetour: Heure | null;       // dernier départ de la liaison inverse ; null si aucun retour direct
+    prochainDepart: Heure | null;      // à partir de l'heure actuelle si date = aujourd'hui ; null s'il n'y en a plus
+    prochaineArrivee: Heure | null;    // arrivée réelle du train de prochainDepart à la gare en tête
     typesTrain: TypeTrain[];
     distanceKm: number;
-    lieuxParCategorie: Partial<Record<Categorie, number>>;  // seulement les catégories demandées
-    faisableJournee: boolean;                               // liaison_directe.faisable_journee (D040)
-    lieuxCharges: boolean                                    // false hors région pilote
+    lieuxParCategorie: Partial<Record<Categorie, number>>;  // gare en tête, seulement les catégories demandées
+    peuDeLieux: boolean;                                     // région et moins de destinations.lieuxMinEnTete (3) lieux des catégories demandées (D050)
+    faisableJournee: boolean;                                // liaison_directe.faisable_journee (D040)
+    lieuxCharges: boolean;                                   // false hors région pilote
+    co2EconomiseKg: number | null;     // aller-retour, voiture seule − train ; facteur le moins favorable de typesTrain ; null si inconnu
+    prixEstime: { min: number; max: number; devise: "EUR" } | null;  // aller simple, type le plus cher ; null si prix.aCalibrer
   }> }
 ```
-Calcul (D040) : `dernierRetour` par jointure sur la liaison inverse (`03` § 3.5) ; `prochainDepart` par **une seule requête groupée** sur `passage` pour toutes les destinations de la réponse (jamais une requête par destination) ; `date` autre qu'aujourd'hui → `prochainDepart` = `premierDepart`.
-Tri : durée croissante. Les destinations sans aucun lieu des catégories demandées restent listées si `lieuxCharges = false` (hors région), sinon elles sont exclues.
-Cache : `public, max-age=3600`.
+**Règles (D047, D049, D050) :**
+- **Exclues :** les gares de la même commune que la gare de départ, gare TGV comprise. **Aucune durée minimale.**
+- **Tri :** durée de la gare en tête croissante ; les destinations `peuDeLieux` (région, moins de `destinations.lieuxMinEnTete` lieux à pied des catégories demandées) passent **en fin de liste** (même tri entre elles), sans être cachées. Critère : « vaut un trajet en train », pas seulement « est rapide ».
+- **Filtre des envies** (`categories` fourni) : une destination de la région avec **0** lieu des catégories choisies est **retirée** ; de 1 à N−1, elle passe en fin de liste ; les destinations hors région (`lieuxCharges = false`) **restent** à leur place.
+- **Limite :** `parametres.limites.destinations` (150, garde-fou) ; `dureeMax` réduit la liste. Le filtre « faisable dans la journée » est appliqué par l'interface.
+- **Calcul (D040) :** `dernierRetour` par jointure sur la liaison inverse (`03` § 3.5) ; `prochainDepart` et `prochaineArrivee` par **une seule requête groupée** sur `passage` pour toutes les gares en tête (jamais une requête par destination) ; `date` autre qu'aujourd'hui → `prochainDepart` = `premierDepart` et `prochaineArrivee` = arrivée de ce train. CO₂ et prix : fonctions pures de `lib/impact`, les mêmes que `/api/impact` (`04` § 6, D048).
+
+Cache : `public, max-age=300` (au lieu de 3600 : `prochainDepart` dépend de l'heure actuelle, D047).
 
 ### 3.5 `GET /api/destinations/[gareId]?depuis&date`
 Résumé pour l'en-tête de la fiche : gare, `lieuxParCategorie`, et si `depuis` (gare de départ) est fourni, la liaison (durée, nombre de trains, tranche). Cache : `public, max-age=3600`.
@@ -249,3 +266,5 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/10/2026 | 1.4 | Adresse des flux `station_status` lue dans `config/sources.json` — D027 |
 | 09/10/2026 | 1.5 | `/api/impact` : CO₂ du train `null` si le facteur n'est pas relevé ; `/api/trains` : heure actuelle par `maintenantParis()` — D031 |
 | 01/11/2026 | 1.6 | § 3.4 : `prochainDepart`, `dernierRetour`, `distanceKm`, `faisableJournee` toujours rempli ; § 3.8 : trains en jumelage regroupés (`trajetIds`, `numeros`) — D040 |
+| 03/11/2026 | 1.7 | § 3.4 réécrit : une destination par ville (gare en tête, `autresGares`), heures `{ s, texte, lendemain }`, `prochaineArrivee`, `sansLieu` en fin de liste, même commune exclue, CO₂ et prix inclus, cache 300 s — D047, D048 ; § 1.6 : `empriseFrance`, journal des requêtes désactivé |
+| 03/11/2026 | 1.8 | § 3.4 : `titre`, `commune`, `horsVille` (gares TGV, D049) ; `peuDeLieux` remplace `sansLieu` (seuil de 3 lieux, D050) |
