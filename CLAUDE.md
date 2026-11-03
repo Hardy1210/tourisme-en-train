@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E10 (socle interface) pas commencée ; E09 terminée et fusionnée (PR #55) ; branche `etape/E10-socle-interface`
-- **Dernière session :** 03/11/2026 — E08 fusionnée (PR #54) ; E09 : D051 (contrats), D052 (identifiants publics stables, migration `0011_lieu_cle`)
-- **Fait :** données en base (jalon du 01/11) ; **API P0 complète** : `/api/sante`, `/api/gares/proches`, `/api/autour`, `/api/destinations`, `/api/destinations/[uic]` (+ `/lieux`), `/api/lieux/[cle]`, `/api/trains`, `/api/impact`, `/api/mobilites/[uic]`, `/api/sources`, `/api/geocodage` (+ `/inverse`) ; gares désignées par code UIC, lieux par clé de source ; 13 → 110 ms sur les vraies données ; `pnpm verifier` 257 tests, `pnpm test:integration` 124 ; `pnpm etl sources` relancé (34 sources, `tarifs_tgv` compris)
-- **À valider par Hardy :** fusion de la PR E09 ; `A-FAIRE` § 1 — légende de la carte (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
-- **Bloquant :** rien ; jalon « API complète » du 08/11 : API P0 prête, en attente de fusion ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** après la fusion de la PR E09 par Hardy : mettre le local à jour, créer `etape/E10-…`, marquer E09 ✅ ; puis lire `docs/etapes/E10-*.md` (socle interface) et les documents qu'elle cite, auditer, proposer le plan
+- **Étape en cours :** E10 (socle interface : design system, mise en page, composants) pas commencée ; branche `etape/E10-socle-interface` (sauvegarde du 03/11)
+- **Dernière session :** 03/11/2026 — E08 et E09 terminées et fusionnées (PR #54, #55 ; D047 → D052) ; **jalon « API complète » atteint le 03/11** (prévu le 08/11)
+- **Fait :** données en base (jalon du 01/11) ; **API P0 complète** (13 routes, `05`) : gares par code UIC, lieux par clé de source (migration `0011_lieu_cle`), une carte par ville, gare TGV à part, moins de 3 lieux en fin de liste, CO₂ (aller-retour) et prix calibré (aller simple), trains en jumelage réunis, retours après l'arrivée du premier aller, recherche de ville avec repli hors ligne ; vérifié par Hardy sur SNCF Connect ; 13 → 110 ms ; `pnpm verifier` 257 tests, `pnpm test:integration` 124
+- **À valider par Hardy :** `A-FAIRE` § 1 — Design System (UI Kit) dans Claude Design et variantes de la maquette (avant E10–E11), **légende des temps de trajet** (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
+- **Bloquant :** rien ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
+- **Prochaine action précise :** lire `docs/etapes/E10-socle-interface.md` et les documents qu'elle cite (`06-interface.md`, `design/globals.css`, maquette Explorer desktop v2 sur Claude Design — référence, pas absolu), auditer l'existant (`apps/web/src/styles/globals.css`, `app/layout.tsx`, `components/ui/`) et proposer le plan
 ---
 
 ## 10. Réaliser une étape
@@ -394,7 +394,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
-| 03/11/2026 | 1.32 | § 6 : fonctionnalité `sante/` — D047 |
-| 03/11/2026 | 1.33 | § 8 : E08 terminée (P0, PR #54) |
-| 03/11/2026 | 1.34 → 1.35 | § 9 : sauvegardes de session (E08 fusionnée ; E09 codée, avis de Hardy attendu avant la PR) ; § 8 : E09 en cours |
-| 03/11/2026 | 1.36 | § 8 : E09 terminée (P0, PR #55) |
+| 03/11/2026 | 1.32 → 1.37 | § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08 et E09 terminées (PR #54, #55) ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |

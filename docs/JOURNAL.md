@@ -24,6 +24,29 @@
 
 ---
 
+## 03/11/2026 — Étape E09 — terminée (P0), avis de Hardy intégré
+**Fait :**
+- Vérification de Hardy sur SNCF Connect : TGV 12177 Dijon 16:17 → Beaune 16:37 conforme (SNCF Connect affichait un retard temps réel de 5 min, hors P0), dernier retour 21:58 conforme, prix Dijon → Paris ≈ 40–66 € cohérent.
+- `/api/impact` : champ `trajet` (CO₂ aller-retour, prix aller simple) ; `/api/trains` : retours proposés après l'arrivée du premier aller (règle de Hardy), test en paire (retour de 07:10 écarté, 18:44 gardé).
+- A-FAIRE pour E11 : « TER Mobigo » (nom commercial, dans la configuration), recherche de ville sans lieux-dits (`locality`), sans filtre de région.
+- PR #55 fusionnée (E09 ✅, ticket #11 fermé ; T4 « API de l'application » ✅) ; branche `etape/E10-socle-interface` créée. **Jalon « API complète » atteint le 03/11.**
+
+**Décisions :** D051 complétée (8 bis : retours après l'arrivée, gares en tête ; 8 ter : périmètre de chaque chiffre).
+
+**Problèmes rencontrés :**
+- Première règle des retours (« les 20 derniers du jour ») jugée mauvaise par Hardy : remplacée (L36).
+
+**À valider par Hardy :**
+- Avant E10–E11 : Design System dans Claude Design, variantes de la maquette, légende des temps de trajet (`A-FAIRE` § 1).
+
+**Prochaine action :**
+- Audit E10 (socle interface).
+
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (257 unitaires, 124 intégration)
+**Commit :** voir `docs(contexte): sauvegarde de session du 03/11 (E09 fusionnée)` (branche `etape/E10-socle-interface`)
+
+---
+
 ## 03/11/2026 — Étape E09 — API complète, codée (PR en attente de l'avis de Hardy)
 **Fait :**
 - Audit : trains Dijon → Beaune (45, identiques à `liaison_directe`), jumelage (TGV 12177 / 5537), train après minuit (Joigny) ; API Adresse : ancien domaine obsolète (`sunset` 31/01/2026) → Géoplateforme, sans clé ; recherche inverse vide avec `type=municipality` ; contrats § 3.5 et § 3.12 sans forme écrite.
