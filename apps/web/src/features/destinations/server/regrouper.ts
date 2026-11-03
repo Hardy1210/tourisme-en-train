@@ -86,3 +86,12 @@ export function regrouperParVille<T extends GareAtteinte>(
     )
     .slice(0, options.limite);
 }
+
+/** Nom de la carte : la commune ; le nom de la gare si elle est hors de la ville ou sans commune (D049). */
+export function titreDestination(
+  nomGare: string,
+  commune: string | null,
+  horsVille: boolean,
+): string {
+  return horsVille || commune === null ? nomGare : commune;
+}

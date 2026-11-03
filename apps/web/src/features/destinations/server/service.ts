@@ -3,22 +3,16 @@ import 'server-only';
 import { type Maintenant } from '@tourisme/commun';
 
 import { parametres } from '@/config/parametres';
-import { fenetreLiaisons } from '@/lib/db/requetes-partagees';
-import { secondesVersHeure } from '@/lib/dates/heures';
+import { gareParUic, verifierDateDansFenetre } from '@/lib/db/requetes-partagees';
+import { heure, heureOuNull } from '@/lib/dates/heures';
 import { trancheTemps } from '@/lib/dates/tranche-temps';
-import { Introuvable, ParametreInvalide } from '@/lib/http/erreurs';
+import { Introuvable } from '@/lib/http/erreurs';
 import { impactLiaison } from '@/lib/impact/impact';
 
-import type { Destination, Heure, ParametresDestinations, ReponseDestinations } from '../schemas';
+import type { Destination, ParametresDestinations, ReponseDestinations } from '../schemas';
 
-import { type GareAtteinteBrute, gareDepart, garesAtteintes, prochainsTrains } from './requetes';
-import { cleDestination, estHorsVille, regrouperParVille } from './regrouper';
-
-const heure = (s: number): Heure => ({ s, ...secondesVersHeure(s) });
-const heureOuNull = (s: number | null | undefined): Heure | null =>
-  s === null || s === undefined ? null : heure(s);
-
-const enFrancais = (date: string): string => date.split('-').reverse().join('/');
+import { type GareAtteinteBrute, garesAtteintes, prochainsTrains } from './requetes';
+import { cleDestination, estHorsVille, regrouperParVille, titreDestination } from './regrouper';
 
 /** `maintenant` vient de `maintenantParis()` (route) : le service ne lit jamais l'horloge. */
 export async function destinations(
@@ -26,20 +20,13 @@ export async function destinations(
   maintenant: Maintenant,
 ): Promise<ReponseDestinations> {
   const jour = date ?? maintenant.dateDuJour;
-  const fenetre = await fenetreLiaisons();
-  if (fenetre === null || jour < fenetre.debut || jour > fenetre.fin) {
-    throw new ParametreInvalide(
-      fenetre === null
-        ? 'Aucun horaire n’est chargé pour le moment.'
-        : `Les horaires sont disponibles du ${enFrancais(fenetre.debut)} au ${enFrancais(fenetre.fin)}.`,
-    );
-  }
+  await verifierDateDansFenetre(jour);
 
-  const depart = await gareDepart(gare);
+  const depart = await gareParUic(gare);
   if (depart === null) throw new Introuvable('Cette gare est inconnue.');
 
   const { lieuxMinEnTete, motGareHorsVille } = parametres.destinations;
-  const lignes = await garesAtteintes({ gareId: gare, date: jour, dureeMax, categories });
+  const lignes = await garesAtteintes({ gareId: depart.id, date: jour, dureeMax, categories });
   const regroupements = regrouperParVille(
     lignes.map((l) => ({
       ...l,
@@ -66,7 +53,7 @@ export async function destinations(
 
   // Aujourd'hui : à partir de l'heure actuelle ; un autre jour : dès le premier train.
   const prochains = await prochainsTrains({
-    gareId: gare,
+    gareId: depart.id,
     date: jour,
     arriveeIds: regroupements.map((r) => r.tete.gare_id),
     depuisS: jour === maintenant.dateDuJour ? maintenant.heureActuelleS : 0,
@@ -74,7 +61,7 @@ export async function destinations(
   const prochainPar = new Map(prochains.map((p) => [p.gare_id, p]));
 
   return {
-    gareDepart: { id: depart.id, nom: depart.nom },
+    gareDepart: { uic: depart.uic, nom: depart.nom },
     date: jour,
     destinations: regroupements.map(({ tete, autres, peuDeLieux }) =>
       versDestination({
@@ -104,18 +91,18 @@ function versDestination({
   const impact = impactLiaison(tete.distance_km, tete.types_train);
   return {
     // Gare hors de la ville (TGV) : la carte porte le nom de la gare, la commune vient dessous (D049).
-    titre: horsVille || tete.commune === null ? tete.nom : tete.commune,
+    titre: titreDestination(tete.nom, tete.commune, horsVille),
     commune: { nom: tete.commune, codeInsee: tete.code_insee },
     horsVille,
     gare: {
-      id: tete.gare_id,
+      uic: tete.uic,
       nom: tete.nom,
       lat: tete.lat,
       lon: tete.lon,
       dansRegion: tete.dans_region,
     },
     autresGares: autres.map((g) => ({
-      id: g.gare_id,
+      uic: g.uic,
       nom: g.nom,
       dureeMin: g.duree_min,
       nbTrains: g.nb_trains,

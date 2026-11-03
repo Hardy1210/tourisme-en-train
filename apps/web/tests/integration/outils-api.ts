@@ -12,13 +12,25 @@ export function urlTest(variable: 'BDD_URL_MIGRATIONS' | 'BDD_URL_APP'): string 
 
 process.env.BDD_URL_APP = urlTest('BDD_URL_APP');
 
-export type Route = { GET: (requete: Request) => Promise<Response> };
+/** Une route Next.js ; méthode (et non propriété) : accepte aussi les routes à segments typés. */
+export type Route = {
+  GET(requete: Request, contexte: { params: Promise<Record<string, string>> }): Promise<Response>;
+};
 
 export type Reponse = { statut: number; cache: string | null; corps: unknown };
 
-/** Appelle une route avec `chemin` (ex. `/api/autour?lat=…`) et lit sa réponse JSON. */
-export async function appeler(route: Route, chemin: string): Promise<Reponse> {
-  const reponse = await route.GET(new Request(`http://localhost${chemin}`));
+/**
+ * Appelle une route avec `chemin` (ex. `/api/autour?lat=…`) et lit sa réponse JSON ; `segments` :
+ * valeurs des segments dynamiques (`{ uic: 'EX000002' }`), comme Next.js les transmet.
+ */
+export async function appeler(
+  route: Route,
+  chemin: string,
+  segments: Record<string, string> = {},
+): Promise<Reponse> {
+  const reponse = await route.GET(new Request(`http://localhost${chemin}`), {
+    params: Promise.resolve(segments),
+  });
   return {
     statut: reponse.status,
     cache: reponse.headers.get('Cache-Control'),

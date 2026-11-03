@@ -3,24 +3,18 @@ import { schemaCategorie, schemaTypeTrain } from '@tourisme/commun';
 import { z } from 'zod';
 
 import { parametres } from '@/config/parametres';
-import { schemaCategories, schemaDate, schemaId, schemaParmi } from '@/lib/http/valider';
+import { schemaHeure } from '@/lib/dates/heures';
+import { schemaCategories, schemaDate, schemaParmi, schemaUic } from '@/lib/http/valider';
 
 const optionsDureeMax = parametres.durees.trainMaxOptionsMin;
 
 export const schemaParametresDestinations = z.object({
-  gare: schemaId('la gare'),
+  gare: schemaUic,
   date: schemaDate,
   categories: schemaCategories,
   dureeMax: schemaParmi(optionsDureeMax, 'Durées maximales (min)')
     .optional()
     .transform((duree) => duree ?? Math.max(...optionsDureeMax)),
-});
-
-/** Heure GTFS prête à afficher (§ 1.8) : secondes depuis minuit de la date de service + texte. */
-export const schemaHeure = z.object({
-  s: z.number().int(),
-  texte: z.string(),
-  lendemain: z.boolean(),
 });
 
 export const schemaDestination = z.object({
@@ -31,7 +25,7 @@ export const schemaDestination = z.object({
   horsVille: z.boolean(),
   /** Gare en tête : le plus de trains ; à égalité, la plus rapide. */
   gare: z.object({
-    id: z.number().int(),
+    uic: z.string(),
     nom: z.string(),
     lat: z.number(),
     lon: z.number(),
@@ -39,7 +33,7 @@ export const schemaDestination = z.object({
   }),
   autresGares: z.array(
     z.object({
-      id: z.number().int(),
+      uic: z.string(),
       nom: z.string(),
       dureeMin: z.number().int(),
       nbTrains: z.number().int(),
@@ -64,12 +58,51 @@ export const schemaDestination = z.object({
 });
 
 export const schemaReponseDestinations = z.object({
-  gareDepart: z.object({ id: z.number().int(), nom: z.string() }),
+  gareDepart: z.object({ uic: z.string(), nom: z.string() }),
   date: z.iso.date(),
   destinations: z.array(schemaDestination),
 });
 
+export const schemaParametresFiche = z.object({
+  depuis: schemaUic.optional(),
+  date: schemaDate,
+});
+
+/** En-tête de la fiche destination (docs/05-api.md § 3.5, D051) : mêmes valeurs que la carte. */
+export const schemaFicheDestination = z.object({
+  gare: z.object({
+    uic: z.string(),
+    nom: z.string(),
+    lat: z.number(),
+    lon: z.number(),
+    dansRegion: z.boolean(),
+    titre: z.string(),
+    commune: z.object({ nom: z.string().nullable(), codeInsee: z.string().nullable() }),
+    horsVille: z.boolean(),
+  }),
+  lieuxParCategorie: z.partialRecord(schemaCategorie, z.number().int()),
+  lieuxCharges: z.boolean(),
+  liaison: z
+    .object({
+      date: z.iso.date(),
+      dureeMin: z.number().int(),
+      trancheTemps: z.string(),
+      nbTrains: z.number().int(),
+      premierDepart: schemaHeure,
+      dernierRetour: schemaHeure.nullable(),
+      typesTrain: z.array(schemaTypeTrain),
+      distanceKm: z.number(),
+      faisableJournee: z.boolean(),
+      co2EconomiseKg: z.number().nullable(),
+      prixEstime: z
+        .object({ min: z.number(), max: z.number(), devise: z.literal('EUR') })
+        .nullable(),
+    })
+    .nullable(),
+});
+
 export type ParametresDestinations = z.infer<typeof schemaParametresDestinations>;
-export type Heure = z.infer<typeof schemaHeure>;
+export type ParametresFiche = z.infer<typeof schemaParametresFiche>;
+export type FicheDestination = z.infer<typeof schemaFicheDestination>;
 export type Destination = z.infer<typeof schemaDestination>;
 export type ReponseDestinations = z.infer<typeof schemaReponseDestinations>;

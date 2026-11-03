@@ -13,10 +13,14 @@ const schemaSource = z.strictObject({
   page: z.url({ protocol: /^https$/ }),
   /** Adresse du fichier à télécharger ; null tant que l'étape de la source ne l'a pas relevée. */
   telechargement: z.url({ protocol: /^https$/ }).nullable(),
+  /** Adresse de base d'une API appelée en direct (mode `direct`, ex. API Adresse, D051). */
+  api: z.url({ protocol: /^https$/ }).optional(),
   licence: z.string().min(1),
   attribution: z.string().min(1),
   /** false = adresse et licence pas encore vérifiées sur la vraie source (à faire à son étape). */
   verifie: z.boolean(),
+  /** Citée dans l'écran « Sources » : vrai pour toute source utilisée en v1 (règle 8, D051). */
+  affichee: z.boolean(),
   /**
    * Réseau de transport sur place (E07, D046) : GTFS (bus, tram, car) ou GBFS (vélos). `fichiers` :
    * fichiers GTFS, ou `station_information.json` d'un GBFS ; `stationStatus` : disponibilité en direct (P1).

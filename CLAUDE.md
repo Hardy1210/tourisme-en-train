@@ -194,8 +194,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ✅ |
-| E08 | Socle API + routes gares, autour, destinations | S5 | 🟡 |
-| E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
+| E08 | Socle API + routes gares, autour, destinations | S5 | ✅ |
+| E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | 🟡 |
 | E10 | Socle interface : design system, mise en page, composants | S6 | ⬜ |
 | E11 | Écran Explorer | S6 | ⬜ |
 | E12 | Fiche destination | S7 | ⬜ |
@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E08 (socle API + routes gares, autour, destinations) pas commencée ; branche `etape/E08-socle-api` (sauvegarde du 02/11)
-- **Dernière session :** 02/11/2026 — E06 et E07 terminées et fusionnées (PR #52, #53 ; D042 → D046) ; **jalon « données en base » atteint**
-- **Fait :** 36 912 communes, dont 3 685 avec contour ; 2 792 gares ; 3 213 trajets, 31 148 passages (fenêtre au 01/11) ; 268 025 liaisons directes ; **12 323 lieux** ; 968 doublons, 319 sites ; **2 092 lieux à pied d'une gare**, 175 gares de la région sur 196 ; **553 couples arrêt-gare** (16 réseaux), 122 gares avec un transport ; `pnpm etl` : `sources` → `communes` → `contours` → `gares` → `gtfs_sncf` → `liaisons` → `regles` → `datatourisme` → `osm` → `rattachements` → `transport_local` ; `pnpm verifier` 206 tests, `pnpm test:integration` 67 ; ETL vérifié dans Docker
-- **À valider par Hardy :** **avant E08** — une destination par ville ou par gare (`A-FAIRE` § 1 : Paris Gare de Lyon / Paris Bercy depuis Dijon) ; vérification manuelle des arrêts de Dijon-Ville (plan Divia) ; `A-FAIRE` § 1 — légende de la carte (avant E11), photos (avant E12)
-- **Bloquant :** rien ; jalon « API complète » du 08/11 décalé ; fenêtre des horaires et liaisons calculée au 01/11 (relancer `pnpm etl gtfs_sncf` puis `pnpm etl liaisons` avant les tests de l'API) ; prochaine extraction `osm` au plus tôt le 08/11 (canaux)
-- **Prochaine action précise :** obtenir la décision « ville ou gare » de Hardy ; puis lire `docs/etapes/E08-socle-api.md` et les documents qu'elle cite (`05-api.md`, `01-architecture.md`), auditer l'existant (`apps/web/src/lib/http`, `lib/db`, `/api/sante`) et proposer le plan
+- **Étape en cours :** E09 codée, vérifiée par Hardy (horaires et prix comparés à SNCF Connect) ; **PR ouverte** (branche `etape/E09-api-complete`), fusion par Hardy
+- **Dernière session :** 03/11/2026 — E08 fusionnée (PR #54) ; E09 : D051 (contrats), D052 (identifiants publics stables, migration `0011_lieu_cle`)
+- **Fait :** données en base (jalon du 01/11) ; **API P0 complète** : `/api/sante`, `/api/gares/proches`, `/api/autour`, `/api/destinations`, `/api/destinations/[uic]` (+ `/lieux`), `/api/lieux/[cle]`, `/api/trains`, `/api/impact`, `/api/mobilites/[uic]`, `/api/sources`, `/api/geocodage` (+ `/inverse`) ; gares désignées par code UIC, lieux par clé de source ; 13 → 110 ms sur les vraies données ; `pnpm verifier` 257 tests, `pnpm test:integration` 124 ; `pnpm etl sources` relancé (34 sources, `tarifs_tgv` compris)
+- **À valider par Hardy :** fusion de la PR E09 ; `A-FAIRE` § 1 — légende de la carte (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
+- **Bloquant :** rien ; jalon « API complète » du 08/11 : API P0 prête, en attente de fusion ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
+- **Prochaine action précise :** après la fusion de la PR E09 par Hardy : mettre le local à jour, créer `etape/E10-…`, marquer E09 ✅ ; puis lire `docs/etapes/E10-*.md` (socle interface) et les documents qu'elle cite, auditer, proposer le plan
 ---
 
 ## 10. Réaliser une étape
@@ -393,12 +393,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.21 | § 6, § 7, § 14 : `LECONS.md`, sommaire et ligne « En clair » de `DECISIONS.md` |
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
-| 02/11/2026 | 1.24 | § 9 : sauvegarde de session (règles de catégories relues, D042 ; audit E06 à lancer) |
-| 02/11/2026 | 1.25 | § 16 : `pnpm etl rattachements` ; § 8 : E06 en cours — D043 |
-| 02/11/2026 | 1.26 | § 9 : sauvegarde de session (E06 codée, PR #52 ouverte, corrections à valider) — D043, D044 |
-| 02/11/2026 | 1.27 | § 8 : E06 terminée (PR #52) |
-| 02/11/2026 | 1.28 | § 8 et § 9 : sauvegarde de session (audit E07, décisions de Hardy, D046) |
-| 02/11/2026 | 1.29 | § 16 : `pnpm etl transport_local` — D046 |
-| 02/11/2026 | 1.30 | § 8 : E07 terminée (P0, PR #53) |
-| 02/11/2026 | 1.31 | § 9 : sauvegarde de session (E07 fusionnée, E08 à lancer) |
+| 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
 | 03/11/2026 | 1.32 | § 6 : fonctionnalité `sante/` — D047 |
+| 03/11/2026 | 1.33 | § 8 : E08 terminée (P0, PR #54) |
+| 03/11/2026 | 1.34 → 1.35 | § 9 : sauvegardes de session (E08 fusionnée ; E09 codée, avis de Hardy attendu avant la PR) ; § 8 : E09 en cours |

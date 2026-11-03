@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 
 const schemaLigne = z.object({
-  id: z.coerce.number().int(),
+  cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sous_categorie: z.string().nullable(),
@@ -38,14 +38,14 @@ export async function lieuxAutour(options: {
     sql`, `,
   );
   const { rows } = await db.execute(sql`
-    SELECT l.id, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
+    SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            ST_Distance(l.geom, ${point}) AS vol_oiseau_m, count(*) OVER () AS total
     FROM lieu l
     WHERE l.doublon_de IS NULL AND l.site_de IS NULL
       AND l.categorie IN (${categories})
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})
-    ORDER BY vol_oiseau_m, l.id
+    ORDER BY vol_oiseau_m, l.cle
     LIMIT ${options.limite}`);
   return z.array(schemaLigne).parse(rows);
 }

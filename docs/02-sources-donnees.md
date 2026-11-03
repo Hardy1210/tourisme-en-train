@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.10 · **Date** 03/11/2026
+> **Version** 1.11 · **Date** 03/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -166,7 +166,8 @@
 - **Appels :** recherche par texte, résultats limités aux communes et adresses ; **recherche inverse** (position → commune).
 - **Repli sans Internet :** recherche parmi les communes des gares en base (utile pour la démo hors ligne) ; pour la recherche inverse, commune de la gare la plus proche.
 - **Écarté : Nominatim** (serveur public OpenStreetMap) : limité à 1 requête par seconde et saisie semi-automatique interdite ; l'API Adresse couvre la France avec les adresses officielles (D022).
-- **Clé :** aucune (à confirmer à l'E09).
+- **Adresse :** API de la Géoplateforme `https://data.geopf.fr/geocodage` (`/search`, `/reverse`), dans `config/sources.json` (champ `api`) ; l'ancien domaine `api-adresse.data.gouv.fr` est obsolète (D051). Recherche inverse **sans** filtre `type=municipality` (qui ne renvoie rien).
+- **Clé :** aucune (vérifié le 03/11/2026).
 - **Adaptateur :** `lib/external/adresse.ts`.
 
 ### 3.2 `api_sncf` — Temps réel (P1)
@@ -248,3 +249,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 02/11/2026 | 1.8 | § 2.8 : fichier Qualité Tourisme non utilisé, label lu dans DATAtourisme — D043 |
 | 02/11/2026 | 1.9 | § 2.5 : réseaux retenus, licences, Mobigo, vélos ; § 2.9 et § 2.10 reportés après le P0 — D046 |
 | 03/11/2026 | 1.10 | § 4.1 : facteurs Intercités et avion relevés ; § 4.2 : calibrage du prix sur les tarifs TGV — D048 |
+| 03/11/2026 | 1.11 | § 3.1 : API Adresse de la Géoplateforme, sans clé, recherche inverse sans filtre de type — D051 |

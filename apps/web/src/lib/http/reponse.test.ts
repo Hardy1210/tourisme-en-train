@@ -16,7 +16,10 @@ describe('repondre', () => {
 
 describe('gererRoute', () => {
   const appeler = (erreur: unknown) =>
-    gererRoute('test', () => Promise.reject(erreur))(new Request('http://localhost/api/test'));
+    gererRoute('test', () => Promise.reject(erreur))(
+      new Request('http://localhost/api/test'),
+      undefined,
+    );
 
   it('paramètre invalide → 400 au format unique', async () => {
     const reponse = await appeler(new ParametreInvalide('La date doit être au format AAAA-MM-JJ.'));
@@ -45,8 +48,10 @@ describe('gererRoute', () => {
 
   it('pas d’erreur → la réponse du traitement passe telle quelle', async () => {
     const route = gererRoute('test', () => Promise.resolve(repondre({ ok: true }, 'aucun')));
-    expect(await (await route(new Request('http://localhost/api/test'))).json()).toEqual({
-      ok: true,
-    });
+    expect(await (await route(new Request('http://localhost/api/test'), undefined)).json()).toEqual(
+      {
+        ok: true,
+      },
+    );
   });
 });

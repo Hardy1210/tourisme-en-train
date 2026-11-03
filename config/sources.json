@@ -10,7 +10,8 @@
       "telechargement": "https://ressources.data.sncf.com/api/explore/v2.1/catalog/datasets/gares-de-voyageurs/exports/csv?delimiter=%3B",
       "licence": "ODbL",
       "attribution": "SNCF Gares & Connexions — Gares de voyageurs (ODbL)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "communes",
@@ -21,7 +22,8 @@
       "telechargement": "https://www.insee.fr/fr/statistiques/fichier/8740222/v_commune_2026.csv",
       "licence": "Licence Ouverte 2.0",
       "attribution": "INSEE — Code officiel géographique 2026 (Licence Ouverte)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "contours",
@@ -32,7 +34,8 @@
       "telechargement": "https://geo.api.gouv.fr/communes?codeRegion=27&format=geojson&geometry=contour&fields=code,nom",
       "licence": "Licence Ouverte 2.0",
       "attribution": "IGN — Admin Express, via geo.api.gouv.fr (Licence Ouverte)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "gtfs_sncf",
@@ -43,7 +46,8 @@
       "telechargement": "https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip",
       "licence": "ODbL",
       "attribution": "SNCF Voyageurs — horaires GTFS (ODbL)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "datatourisme",
@@ -54,7 +58,8 @@
       "telechargement": "https://www.data.gouv.fr/fr/datasets/r/d92f0184-e9cb-4bc9-81b0-b43fbcf2a0d2",
       "licence": "Licence Ouverte 2.0",
       "attribution": "DATAtourisme / ADN Tourisme (Licence Ouverte)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "osm",
@@ -65,7 +70,8 @@
       "telechargement": "https://overpass-api.de/api/interpreter",
       "licence": "ODbL",
       "attribution": "© les contributeurs d'OpenStreetMap (ODbL)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "reseau_divia",
@@ -77,6 +83,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "DiviaMobilités — Réseau DiviaMobilités (Dijon) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -94,6 +101,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Grand Besançon Métropole — Réseau Ginko (Besançon) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -111,6 +119,7 @@
       "licence": "ODbL",
       "attribution": "Optymo – Grand Belfort — Réseau Optymo (Belfort) (ODbL)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -128,6 +137,7 @@
       "licence": "ODbL",
       "attribution": "Pays de Montbéliard Agglomération — Réseau évolitY (Montbéliard) (ODbL)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -145,6 +155,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Le Grand Chalon — Réseau Zoom (Chalon-sur-Saône) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -162,6 +173,7 @@
       "licence": "ODbL",
       "attribution": "Mâconnais Beaujolais Agglomération — Réseau TréMA (Mâcon) (ODbL)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -179,6 +191,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté d'agglomération de l'Auxerrois — Réseau Léo (Auxerre) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": ["https://transport.data.gouv.fr/resources/78934/download"]
@@ -194,6 +207,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté d'agglomération de Nevers — Réseau Tanéo (Nevers) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -211,6 +225,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté d'agglomération du Grand Dole — Réseau Grandole Mobilités (Dole) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": ["https://transport.data.gouv.fr/resources/81254/download"]
@@ -226,6 +241,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté d'agglomération Beaune Côte et Sud — Réseau Côte&Bus (Beaune) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -243,6 +259,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Espace Communautaire Lons Agglomération — Réseau ECLA Mobilité (Lons-le-Saunier) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -260,6 +277,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté urbaine Creusot Montceau — Réseau MonRéZO (Le Creusot – Montceau) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -277,6 +295,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Communauté d'agglomération de Vesoul — Réseau moova (Vesoul) (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -294,6 +313,7 @@
       "licence": "Licence Ouverte 2.0",
       "attribution": "Région Bourgogne-Franche-Comté — Cars régionaux Mobigo (Licence Ouverte 2.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gtfs",
         "fichiers": [
@@ -318,6 +338,7 @@
       "licence": "Licence Ouverte 1.0",
       "attribution": "Ville de Besançon — Vélos en libre-service VéloCité (Besançon) (Licence Ouverte 1.0)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gbfs",
         "fichiers": [
@@ -336,6 +357,7 @@
       "licence": "ODbL",
       "attribution": "Optymo – Grand Belfort — Vélos en libre-service Optymo (Belfort) (ODbL)",
       "verifie": true,
+      "affichee": true,
       "reseau": {
         "format": "gbfs",
         "fichiers": ["https://data.optymo.fr/vls/station_information.json"],
@@ -351,7 +373,8 @@
       "telechargement": null,
       "licence": "Licence Ouverte 2.0",
       "attribution": "Ministère de la Culture — lieux et équipements culturels (Licence Ouverte)",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "festivals",
@@ -362,7 +385,8 @@
       "telechargement": null,
       "licence": "Licence Ouverte 2.0",
       "attribution": "Ministère de la Culture — festivals (Licence Ouverte)",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "qualite_tourisme",
@@ -373,7 +397,8 @@
       "telechargement": null,
       "licence": "Licence Ouverte 2.0",
       "attribution": "Qualité Tourisme — ministères économiques et financiers (Licence Ouverte)",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "lignes",
@@ -384,7 +409,8 @@
       "telechargement": null,
       "licence": "À confirmer en E07",
       "attribution": "SNCF Réseau — lignes par région administrative",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "cyclable",
@@ -395,7 +421,8 @@
       "telechargement": null,
       "licence": "ODbL",
       "attribution": "Geovelo et contributeurs OpenStreetMap (ODbL)",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "api_adresse",
@@ -404,9 +431,11 @@
       "mode": "direct",
       "page": "https://adresse.data.gouv.fr",
       "telechargement": null,
+      "api": "https://data.geopf.fr/geocodage",
       "licence": "Licence Ouverte 2.0",
       "attribution": "IGN — Base Adresse Nationale (Licence Ouverte)",
-      "verifie": false
+      "verifie": true,
+      "affichee": true
     },
     {
       "code": "api_sncf",
@@ -417,7 +446,8 @@
       "telechargement": null,
       "licence": "ODbL",
       "attribution": "SNCF — API temps réel (ODbL)",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "gbfs_direct",
@@ -428,7 +458,8 @@
       "telechargement": null,
       "licence": "Selon l'opérateur",
       "attribution": "Opérateurs de vélos via transport.data.gouv.fr",
-      "verifie": false
+      "verifie": false,
+      "affichee": false
     },
     {
       "code": "fond_carte",
@@ -439,7 +470,8 @@
       "telechargement": null,
       "licence": "ODbL (données OSM)",
       "attribution": "OpenFreeMap © OpenMapTiles, données © les contributeurs d'OpenStreetMap",
-      "verifie": false
+      "verifie": false,
+      "affichee": true
     },
     {
       "code": "facteurs_co2",
@@ -450,7 +482,8 @@
       "telechargement": null,
       "licence": "Licence Ouverte 2.0",
       "attribution": "ADEME — Impact CO2 (Licence Ouverte)",
-      "verifie": false
+      "verifie": false,
+      "affichee": true
     },
     {
       "code": "tarifs_tgv",
@@ -461,7 +494,8 @@
       "telechargement": "https://www.data.gouv.fr/api/1/datasets/r/cffcec3b-1c13-4e92-b530-1db00bb3ac1b",
       "licence": "ODbL",
       "attribution": "SNCF — Tarifs TGV INOUI et OUIGO (ODbL)",
-      "verifie": true
+      "verifie": true,
+      "affichee": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.4 · **Date** 02/11/2026
+> **Version** 1.6 · **Date** 03/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -156,6 +156,12 @@
 - **À retenir :** une adresse de source doit survivre aux mises à jour de la source ; sinon le traitement casse en silence quelques semaines plus tard.
 - **Origine :** E07, D046.
 
+### L33 — Appeler l'API réelle avant de coder contre sa documentation
+- **Problème :** l'adresse de l'API Adresse prévue dans la documentation était **obsolète** (redirection, en-têtes `deprecation` et `sunset` au 31/01/2026), et la recherche inverse filtrée par « commune » renvoyait une **liste vide** pour Talant.
+- **Solution :** un appel réel pendant l'audit, en lisant les en-têtes de la réponse : nouvelle adresse (Géoplateforme) rangée dans `sources.json`, recherche inverse sans filtre (commune de l'adresse la plus proche).
+- **À retenir :** une API publique déménage et ses filtres se comportent parfois autrement que documenté ; dix secondes de `curl` avant de coder évitent une panne le jour de la démo. Garder l'adresse dans la configuration, pas dans le code.
+- **Origine :** audit E09, D051.
+
 ## Base de données
 
 ### L09 — Une valeur calculée peut rester stockée, à condition d'être contrôlée
@@ -184,6 +190,12 @@
 - **À retenir :** un identifiant exposé à l'extérieur (adresse web, favori) doit rester stable.
 - **Origine :** D041, point 8.
 
+### L32 — L'identifiant interne de la base n'est pas un identifiant public
+- **Problème :** même stable d'un chargement à l'autre (L20), le numéro interne d'un lieu ou d'une gare change dès que la base est **recréée** : production, données figées de la soutenance, base remise à zéro. Les liens partagés et les favoris pointeraient alors vers un autre lieu, ou nulle part.
+- **Solution :** exposer l'identifiant **du monde réel** : le code UIC d'une gare (cherché parmi tous ses codes, car le code principal peut changer), la clé de la source d'un lieu (`osm-way-123456`). La clé est une **colonne générée** par la base, avec un **index unique** : une seule règle, et toute collision est refusée au chargement.
+- **À retenir :** se demander « ce lien marchera-t-il encore sur une autre base ? ». Prévoir aussi l'objet qui change de statut : un lien vers un lieu devenu doublon mène au lieu gardé au lieu d'un « introuvable ».
+- **Origine :** D052, question de Hardy en E09.
+
 ## Méthode de travail
 
 ### L11 — Les commandes Git qui « annulent » effacent le travail non enregistré
@@ -204,6 +216,37 @@
 - **À retenir :** même règle pour les adresses des sources et le nom de marque.
 - **Origine :** D012, D027.
 
+### L29 — Le framework peut écrire des données personnelles dans ses journaux
+- **Problème :** notre journal ne contenait aucune position, mais le serveur Next.js écrivait chaque URL demandée (`GET /api/autour?lat=…&lon=…`) dans le sien.
+- **Cause :** les outils journalisent par défaut les requêtes entrantes ; la position voyage dans l'URL.
+- **Solution :** désactiver ce journal (`logging.incomingRequests: false`), puis appeler les routes et **chercher la position dans les journaux** pour le vérifier.
+- **À retenir :** « aucune donnée personnelle dans les journaux » se vérifie sur la sortie réelle de **tous** les composants (framework, proxy, base), pas seulement sur son propre code.
+- **Origine :** E08, D047 (point 10).
+
+### L30 — Mesurer un seuil sur les vraies données avant de le choisir
+- **Problème :** quelle durée minimale, quel nombre de lieux pour reléguer une destination ?
+- **Solution :** compter ce que chaque valeur retire (5, 10, 15 min ; 1, 3, 5 lieux) et donner des exemples nommés. La durée minimale a été abandonnée (même 5 min coupait Arc-et-Senans) ; le seuil de 3 lieux a été choisi parce qu'il relègue les gares TGV sans reléguer la moitié de la région.
+- **À retenir :** un seuil se choisit sur des exemples concrets ; la mesure devient la raison écrite dans la décision.
+- **Origine :** D047, D050.
+
+### L31 — Un test doit pouvoir échouer : casser le code exprès
+- **Problème :** un test qui passe ne prouve rien s'il passerait aussi avec un code faux.
+- **Cas réel :** le test « la gare qui a le plus de trains en tête » passait encore une fois la règle retirée, car Gare de Lyon était aussi la plus rapide ; il a fallu un cas où les deux critères divergent (Belfort et la halte de Danjoutin).
+- **À retenir :** casser volontairement la règle (sur une copie du fichier) et vérifier que le test échoue ; choisir des exemples où la règle testée est la seule à décider.
+- **Origine :** `08-conventions-qualite.md` § 7, E08.
+
+### L34 — Tester la panne d'un service externe, sans réseau
+- **Problème :** comment vérifier le repli hors ligne de la recherche de ville sans couper Internet, et sans que les tests dépendent du réseau ?
+- **Solution :** remplacer `fetch` par une fausse version dans le test (une réponse préparée, ou un rejet « réseau coupé »), puis vérifier la réponse de repli **et** le contenu du journal (l'avertissement est là, la position n'y est pas).
+- **À retenir :** un repli non testé n'existe pas ; un adaptateur unique par service externe rend ce test simple (un seul endroit à simuler).
+- **Origine :** E09, `08-conventions-qualite.md` § 7 (pas de test dépendant du réseau).
+
+### L35 — Deux écrans, un seul calcul
+- **Problème :** la carte d'une destination et sa fiche affichent la même durée, le même CO₂ et le même prix ; calculés à deux endroits, ils finiraient par différer (un « ≈ 7–12 € » d'un côté, « ≈ 8–13 € » de l'autre).
+- **Solution :** une seule fonction pure (`impactLiaison`) et la même règle (type de train le moins favorable) pour la carte, la fiche et `/api/impact` ; un test d'intégration compare la carte et la fiche.
+- **À retenir :** quand deux écrans montrent la même valeur, tester qu'ils montrent **la même** valeur, pas seulement chacun « une » valeur.
+- **Origine :** D047, D051.
+
 ---
 
 ## Historique
@@ -215,3 +258,5 @@
 | 02/11/2026 | 1.2 | L22 → L24 (donnée brute triée et complétée, règle simulée avant ajout, but de sortie et service utile) |
 | 02/11/2026 | 1.3 | L25, L26 (regroupement de proche en proche, décisions humaines versionnées) |
 | 02/11/2026 | 1.4 | L27, L28 (catalogue national filtré par territoire, lien de téléchargement stable) |
+| 03/11/2026 | 1.5 | L29 → L31 (journaux du framework, seuil mesuré avant d'être choisi, test qui doit pouvoir échouer) |
+| 03/11/2026 | 1.6 | L32 → L35 (identifiant public, API réelle appelée avant de coder, panne d'un service externe testée, un seul calcul pour deux écrans) |

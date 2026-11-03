@@ -52,6 +52,13 @@ export const schemaParmi = (valeurs: readonly number[], quoi: string) =>
     .number()
     .refine((v) => valeurs.includes(v), `${quoi} possibles : ${valeurs.join(', ')}.`);
 
+/** Valide un segment dynamique de l'URL (`[uic]`, `[cle]`) ; invalide → `400` au message clair. */
+export function validerSegment<S extends z.ZodType>(valeur: string, schema: S): z.output<S> {
+  const resultat = schema.safeParse(decodeURIComponent(valeur));
+  if (resultat.success) return resultat.data;
+  throw new ParametreInvalide(resultat.error.issues[0]?.message ?? 'Adresse invalide.');
+}
+
 /** Valide les paramètres de l'URL ; le premier problème devient un `400` au message clair. */
 export function lireParametres<S extends z.ZodType>(requete: Request, schema: S): z.output<S> {
   const brut = Object.fromEntries(new URL(requete.url).searchParams);
@@ -65,3 +72,13 @@ export function lireParametres<S extends z.ZodType>(requete: Request, schema: S)
       : (probleme?.message ?? 'Paramètres invalides.');
   throw new ParametreInvalide(message);
 }
+
+/** Code UIC d'une gare (identifiant public stable, D052) : 8 caractères (chiffres en production). */
+export const schemaUic = z
+  .string({ error: 'Le code UIC de la gare est obligatoire.' })
+  .regex(/^[0-9A-Z]{8}$/, 'Le code UIC de la gare doit compter 8 chiffres.');
+
+/** Clé publique d'un lieu (D052) : `<source>-<identifiant>`, ex. `osm-way-123456`. */
+export const schemaCleLieu = z
+  .string()
+  .regex(/^[a-z][a-z0-9_]*-[A-Za-z0-9_-]{1,80}$/, 'Cette clé de lieu est invalide.');

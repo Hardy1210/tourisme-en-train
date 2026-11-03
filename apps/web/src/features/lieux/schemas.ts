@@ -15,7 +15,8 @@ export const schemaParametresAutour = z.object({
 });
 
 export const schemaLieuResume = z.object({
-  id: z.number().int(),
+  /** Clé de source : identifiant public stable (D052). */
+  cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sousCategorie: z.string().nullable(),
@@ -36,6 +37,56 @@ export const schemaReponseAutour = z.object({
   total: z.number().int(),
 });
 
+/** GET /api/destinations/[uic]/lieux (docs/05-api.md § 3.6) : rayon à pied, au plus `rayons.lieuxGareM`. */
+export const schemaParametresLieuxGare = z.object({
+  categories: schemaCategories,
+  rayon: z.coerce
+    .number()
+    .int(`Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`)
+    .min(
+      100,
+      `Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`,
+    )
+    .max(
+      parametres.rayons.lieuxGareM,
+      `Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`,
+    )
+    .optional()
+    .transform((rayon) => rayon ?? parametres.rayons.lieuxGareM),
+});
+
+/** GET /api/lieux/[cle] (docs/05-api.md § 3.7, D052). */
+export const schemaFicheLieu = z.object({
+  cle: z.string(),
+  /** Clé du lien suivi, s'il désignait un doublon ou un membre de site ; sinon null. */
+  demande: z.string().nullable(),
+  nom: z.string(),
+  categorie: schemaCategorie,
+  sousCategorie: z.string().nullable(),
+  description: z.string().nullable(),
+  adresse: z.string().nullable(),
+  commune: z.string().nullable(),
+  url: z.string().nullable(),
+  imageUrl: z.string().nullable(),
+  horaires: z.string().nullable(),
+  periode: z.string().nullable(),
+  qualiteTourisme: z.boolean(),
+  source: z.string(),
+  attribution: z.string(),
+  lat: z.number(),
+  lon: z.number(),
+  garesProches: z.array(
+    z.object({
+      uic: z.string(),
+      nom: z.string(),
+      distanceM: z.number().int(),
+      dureeMarcheMin: z.number().int(),
+    }),
+  ),
+});
+
+export type ParametresLieuxGare = z.infer<typeof schemaParametresLieuxGare>;
+export type FicheLieu = z.infer<typeof schemaFicheLieu>;
 export type ParametresAutour = z.infer<typeof schemaParametresAutour>;
 export type LieuResume = z.infer<typeof schemaLieuResume>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;

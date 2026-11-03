@@ -111,6 +111,8 @@ export const schemaParametres = z
       destinations: z.number().int().positive(),
       trains: z.number().int().positive(),
       mobilites: z.number().int().positive(),
+      /** Résultats de la recherche de ville (gares de la base d'abord, puis API Adresse). */
+      geocodage: z.number().int().positive(),
     }),
     impact: z.strictObject({
       source: z.string().min(1),

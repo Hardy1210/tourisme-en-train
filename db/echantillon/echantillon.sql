@@ -228,4 +228,44 @@ FROM (VALUES
 ) AS s (uic, categorie, nb)
 JOIN gare g ON g.uic = s.uic;
 
+-- ----------------------------------------------------------------------------
+-- E09 — fiche destination, trains, lieux (D051, D052)
+-- ----------------------------------------------------------------------------
+-- Chalon-sur-Saône a un second code UIC : une route doit trouver la gare par l'un ou l'autre (D039).
+UPDATE gare SET codes_uic = codes_uic || 'EX000095'::char(8) WHERE uic = 'EX000005';
+
+-- Train en jumelage (D040) : mêmes heures que ECH_T1 jusqu'à Beaune, autre numéro → un seul train.
+INSERT INTO trajet (id, service_id, type_train, nom_ligne, numero) VALUES
+  ('ECH_T26', 'ECH_SEMAINE', 'TER', 'Dijon - Beaune', '891099');
+INSERT INTO passage (trajet_id, sequence, gare_id, arrivee_s, depart_s)
+SELECT p.trajet_id, p.sequence, g.id, p.arrivee_s, p.depart_s
+FROM (VALUES ('ECH_T26', 1, 'EX000001', NULL, 25200), ('ECH_T26', 2, 'EX000002', 26520, NULL))
+  AS p (trajet_id, sequence, uic, arrivee_s, depart_s)
+JOIN gare g ON g.uic = p.uic;
+
+-- Retour Beaune → Dijon à 07:10, AVANT l'arrivée du premier aller (07:22) : jamais proposé (D051).
+INSERT INTO trajet (id, service_id, type_train, nom_ligne, numero) VALUES
+  ('ECH_T27', 'ECH_SEMAINE', 'TER', 'Beaune - Dijon', '891098');
+INSERT INTO passage (trajet_id, sequence, gare_id, arrivee_s, depart_s)
+SELECT p.trajet_id, p.sequence, g.id, p.arrivee_s, p.depart_s
+FROM (VALUES ('ECH_T27', 1, 'EX000002', NULL, 25800), ('ECH_T27', 2, 'EX000001', 27120, NULL))
+  AS p (trajet_id, sequence, uic, arrivee_s, depart_s)
+JOIN gare g ON g.uic = p.uic;
+UPDATE liaison_directe l SET nb_trains = 2, premier_depart_s = 25800, premiere_arrivee_s = 27120
+FROM gare d, gare a
+WHERE l.gare_depart_id = d.id AND d.uic = 'EX000002' AND l.gare_arrivee_id = a.id AND a.uic = 'EX000001';
+
+-- Membre d'un site : jamais listé ; un lien vers lui mène au représentant (D052).
+UPDATE lieu SET site_de = (SELECT id FROM lieu WHERE id_source = 'ECH_L13')
+WHERE id_source = 'ECH_L16';
+
+-- Lieux à pied de chaque gare, calculés comme `pnpm etl rattachements` (vol d'oiseau × 1,3,
+-- 1 500 m au plus ; doublons et membres de site exclus). `gare_stats` plus haut reste écrit à la
+-- main pour les tests du classement (D050) : les deux ne coïncident pas exactement.
+INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
+SELECT l.id, g.id, round(ST_Distance(l.geom, g.geom) * 1.3)::int,
+       ceil(ST_Distance(l.geom, g.geom) * 1.3 / 75)::smallint
+FROM lieu l JOIN gare g ON ST_DWithin(l.geom, g.geom, 1500 / 1.3)
+WHERE l.doublon_de IS NULL AND l.site_de IS NULL;
+
 COMMIT;
