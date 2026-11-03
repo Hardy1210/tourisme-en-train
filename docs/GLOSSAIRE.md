@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.10 · **Date** 02/11/2026
+> **Version** 1.11 · **Date** 03/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -27,7 +27,8 @@
 | **Contour** | Limite d'une commune de la région ; un lieu appartient à la commune dont le contour contient son point (D041) | `contour` | `commune.contour` | Emprise (rectangle de la région, `parametres.region.emprise`) |
 | **Gare de départ** | Gare d'où part l'utilisateur (la plus proche ou choisie) | `gareDepart` | `gare_depart_id` | — |
 | **Gare d'arrivée** | Gare de la destination | `gareArrivee` | `gare_arrivee_id` | — |
-| **Destination** | Une gare d'arrivée atteignable en train direct, avec ses lieux | `Destination` | *(vue calculée, pas de table)* | Lieu |
+| **Destination** | Une **ville** atteignable en train direct depuis la gare de départ (ses gares d'arrivée regroupées par commune), avec les lieux à pied de sa gare en tête ; la fiche, elle, est celle d'une gare (D047) | `Destination` | *(vue calculée, pas de table)* | Lieu |
+| **Gare en tête** | Gare d'une destination qui a le plus de trains ce jour-là (à égalité, la plus rapide) : ses valeurs remplissent la carte de destination ; les autres gares de la ville sont listées à côté (D047) | `gare` (dans `Destination`), `autresGares` | — | Gare d'arrivée |
 | **Lieu** | Point d'intérêt : musée, château, parc, aire de jeux, festival… | `Lieu`, `lieuId` | table `lieu`, `lieu_id` | « POI » (terme interdit dans le code) |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
 | **Sous-catégorie** | Précision libre dans une catégorie (ex. « aire de jeux », « château ») | `sousCategorie` | `sous_categorie` | — |
@@ -127,3 +128,4 @@
 | 01/11/2026 | 1.8 | Contour, étiquette, signe de sortie ; règle de catégorie d'exclusion (E05) — D041 |
 | 02/11/2026 | 1.9 | Doublon, site, lieu en longueur (E06) — D043 |
 | 02/11/2026 | 1.10 | Car régional (type `CAR`, E07) — D046 |
+| 03/11/2026 | 1.11 | Destination = une ville ; gare en tête (E08) — D047 |

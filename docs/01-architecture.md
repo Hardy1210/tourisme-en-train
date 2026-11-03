@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.6 · **Date** 01/11/2026
+> **Version** 1.7 · **Date** 03/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -69,7 +69,8 @@ apps/web/src/
 │  ├─ impact/                           ← CO₂, prix estimé
 │  ├─ carte/                            ← composants de carte, couches, épingles
 │  ├─ explorer/                         ← composition de l'écran principal, filtres
-│  └─ presentation/                     ← page « L'âme du produit », écran Sources
+│  ├─ presentation/                     ← page « L'âme du produit », écran Sources
+│  └─ sante/                            ← route de santé (état de la base et des données, D047)
 ├─ components/ui/                       ← boutons, puces, feuilles, onglets (shadcn/ui sur tokens)
 ├─ config/
 │  ├─ marque.ts                         ← nom, slogan, description (l'URL est la variable URL_APP, lue côté serveur)
@@ -217,3 +218,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 09/10/2026 | 1.4 | § 8 : versions fixées (Node 24 — D028 ; Next.js 16, Zod 4, TypeScript 5.9, pnpm 11 — D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun — D031 |
 | 11/10/2026 | 1.5 | § 8 : pilote `pg` dans l'application, génération des migrations par `pnpm db:generer` — D033 |
 | 01/11/2026 | 1.6 | § 5 : faisable dans la journée précalculé par l'ETL, prochain départ en une requête groupée — D040 |
+| 03/11/2026 | 1.7 | § 3 : fonctionnalité `sante/` — D047 |

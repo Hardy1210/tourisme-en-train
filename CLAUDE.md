@@ -133,7 +133,7 @@ tourisme-en-train/
 ├─ apps/web/src/
 │  ├─ app/                       ← pages et routes API, fines
 │  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
-│  │                                impact/ carte/ explorer/ presentation/
+│  │                                impact/ carte/ explorer/ presentation/ sante/
 │  │                                chacune : ui/ · server/ · schemas.ts · types.ts · hooks.ts
 │  ├─ components/ui/             ← composants génériques (shadcn/ui sur tokens)
 │  ├─ config/                    ← marque.ts · parametres.ts (réexporte @tourisme/commun)
@@ -194,7 +194,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E05 | Lieux : DATAtourisme (CSV région) + OpenStreetMap | S3 | ✅ |
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ✅ |
-| E08 | Socle API + routes gares, autour, destinations | S5 | ⬜ |
+| E08 | Socle API + routes gares, autour, destinations | S5 | 🟡 |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ⬜ |
 | E10 | Socle interface : design system, mise en page, composants | S6 | ⬜ |
 | E11 | Écran Explorer | S6 | ⬜ |
@@ -401,3 +401,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 02/11/2026 | 1.29 | § 16 : `pnpm etl transport_local` — D046 |
 | 02/11/2026 | 1.30 | § 8 : E07 terminée (P0, PR #53) |
 | 02/11/2026 | 1.31 | § 9 : sauvegarde de session (E07 fusionnée, E08 à lancer) |
+| 03/11/2026 | 1.32 | § 6 : fonctionnalité `sante/` — D047 |

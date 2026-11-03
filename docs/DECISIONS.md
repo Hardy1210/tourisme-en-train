@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -442,3 +442,34 @@
 - **Raison :** audit E07 ; jalons « données en base » (01/11) et « API complète » (08/11) dépassés.
 - **Écarté :** un seul réseau par grande ville ; cars rangés en `AUTRE` (indistincts dans l'interface) ou non chargés (petites gares sans rien) ; gare la plus proche seule ; rayon à vol d'oiseau ; P1 en même temps que le P0.
 - **Impact :** `config/sources.json` et son schéma, `config/parametres.json` (`mobilite.regroupementQuaisM`), migration (`mobilite_locale`), `etl/src/sources/transport-local.ts`, `02` § 2.5, `03` § 3.10, `04` § 4.7, fiche E07, `A-FAIRE`.
+
+## D047 — Destinations par ville (E08) : gare en tête, aucune durée minimale, destinations sans lieu en fin de liste, limite à 150
+- **Date :** 03/11/2026
+- **En clair :** une ville atteinte par plusieurs gares (Paris, Lyon, Besançon…) n'apparaît qu'une fois dans la liste, avec la gare qui a le plus de trains en tête ; la fiche reste celle d'une gare, parce qu'on arrive à une gare précise et qu'on marche depuis elle.
+- **Décision :**
+  1. **Une carte par ville** (commune de rattachement de `gare.code_insee` : nom + département ; les arrondissements comptent comme « Paris »), **une fiche par gare** (`/api/destinations/[gareId]`). La carte affiche le nom de la gare sous celui de la ville ; les autres gares de la ville sont listées (`autresGares`).
+  2. **Gare en tête** = celle qui a **le plus de trains** ce jour-là ; à égalité, la plus rapide. Les valeurs de la carte (durée, trains, horaires, lieux, CO₂, prix) sont celles de la gare en tête ; le tri se fait sur sa durée.
+  3. **Destinations de la même commune que le départ exclues** (Dijon → Dijon Porte Neuve, Nevers → Nevers Le Banlay : 16 liaisons au départ de 15 gares le 03/11).
+  4. **Aucune durée minimale.** Mesure du 03/11 (3 562 cartes de ville au départ des 194 gares de la région) : 5 min retire 143 cartes, 10 min 434, 15 min 699 — et **même 5 min coupe de vraies sorties** (Mouchard → Arc-et-Senans et ses Salines royales, 4 min ; à 15 min, Belfort → Montbéliard). L'exclusion de la même commune et le classement en fin de liste des destinations sans lieu suffisent.
+  5. **Destination de la région sans aucun lieu à pied** : gardée, **en fin de liste** (20 gares de la région sur 194 ; 242 cartes de ville sur 2 852, 8,5 %). **Filtre des envies** : retire les destinations de la région sans lieu des catégories choisies ; les destinations **hors région** restent toujours (« trains seulement »).
+  6. **`limites.destinations` = 150** (au lieu de 60) : à 60, **Paris (73ᵉ) et Lyon (74ᵉ) disparaissaient depuis Dijon** (119 villes atteintes ; 120 au plus pour une gare de la région). La limite reste un garde-fou ; c'est `dureeMax` qui réduit la liste.
+  7. **CO₂ économisé, prix estimé et prochaine arrivée dans `/api/destinations`**, calculés par les fonctions pures de `lib/impact` que réutilisera `/api/impact` : une carte n'appelle pas une route de plus (60 à 150 appels évités). CO₂ comparé à la voiture seule, avec le facteur **le moins favorable** des types de train de la liaison.
+  8. Le filtre « faisable dans la journée » de la maquette se fait **côté interface**.
+  9. **Route `/api/sante`** dans `features/sante/` (une route ne peut pas importer `lib/db` directement).
+- **Raison :** relevé du 01/11 (Paris en deux cartes depuis Dijon) ; mesure du 03/11 : 13 villes concernées, 104 gares de départ sur 194 avec au moins un doublon, jusqu'à 4 cartes « Lyon » depuis Mâcon ; maquette Explorer desktop v2 (carte de destination). La gare en tête « la plus rapide » mettait en avant des haltes rattachées à la commune voisine (Danjoutin pour Belfort).
+- **Écarté :** une carte par gare (Paris et Lyon en double, la moitié des listes touchées) ; tout par ville (la fiche réunirait des lieux à pied de gares différentes : un musée près de Bercy n'est pas à pied de Gare de Lyon) ; durée minimale de 5, 10 ou 15 min ; appel de `/api/impact` par carte.
+- **Impact :** `05` § 3.4, `config/parametres.json` (`limites.destinations`), `GLOSSAIRE` (gare en tête), `CLAUDE.md` § 6 (`features/sante`), fiche E08, `A-FAIRE`.
+
+## D048 — CO₂ : une seule source (ImpactCO2) ; prix au km calibré sur les tarifs TGV de la SNCF
+- **Date :** 03/11/2026
+- **En clair :** les émissions des Intercités et de l'avion viennent de la même page de l'ADEME que celles du TER et du TGV ; le prix affiché « ≈ » est calculé au kilomètre à partir des tarifs publiés par la SNCF.
+- **Décision :**
+  1. **Facteurs CO₂** relevés le 03/11/2026 sur ImpactCO2 (ADEME, Base Empreinte) : **Intercités 8,98 g CO₂e/km**, **avion court-courrier 225 g** (traînées de condensation comprises, trajets de 300 à 1 000 km). TER (27,7) et TGV (2,93) y ont été revérifiés : identiques. **Une seule source pour tous les types, pour une comparaison juste** : les valeurs de la SNCF (Intercités 4,9 g, méthode InfoGES) suivent une autre méthode.
+  2. **Prix : option « prix au km calibré maintenant, grilles par trajet plus tard (P1) ».** Le fichier « Tarifs TER Bourgogne-Franche-Comté » a une **licence non spécifiée** sur data.gouv.fr et il est archivé (03/12/2025) : écarté. Calibrage sur **« Tarifs TGV INOUI et OUIGO » (SNCF, ODbL ; tarifs INOUI au 01/04/2026)**, 2ᵈᵉ classe, 2 211 couples de gares rapprochés par code UIC à 450 km au plus, distance calculée comme l'application (vol d'oiseau × `rail.coefDetour`) :
+     - **TGV : 0,17 €/km** (médiane du milieu de la fourchette « Tarif Normal ») ;
+     - **TER et Intercités : 0,22 €/km** (médiane du « Tarif Réglementé », le barème kilométrique national ; aucune grille ouverte pour les Intercités).
+     - Fourchette **± 25 %** (`margeFourchette` inchangée) : environ 3 trajets sur 4 ont leur prix réel moyen dedans. Un modèle affine (part fixe + prix au km) ne fait pas mieux (erreur médiane 12,9 % contre 13,3 %) : contrat `parKm` gardé.
+  3. Source et **date du calibrage** écrites dans `parametres.json` (`prix.source`, `prix.dateCalibrage`, nouveau champ obligatoire une fois calibré) ; source `tarifs_tgv` ajoutée à `config/sources.json` pour l'écran « Sources ». Le prix reste affiché **« ≈ »** avec le lien vers la billetterie (règle 7).
+- **Raison :** deux trous relevés à l'audit E08 (`INTERCITES` et `AVION` à `null`, prix jamais affiché tant que `aCalibrer`), alors que la carte de destination de la maquette affiche CO₂ et prix.
+- **Écarté :** valeurs CO₂ de la SNCF (méthode différente) ; grilles de prix par trajet tout de suite (deux sources de plus, rapprochement des gares, rien pour les Intercités : reporté en P1) ; fichier TER BFC (licence non claire).
+- **Impact :** `config/parametres.json`, schéma `packages/commun/src/parametres.ts`, `config/sources.json`, `02` § 4.1 et § 4.2, `04` § 6, `05` § 3.4, `A-FAIRE`.

@@ -1,8 +1,8 @@
 # E08 — Socle de l'API + routes gares, autour, destinations
 
 > **Semaine :** S5 (02/11 → 08/11) · **Priorité :** P0 · **Branche :** `etape/E08-socle-api`
-> **Étapes préalables :** E04, E06 · **État :** ⬜ à faire
-> **Version de la fiche** 1.0 · **Date** 30/09/2026
+> **Étapes préalables :** E04, E06 · **État :** 🟡 en cours
+> **Version de la fiche** 1.1 · **Date** 03/11/2026
 
 ## Contexte minimal
 Les données sont prêtes (E02–E06). On construit le socle de l'API (validation, erreurs, cache, journal) et les trois routes qui alimentent l'écran Explorer : gares proches, autour de moi, destinations en train direct. Plus la route de santé, attendue par les SR.
@@ -21,7 +21,7 @@ Les routes `/api/sante`, `/api/gares/proches`, `/api/autour`, `/api/destinations
 Socle `lib/http` réutilisable ; 4 routes testées en intégration sur l'échantillon et vérifiées à la main sur les vraies données.
 
 ## Actions de Hardy
-- [ ] Valider le plan.
+- [x] Valider le plan (03/11).
 - [ ] Appeler les routes à la main (navigateur ou outil HTTP) avec les exemples fournis.
 
 ## Phase d'audit
@@ -50,6 +50,8 @@ Socle `lib/http` réutilisable ; 4 routes testées en intégration sur l'échant
 - [ ] Position hors France → `400` **et** position à Dijon → `200`.
 - [ ] Date hors fenêtre → `400` avec message clair **et** date absente → date du jour à Paris.
 - [ ] `/api/destinations` depuis Dijon-Ville : Beaune dans la tranche `<30`.
+- [ ] Depuis Dijon : une seule carte « Paris » (Gare de Lyon en tête, Bercy dans `autresGares`) et une seule « Lyon » ; Dijon Porte Neuve absente ; Paris et Lyon présentes (limite 150).
+- [ ] Destination de la région sans lieu en fin de liste **et** retirée par un filtre d'envies ; destination hors région gardée par ce filtre.
 - [ ] Temps de réponse < 300 ms en local sur les vraies données.
 - [ ] Aucune position dans les journaux (vérifié).
 
@@ -65,3 +67,4 @@ Voir `_MODELE.md`. Mettre à jour `05` si un contrat a dû évoluer (avec décis
 
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 03/11/2026 : audit et décisions de Hardy avant le code — D047 (une destination par ville, gare en tête, aucune durée minimale, sans lieu en fin de liste, limite 150, CO₂ et prix dans `/api/destinations`, `features/sante`), D048 (CO₂ Intercités et avion, prix calibré sur les tarifs TGV). `lib/impact` avancé d'E09 à E08. L'échantillon reçoit liaisons, `gare_stats` et `lieu_gare`.

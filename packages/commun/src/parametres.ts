@@ -118,16 +118,20 @@ export const schemaParametres = z
       .strictObject({
         aCalibrer: z.boolean(),
         source: z.string().min(1).nullable(),
+        /** Date du calibrage des prix au km (D048). */
+        dateCalibrage: z.iso.date().nullable(),
         parKm: z.strictObject({ TER: schemaPrixKm, INTERCITES: schemaPrixKm, TGV: schemaPrixKm }),
         margeFourchette: z.number().min(0).max(1),
       })
       .refine(
         (prix) =>
           prix.aCalibrer ||
-          (prix.source !== null && Object.values(prix.parKm).every((v) => v !== null)),
+          (prix.source !== null &&
+            prix.dateCalibrage !== null &&
+            Object.values(prix.parKm).every((v) => v !== null)),
         {
           message:
-            'Prix calibré (aCalibrer = false) : la source et tous les prix au km sont obligatoires.',
+            'Prix calibré (aCalibrer = false) : la source, la date du calibrage et tous les prix au km sont obligatoires.',
         },
       ),
   })

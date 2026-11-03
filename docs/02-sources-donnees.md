@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.9 · **Date** 02/11/2026
+> **Version** 1.10 · **Date** 03/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -198,11 +198,17 @@ Recopiés dans `config/parametres.json` (clé `impact.facteursCo2GParKm`), avec 
 |---|---|---|
 | TGV | 2,93 | ADEME — Impact CO2 |
 | TER | 27,7 | ADEME — Impact CO2 |
-| Intercités | **à relever à l'E09** | ADEME — Impact CO2 |
+| Intercités | 8,98 | ADEME — Impact CO2 (relevé le 03/11/2026, D048) |
 | Voiture thermique (1 personne) | 142 | ADEME — Impact CO2 |
-| Avion court-courrier | **à relever à l'E09** | ADEME — Impact CO2 |
+| Avion court-courrier (300–1 000 km, traînées comprises) | 225 | ADEME — Impact CO2 (relevé le 03/11/2026, D048) |
 
-La voiture partagée divise l'émission de la voiture par le nombre d'occupants (paramètre). *Pourquoi en local :* la démo doit fonctionner sans réseau, et ces valeurs changent rarement.
+La voiture partagée divise l'émission de la voiture par le nombre d'occupants (paramètre). *Pourquoi en local :* la démo doit fonctionner sans réseau, et ces valeurs changent rarement. **Une seule source pour tous les types** (ImpactCO2), pour une comparaison juste (D048).
+
+### 4.2 `tarifs_tgv` — Calibrage du prix au km (P0)
+- **Source :** « Tarifs TGV INOUI et OUIGO » (SNCF, data.gouv.fr), **ODbL** ; tarifs INOUI en vigueur au 01/04/2026. Adresse dans `config/sources.json`.
+- **Usage :** **pas chargé en base.** Calibrage fait une fois (03/11/2026), recopié dans `parametres.json` (`prix.parKm`, `prix.source`, `prix.dateCalibrage`) : TGV 0,17 €/km (« Tarif Normal », milieu de fourchette) ; TER et Intercités 0,22 €/km (« Tarif Réglementé », barème national). Méthode et chiffres : D048.
+- **Écarté :** « Tarifs TER Bourgogne-Franche-Comté » (licence non spécifiée, jeu archivé).
+- **Plus tard (P1) :** prix par trajet tiré des grilles plutôt qu'au km.
 
 ---
 
@@ -241,3 +247,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 01/11/2026 | 1.7 | Audit E05 : § 2.1 ter `contours` (nouvelle source) ; § 2.3 colonnes réelles DATAtourisme ; § 2.4 Overpass seul, requête tirée des règles, GéoDataMine écarté ; lieux culturels et festivals après le P0 — D041 |
 | 02/11/2026 | 1.8 | § 2.8 : fichier Qualité Tourisme non utilisé, label lu dans DATAtourisme — D043 |
 | 02/11/2026 | 1.9 | § 2.5 : réseaux retenus, licences, Mobigo, vélos ; § 2.9 et § 2.10 reportés après le P0 — D046 |
+| 03/11/2026 | 1.10 | § 4.1 : facteurs Intercités et avion relevés ; § 4.2 : calibrage du prix sur les tarifs TGV — D048 |
