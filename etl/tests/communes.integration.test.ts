@@ -38,10 +38,10 @@ describe('fusionnerCommunes', () => {
           { code_insee: '21231', nom: 'Dijon (renommée)' },
         ]);
 
-        // Commune libre absente du fichier : supprimée. Les 9 autres communes d'échantillon,
+        // Commune libre absente du fichier : supprimée. Les 11 autres communes d'échantillon,
         // absentes aussi mais référencées par une gare : gardées.
         expect(bilan.supprimees).toBe(1);
-        expect(bilan.gardees).toHaveLength(9);
+        expect(bilan.gardees).toHaveLength(11);
         throw new Annulation();
       }),
     ).rejects.toBeInstanceOf(Annulation);

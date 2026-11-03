@@ -10,7 +10,10 @@ import * as schema from './schema';
 
 // En développement, le rechargement à chaud réévalue ce module : un seul pool, gardé sur globalThis.
 const globalDev = globalThis as typeof globalThis & { poolBdd?: pg.Pool };
-const pool = globalDev.poolBdd ?? new pg.Pool({ connectionString: env.BDD_URL_APP });
+// Délai de connexion borné : base arrêtée → erreur (503 de /api/sante) au lieu d'une attente sans fin.
+const pool =
+  globalDev.poolBdd ??
+  new pg.Pool({ connectionString: env.BDD_URL_APP, connectionTimeoutMillis: 5000 });
 if (env.NODE_ENV !== 'production') globalDev.poolBdd = pool;
 
 export const db = drizzle({ client: pool, schema, casing: 'snake_case' });
