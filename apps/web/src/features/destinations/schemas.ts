@@ -63,6 +63,46 @@ export const schemaReponseDestinations = z.object({
   destinations: z.array(schemaDestination),
 });
 
+export const schemaParametresFiche = z.object({
+  depuis: schemaUic.optional(),
+  date: schemaDate,
+});
+
+/** En-tête de la fiche destination (docs/05-api.md § 3.5, D051) : mêmes valeurs que la carte. */
+export const schemaFicheDestination = z.object({
+  gare: z.object({
+    uic: z.string(),
+    nom: z.string(),
+    lat: z.number(),
+    lon: z.number(),
+    dansRegion: z.boolean(),
+    titre: z.string(),
+    commune: z.object({ nom: z.string().nullable(), codeInsee: z.string().nullable() }),
+    horsVille: z.boolean(),
+  }),
+  lieuxParCategorie: z.partialRecord(schemaCategorie, z.number().int()),
+  lieuxCharges: z.boolean(),
+  liaison: z
+    .object({
+      date: z.iso.date(),
+      dureeMin: z.number().int(),
+      trancheTemps: z.string(),
+      nbTrains: z.number().int(),
+      premierDepart: schemaHeure,
+      dernierRetour: schemaHeure.nullable(),
+      typesTrain: z.array(schemaTypeTrain),
+      distanceKm: z.number(),
+      faisableJournee: z.boolean(),
+      co2EconomiseKg: z.number().nullable(),
+      prixEstime: z
+        .object({ min: z.number(), max: z.number(), devise: z.literal('EUR') })
+        .nullable(),
+    })
+    .nullable(),
+});
+
 export type ParametresDestinations = z.infer<typeof schemaParametresDestinations>;
+export type ParametresFiche = z.infer<typeof schemaParametresFiche>;
+export type FicheDestination = z.infer<typeof schemaFicheDestination>;
 export type Destination = z.infer<typeof schemaDestination>;
 export type ReponseDestinations = z.infer<typeof schemaReponseDestinations>;

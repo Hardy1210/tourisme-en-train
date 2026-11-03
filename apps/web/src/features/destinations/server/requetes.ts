@@ -31,6 +31,49 @@ const schemaGareAtteinte = z.object({
 
 export type GareAtteinteBrute = z.infer<typeof schemaGareAtteinte>;
 
+const schemaLiaison = z.object({
+  duree_min: z.number().int(),
+  nb_trains: z.number().int(),
+  premier_depart_s: z.number().int(),
+  dernier_retour_s: z.number().int().nullable(),
+  types_train: z.array(schemaTypeTrain),
+  distance_km: z.coerce.number(),
+  faisable_journee: z.boolean(),
+});
+
+export type LiaisonBrute = z.infer<typeof schemaLiaison>;
+
+/** Liaison directe `departId → arriveeId` à `date`, avec son dernier retour (D040) ; null si aucune. */
+export async function liaisonEntre(
+  departId: number,
+  arriveeId: number,
+  date: string,
+): Promise<LiaisonBrute | null> {
+  const { rows } = await db.execute(sql`
+    SELECT l.duree_min, l.nb_trains, l.premier_depart_s, r.dernier_depart_s AS dernier_retour_s,
+           l.types_train, l.distance_km, l.faisable_journee
+    FROM liaison_directe l
+    LEFT JOIN liaison_directe r ON r.gare_depart_id = l.gare_arrivee_id
+      AND r.gare_arrivee_id = l.gare_depart_id AND r.date_service = l.date_service
+    WHERE l.gare_depart_id = ${departId} AND l.gare_arrivee_id = ${arriveeId}
+      AND l.date_service = ${date}`);
+  return rows[0] ? schemaLiaison.parse(rows[0]) : null;
+}
+
+const schemaLieuxParCategorie = z.object({
+  lieux: z.partialRecord(schemaCategorie, z.number().int()),
+});
+
+/** Lieux à pied de la gare par catégorie (`gare_stats`), catégories non vides seulement. */
+export async function lieuxParCategorie(
+  gareId: number,
+): Promise<Partial<Record<Categorie, number>>> {
+  const { rows } = await db.execute(sql`
+    SELECT coalesce(jsonb_object_agg(categorie, nb_lieux), '{}'::jsonb) AS lieux
+    FROM gare_stats WHERE gare_id = ${gareId} AND nb_lieux > 0`);
+  return schemaLieuxParCategorie.parse(rows[0]).lieux;
+}
+
 /**
  * Une ligne par gare d'arrivée en train direct depuis `gareId` à `date` (docs/03 § 5) : liaison,
  * dernier retour (liaison inverse, D040), commune, lieux à pied par catégorie (`gare_stats`).

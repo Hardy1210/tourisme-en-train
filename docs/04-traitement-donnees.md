@@ -75,7 +75,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20 },
+  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
   "impact": {
     "source": "ADEME — Impact CO2",
     "dateReleve": "2026-11-03",

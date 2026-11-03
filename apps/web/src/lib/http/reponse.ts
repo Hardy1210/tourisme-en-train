@@ -48,14 +48,17 @@ export function repondreErreur(erreur: unknown, route: string): Response {
   );
 }
 
+/** Segments dynamiques d'une route Next.js (`[uic]`, `[cle]`), passés en second argument. */
+export type Segments<S extends Record<string, string>> = { params: Promise<S> };
+
 /** Enveloppe d'une route : toute erreur levée par le traitement devient une réponse au bon format. */
-export function gererRoute(
+export function gererRoute<C = unknown>(
   route: string,
-  traitement: (requete: Request) => Promise<Response>,
-): (requete: Request) => Promise<Response> {
-  return async (requete) => {
+  traitement: (requete: Request, contexte: C) => Promise<Response>,
+): (requete: Request, contexte: C) => Promise<Response> {
+  return async (requete, contexte) => {
     try {
-      return await traitement(requete);
+      return await traitement(requete, contexte);
     } catch (erreur) {
       return repondreErreur(erreur, route);
     }

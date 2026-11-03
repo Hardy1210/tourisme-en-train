@@ -3,18 +3,16 @@ import 'server-only';
 import { type Maintenant } from '@tourisme/commun';
 
 import { parametres } from '@/config/parametres';
-import { fenetreLiaisons, gareParUic } from '@/lib/db/requetes-partagees';
+import { gareParUic, verifierDateDansFenetre } from '@/lib/db/requetes-partagees';
 import { heure, heureOuNull } from '@/lib/dates/heures';
 import { trancheTemps } from '@/lib/dates/tranche-temps';
-import { Introuvable, ParametreInvalide } from '@/lib/http/erreurs';
+import { Introuvable } from '@/lib/http/erreurs';
 import { impactLiaison } from '@/lib/impact/impact';
 
 import type { Destination, ParametresDestinations, ReponseDestinations } from '../schemas';
 
 import { type GareAtteinteBrute, garesAtteintes, prochainsTrains } from './requetes';
-import { cleDestination, estHorsVille, regrouperParVille } from './regrouper';
-
-const enFrancais = (date: string): string => date.split('-').reverse().join('/');
+import { cleDestination, estHorsVille, regrouperParVille, titreDestination } from './regrouper';
 
 /** `maintenant` vient de `maintenantParis()` (route) : le service ne lit jamais l'horloge. */
 export async function destinations(
@@ -22,14 +20,7 @@ export async function destinations(
   maintenant: Maintenant,
 ): Promise<ReponseDestinations> {
   const jour = date ?? maintenant.dateDuJour;
-  const fenetre = await fenetreLiaisons();
-  if (fenetre === null || jour < fenetre.debut || jour > fenetre.fin) {
-    throw new ParametreInvalide(
-      fenetre === null
-        ? 'Aucun horaire n’est chargé pour le moment.'
-        : `Les horaires sont disponibles du ${enFrancais(fenetre.debut)} au ${enFrancais(fenetre.fin)}.`,
-    );
-  }
+  await verifierDateDansFenetre(jour);
 
   const depart = await gareParUic(gare);
   if (depart === null) throw new Introuvable('Cette gare est inconnue.');
@@ -100,7 +91,7 @@ function versDestination({
   const impact = impactLiaison(tete.distance_km, tete.types_train);
   return {
     // Gare hors de la ville (TGV) : la carte porte le nom de la gare, la commune vient dessous (D049).
-    titre: horsVille || tete.commune === null ? tete.nom : tete.commune,
+    titre: titreDestination(tete.nom, tete.commune, horsVille),
     commune: { nom: tete.commune, codeInsee: tete.code_insee },
     horsVille,
     gare: {

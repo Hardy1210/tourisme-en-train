@@ -52,6 +52,13 @@ export const schemaParmi = (valeurs: readonly number[], quoi: string) =>
     .number()
     .refine((v) => valeurs.includes(v), `${quoi} possibles : ${valeurs.join(', ')}.`);
 
+/** Valide un segment dynamique de l'URL (`[uic]`, `[cle]`) ; invalide → `400` au message clair. */
+export function validerSegment<S extends z.ZodType>(valeur: string, schema: S): z.output<S> {
+  const resultat = schema.safeParse(decodeURIComponent(valeur));
+  if (resultat.success) return resultat.data;
+  throw new ParametreInvalide(resultat.error.issues[0]?.message ?? 'Adresse invalide.');
+}
+
 /** Valide les paramètres de l'URL ; le premier problème devient un `400` au message clair. */
 export function lireParametres<S extends z.ZodType>(requete: Request, schema: S): z.output<S> {
   const brut = Object.fromEntries(new URL(requete.url).searchParams);
@@ -74,4 +81,4 @@ export const schemaUic = z
 /** Clé publique d'un lieu (D052) : `<source>-<identifiant>`, ex. `osm-way-123456`. */
 export const schemaCleLieu = z
   .string()
-  .regex(/^[a-z][a-z0-9_]*-[A-Za-z0-9-]{1,80}$/, 'Cette clé de lieu est invalide.');
+  .regex(/^[a-z][a-z0-9_]*-[A-Za-z0-9_-]{1,80}$/, 'Cette clé de lieu est invalide.');
