@@ -10,6 +10,13 @@ const schemaMode = z.strictObject({
   coefDetour: z.number().min(1),
 });
 
+const schemaEmprise = z.strictObject({
+  latMin: z.number().min(-90).max(90),
+  latMax: z.number().min(-90).max(90),
+  lonMin: z.number().min(-180).max(180),
+  lonMax: z.number().min(-180).max(180),
+});
+
 // Facteur CO₂ à null = pas encore relevé : toujours accepté (D031).
 const schemaFacteurCo2 = z.number().positive().nullable();
 // Prix au km à null : accepté seulement tant que prix.aCalibrer est vrai (règle plus bas).
@@ -24,13 +31,10 @@ export const schemaParametres = z
       nom: z.string().min(1),
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
       /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
-      emprise: z.strictObject({
-        latMin: z.number().min(-90).max(90),
-        latMax: z.number().min(-90).max(90),
-        lonMin: z.number().min(-180).max(180),
-        lonMax: z.number().min(-180).max(180),
-      }),
+      emprise: schemaEmprise,
     }),
+    /** Positions acceptées par l'API (`lat`, `lon`) : France métropolitaine (docs/05-api.md § 1). */
+    empriseFrance: schemaEmprise,
     /** Seuils des contrôles bloquants de l'ETL (docs/04-traitement-donnees.md § 4). */
     controles: z.strictObject({
       /** Codes INSEE dans `commune` (communes, arrondissements, communes déléguées, D038). */

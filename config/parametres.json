@@ -7,6 +7,7 @@
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
   },
+  "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
   "controles": {
     "communesFranceMin": 34000,
     "garesFranceMin": 2500,
