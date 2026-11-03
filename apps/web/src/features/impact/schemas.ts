@@ -21,6 +21,8 @@ export const schemaImpact = z.object({
   }),
   co2EconomiseKg: z.number().nullable(),
   prixEstime: z.object({ min: z.number(), max: z.number(), devise: z.literal('EUR') }).nullable(),
+  /** Ce que couvre chaque chiffre : CO₂ pour un aller-retour, prix pour un aller simple (D051). */
+  trajet: z.object({ co2: z.literal('aller-retour'), prix: z.literal('aller-simple') }),
   source: z.string(),
   dateReleve: z.iso.date(),
 });

@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.9 · **Date** 03/11/2026
+> **Version** 1.10 · **Date** 03/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -199,9 +199,10 @@ Tri par type puis distance (à pied, `mobilite_locale.distance_m`) ; limite `par
   co2Kg: { train: number | null; voitureSeule: number; voiturePartagee: number; avion: number | null },
   co2EconomiseKg: number | null,                                     // null si le facteur du type de train n'est pas relevé (D031)
   prixEstime: { min: number; max: number; devise: "EUR" } | null,   // null tant que non calibré
+  trajet: { co2: "aller-retour"; prix: "aller-simple" },            // ce que couvre chaque chiffre (D051)
   source: string, dateReleve: string }
 ```
-Calcul 100 % local (`lib/impact`), aucun appel externe. Distance et types lus dans `liaison_directe` (première date de la fenêtre où la liaison existe). `404` s'il n'existe aucune liaison directe entre les deux gares (règle 6). Cache : `public, max-age=86400`.
+**CO₂ pour un aller-retour** (2 × distance × facteur : une sortie à la journée), **prix pour un aller simple** (comme la billetterie) ; mêmes conventions sur la carte (§ 3.4) et la fiche (§ 3.5). Calcul 100 % local (`lib/impact`), aucun appel externe. Distance et types lus dans `liaison_directe` (première date de la fenêtre où la liaison existe). `404` s'il n'existe aucune liaison directe entre les deux gares (règle 6). Cache : `public, max-age=86400`.
 
 ### 3.11 `GET /api/geocodage?q`
 `q` : 3 à 80 caractères.
@@ -287,4 +288,5 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 01/11/2026 | 1.6 | § 3.4 : `prochainDepart`, `dernierRetour`, `distanceKm`, `faisableJournee` toujours rempli ; § 3.8 : trains en jumelage regroupés (`trajetIds`, `numeros`) — D040 |
 | 03/11/2026 | 1.7 | § 3.4 réécrit : une destination par ville (gare en tête, `autresGares`), heures `{ s, texte, lendemain }`, `prochaineArrivee`, `sansLieu` en fin de liste, même commune exclue, CO₂ et prix inclus, cache 300 s — D047, D048 ; § 1.6 : `empriseFrance`, journal des requêtes désactivé |
 | 03/11/2026 | 1.8 | § 3.4 : `titre`, `commune`, `horsVille` (gares TGV, D049) ; `peuDeLieux` remplace `sansLieu` (seuil de 3 lieux, D050) |
+| 03/11/2026 | 1.10 | § 3.10 : champ `trajet` (CO₂ aller-retour, prix aller simple) — D051 |
 | 03/11/2026 | 1.9 | § 1.8 bis : identifiants publics stables (`uic`, `cle`) ; § 3.5 → 3.12 précisés après l'audit E09 (fiche destination, heures `Heure`, type d'impact le moins favorable, recherche inverse sans filtre ni cache, sources affichées) — D051, D052 |

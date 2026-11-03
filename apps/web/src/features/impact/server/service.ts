@@ -23,6 +23,7 @@ export async function impact({ depart, arrivee, type }: ParametresImpact): Promi
   return {
     distanceKm: liaison.distance_km,
     ...calcul,
+    trajet: { co2: 'aller-retour', prix: 'aller-simple' },
     source: parametres.impact.source,
     dateReleve: parametres.impact.dateReleve,
   };

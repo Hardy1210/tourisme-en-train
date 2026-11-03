@@ -157,7 +157,11 @@ describe('/api/impact', () => {
     const parDefaut = await lire(`depart=${DIJON}&arrivee=EX000010`);
     const tgv = await lire(`depart=${DIJON}&arrivee=EX000010&type=TGV`);
     expect(parDefaut.co2Kg.train).toBeGreaterThan(tgv.co2Kg.train ?? Infinity);
-    expect(parDefaut).toMatchObject({ source: 'ADEME — Impact CO2', dateReleve: '2026-11-03' });
+    expect(parDefaut).toMatchObject({
+      source: 'ADEME — Impact CO2',
+      dateReleve: '2026-11-03',
+      trajet: { co2: 'aller-retour', prix: 'aller-simple' },
+    });
   });
 
   it('avion seulement au-delà de 300 km : Dijon → Paris oui, Dijon → Beaune non', async () => {
