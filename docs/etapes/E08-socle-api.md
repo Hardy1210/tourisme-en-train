@@ -52,6 +52,7 @@ Socle `lib/http` réutilisable ; 4 routes testées en intégration sur l'échant
 - [x] `/api/destinations` depuis Dijon-Ville : Beaune dans la tranche `<30`.
 - [x] Depuis Dijon : une seule carte « Paris » (Gare de Lyon en tête, Bercy dans `autresGares`) et une seule « Lyon » ; Dijon Porte Neuve absente ; Paris et Lyon présentes (limite 150).
 - [x] Destination de la région sans lieu en fin de liste **et** retirée par un filtre d'envies ; destination hors région gardée par ce filtre.
+- [x] Gare TGV : sa propre carte au nom de la gare (D049) ; moins de 3 lieux → fin de liste (D050).
 - [x] Temps de réponse < 300 ms en local sur les vraies données.
 - [x] Aucune position dans les journaux (vérifié).
 
@@ -68,4 +69,5 @@ Voir `_MODELE.md`. Mettre à jour `05` si un contrat a dû évoluer (avec décis
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 03/11/2026 : audit et décisions de Hardy avant le code — D047 (une destination par ville, gare en tête, aucune durée minimale, sans lieu en fin de liste, limite 150, CO₂ et prix dans `/api/destinations`, `features/sante`), D048 (CO₂ Intercités et avion, prix calibré sur les tarifs TGV). `lib/impact` avancé d'E09 à E08. L'échantillon reçoit liaisons et `gare_stats` (`lieu_gare` attendra E09, qui en a besoin).
-- 03/11/2026 : vérifié sur les vraies données (Dijon, 03/11) : 101 destinations (durée max 180 min), Paris (+ Bercy) et Lyon (+ Perrache) une fois, Dijon absente, 8 sans lieu en fin de liste ; temps de réponse 13 → 80 ms ; aucune position dans les journaux après désactivation du journal des requêtes de Next.js. Relevé : les gares TGV hors de leur ville donnent leur commune comme nom de carte (« Meroux-Moval » pour Belfort - Montbéliard TGV) — à décider (`A-FAIRE`).
+- 03/11/2026 : vérifié sur les vraies données (Dijon, 03/11) : 101 destinations (durée max 180 min), Paris (+ Bercy) et Lyon (+ Perrache) une fois, Dijon absente, 8 sans lieu en fin de liste ; temps de réponse 13 → 80 ms ; aucune position dans les journaux après désactivation du journal des requêtes de Next.js. Relevé : les gares TGV hors de leur ville donnaient leur commune comme nom de carte (« Meroux-Moval » pour Belfort - Montbéliard TGV).
+- 03/11/2026 : décisions de Hardy — D049 (gare TGV : sa propre carte, au nom de la gare, « à <commune> » dessous) et D050 (moins de 3 lieux à pied → fin de liste ; `peuDeLieux` remplace `sansLieu`).

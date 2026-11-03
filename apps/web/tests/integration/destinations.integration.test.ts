@@ -1,5 +1,5 @@
 // /api/destinations sur l'échantillon (db/echantillon/echantillon.sql, section E08) : liaisons au
-// départ de Dijon-Ville le 18/11 (hiver) et le 15/07 (été). D047.
+// départ de Dijon-Ville le 18/11 (hiver) et le 15/07 (été). D047, D049, D050 (seuil de 3 lieux).
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { type Destination, schemaReponseDestinations } from '@/features/destinations/schemas';
@@ -19,9 +19,10 @@ async function liste(parametres: string): Promise<Destination[]> {
   return schemaReponseDestinations.parse(reponse.corps).destinations;
 }
 
-const villes = (destinations: Destination[]) => destinations.map((d) => d.ville.nom);
-const ville = (destinations: Destination[], nom: string) =>
-  destinations.find((d) => d.ville.nom === nom);
+/** Titres des cartes, dans l'ordre. */
+const villes = (destinations: Destination[]) => destinations.map((d) => d.titre);
+const ville = (destinations: Destination[], titre: string) =>
+  destinations.find((d) => d.titre === titre);
 
 beforeAll(async () => {
   route = await import('@/app/api/destinations/route');
@@ -49,7 +50,18 @@ describe('/api/destinations', () => {
     expect(paris?.autresGares).toEqual([
       expect.objectContaining({ nom: 'Paris-Bercy', dureeMin: 172, nbTrains: 1 }),
     ]);
-    expect(paris?.ville.codeInsee).toBe('75112');
+    expect(paris?.commune).toEqual({ nom: 'Paris', codeInsee: '75112' });
+    expect(paris?.horsVille).toBe(false);
+  });
+
+  it('gare TGV : sa propre carte au nom de la gare, la commune dessous, même à Mâcon (D049)', async () => {
+    const destinations = await liste(`date=${HIVER}`);
+    expect(ville(destinations, 'Besançon Franche-Comté TGV')).toMatchObject({
+      horsVille: true,
+      commune: { nom: 'Les Auxons', codeInsee: '25035' },
+    });
+    expect(villes(destinations)).toEqual(expect.arrayContaining(['Mâcon', 'Mâcon Loché TGV']));
+    expect(ville(destinations, 'Mâcon')?.autresGares).toEqual([]);
   });
 
   it('même commune que le départ exclue (Dijon-Porte-Neuve) ; aucune durée minimale (Velars, 15 min)', async () => {
@@ -58,24 +70,38 @@ describe('/api/destinations', () => {
     expect(villes(destinations)).toContain('Velars-sur-Ouche');
   });
 
-  it('tri par durée, destinations de la région sans lieu en fin de liste', async () => {
+  it('tri par durée ; moins de 3 lieux (région) en fin de liste, triées entre elles par durée', async () => {
     const destinations = await liste(`date=${HIVER}`);
     expect(villes(destinations)).toEqual([
-      'Beaune',
-      'Chalon-sur-Saône',
-      'Paris',
+      'Beaune', // 5 lieux
+      'Paris', // hors région
       'Lyon',
-      'Velars-sur-Ouche',
-      'Mâcon',
+      'Velars-sur-Ouche', // 0 lieu, 15 min
+      'Besançon Franche-Comté TGV', // 2 lieux, 26 min
+      'Chalon-sur-Saône', // 1 lieu, 40 min
+      'Mâcon Loché TGV', // 0 lieu
+      'Mâcon', // 0 lieu
     ]);
-    expect(destinations.map((d) => d.sansLieu)).toEqual([false, false, false, false, true, true]);
+    expect(destinations.map((d) => d.peuDeLieux)).toEqual([
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+    ]);
   });
 
-  it('filtre des envies : sans lieu de la catégorie retirée ; hors région gardée', async () => {
+  it('filtre des envies : 0 lieu de la catégorie → retirée ; 1 → fin de liste ; hors région gardée', async () => {
     const destinations = await liste(`date=${HIVER}&categories=culture`);
-    expect(villes(destinations)).toEqual(['Beaune', 'Chalon-sur-Saône', 'Paris', 'Lyon']);
-    expect(ville(destinations, 'Beaune')?.lieuxParCategorie).toEqual({ culture: 1 });
-    expect(ville(destinations, 'Lyon')).toMatchObject({ lieuxCharges: false, sansLieu: false });
+    expect(villes(destinations)).toEqual(['Paris', 'Lyon', 'Beaune', 'Chalon-sur-Saône']);
+    expect(ville(destinations, 'Beaune')).toMatchObject({
+      lieuxParCategorie: { culture: 1 },
+      peuDeLieux: true,
+    });
+    expect(ville(destinations, 'Lyon')).toMatchObject({ lieuxCharges: false, peuDeLieux: false });
   });
 
   it('pastilles : seulement les catégories qui ont des lieux', async () => {
@@ -91,6 +117,7 @@ describe('/api/destinations', () => {
     expect(villes(await liste(`date=${HIVER}&dureeMax=30`))).toEqual([
       'Beaune',
       'Velars-sur-Ouche',
+      'Besançon Franche-Comté TGV',
     ]);
   });
 

@@ -1,4 +1,4 @@
-// Destinations en train direct depuis une gare (docs/05-api.md § 3.4, D040, D047).
+// Destinations en train direct depuis une gare (docs/05-api.md § 3.4, D040, D047, D049, D050).
 import 'server-only';
 import { type Maintenant } from '@tourisme/commun';
 
@@ -12,7 +12,7 @@ import { impactLiaison } from '@/lib/impact/impact';
 import type { Destination, Heure, ParametresDestinations, ReponseDestinations } from '../schemas';
 
 import { type GareAtteinteBrute, gareDepart, garesAtteintes, prochainsTrains } from './requetes';
-import { regrouperParVille } from './regrouper';
+import { cleDestination, estHorsVille, regrouperParVille } from './regrouper';
 
 const heure = (s: number): Heure => ({ s, ...secondesVersHeure(s) });
 const heureOuNull = (s: number | null | undefined): Heure | null =>
@@ -38,20 +38,28 @@ export async function destinations(
   const depart = await gareDepart(gare);
   if (depart === null) throw new Introuvable('Cette gare est inconnue.');
 
+  const { lieuxMinEnTete, motGareHorsVille } = parametres.destinations;
   const lignes = await garesAtteintes({ gareId: gare, date: jour, dureeMax, categories });
   const regroupements = regrouperParVille(
     lignes.map((l) => ({
       ...l,
       gareId: l.gare_id,
-      cleVille: l.cle_ville,
+      cleDestination: cleDestination({
+        gareId: l.gare_id,
+        nom: l.nom,
+        cleCommune: l.cle_commune,
+        motHorsVille: motGareHorsVille,
+      }),
+      cleCommune: l.cle_commune,
       dansRegion: l.dans_region,
       dureeMin: l.duree_min,
       nbTrains: l.nb_trains,
       nbLieux: Object.values(l.lieux).reduce((somme, n) => somme + (n ?? 0), 0),
     })),
     {
-      cleVilleDepart: depart.cle_ville,
+      cleCommuneDepart: depart.cle_commune,
       filtreEnvies: categories !== null,
+      lieuxMinEnTete,
       limite: parametres.limites.destinations,
     },
   );
@@ -68,21 +76,37 @@ export async function destinations(
   return {
     gareDepart: { id: depart.id, nom: depart.nom },
     date: jour,
-    destinations: regroupements.map(({ tete, autres, sansLieu }) =>
-      versDestination(tete, autres, sansLieu, prochainPar.get(tete.gare_id)),
+    destinations: regroupements.map(({ tete, autres, peuDeLieux }) =>
+      versDestination({
+        tete,
+        autres,
+        peuDeLieux,
+        horsVille: estHorsVille(tete.nom, motGareHorsVille),
+        prochain: prochainPar.get(tete.gare_id),
+      }),
     ),
   };
 }
 
-function versDestination(
-  tete: GareAtteinteBrute,
-  autres: readonly GareAtteinteBrute[],
-  sansLieu: boolean,
-  prochain: { depart_s: number; arrivee_s: number } | undefined,
-): Destination {
+function versDestination({
+  tete,
+  autres,
+  peuDeLieux,
+  horsVille,
+  prochain,
+}: {
+  tete: GareAtteinteBrute;
+  autres: readonly GareAtteinteBrute[];
+  peuDeLieux: boolean;
+  horsVille: boolean;
+  prochain: { depart_s: number; arrivee_s: number } | undefined;
+}): Destination {
   const impact = impactLiaison(tete.distance_km, tete.types_train);
   return {
-    ville: { nom: tete.ville, codeInsee: tete.code_insee },
+    // Gare hors de la ville (TGV) : la carte porte le nom de la gare, la commune vient dessous (D049).
+    titre: horsVille || tete.commune === null ? tete.nom : tete.commune,
+    commune: { nom: tete.commune, codeInsee: tete.code_insee },
+    horsVille,
     gare: {
       id: tete.gare_id,
       nom: tete.nom,
@@ -106,7 +130,7 @@ function versDestination(
     typesTrain: tete.types_train,
     distanceKm: tete.distance_km,
     lieuxParCategorie: tete.lieux,
-    sansLieu,
+    peuDeLieux,
     faisableJournee: tete.faisable_journee,
     lieuxCharges: tete.dans_region,
     co2EconomiseKg: impact.co2EconomiseKg,

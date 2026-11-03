@@ -98,6 +98,13 @@ export const schemaParametres = z
     regroupementParcChateau: z.strictObject({ distanceM: schemaDistanceM }),
     /** Arrêts de même nom d'un réseau à moins de cette distance (quais opposés) : un seul arrêt (D046). */
     mobilite: z.strictObject({ regroupementQuaisM: schemaDistanceM }),
+    /** Classement des destinations (D049, D050). */
+    destinations: z.strictObject({
+      /** Moins de lieux à pied que ce seuil (catégories demandées) → en fin de liste, jamais supprimée. */
+      lieuxMinEnTete: z.number().int().min(1),
+      /** Mot entier qui, dans le nom d'une gare, en fait une arrivée hors de la ville (gare TGV) : sa propre carte. */
+      motGareHorsVille: z.string().regex(/^[A-Za-zÀ-ÿ-]+$/, 'Un seul mot attendu'),
+    }),
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),

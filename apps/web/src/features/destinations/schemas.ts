@@ -24,7 +24,11 @@ export const schemaHeure = z.object({
 });
 
 export const schemaDestination = z.object({
-  ville: z.object({ nom: z.string(), codeInsee: z.string().nullable() }),
+  /** Nom de la carte : la commune, ou le nom de la gare si elle est hors de la ville (D049). */
+  titre: z.string(),
+  commune: z.object({ nom: z.string().nullable(), codeInsee: z.string().nullable() }),
+  /** Gare hors de la ville (TGV) : afficher « à <commune> » sous le titre. */
+  horsVille: z.boolean(),
   /** Gare en tête : le plus de trains ; à égalité, la plus rapide. */
   gare: z.object({
     id: z.number().int(),
@@ -51,7 +55,8 @@ export const schemaDestination = z.object({
   typesTrain: z.array(schemaTypeTrain),
   distanceKm: z.number(),
   lieuxParCategorie: z.partialRecord(schemaCategorie, z.number().int()),
-  sansLieu: z.boolean(),
+  /** Région, moins de `destinations.lieuxMinEnTete` lieux des catégories demandées : en fin de liste (D050). */
+  peuDeLieux: z.boolean(),
   faisableJournee: z.boolean(),
   lieuxCharges: z.boolean(),
   co2EconomiseKg: z.number().nullable(),

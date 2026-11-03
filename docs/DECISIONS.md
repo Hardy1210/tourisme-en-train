@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -451,7 +451,7 @@
   2. **Gare en tête** = celle qui a **le plus de trains** ce jour-là ; à égalité, la plus rapide. Les valeurs de la carte (durée, trains, horaires, lieux, CO₂, prix) sont celles de la gare en tête ; le tri se fait sur sa durée.
   3. **Destinations de la même commune que le départ exclues** (Dijon → Dijon Porte Neuve, Nevers → Nevers Le Banlay : 16 liaisons au départ de 15 gares le 03/11).
   4. **Aucune durée minimale.** Mesure du 03/11 (3 562 cartes de ville au départ des 194 gares de la région) : 5 min retire 143 cartes, 10 min 434, 15 min 699 — et **même 5 min coupe de vraies sorties** (Mouchard → Arc-et-Senans et ses Salines royales, 4 min ; à 15 min, Belfort → Montbéliard). L'exclusion de la même commune et le classement en fin de liste des destinations sans lieu suffisent.
-  5. **Destination de la région sans aucun lieu à pied** : gardée, **en fin de liste** (20 gares de la région sur 194 ; 242 cartes de ville sur 2 852, 8,5 %). **Filtre des envies** : retire les destinations de la région sans lieu des catégories choisies ; les destinations **hors région** restent toujours (« trains seulement »).
+  5. *(Remplacé par D050 : seuil de 3 lieux.)* **Destination de la région sans aucun lieu à pied** : gardée, **en fin de liste** (20 gares de la région sur 194 ; 242 cartes de ville sur 2 852, 8,5 %). **Filtre des envies** : retire les destinations de la région sans lieu des catégories choisies ; les destinations **hors région** restent toujours (« trains seulement »).
   6. **`limites.destinations` = 150** (au lieu de 60) : à 60, **Paris (73ᵉ) et Lyon (74ᵉ) disparaissaient depuis Dijon** (119 villes atteintes ; 120 au plus pour une gare de la région). La limite reste un garde-fou ; c'est `dureeMax` qui réduit la liste.
   7. **CO₂ économisé, prix estimé et prochaine arrivée dans `/api/destinations`**, calculés par les fonctions pures de `lib/impact` que réutilisera `/api/impact` : une carte n'appelle pas une route de plus (60 à 150 appels évités). CO₂ comparé à la voiture seule, avec le facteur **le moins favorable** des types de train de la liaison.
   8. Le filtre « faisable dans la journée » de la maquette se fait **côté interface**.
@@ -475,3 +475,26 @@
 - **Raison :** deux trous relevés à l'audit E08 (`INTERCITES` et `AVION` à `null`, prix jamais affiché tant que `aCalibrer`), alors que la carte de destination de la maquette affiche CO₂ et prix.
 - **Écarté :** valeurs CO₂ de la SNCF (méthode différente) ; grilles de prix par trajet tout de suite (deux sources de plus, rapprochement des gares, rien pour les Intercités : reporté en P1) ; fichier TER BFC (licence non claire).
 - **Impact :** `config/parametres.json`, schéma `packages/commun/src/parametres.ts`, `config/sources.json`, `02` § 4.1 et § 4.2, `04` § 6, `05` § 3.4, `A-FAIRE`.
+
+## D049 — Gare hors de la ville (TGV) : sa propre carte, au nom de la gare
+- **Date :** 03/11/2026
+- **En clair :** une gare TGV construite hors de la ville a sa propre carte, au nom de la gare (« Belfort - Montbéliard TGV »), avec sa commune en dessous (« à Meroux-Moval ») : le voyageur sait que le train n'arrive pas en ville.
+- **Décision :**
+  1. **Règle, pas une liste** : une gare dont le nom contient le mot `destinations.motGareHorsVille` (« TGV », en mot entier) est une **arrivée hors de la ville**. Sa carte prend le **nom de la gare** au lieu de celui de la commune ; la commune est affichée dessous (« à … »). Champs : `titre`, `commune`, `horsVille`.
+  2. Elle forme **toujours sa propre carte**, même dans la commune d'une gare de ville (Mâcon Loché TGV, « à Mâcon », à côté de la carte « Mâcon ») : ce n'est pas la même arrivée.
+  3. L'exclusion de la commune de départ s'applique aussi à elle.
+- **Raison :** vérification d'E08 sur les vraies données (03/11) : depuis Dijon, Belfort n'est desservie en direct que par Belfort - Montbéliard TGV, rattachée à Meroux-Moval, et la carte s'appelait « Meroux-Moval ». Gares concernées dans la région : Belfort - Montbéliard TGV (Meroux-Moval), Besançon Franche-Comté TGV (Les Auxons), Le Creusot - Montceau - Montchanin TGV (Écuisses), Mâcon Loché TGV (Mâcon) ; hors région, Valence TGV (Alixan), Avignon TGV… **Honnête** (le train n'arrive pas en ville) et **sans entretien** si on élargit à d'autres régions.
+- **Écarté :** table de correspondance gare → ville desservie (à tenir à jour région par région) ; garder le nom de la commune (« Meroux-Moval » : personne ne le reconnaît).
+- **Impact :** `config/parametres.json` (`destinations.motGareHorsVille`) et son schéma, `05` § 3.4, `GLOSSAIRE` (gare hors de la ville), `features/destinations`, échantillon (deux gares TGV), fiche E08, `A-FAIRE`.
+
+## D050 — Destinations avec peu de lieux à pied en fin de liste (seuil de 3)
+- **Date :** 03/11/2026
+- **En clair :** une destination de la région qui a moins de 3 lieux à pied de la gare passe en fin de liste, sans disparaître : Wagoo montre d'abord ce qui vaut un trajet en train, pas seulement ce qui est rapide.
+- **Décision :**
+  1. **Règle générale** (pas seulement pour les gares TGV) : destination de la région avec moins de `destinations.lieuxMinEnTete` = **3** lieux à pied (catégories demandées) → **en fin de liste**, triée par durée avec les autres, jamais supprimée. Champ `peuDeLieux` (remplace `sansLieu` ; **remplace le point 5 de D047**, qui ne visait que 0 lieu).
+  2. **Filtre des envies** : 0 lieu des catégories choisies → destination **retirée** ; de 1 à N−1 → **en fin de liste** ; le seuil compte les lieux des catégories demandées, comme les pastilles.
+  3. Hors région (lieux non chargés) : ni retirée, ni en fin de liste.
+  4. **Pas d'exception** dans le classement pour les villages connus qui ont peu de lieux dans les données (Gevrey-Chambertin, Meursault : 1 lieu chacun) : c'est un problème de données, à corriger à la source (`A-FAIRE`).
+- **Raison :** mesure du 03/11 depuis Dijon (76 cartes de la région) : N = 1 → 8 en fin de liste, **N = 3 → 30**, N = 5 → 45 (59 % de la région). Avec 3, les gares TGV (1 ou 2 lieux) et les haltes passent derrière les vraies villes (Les Auxons, 2 lieux, ne passe plus devant Besançon Viotte, 94 lieux), sans rejeter des petites villes comme Genlis (4 lieux, 27 trains).
+- **Écarté :** N = 1 (une gare TGV à 2 lieux reste devant la ville), N = 5 (trop de destinations reléguées) ; règle réservée aux gares TGV ; exception pour Gevrey-Chambertin et Meursault.
+- **Impact :** `config/parametres.json` (`destinations.lieuxMinEnTete`) et son schéma, `05` § 3.4, `GLOSSAIRE`, `features/destinations`, échantillon, fiche E08, `A-FAIRE`.

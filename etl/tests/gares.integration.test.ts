@@ -56,8 +56,8 @@ describe('fusionnerGares', () => {
         expect(fusionnee.rows[0]).toEqual({ code_insee: null });
         expect(bilan.sansCommune).toEqual(["Gare d'une commune fusionnée (85166)"]);
 
-        // Les 12 autres gares d'échantillon sont absentes du « fichier » : supprimées ou gardées.
-        expect(bilan.supprimees + bilan.gardees.length).toBe(12);
+        // Les 14 autres gares d'échantillon sont absentes du « fichier » : supprimées ou gardées.
+        expect(bilan.supprimees + bilan.gardees.length).toBe(14);
         // Référencée : horaires, liaisons ou lieux à pied (l'échantillon en a depuis E08).
         const referencees = await client.query(
           `SELECT count(DISTINCT r.gare_id)::int AS n FROM (

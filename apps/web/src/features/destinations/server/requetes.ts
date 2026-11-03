@@ -5,15 +5,18 @@ import { z } from 'zod';
 
 import { db } from '@/lib/db/client';
 
-/** Clé de la commune de rattachement (nom + département) ; `gare:<id>` si la commune est inconnue. */
-const CLE_VILLE = sql`CASE WHEN c.code_insee IS NULL THEN 'gare:' || g.id
-                          ELSE c.nom || '|' || c.departement END`;
+/** Clé de la commune de rattachement (nom + département ; arrondissements = « Paris ») ; null si inconnue. */
+const CLE_COMMUNE = sql`c.nom || '|' || c.departement`;
 
-const schemaGareDepart = z.object({ id: z.number().int(), nom: z.string(), cle_ville: z.string() });
+const schemaGareDepart = z.object({
+  id: z.number().int(),
+  nom: z.string(),
+  cle_commune: z.string().nullable(),
+});
 
 export async function gareDepart(id: number): Promise<z.infer<typeof schemaGareDepart> | null> {
   const { rows } = await db.execute(sql`
-    SELECT g.id, g.nom, ${CLE_VILLE} AS cle_ville
+    SELECT g.id, g.nom, ${CLE_COMMUNE} AS cle_commune
     FROM gare g LEFT JOIN commune c ON c.code_insee = g.code_insee
     WHERE g.id = ${id}`);
   return rows[0] ? schemaGareDepart.parse(rows[0]) : null;
@@ -25,8 +28,9 @@ const schemaGareAtteinte = z.object({
   lat: z.number(),
   lon: z.number(),
   dans_region: z.boolean(),
-  cle_ville: z.string(),
-  ville: z.string(),
+  cle_commune: z.string().nullable(),
+  /** Nom de la commune ; null si inconnue. */
+  commune: z.string().nullable(),
   code_insee: z.string().nullable(),
   duree_min: z.number().int(),
   nb_trains: z.number().int(),
@@ -56,7 +60,7 @@ export async function garesAtteintes(options: {
   );
   const { rows } = await db.execute(sql`
     SELECT g.id AS gare_id, g.nom, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
-           g.dans_region, ${CLE_VILLE} AS cle_ville, coalesce(c.nom, g.nom) AS ville, g.code_insee,
+           g.dans_region, ${CLE_COMMUNE} AS cle_commune, c.nom AS commune, g.code_insee,
            l.duree_min, l.nb_trains, l.premier_depart_s, r.dernier_depart_s AS dernier_retour_s,
            l.types_train, l.distance_km, l.faisable_journee,
            coalesce((SELECT jsonb_object_agg(s.categorie, s.nb_lieux) FROM gare_stats s

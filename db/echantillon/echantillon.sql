@@ -136,7 +136,8 @@ JOIN gare g ON g.uic = 'EX000001';
 -- ----------------------------------------------------------------------------
 INSERT INTO commune (code_insee, nom, departement) VALUES
   ('75112', 'Paris',            '75'),   -- arrondissement (12ᵉ) : nom de la commune de rattachement
-  ('21661', 'Velars-sur-Ouche', '21');
+  ('21661', 'Velars-sur-Ouche', '21'),
+  ('25035', 'Les Auxons',       '25');
 
 -- Dijon-Porte-Neuve : position décalée volontairement (hors des rayons des tests de rattachement).
 INSERT INTO gare (uic, codes_uic, nom, code_insee, dans_region, geom)
@@ -145,7 +146,10 @@ FROM (VALUES
   ('EX000021', 'Paris-Gare-de-Lyon', '75112', false, 2.3735, 48.8443),
   ('EX000022', 'Paris-Bercy',        '75112', false, 2.3826, 48.8391),
   ('EX000023', 'Dijon-Porte-Neuve',  '21231', true,  4.9800, 47.3600),
-  ('EX000024', 'Velars-sur-Ouche',   '21661', true,  4.9050, 47.3200)
+  ('EX000024', 'Velars-sur-Ouche',   '21661', true,  4.9050, 47.3200),
+  -- Gares TGV hors de leur ville (D049) : leur propre carte, même dans la commune d'une gare de ville.
+  ('EX000025', 'Besançon Franche-Comté TGV', '25035', true, 5.9550, 47.3070),
+  ('EX000026', 'Mâcon Loché TGV',            '71270', true, 4.7790, 46.2820)
 ) AS g (uic, nom, insee, dans_region, lon, lat);
 
 INSERT INTO trajet (id, service_id, type_train, nom_ligne, numero) VALUES
@@ -187,6 +191,8 @@ FROM (VALUES
   ('EX000001', 'EX000022', 172, 1, 21600, 21600, 31920, '{TER}'::text[],     false),
   ('EX000001', 'EX000023', 7,   1, 32400, 32400, 32820, '{TER}'::text[],     false),
   ('EX000001', 'EX000024', 15,  1, 32400, 32400, 33300, '{TER}'::text[],     false),
+  ('EX000001', 'EX000025', 26,  1, 37800, 37800, 39360, '{TGV}'::text[],     false),
+  ('EX000001', 'EX000026', 60,  1, 39600, 39600, 43200, '{TGV}'::text[],     false),
   ('EX000002', 'EX000001', 22,  1, 67440, 67440, 68760, '{TER}'::text[],     false),
   ('EX000005', 'EX000001', 40,  1, 66360, 66360, 68760, '{TER}'::text[],     false),
   ('EX000006', 'EX000001', 70,  1, 64560, 64560, 68760, '{TER}'::text[],     false),
@@ -207,7 +213,8 @@ JOIN gare gd ON gd.uic = 'EX000001'
 JOIN gare ga ON ga.uic = l.arrivee_uic;
 
 -- Lieux à pied de chaque gare (comme `pnpm etl rattachements`), d'après les lieux d'exemple.
--- Mâcon-Ville, Dijon-Porte-Neuve, Velars-sur-Ouche : aucun lieu ; Lyon et Paris : hors région.
+-- Mâcon-Ville, Dijon-Porte-Neuve, Velars-sur-Ouche, Mâcon Loché TGV : aucun lieu ; Lyon et Paris : hors
+-- région. Chalon (1), Besançon TGV (2), Dole (2) : moins de 3 lieux (D050).
 INSERT INTO gare_stats (gare_id, categorie, nb_lieux)
 SELECT g.id, s.categorie, s.nb
 FROM (VALUES
@@ -216,6 +223,7 @@ FROM (VALUES
   ('EX000003', 'culture', 1), ('EX000003', 'patrimoine', 1),
   ('EX000004', 'nature', 1), ('EX000004', 'culture', 1), ('EX000004', 'parcs', 1),
   ('EX000005', 'culture', 1),
+  ('EX000025', 'enfants', 2),
   ('EX000007', 'patrimoine', 1)
 ) AS s (uic, categorie, nb)
 JOIN gare g ON g.uic = s.uic;
