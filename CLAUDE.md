@@ -195,7 +195,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E06 | Catégories, doublons, lieux → gares, statistiques | S4 | ✅ |
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ✅ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ✅ |
-| E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | 🟡 |
+| E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ✅ |
 | E10 | Socle interface : design system, mise en page, composants | S6 | ⬜ |
 | E11 | Écran Explorer | S6 | ⬜ |
 | E12 | Fiche destination | S7 | ⬜ |
@@ -215,7 +215,7 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E09 codée, vérifiée par Hardy (horaires et prix comparés à SNCF Connect) ; **PR ouverte** (branche `etape/E09-api-complete`), fusion par Hardy
+- **Étape en cours :** E10 (socle interface) pas commencée ; E09 terminée et fusionnée (PR #55) ; branche `etape/E10-socle-interface`
 - **Dernière session :** 03/11/2026 — E08 fusionnée (PR #54) ; E09 : D051 (contrats), D052 (identifiants publics stables, migration `0011_lieu_cle`)
 - **Fait :** données en base (jalon du 01/11) ; **API P0 complète** : `/api/sante`, `/api/gares/proches`, `/api/autour`, `/api/destinations`, `/api/destinations/[uic]` (+ `/lieux`), `/api/lieux/[cle]`, `/api/trains`, `/api/impact`, `/api/mobilites/[uic]`, `/api/sources`, `/api/geocodage` (+ `/inverse`) ; gares désignées par code UIC, lieux par clé de source ; 13 → 110 ms sur les vraies données ; `pnpm verifier` 257 tests, `pnpm test:integration` 124 ; `pnpm etl sources` relancé (34 sources, `tarifs_tgv` compris)
 - **À valider par Hardy :** fusion de la PR E09 ; `A-FAIRE` § 1 — légende de la carte (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
@@ -397,3 +397,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 03/11/2026 | 1.32 | § 6 : fonctionnalité `sante/` — D047 |
 | 03/11/2026 | 1.33 | § 8 : E08 terminée (P0, PR #54) |
 | 03/11/2026 | 1.34 → 1.35 | § 9 : sauvegardes de session (E08 fusionnée ; E09 codée, avis de Hardy attendu avant la PR) ; § 8 : E09 en cours |
+| 03/11/2026 | 1.36 | § 8 : E09 terminée (P0, PR #55) |
