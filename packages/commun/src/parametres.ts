@@ -50,6 +50,8 @@ export const schemaParametres = z
       dureeCadrageMin: z.number().int().positive(),
       /** Les épingles de lieux n'apparaissent qu'à partir de ce zoom : elles s'entasseraient sinon. */
       zoomMinLieux: z.number().positive(),
+      /** Zoom maximal du cadrage sur une gare et ses lieux : une gare sans lieu reste située. */
+      zoomMaxFiche: z.number().positive(),
     }),
     localisation: z.strictObject({
       delaiPositionMs: z.number().int().positive(),
@@ -165,6 +167,8 @@ export const schemaParametres = z
       occupantsVoiturePartagee: z.number().int().min(2),
       distanceMinAvionKm: z.number().positive(),
     }),
+    /** Lien du bouton « Acheter mon billet » (D063). */
+    billetterie: z.strictObject({ url: z.url({ protocol: /^https$/ }) }),
     prix: z
       .strictObject({
         aCalibrer: z.boolean(),

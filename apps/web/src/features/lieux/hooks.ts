@@ -3,7 +3,7 @@
 import type { Categorie } from '@tourisme/commun';
 import { useQuery } from '@tanstack/react-query';
 import { lireApi } from '@/lib/http/client';
-import { schemaReponseAutour } from './schemas';
+import { schemaFicheLieu, schemaReponseAutour } from './schemas';
 
 type Options = {
   point: { lat: number; lon: number };
@@ -23,5 +23,23 @@ export function useLieuxAutour({ point, rayon, categories }: Options) {
   return useQuery({
     queryKey: ['autour', chemin],
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseAutour, signal),
+  });
+}
+
+/** Lieux à pied de la gare d'arrivée ; rien à demander hors région (`lieuxCharges` faux). */
+export function useLieuxGare(uic: string, actif: boolean) {
+  const chemin = `/api/destinations/${uic}/lieux`;
+  return useQuery({
+    queryKey: ['lieux-gare', chemin],
+    enabled: actif,
+    queryFn: ({ signal }) => lireApi(chemin, schemaReponseAutour, signal),
+  });
+}
+
+export function useFicheLieu(cle: string) {
+  const chemin = `/api/lieux/${encodeURIComponent(cle)}`;
+  return useQuery({
+    queryKey: ['fiche-lieu', chemin],
+    queryFn: ({ signal }) => lireApi(chemin, schemaFicheLieu, signal),
   });
 }

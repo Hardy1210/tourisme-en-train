@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.4 · **Date** 04/11/2026
+> **Version** 1.5 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -75,10 +75,10 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 
 ## 4. Fiche destination
 
-- **Mobile :** feuille plein écran. **Desktop :** panneau latéral.
+- **Mobile :** page plein écran, au-dessus de la navigation. **Desktop :** panneau latéral et carte (D063).
 - **En-tête :** nom de la gare, durée, trains/jour, sélecteur de date ; si « Ce week-end » : bascule **Samedi / Dimanche** ; bouton **Partager** (P1 : partage natif du téléphone, sinon copie du lien + message « Lien copié »).
 - **Onglets :**
-  - **Lieux** : mini-carte + liste par catégorie (nom, durée à pied, description courte, horaires si connus, badge Qualité Tourisme). **Lieu sans description ni horaires** (fréquent pour OpenStreetMap) : nom, catégorie, durée à pied et lien « Voir sur la carte », sans case vide. Hors région : « Les lieux de cette destination ne sont pas encore disponibles. »
+  - **Lieux** : mini-carte + liste par catégorie (nom, durée à pied, sous-catégorie, badge Qualité Tourisme ; description et horaires dans la fiche lieu, D063). **Lieu sans description ni horaires** (fréquent pour OpenStreetMap) : nom, catégorie, durée à pied et lien « Voir sur la carte », sans case vide. Hors région : « Les lieux de cette destination ne sont pas encore disponibles. »
   - **Trains** : deux colonnes Aller / Retour ; départ, arrivée, durée, type ; **dernier retour** mis en évidence. **Par défaut : horaires théoriques, sans statut.** Statut « À l'heure / +5 min / Supprimé » (P1) **seulement** pour les trains des 3 prochaines heures **aujourd'hui**, si la clé API SNCF est disponible ; un train supprimé reste visible, barré.
   - **Sur place** : bus et tram (numéros de lignes), stations vélos/trottinettes, distance à pied ; **nombre de vélos disponibles** en direct (P1, villes avec flux GBFS, sinon pas de nombre) ; aménagements cyclables (P1). **Pas de transport à la demande** (données non fiables, voir `00` § 9).
 - **Pied collant :** bloc `eco` (« 🌱 Vous économisez 5,2 kg de CO₂ par rapport à la voiture ») avec lien « Comparer » (voiture partagée, avion) ; prix estimé si calibré ; bouton `action` « Acheter mon billet » (lien externe vers la billetterie officielle).
@@ -160,3 +160,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 02/10/2026 | 1.2 | Nom de la commune de la puce de localisation par `/api/geocodage/inverse` — D022 ; écrans complémentaires listés en § 4 bis |
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
 | 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, rail sur grand écran, composants réels — D054 |
+| 04/11/2026 | 1.5 | § 4 : page plein écran, contenu de la liste des lieux — D063 |

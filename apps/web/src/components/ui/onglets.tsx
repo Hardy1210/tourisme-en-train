@@ -2,6 +2,7 @@
 
 import { Tabs } from 'radix-ui';
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/classes';
 
 export type Onglet = { valeur: string; libelle: string; contenu: ReactNode };
 
@@ -9,13 +10,19 @@ type Proprietes = {
   onglets: readonly Onglet[];
   valeur: string;
   surChangement: (valeur: string) => void;
+  className?: string;
+  classeContenu?: string;
 };
 
 /** Onglets accessibles : flèches du clavier, rôles et liens avec leur contenu fournis par Radix. */
-export function Onglets({ onglets, valeur, surChangement }: Proprietes) {
+export function Onglets({ onglets, valeur, surChangement, className, classeContenu }: Proprietes) {
   return (
-    <Tabs.Root value={valeur} onValueChange={surChangement} className="flex flex-col gap-3">
-      <Tabs.List className="flex gap-1 rounded-bouton bg-onglets-bg p-1">
+    <Tabs.Root
+      value={valeur}
+      onValueChange={surChangement}
+      className={cn('flex flex-col gap-3', className)}
+    >
+      <Tabs.List className="flex flex-none gap-1 rounded-bouton bg-onglets-bg p-1">
         {onglets.map((onglet) => (
           <Tabs.Trigger
             key={onglet.valeur}
@@ -27,7 +34,7 @@ export function Onglets({ onglets, valeur, surChangement }: Proprietes) {
         ))}
       </Tabs.List>
       {onglets.map((onglet) => (
-        <Tabs.Content key={onglet.valeur} value={onglet.valeur}>
+        <Tabs.Content key={onglet.valeur} value={onglet.valeur} className={classeContenu}>
           {onglet.contenu}
         </Tabs.Content>
       ))}

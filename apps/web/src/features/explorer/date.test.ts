@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { libelleDate, optionsDate } from './date';
+import { joursDuWeekEnd, libelleDate, optionsDate } from './date';
 
 const parCle = (jour: string, cle: string) => optionsDate(jour).find((o) => o.cle === cle);
 
@@ -42,5 +42,26 @@ describe('libelleDate', () => {
 
   it('écrit toute autre date', () => {
     expect(libelleDate('2026-11-17', JOUR)).toBe('Mar. 17 nov.');
+  });
+});
+
+describe('joursDuWeekEnd', () => {
+  // Mercredi 18/11/2026 (hiver) et mercredi 15/07/2026 (été).
+  it('donne le samedi et le dimanche quand la date est dans le week-end', () => {
+    expect(joursDuWeekEnd('2026-11-22', '2026-11-18')).toEqual({
+      samedi: '2026-11-21',
+      dimanche: '2026-11-22',
+    });
+    expect(joursDuWeekEnd('2026-07-18', '2026-07-15')).toEqual({
+      samedi: '2026-07-18',
+      dimanche: '2026-07-19',
+    });
+  });
+  it('ne donne rien pour une autre date, ni pour aujourd’hui en semaine', () => {
+    expect(joursDuWeekEnd('2026-11-20', '2026-11-18')).toBeNull();
+    expect(joursDuWeekEnd(null, '2026-11-18')).toBeNull();
+  });
+  it('ne donne rien un dimanche', () => {
+    expect(joursDuWeekEnd('2026-11-22', '2026-11-22')).toBeNull();
   });
 });
