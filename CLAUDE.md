@@ -357,6 +357,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Repartir d'une base vide (local) | `pnpm db:reinitialiser` |
 | Tests d'intégration (base de test recréée) | `pnpm test:integration` |
 | Lancer l'app en développement | `pnpm dev` (lit le `.env` de la racine ; http://localhost:3000) |
+| Tests de parcours (Playwright, base de test, version de production) | `pnpm test:e2e` (une seule fois avant : `pnpm --filter @tourisme/web exec playwright install chromium`) |
 | Tout vérifier (types, lint, format, tests) | `pnpm verifier` |
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
@@ -395,3 +396,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
 | 03–04/11/2026 | 1.32 → 1.41 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
+| 04/11/2026 | 1.42 | § 16 : `pnpm test:e2e` |
