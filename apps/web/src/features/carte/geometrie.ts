@@ -30,14 +30,16 @@ export function segmentsDepuis(depart: Point, arrivees: readonly Point[]) {
   };
 }
 
-/** Étiquettes : les `nombre` destinations les plus proches, plus la sélectionnée. */
+/** Étiquettes : les `nombre` destinations avec le plus de trains (la plus rapide à égalité), plus la sélectionnée. */
 export function clesEtiquetees(
-  destinations: readonly { uic: string; dureeMin: number }[],
+  destinations: readonly { uic: string; nbTrains: number; dureeMin: number }[],
   selection: string | null,
   nombre: number,
 ): Set<string> {
-  const proches = [...destinations].sort((a, b) => a.dureeMin - b.dureeMin).slice(0, nombre);
-  const cles = new Set(proches.map((d) => d.uic));
+  const retenues = [...destinations]
+    .sort((a, b) => b.nbTrains - a.nbTrains || a.dureeMin - b.dureeMin)
+    .slice(0, nombre);
+  const cles = new Set(retenues.map((d) => d.uic));
   if (selection !== null) cles.add(selection);
   return cles;
 }

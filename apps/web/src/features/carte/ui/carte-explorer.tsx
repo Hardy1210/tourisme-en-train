@@ -60,7 +60,7 @@ export function CarteExplorer({
     ...(utilisateur ? [utilisateur] : []),
   ]);
   const etiquetees = clesEtiquetees(
-    destinations.map((d) => ({ uic: d.gare.uic, dureeMin: d.dureeMin })),
+    destinations.map((d) => ({ uic: d.gare.uic, nbTrains: d.nbTrains, dureeMin: d.dureeMin })),
     selection?.type === 'destination' ? selection.uic : null,
     parametres.carte.etiquettesMax,
   );

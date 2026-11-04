@@ -50,7 +50,7 @@
 2. **Rangée de filtres** (défilement horizontal) : « Tout » + 5 catégories (multi-sélection) ; bouton « Filtres » avec compteur → feuille : rayon (`autourDeMoiOptionsM`), durée de train max (`trainMaxOptionsMin`), « Faisable dans la journée » (P1).
 3. **Carte (~40 % de la hauteur)** : point pulsant de l'utilisateur, gare la plus proche, lieux proches (épingles par catégorie), gares de destination **colorées par tranche de temps** ; mini-fiche au toucher ; boutons « Recentrer » et « Plein écran ».
    - **Liaisons :** en P0, **segments droits** de la gare de départ vers chaque destination ; en P1, vrais tracés (`/api/lignes`). *La maquette montre des lignes « bien rangées » : c'est un dessin, la vraie carte ne l'est pas.*
-   - **Étiquettes « Beaune 22 min » :** affichées pour les 5 destinations les plus proches, au survol et pour la destination sélectionnée ; les autres gares restent des points. Collisions gérées par MapLibre.
+   - **Étiquettes « Beaune 22 min » :** affichées pour les 5 destinations avec le plus de trains (D062), au survol et pour la destination sélectionnée ; les autres gares restent des points. Collisions gérées par MapLibre.
    - **Survol croisé (desktop) :** survoler une carte de destination met la gare en évidence sur la carte, et inversement.
 4. **Feuille de résultats (glissante, par-dessus la carte)** :
    - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».

@@ -44,7 +44,7 @@ export const schemaParametres = z
         .min(1),
     }),
     carte: z.strictObject({
-      /** Destinations les plus proches étiquetées sur la carte (`06` § 3). */
+      /** Destinations avec le plus de trains étiquetées sur la carte (`06` § 3, D062). */
       etiquettesMax: z.number().int().positive(),
       /** Le premier cadrage montre les destinations à moins de cette durée ; le reste en dézoomant. */
       dureeCadrageMin: z.number().int().positive(),

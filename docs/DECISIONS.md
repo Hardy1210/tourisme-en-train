@@ -615,7 +615,7 @@
 ## D062 — Carte : MapLibre 5, premier cadrage sur les destinations proches
 - **Date :** 04/11/2026
 - **En clair :** on garde la version de la carte qui fonctionne avec notre outil de construction, et la carte s'ouvre sur les destinations à moins d'une heure pour rester lisible.
-- **Décision :** `maplibre-gl` fixé en version 5. Premier cadrage et « Recentrer » : le départ et les destinations à moins de `carte.dureeCadrageMin` (60 min), toutes s'il y en a moins de 3. Étiquettes en couche MapLibre, qui gère leurs collisions (`06` § 3). Épingles de lieux à partir du zoom `carte.zoomMinLieux`.
+- **Décision :** `maplibre-gl` fixé en version 5. Premier cadrage et « Recentrer » : le départ et les destinations à moins de `carte.dureeCadrageMin` (60 min), toutes s'il y en a moins de 3. Étiquettes en couche MapLibre, qui gère leurs collisions (`06` § 3), sur les 5 destinations avec le plus de trains : les plus proches se serraient toutes autour de la gare (choix de Hardy). Épingles de lieux à partir du zoom `carte.zoomMinLieux`.
 - **Raison :** essai du 04/11 : MapLibre 6 charge un module de travail séparé que Next.js ne sert pas (« Worker failed to load »), et le fond de carte reste vide. Depuis Dijon, cadrer les 101 destinations jusqu'à Paris et Lyon entassait tout.
 - **Écarté :** servir à la main le module de MapLibre 6 (une pièce de plus à maintenir, y compris pour la PWA).
 - **Impact :** `apps/web/package.json`, `config/parametres.json`, `features/carte`, E14 à vérifier hors ligne.

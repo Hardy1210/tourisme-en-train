@@ -42,17 +42,25 @@ describe('segmentsDepuis', () => {
 
 describe('clesEtiquetees', () => {
   const LISTE = [
-    { uic: 'loin', dureeMin: 90 },
-    { uic: 'proche', dureeMin: 10 },
-    { uic: 'moyen', dureeMin: 40 },
+    { uic: 'rare', nbTrains: 2, dureeMin: 10 },
+    { uic: 'frequente', nbTrains: 40, dureeMin: 90 },
+    { uic: 'moyenne', nbTrains: 12, dureeMin: 40 },
   ];
 
-  it('garde les plus proches, pas les autres', () => {
-    expect([...clesEtiquetees(LISTE, null, 2)].sort()).toEqual(['moyen', 'proche']);
+  it('garde celles qui ont le plus de trains, même plus lointaines', () => {
+    expect([...clesEtiquetees(LISTE, null, 2)].sort()).toEqual(['frequente', 'moyenne']);
   });
 
-  it('étiquette toujours la destination sélectionnée, même lointaine', () => {
-    expect(clesEtiquetees(LISTE, 'loin', 1)).toEqual(new Set(['proche', 'loin']));
+  it('à égalité de trains, préfère la plus rapide', () => {
+    const egales = [
+      { uic: 'lente', nbTrains: 5, dureeMin: 60 },
+      { uic: 'rapide', nbTrains: 5, dureeMin: 20 },
+    ];
+    expect(clesEtiquetees(egales, null, 1)).toEqual(new Set(['rapide']));
+  });
+
+  it('étiquette toujours la destination sélectionnée', () => {
+    expect(clesEtiquetees(LISTE, 'rare', 1)).toEqual(new Set(['frequente', 'rare']));
   });
 });
 
