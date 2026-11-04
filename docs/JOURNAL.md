@@ -24,6 +24,31 @@
 
 ---
 
+## 04/11/2026 — Étapes E10 et E11 — socle de l'interface, règles sur les listes, lots 1 à 3 d'Explorer
+**Fait :**
+- E10 terminée et fusionnée (PR #56) : `globals.css` en 3 niveaux, composants, logo, navigation à 4 onglets, rail desktop, planche `/design`, validés par Hardy. Légende des temps 30, 60, 90.
+- Route `/api/lieux`. Liste de Dijon de 867 à 697 lieux après les règles ; ordre sans filtre identique avec la catégorie secondaire (Dijon, Besançon, Nevers comparés avant et après).
+- E11 : lot 1 (position, refus, hors région, gare), lot 2 (date, calendrier, catégories, filtres dans l'URL), lot 3 (votre gare, à deux pas, destinations, états).
+- Chiffre du pitch : 350 sorties pour enfants (hors aires de jeux et piscines), dont 43 à 1,5 km à pied d'une gare ; autour de 348 et 41 une fois les corrections validées.
+
+**Décisions :** D053 → D060.
+
+**Problèmes rencontrés :**
+- Incident GitHub sur SSH : push et pull refusés par intermittence. Un `git pull` échoué a laissé E11 partir de l'ancien `main` ; corrigé sans perte. Ne pas enchaîner une suite de commandes après un pull sans vérifier son résultat.
+- Mesure « villes entières » d'abord trop large : « Auxonne » était le bâtiment de la gare, pas une ville.
+- Un commit de D060 contenait un test en échec : corrigé par amendement avant tout envoi.
+
+**À valider par Hardy :**
+- Lot 3 ; `corrections_manuelles.csv` ligne par ligne.
+
+**Prochaine action :**
+- Lot 4 de E11 (carte) après validation du lot 3.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (347) · intégration ✅ (153)
+**Commit :** voir `docs(contexte): sauvegarde de session du 04/11` (branche `etape/E11-explorer`)
+
+---
+
 ## 04/11/2026 — Étape E10 — audit du socle de l'interface
 **Fait :**
 - Reprise ; réponse à Hardy : la géolocalisation est demandée à l'ouverture, refus → recherche de ville (F01, interface en E11), position jamais enregistrée.

@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E11 (écran Explorer), à préparer ; E10 terminée, pull request à fusionner par Hardy (branche `etape/E10-socle-interface`)
-- **Dernière session :** 04/11/2026 — socle de l'interface d'après les maquettes `Explorer Mobile v3` et `Explorer Desktop v3` (D053, D054, D055), validé par Hardy, qui pourra y revenir
-- **Fait :** données en base (jalon du 01/11) ; API P0 complète (jalon du 03/11, `05`) ; design system centralisé en 3 niveaux (`globals.css`), composants `components/ui/`, logo, navigation Explorer · Lieux · Mon espace · Menu (rail à partir de 1024 px), planche `/design` ; légende des temps 30, 60, 90 ; `pnpm verifier` 280 tests, `pnpm test:integration` 124
-- **À valider par Hardy :** `A-FAIRE` § 1 — variantes de la maquette (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
-- **Bloquant :** rien ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** après la fusion de E10 : créer `etape/E11-explorer` ; concevoir la route de l'onglet Lieux (`A-FAIRE` § 1 : `05`, puis route → service → requête), à faire avant l'écran Explorer ; proposer le plan à Hardy avant de coder
+- **Étape en cours :** E11 (écran Explorer), lots 1 à 3 faits sur `etape/E11-explorer` ; lot 3 à valider par Hardy ; E10 fusionnée (PR #56)
+- **Dernière session :** 04/11/2026 — socle de l'interface, route `/api/lieux`, règles sur les listes (D053 → D060), lots 1 à 3 de E11
+- **Fait :** données et API P0 ; design system en 3 niveaux, composants, navigation à 4 onglets ; `/api/lieux` ; fiches de ville, piscines, aires génériques, gares classées et spas retirés selon les règles (D057, D059) ; catégorie secondaire (D060) ; position, gare, date, filtres dans l'URL sans position (D058), résultats ; `pnpm verifier` 347 tests, `pnpm test:integration` 153
+- **À valider par Hardy :** lot 3 de E11 ; `etl/src/regles/corrections_manuelles.csv` ligne par ligne (avant E12) ; reste de `A-FAIRE` § 1
+- **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11
+- **Prochaine action précise :** montrer le lot 3 à Hardy (`pnpm dev`, http://localhost:3000) ; s'il valide : lot 4, `features/carte/` (MapLibre + OpenFreeMap, couleurs lues depuis les tokens), après avoir branché les corrections validées ; maquettes : `Explorer Mobile v3`, `Explorer Desktop v3`
 ---
 
 ## 10. Réaliser une étape
@@ -394,4 +394,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
-| 03–04/11/2026 | 1.32 → 1.39 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
+| 03–04/11/2026 | 1.32 → 1.40 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |

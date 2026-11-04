@@ -27,6 +27,8 @@
 
 | **Corrections manuelles, à valider ligne par ligne** : `etl/src/regles/corrections_manuelles.csv`, colonne `decision` (Médiathèque Henri Vincenot, 4 jeux et escape games, Amphélia) | Le traitement ne lit pas encore ce fichier : il sera branché une fois les lignes validées | Réponse de Hardy, avant E12 |
 
+| **Chiffre du pitch à recalculer** : 350 sorties pour enfants, 43 à 1,5 km à pied d'une gare (hors aires de jeux et piscines) | Mesure du 04/11, avant les corrections manuelles | Après validation de `corrections_manuelles.csv`, puis E13 (`pitch.md`) |
+
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
 | Quoi | Pour quelle étape | Déclencheur |
