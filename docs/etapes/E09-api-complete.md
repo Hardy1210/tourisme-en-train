@@ -1,7 +1,7 @@
 # E09 — Routes lieux, trains, mobilités, impact, géocodage, sources
 
 > **Semaine :** S5 (02/11 → 08/11) · **Priorité :** P0 (+ P1 : lignes, cyclable, temps réel) · **Branche :** `etape/E09-api-complete`
-> **Étapes préalables :** E07, E08 · **État :** 🟡 en cours
+> **Étapes préalables :** E07, E08 · **État :** ✅ terminée (PR #55)
 > **Version de la fiche** 1.1 · **Date** 03/11/2026
 
 ## Contexte minimal

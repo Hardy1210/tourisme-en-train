@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.17 · **Date** 03/11/2026
+> **Version** 1.18 · **Date** 04/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -56,7 +56,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   },
   "durees": {
     "trainMaxOptionsMin": [30, 60, 120, 180],
-    "tranchesTempsMin": [30, 60, 120]
+    "tranchesTempsMin": [30, 60, 90]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000 },
@@ -347,7 +347,7 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | Distance à pied | distance vol d'oiseau × `marche.coefDetour` | |
 | Durée à pied (min) | ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉ | |
 | Durée vélo / voiture jusqu'à la gare | idem avec `velo` / `voiture` | |
-| Tranche de temps | `<30`, `<60`, `<120`, `≥120` selon `durees.tranchesTempsMin` | |
+| Tranche de temps | `<=30`, `<=60`, `<=90`, `>90` selon `durees.tranchesTempsMin` (D055) | |
 | Faisable dans la journée | un aller arrive avant `journee.arriveeMaxAller` **et** un retour part après cette arrivée + `journee.dureeVisiteMin` | **calculé par l'ETL** (§ 4.3), lu dans `liaison_directe.faisable_journee` (D040) |
 | CO₂ train (kg, aller-retour) | 2 × distance_km × facteur du type de train / 1000 | `impact.facteursCo2GParKm` |
 | CO₂ voiture seule | 2 × distance_km × `VOITURE` / 1000 | |
@@ -382,3 +382,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.15 | § 2 : `regroupementParcChateau` ; § 4.5 : noms exclus (`noms_exclus.csv`) ; § 4.6 : parc d'un château — D045 |
 | 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
 | 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |
+| 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |

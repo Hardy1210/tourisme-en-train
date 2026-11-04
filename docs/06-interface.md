@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.3 · **Date** 09/10/2026
+> **Version** 1.4 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -29,15 +29,15 @@
 | Token | Usage | Jamais pour |
 |---|---|---|
 | `primary` | Train, marque, navigation active | Actions d'achat |
-| `action` | **Une seule** action principale visible : « Voir la sortie », « Acheter mon billet » | Décoration |
+| `action` | Action d'achat : « Acheter mon billet » (« Voir la sortie » a son token `sortie-*`, D054) | Décoration |
 | `transit` | Bus, tram, vélos, trottinettes | Train |
-| `cat-*` | Les 5 catégories, **toujours avec une icône** | Autre chose que des lieux |
+| `cat-*` | Les 5 catégories, une seule couleur par défaut, **toujours avec une icône et un nom** (D054) | Autre chose que des lieux |
 | `eco` | CO₂ économisé | Succès génériques |
 | `danger` | Erreurs réelles (train supprimé) | Retard modéré (→ `warning`) |
 
 - **Typographie :** `font-display` (titres, noms de lieux), `font-sans` (reste). Classe `tabular` sur **tous** les horaires, durées, distances, prix.
 - **Icônes :** Lucide, trait 1,75 px. Catégories : `enfants` → `FerrisWheel`, `nature` → `Mountain`, `parcs` → `Trees`, `patrimoine` → `Castle`, `culture` → `Theater`. Transports : `TrainFront`, `Bus`, `TramFront`, `Bike`.
-- **Composants de base** (`components/ui/`, shadcn/ui adaptés aux tokens) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`.
+- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo`.
 - **Mode sombre** (P1) : uniquement par les tokens `.dark`.
 - **Maquettes Claude Design** : conseil visuel. On copie l'aspect, jamais le comportement sans vérification.
 
@@ -56,10 +56,10 @@
    - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».
    - **b. À deux pas de vous** : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »).
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
-5. **Navigation basse** : Explorer · Menu (→ À propos · Sources des données). Pas de « Mes sorties » en v1 (favoris = P2), comme la fiche E10.
+5. **Navigation basse** : Explorer · Lieux · Mon espace · Menu (D054). Lieux : données réelles. Mon espace (favoris, récompenses) : **fictif, marqué « Aperçu · bientôt »**.
 
 ### Desktop
-Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; la fiche destination s'ouvre en panneau latéral de 480 px.
+Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; le Menu s'ouvre en panneau flottant à côté du rail ; la fiche destination s'ouvre en panneau latéral de 480 px.
 
 ### États (obligatoires)
 | État | Affichage |
@@ -95,7 +95,7 @@ Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur 
   4. **onglet Trains sans statut** (cas par défaut) ;
   5. bascule **Samedi / Dimanche** ;
   6. station de vélos **sans nombre** disponible.
-- À **retirer** de la maquette : le transport à la demande, le bouton « Mes sorties » (favoris, P2), remplacé par l'entrée « Menu » de la navigation basse (§ 3).
+- À **retirer** de la maquette : le transport à la demande, le bouton « Mes sorties » (remplacé par « Mon espace » dans la navigation basse, § 3).
 - **Écrans complémentaires à concevoir** (prompts : `design/prompts-ecrans.md`) : fiche lieu · calendrier « Choisir une date » · utilisateur hors région · destination hors région · écran Sources + menu · erreurs (sortie expirée, 404, panne) · détail « Comparer » (CO₂) · écran avant la localisation · invitation à installer l'app.
 
 ## 5. Page « L'âme du produit » et écran Sources
@@ -159,3 +159,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : carte en segments + étiquettes, week-end, partage, vélos disponibles, temps réel limité, états sans description / sans prix / sans statut, variantes à concevoir — D017 à D021 |
 | 02/10/2026 | 1.2 | Nom de la commune de la puce de localisation par `/api/geocodage/inverse` — D022 ; écrans complémentaires listés en § 4 bis |
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
+| 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, rail sur grand écran, composants réels — D054 |

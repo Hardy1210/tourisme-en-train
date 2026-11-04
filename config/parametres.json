@@ -31,7 +31,7 @@
   },
   "durees": {
     "trainMaxOptionsMin": [30, 60, 120, 180],
-    "tranchesTempsMin": [30, 60, 120]
+    "tranchesTempsMin": [30, 60, 90]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "lieux": {

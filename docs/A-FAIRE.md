@@ -11,13 +11,12 @@
 | Quoi | Contexte | Déclencheur |
 |---|---|---|
 | Relire l'ensemble de la documentation (docs 00 → 08, fiches) | Rédigée le 30/09 | Avant de lancer E00 |
-| Design System (UI Kit) dans Claude Design | Prompt fourni le 30/09 | Avant ~09/11 (E10) |
+| **Données réelles de l'onglet Lieux (session à prévoir)** : route des lieux accessibles depuis une gare de départ, toutes destinations confondues, avec gare, durée de train et temps à pied. L'API ne donne aujourd'hui les lieux que gare par gare (`/api/destinations/[uic]/lieux`) | D054 ; suivre `05` puis `route → service → requête` ; requête groupée et limite dans `parametres.json` | Avant l'écran Lieux, après le socle E10 |
 | Variantes de la maquette Explorer : carte avec ~20 destinations, lieu sans description, destination sans prix, trains sans statut, bascule Samedi/Dimanche, station sans nombre de vélos ; retirer le transport à la demande | Décisions D017 → D021 | Avant ~09/11 (E11–E12) |
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
 | **Photos des lieux, au-delà d'OpenStreetMap** : en v1, photo OSM (`image`, `wikimedia_commons`) quand elle existe, sinon illustration par catégorie (D041). Pour en avoir plus : le **flux complet de la « plateforme diffuseur » DATAtourisme** (photos comprises, téléchargé la nuit comme le CSV ; compte gratuit, adresse du flux à garder secrète, JSON plus lourd). Dans tous les cas : **crédit et licence de chaque photo** à afficher | Le CSV régional n'a aucune photo ; Hardy juge les photos importantes. L'API seule pour les images a été écartée (clé, fiche plus lente, rien hors ligne) | Hardy crée le compte diffuseur s'il le souhaite ; évaluation au plus tard avec E12 (fiche) |
-| **Légende des temps de trajet sur la carte** : `design/prompts-ecrans.md` (prompt 1, § 4) demande « ≤ 30 min, ≤ 1 h, ≤ 1 h 30, > 1 h 30 » alors que `parametres.json` (`durees.tranchesTempsMin` = 30, 60, 120) et `05` donnent `<30`, `<60`, `<120`, `≥120` | Contradiction relevée le 09/10 ; aucun des deux corrigé | **Avant E11** |
 | Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |

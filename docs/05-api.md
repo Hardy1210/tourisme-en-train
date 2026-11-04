@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.10 · **Date** 03/11/2026
+> **Version** 1.11 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -107,7 +107,7 @@ type Heure = { s: number; texte: string; lendemain: boolean };   // règle 8 (§
     horsVille: boolean;                // gare TGV : afficher « à <commune> » sous le titre (D049)
     gare: { uic: string; nom: string; lat: number; lon: number; dansRegion: boolean };  // gare en tête
     autresGares: Array<{ uic: string; nom: string; dureeMin: number; nbTrains: number }>;
-    dureeMin: number; trancheTemps: "<30" | "<60" | "<120" | ">=120";
+    dureeMin: number; trancheTemps: "<=30" | "<=60" | "<=90" | ">90";  // D055
     nbTrains: number;
     premierDepart: Heure;
     dernierRetour: Heure | null;       // dernier départ de la liaison inverse ; null si aucun retour direct
@@ -290,3 +290,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 03/11/2026 | 1.8 | § 3.4 : `titre`, `commune`, `horsVille` (gares TGV, D049) ; `peuDeLieux` remplace `sansLieu` (seuil de 3 lieux, D050) |
 | 03/11/2026 | 1.10 | § 3.10 : champ `trajet` (CO₂ aller-retour, prix aller simple) — D051 |
 | 03/11/2026 | 1.9 | § 1.8 bis : identifiants publics stables (`uic`, `cle`) ; § 3.5 → 3.12 précisés après l'audit E09 (fiche destination, heures `Heure`, type d'impact le moins favorable, recherche inverse sans filtre ni cache, sources affichées) — D051, D052 |
+| 04/11/2026 | 1.11 | § 3.4 : tranches de temps `<=30`, `<=60`, `<=90`, `>90` — D055 |

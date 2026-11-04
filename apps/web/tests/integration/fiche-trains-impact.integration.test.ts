@@ -44,7 +44,7 @@ describe('/api/destinations/[uic]', () => {
     expect(enTete.liaison).toMatchObject({
       dureeMin: 22,
       nbTrains: 2,
-      trancheTemps: '<30',
+      trancheTemps: '<=30',
       dernierRetour: { texte: '18:44' },
     });
     expect(enTete.liaison?.prixEstime).toEqual(carte?.prixEstime);

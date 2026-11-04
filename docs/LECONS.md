@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.6 · **Date** 03/11/2026
+> **Version** 1.7 · **Date** 03/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -247,6 +247,18 @@
 - **À retenir :** quand deux écrans montrent la même valeur, tester qu'ils montrent **la même** valeur, pas seulement chacun « une » valeur.
 - **Origine :** D047, D051.
 
+### L36 — Une liste se conçoit depuis le moment du voyageur, pas depuis la table
+- **Problème :** la liste des retours prenait « les 20 premiers » puis « les 20 derniers » trains du jour ; avec un départ à 16:00, elle proposait encore des retours à 14:37, avant même l'arrivée à 16:37.
+- **Solution :** partir de la situation du voyageur : un retour n'est utile que s'il part **après l'arrivée** du premier aller proposé ; le dernier retour du jour reste toujours affiché (« jusqu'à quand puis-je rester ? »).
+- **À retenir :** pour chaque liste, se demander « où en est la personne à ce moment-là ? » ; la vérification par un vrai utilisateur (Hardy, sur SNCF Connect) trouve ce que les tests ne cherchent pas.
+- **Origine :** avis de Hardy sur E09, D051 (point 8 bis).
+
+### L37 — Dire ce que mesure un chiffre, surtout quand deux conventions coexistent
+- **Problème :** le CO₂ est calculé pour un aller-retour, le prix pour un aller simple ; rien ne le disait dans la réponse, et un seul champ « aller-retour » aurait été faux pour le prix.
+- **Solution :** un champ explicite par chiffre (`trajet: { co2: "aller-retour", prix: "aller-simple" }`), écrit aussi dans le contrat de l'API.
+- **À retenir :** un nombre sans unité ni périmètre finit mal affiché ; quand deux valeurs voisines suivent des conventions différentes, les nommer chacune.
+- **Origine :** remarque de Hardy sur `/api/impact`, D051 (point 8 ter).
+
 ---
 
 ## Historique
@@ -260,3 +272,4 @@
 | 02/11/2026 | 1.4 | L27, L28 (catalogue national filtré par territoire, lien de téléchargement stable) |
 | 03/11/2026 | 1.5 | L29 → L31 (journaux du framework, seuil mesuré avant d'être choisi, test qui doit pouvoir échouer) |
 | 03/11/2026 | 1.6 | L32 → L35 (identifiant public, API réelle appelée avant de coder, panne d'un service externe testée, un seul calcul pour deux écrans) |
+| 03/11/2026 | 1.7 | L36, L37 (liste pensée depuis le moment du voyageur, périmètre de chaque chiffre) |
