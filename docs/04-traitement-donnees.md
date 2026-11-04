@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.18 · **Date** 04/11/2026
+> **Version** 1.19 · **Date** 04/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -75,7 +75,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
+  "limites": { "gares": 3, "lieux": 50, "lieuxParPage": 30, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
   "impact": {
     "source": "ADEME — Impact CO2",
     "dateReleve": "2026-11-03",
@@ -383,3 +383,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
 | 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |
 | 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |
+| 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 |

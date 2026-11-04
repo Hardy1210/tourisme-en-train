@@ -108,6 +108,8 @@ export const schemaParametres = z
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),
+      /** Onglet Lieux : nombre de lieux par « Voir plus » (D056). */
+      lieuxParPage: z.number().int().positive(),
       destinations: z.number().int().positive(),
       trains: z.number().int().positive(),
       mobilites: z.number().int().positive(),

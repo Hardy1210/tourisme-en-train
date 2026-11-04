@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -557,3 +557,11 @@
 - **Raison :** pour une sortie à la journée, surtout avec des enfants, 1 h 05 et 2 h de train ne demandent pas le même effort. La répartition des liaisons ne départage pas (31, 25, 17, 28 % contre 31, 25, 28, 17 % avec 2 h). Choix de Hardy.
 - **Écarté :** 30, 60, 120 (premier choix de Claude Code, contraire à la maquette) ; 5 tranches (trop de couleurs à distinguer).
 - **Impact :** `config/parametres.json`, `lib/dates/tranche-temps`, tests, `04` § 2 et § 6, `05` § 3.4, `GLOSSAIRE`, fiche E08 (modifié après coup).
+
+## D056 — Onglet Lieux : tous les lieux atteignables en train direct depuis la gare de départ
+- **Date :** 04/11/2026
+- **En clair :** l'onglet Lieux montre où l'on peut aller à pied depuis une gare, en train direct depuis la sienne ; chaque lieu n'apparaît qu'une fois, du plus rapide au plus long, 30 à la fois.
+- **Décision :** nouvelle route `GET /api/lieux` (`05` § 3.6 bis). (1) Un lieu proche de plusieurs gares apparaît une fois, par la gare au temps total le plus court. (2) `limites.lieuxParPage` = 30, avec « Voir plus ». (3) Tri par temps total, train + marche. (4) Les lieux de la ville de départ sont écartés, y compris à côté d'une autre gare de la même commune : pas besoin de train, et ils sont déjà dans « À deux pas de vous ».
+- **Raison :** depuis Dijon, près de 1 000 lieux sont atteignables : la limite de 40 de la maquette en rendrait la plupart inaccessibles. Validé par Hardy.
+- **Écarté :** assembler les lieux gare par gare côté interface (une requête par destination, doublons à gérer dans l'écran).
+- **Impact :** `05`, `config/parametres.json`, `04` § 2, `features/lieux`, échantillon, fiche E11, `GLOSSAIRE`, `A-FAIRE`.

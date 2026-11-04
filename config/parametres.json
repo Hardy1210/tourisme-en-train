@@ -58,6 +58,7 @@
   "limites": {
     "gares": 3,
     "lieux": 50,
+    "lieuxParPage": 30,
     "destinations": 150,
     "trains": 20,
     "mobilites": 20,

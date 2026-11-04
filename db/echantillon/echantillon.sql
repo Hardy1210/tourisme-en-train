@@ -268,4 +268,34 @@ SELECT l.id, g.id, round(ST_Distance(l.geom, g.geom) * 1.3)::int,
 FROM lieu l JOIN gare g ON ST_DWithin(l.geom, g.geom, 1500 / 1.3)
 WHERE l.doublon_de IS NULL AND l.site_de IS NULL;
 
+-- ----------------------------------------------------------------------------
+-- E11 — onglet Lieux (/api/lieux, D056)
+-- ----------------------------------------------------------------------------
+-- Dijon-Porte-Neuve dessert Dijon-Ville (même commune : écartée), Beaune et Chalon.
+INSERT INTO liaison_directe (gare_depart_id, gare_arrivee_id, date_service, duree_min, nb_trains,
+  premier_depart_s, dernier_depart_s, premiere_arrivee_s, types_train, distance_km, faisable_journee)
+SELECT gd.id, ga.id, '2026-11-18', l.duree, 1, 28800, 28800, 28800 + l.duree * 60, '{TER}',
+       round((ST_Distance(gd.geom, ga.geom) / 1000 * 1.2)::numeric, 1), false
+FROM (VALUES ('EX000001', 6), ('EX000002', 30), ('EX000005', 50)) AS l (arrivee_uic, duree)
+JOIN gare gd ON gd.uic = 'EX000023'
+JOIN gare ga ON ga.uic = l.arrivee_uic;
+
+-- Lieux placés loin de tout, rattachés à la main pour tester chaque règle.
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom)
+SELECT 'echantillon', l.id_source, l.nom, 'nature', 'belvédère', 'Donnée d''exemple.', '71076',
+       ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography
+FROM (VALUES
+  ('ECH_L40', 'Exemple - Belvédère entre deux gares'),
+  ('ECH_L41', 'Exemple - Belvédère à pied du départ')
+) AS l (id_source, nom);
+
+INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
+SELECT l.id, g.id, r.distance, r.marche
+FROM (VALUES
+  ('ECH_L40', 'EX000005', 1400, 19), ('ECH_L40', 'EX000006', 80, 1),
+  ('ECH_L41', 'EX000023', 100, 2), ('ECH_L41', 'EX000005', 100, 2)
+) AS r (id_source, uic, distance, marche)
+JOIN lieu l ON l.id_source = r.id_source
+JOIN gare g ON g.uic = r.uic;
+
 COMMIT;

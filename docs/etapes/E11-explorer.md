@@ -60,3 +60,4 @@ Voir `_MODELE.md`.
 - 30/09/2026 : alignement sur la maquette validée (D017, D018, D021).
 - 02/10/2026 : nom de la commune dans la puce de localisation (D022).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 04/11/2026 : route de l'onglet Lieux faite avant l'écran, `GET /api/lieux` (D056) ; légende 30, 60, 90 (D055) ; maquettes de référence `Explorer Mobile v3` et `Explorer Desktop v3`.

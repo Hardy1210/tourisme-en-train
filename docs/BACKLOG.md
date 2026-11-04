@@ -91,7 +91,7 @@ Total : **38 points**. Les SR travaillent uniquement dans `infra/` ; le lien ave
 | T2 | Base de données locale (PostgreSQL + PostGIS), schéma et migrations | E01 | S1 | fusionnée le 11/10 (#44) | ✅ |
 | T3 | Chaîne de données : gares, horaires, trains directs, lieux, rattachements, transports | E02 → E07 | S2 → S4 | Jalon : données en base le 01/11 | ⬜ |
 | T4 | API de l'application | E08 · E09 | S5 | Jalon : API complète le 08/11 | ✅ |
-| T5 | Socle de l'interface et design system | E10 | S6 | — | ⬜ |
+| T5 | Socle de l'interface et design system | E10 | S6 | — | ✅ |
 | T6 | Qualité : tests, accessibilité, performance | E15 | S8 | Gel des fonctionnalités le 27/11 | ⬜ |
 | T7 | Livraison pour la soutenance (Docker, données figées) | E16 | S8 | Livraison le 30/11 | ⬜ |
 | T8 | Mise en ligne v1 avec les SR (optionnelle) | E17 | Fin | Décision le 25/11 | ⬜ |
