@@ -1,19 +1,12 @@
-// Page provisoire : la fiche destination arrive en E12 (fiche E11, « À ne pas toucher »).
-import Link from 'next/link';
-import { Bouton } from '@/components/ui/bouton';
-import { EtatVide } from '@/components/ui/etat-vide';
+import { Suspense } from 'react';
+import { EcranDestination } from '@/features/destinations/ui/ecran-destination';
 
-export default function PageDestination() {
+// Suspense : l'écran lit l'URL (useSearchParams), connue seulement dans le navigateur.
+export default async function PageDestination({ params }: { params: Promise<{ uic: string }> }) {
+  const { uic } = await params;
   return (
-    <div className="p-4 safe-top">
-      <EtatVide
-        titre="Fiche destination"
-        texte="Bientôt ici : les lieux, les trains aller et retour, et les transports sur place."
-      >
-        <Bouton variante="secondaire" asChild>
-          <Link href="/">Retour à Explorer</Link>
-        </Bouton>
-      </EtatVide>
-    </div>
+    <Suspense>
+      <EcranDestination uic={uic} />
+    </Suspense>
   );
 }

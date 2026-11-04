@@ -3,7 +3,7 @@
 import type { Categorie } from '@tourisme/commun';
 import { useQuery } from '@tanstack/react-query';
 import { lireApi } from '@/lib/http/client';
-import { schemaReponseDestinations } from './schemas';
+import { schemaFicheDestination, schemaReponseDestinations } from './schemas';
 
 type Options = {
   gare: string;
@@ -20,5 +20,16 @@ export function useDestinations({ gare, date, categories, dureeMax }: Options) {
   return useQuery({
     queryKey: ['destinations', chemin],
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseDestinations, signal),
+  });
+}
+
+export function useFicheDestination(uic: string, depuis: string | null, date: string | null) {
+  const requete = new URLSearchParams();
+  if (depuis !== null) requete.set('depuis', depuis);
+  if (date !== null) requete.set('date', date);
+  const chemin = `/api/destinations/${uic}?${requete.toString()}`;
+  return useQuery({
+    queryKey: ['fiche-destination', chemin],
+    queryFn: ({ signal }) => lireApi(chemin, schemaFicheDestination, signal),
   });
 }

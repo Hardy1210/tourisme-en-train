@@ -35,3 +35,14 @@ export function libelleDate(date: string | null, dateDuJour: string): string {
   const option = optionsDate(dateDuJour).find((o) => o.date === date);
   return option ? option.libelle : libelleCourt(date);
 }
+
+/** Samedi et dimanche du week-end affiché si `date` en fait partie ; null sinon, ou un dimanche (il ne reste qu'un jour). */
+export function joursDuWeekEnd(
+  date: string | null,
+  dateDuJour: string,
+): { samedi: string; dimanche: string } | null {
+  const samedi = debutDuWeekEnd(dateDuJour);
+  if (new Date(`${samedi}T12:00:00Z`).getUTCDay() === 0) return null;
+  const dimanche = decalerJours(samedi, 1);
+  return date === samedi || date === dimanche ? { samedi, dimanche } : null;
+}

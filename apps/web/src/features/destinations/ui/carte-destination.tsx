@@ -6,7 +6,13 @@ import { Carte } from '@/components/ui/carte';
 import { parametres } from '@/config/parametres';
 import { APPARENCE_CATEGORIE, IconeCategorie } from '@/features/lieux/ui/icone-categorie';
 import { cn } from '@/lib/classes';
-import { couleurTranche, formaterDuree, formaterKg, formaterPrix } from '../presentation';
+import {
+  couleurTranche,
+  formaterDuree,
+  formaterKg,
+  formaterPrix,
+  MENTION_ESTIMATION,
+} from '../presentation';
 import type { Destination } from '../schemas';
 
 type Proprietes = {
@@ -127,7 +133,9 @@ export function CarteDestination({ destination: d, lien, survolee, surSurvol }: 
             aria-label={`Prix estimé pour un aller : ${formaterPrix(d.prixEstime)}`}
           >
             {formaterPrix(d.prixEstime)}{' '}
-            <span className="text-sm font-normal text-muted-foreground">l&apos;aller</span>
+            <span className="text-sm font-normal text-muted-foreground">
+              l&apos;aller ({MENTION_ESTIMATION})
+            </span>
           </span>
         )}
       </div>

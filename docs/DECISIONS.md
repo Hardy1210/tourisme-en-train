@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -619,3 +619,14 @@
 - **Raison :** essai du 04/11 : MapLibre 6 charge un module de travail séparé que Next.js ne sert pas (« Worker failed to load »), et le fond de carte reste vide. Depuis Dijon, cadrer les 101 destinations jusqu'à Paris et Lyon entassait tout.
 - **Écarté :** servir à la main le module de MapLibre 6 (une pièce de plus à maintenir, y compris pour la PWA).
 - **Impact :** `apps/web/package.json`, `config/parametres.json`, `features/carte`, E14 à vérifier hors ligne.
+
+---
+
+## D063 — Fiche destination : une vraie page, billetterie SNCF Connect, fiche lieu dans E12
+- **Date :** 04/11/2026
+- **En clair :** la fiche est une page avec sa propre adresse (plein écran sur mobile, panneau et carte sur grand écran), le bouton « Acheter mon billet » mène à SNCF Connect, et la fiche d'un lieu est faite en même temps, sinon les lieux ne seraient pas cliquables.
+- **Décision :** routes `(app)/destinations/[uic]` et `(app)/lieux/[cle]` ; `parametres.billetterie.url` = SNCF Connect ; l'onglet ouvert et la date sont dans l'URL, sans entrée d'historique pour que « Retour » ramène à l'écran d'avant.
+- **Raison :** choix de Hardy. SNCF Connect couvre aussi les TGV et les destinations hors région, ce que le site TER régional ne couvre pas. Une page reste partageable, et elle est plus simple qu'une feuille posée sur Explorer.
+- **Écarté :** feuille interceptant la navigation par-dessus Explorer (routes parallèles de Next.js : plus de code, à l'œil le même plein écran) ; lien TER Bourgogne-Franche-Comté de la maquette.
+- **Impact :** `config/parametres.json`, `06` § 4, fiche E12. La liste de l'onglet Lieux montre nom, durée, sous-catégorie et Qualité Tourisme : description et horaires restent dans la fiche lieu, car `LieuResume` (`05` § 3.6) ne les contient pas.
+

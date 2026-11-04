@@ -24,6 +24,29 @@
 
 ---
 
+## 04/11/2026 — Étapes E11 et E12 — parcours Playwright, fiche destination et fiche lieu
+**Fait :**
+- E11 fusionnée (PR #57) : carte découpée, parcours Playwright, mesures sur version de production.
+- 2 exclusions de lieux (Collège Jules Ferry, Bataille de Nuits-Saint-Georges), traitement relancé hors ligne.
+- E12 : fiche destination (lieux, trains, sur place, CO₂ et « Comparer », prix estimé, billetterie), fiche lieu, mention « estimation » sur les cartes d'Explorer.
+
+**Décisions :** D063.
+
+**Problèmes rencontrés :**
+- Sur mobile, la navigation recouvrait le pied de la fiche : vu grâce au test de « Y aller en train » et aux captures, corrigé.
+- `next build` échouait lancé par Playwright : `NODE_ENV` fixé à `production` pour ce serveur.
+
+**À valider par Hardy :**
+- PR de E12 ; vérifications de design et téléphone (`A-FAIRE` § 1).
+
+**Prochaine action :**
+- E13 après la fusion.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (388) · intégration ✅ (153) · parcours ✅ (38)
+**Commit :** branche `etape/E12-fiche-destination`
+
+---
+
 ## 04/11/2026 — Étape E11 — corrections de lieux, carte et assemblage (lots 4 et 5)
 **Fait :**
 - 6 corrections de lieux validées par Hardy et appliquées par le traitement ; chiffre du pitch : 348 sorties pour enfants, 41 à 1,5 km à pied d'une gare (hors aires de jeux et piscines).

@@ -1,36 +1,42 @@
 import { Footprints } from 'lucide-react';
+import Link from 'next/link';
 import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
 import { Squelette } from '@/components/ui/squelette';
 import { cn } from '@/lib/classes';
 import { formaterDistance } from '@/lib/geo/formats';
+import { lienLieu } from '../liens';
 import type { LieuResume } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
 
 function CarteLieu({ lieu }: { lieu: LieuResume }) {
   const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
-    <li className="flex w-47 flex-none flex-col overflow-hidden rounded-carte bg-carte-bg shadow-carte">
-      <div className={cn('flex h-24 items-center justify-center', classeFond)}>
-        <IconeCategorie categorie={lieu.categorie} className="size-10" />
-      </div>
-      <div className="flex flex-col gap-2 p-3">
-        <h3 className="line-clamp-2 min-h-10 text-base leading-tight font-semibold">{lieu.nom}</h3>
-        <span
-          className={cn(
-            'inline-flex h-6.5 items-center gap-1 self-start rounded-pill pr-2 pl-1.5 text-xs font-semibold',
-            classeFond,
-            classeTexte,
-          )}
-        >
-          <IconeCategorie categorie={lieu.categorie} className="size-3.5" />
-          {libelle}
-        </span>
-        <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
-          <Footprints aria-hidden="true" className="size-4 flex-none" />
-          {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
-        </span>
-      </div>
+    <li className="w-47 flex-none overflow-hidden rounded-carte bg-carte-bg shadow-carte">
+      <Link href={lienLieu(lieu.cle)} className="flex h-full flex-col">
+        <div className={cn('flex h-24 items-center justify-center', classeFond)}>
+          <IconeCategorie categorie={lieu.categorie} className="size-10" />
+        </div>
+        <div className="flex flex-col gap-2 p-3">
+          <h3 className="line-clamp-2 min-h-10 text-base leading-tight font-semibold">
+            {lieu.nom}
+          </h3>
+          <span
+            className={cn(
+              'inline-flex h-6.5 items-center gap-1 self-start rounded-pill pr-2 pl-1.5 text-xs font-semibold',
+              classeFond,
+              classeTexte,
+            )}
+          >
+            <IconeCategorie categorie={lieu.categorie} className="size-3.5" />
+            {libelle}
+          </span>
+          <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
+            <Footprints aria-hidden="true" className="size-4 flex-none" />
+            {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
+          </span>
+        </div>
+      </Link>
     </li>
   );
 }

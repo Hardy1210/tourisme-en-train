@@ -33,6 +33,9 @@ export function formaterPrix(prix: { min: number; max: number }): string {
   return prix.min === prix.max ? `≈ ${prix.min} €` : `≈ ${prix.min} à ${prix.max} €`;
 }
 
+/** Le prix n'est jamais présenté comme réel (CLAUDE.md § 2, règle 7). */
+export const MENTION_ESTIMATION = 'estimation';
+
 /** « 3,2 » : la virgule française, un chiffre après. */
 export const formaterKg = (kg: number): string => kg.toFixed(1).replace('.', ',');
 

@@ -12,23 +12,36 @@ import type { Point } from '../geometrie';
 
 export function MarqueursLieux({
   lieux,
+  cleChoisie = null,
   surChoix,
 }: {
-  lieux: readonly LieuResume[];
+  lieux: readonly Pick<LieuResume, 'cle' | 'nom' | 'categorie' | 'lat' | 'lon'>[];
+  cleChoisie?: string | null;
   surChoix: (cle: string) => void;
 }) {
   return lieux.map((lieu) => (
-    <Marker key={lieu.cle} latitude={lieu.lat} longitude={lieu.lon}>
+    <Marker
+      key={lieu.cle}
+      latitude={lieu.lat}
+      longitude={lieu.lon}
+      style={{ zIndex: lieu.cle === cleChoisie ? 2 : 1 }}
+    >
       <button
         type="button"
         aria-label={lieu.nom}
+        aria-pressed={lieu.cle === cleChoisie}
         onClick={(evenement) => {
           evenement.stopPropagation();
           surChoix(lieu.cle);
         }}
         className="flex size-touch cursor-pointer items-center justify-center"
       >
-        <span className="flex size-7 items-center justify-center rounded-pill bg-surface shadow-xs">
+        <span
+          className={cn(
+            'flex size-7 items-center justify-center rounded-pill bg-surface shadow-xs',
+            lieu.cle === cleChoisie && 'ring-2 ring-primary',
+          )}
+        >
           <IconeCategorie categorie={lieu.categorie} className="size-4" />
         </span>
       </button>

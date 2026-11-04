@@ -5,6 +5,7 @@ import { Bouton, BoutonFermer } from '@/components/ui/bouton';
 import { formaterDuree } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
+import { lienLieu } from '@/features/lieux/liens';
 import { APPARENCE_CATEGORIE } from '@/features/lieux/ui/icone-categorie';
 import { formaterDistance } from '@/lib/geo/formats';
 
@@ -62,10 +63,16 @@ export function MiniFicheLieu({
 }) {
   return (
     <Cadre titre={lieu.nom} surFermeture={surFermeture}>
-      <p className="tabular pb-1 text-sm text-muted-foreground">
+      <p className="tabular text-sm text-muted-foreground">
         {APPARENCE_CATEGORIE[lieu.categorie].libelle} · {lieu.dureeMarcheMin} min à pied ·{' '}
         {formaterDistance(lieu.distanceM)}
       </p>
+      <Bouton variante="sortie" asChild className="mt-1 self-end">
+        <Link href={lienLieu(lieu.cle)}>
+          Voir le lieu
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
+      </Bouton>
     </Cadre>
   );
 }

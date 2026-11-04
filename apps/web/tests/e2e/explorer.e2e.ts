@@ -1,24 +1,16 @@
 // Parcours de l'écran Explorer, sur l'échantillon (données d'exemple, db/echantillon/).
 // Sans réseau : fond de carte et recherche de ville simulés. Date fixe, présente dans l'échantillon.
 import { expect, test, type Page } from '@playwright/test';
-import { sources } from '@tourisme/commun';
+import { couperLeReseau } from './outils';
 
 const DIJON_VILLE = { latitude: 47.3233, longitude: 5.0272 };
 const DATE = '2026-11-18';
 const ECRAN = `/?date=${DATE}`;
 
-const ADRESSE_FOND_CARTE = sources.sources.find((s) => s.code === 'fond_carte')?.api;
 const VILLE_TROUVEE = 'Dijon, Côte-d’Or';
-const STYLE_VIDE = { version: 8, sources: {}, layers: [] };
 
-/** Coupe tout ce qui sort de l'application ; le fond de carte répond par un style vide. */
 test.beforeEach(async ({ context, baseURL }) => {
-  await context.route('**/*', (requete) => {
-    const url = requete.request().url();
-    if (baseURL && url.startsWith(baseURL)) return requete.fallback();
-    if (url === ADRESSE_FOND_CARTE) return requete.fulfill({ json: STYLE_VIDE });
-    return requete.abort();
-  });
+  await couperLeReseau(context, baseURL);
   await context.route('**/api/geocodage/inverse*', (requete) =>
     requete.fulfill({ json: { commune: 'Dijon', codeInsee: '21231', horsLigne: false } }),
   );
