@@ -27,6 +27,7 @@
 
 
 
+| **Explorer, à vérifier point par point (E11 ⏸)** :<br>☐ comparer l'écran aux maquettes `Explorer Mobile v3` et `Explorer Desktop v3`, noter ce qui semble bizarre, puis retoucher<br>☐ étiquettes de carte coupées par les épingles (ex. « Beaune » en 390 px)<br>☐ essai au doigt sur téléphone en HTTPS, surtout la feuille (essayée seulement à la souris)<br>☐ chronomètre sur téléphone : ouverture → liste < 3 s (un essai à 3,4 s sur ordinateur)<br>☐ changement de gare → titre de la nouvelle gare : mesuré de 1,1 à 3,6 s sur ordinateur, à mesurer sur téléphone avant de corriger<br>☐ prix non calibré : aucune ligne de prix sur les cartes<br>☐ lisibilité de la carte avec beaucoup de destinations (101 depuis Dijon) et étiquette de la destination sélectionnée | Hardy préfère juger le design une fois la fiche destination en place : certaines retouches pourraient devenir inutiles. Détail : fiche E11 | Dès la fin de E12, avec la fiche ; au plus tard avant le jalon P0 du 22/11 |
 | **Autres jeux et escape games classés « enfants » à relire** (Megaloisirs Laser Game, Fug Game, Games Factory, Les Souterrains du Commando Games, La Clé du Bastion, 10 55…) | Règle de D061 : « enfants » seulement si une source le justifie ; la classe `LeisureComplex` seule ne le prouve pas | Avant E12, avec la même méthode de lignes validées |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
