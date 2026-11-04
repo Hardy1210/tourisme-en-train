@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
 import { useDestinations } from '@/features/destinations/hooks';
 import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
@@ -11,6 +12,8 @@ import { useLieuxAutour } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
 import type { Depart } from '../depart';
+import type { PositionFeuille } from '../position-feuille';
+import { FeuilleResultats } from './feuille-resultats';
 import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
 
 type Proprietes = {
@@ -18,6 +21,8 @@ type Proprietes = {
   filtres: Filtres;
   surModification: (modifications: Partial<Filtres>) => void;
   surChangementGare: () => void;
+  position: PositionFeuille;
+  surPosition: (position: PositionFeuille) => void;
 };
 
 /** « Votre gare », « À deux pas de vous », « En train direct » : tout suit les filtres de l'URL. */
@@ -26,7 +31,11 @@ export function ResultatsExplorer({
   filtres,
   surModification,
   surChangementGare,
+  position,
+  surPosition,
 }: Proprietes) {
+  const feuille = useRef<HTMLDivElement>(null);
+  const [survolee, setSurvolee] = useState<string | null>(null);
   const { gare, point, origine } = depart;
   const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
   const destinations = useDestinations({
@@ -50,58 +59,78 @@ export function ResultatsExplorer({
   const suivante = dureeElargie(filtres.dureeMax, parametres.durees.trainMaxOptionsMin);
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6 p-4">
-      {/* Disposition provisoire : la feuille glissante sur la carte arrive au lot 5. */}
-      <CarteExplorerDifferee
-        utilisateur={origine === 'position' ? point : null}
-        gareDepart={{ lat: gare.lat, lon: gare.lon, nom: gare.nom }}
-        destinations={liste ?? []}
-        lieux={lieux.data?.lieux ?? []}
-        lienDe={lienDe}
-      />
-      <CarteVotreGare
-        nom={gare.nom}
-        distanceM={gare.distanceM}
-        dureeVeloMin={gare.dureeVeloMin}
-        prochainDepart={liste ? prochainTrainDirect(liste) : null}
-        surChangement={surChangementGare}
-      />
-      <SectionAPied
-        titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}
-        rayonLibelle={libelleRayon(filtres.rayon)}
-        lieux={lieux.data?.lieux}
-        chargement={lieux.isPending}
-        erreur={lieux.isError}
-        surReessai={() => void lieux.refetch()}
-      />
-      <SectionDestinations
-        gareNom={gare.nom}
-        destinations={liste}
-        chargement={destinations.isPending}
-        erreur={destinations.isError ? destinations.error.message : null}
-        lienDe={lienDe}
-        surReessai={() => void destinations.refetch()}
-        surAujourdhui={
-          destinations.error instanceof ErreurClient && destinations.error.statut === 400
-            ? () => surModification({ date: null })
-            : null
-        }
-        elargir={
-          suivante === null
-            ? null
-            : {
-                libelle: `Élargir à ${libelleDureeMax(suivante)} de train`,
-                action: () => surModification({ dureeMax: suivante }),
-              }
-        }
-        surEffacer={() =>
-          surModification({
-            categories: FILTRES_PAR_DEFAUT.categories,
-            dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
-            faisable: FILTRES_PAR_DEFAUT.faisable,
-          })
-        }
-      />
+    <div className="relative min-h-0 flex-1 lg:contents">
+      <div className="absolute inset-0 lg:relative lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <CarteExplorerDifferee
+          key={gare.uic}
+          utilisateur={origine === 'position' ? point : null}
+          gareDepart={{ lat: gare.lat, lon: gare.lon, nom: gare.nom }}
+          destinations={liste ?? []}
+          lieux={lieux.data?.lieux ?? []}
+          lienDe={lienDe}
+          masqueEnBas={() => {
+            const element = feuille.current;
+            return element && getComputedStyle(element).position === 'absolute'
+              ? element.offsetHeight
+              : 0;
+          }}
+          pleinEcran={{
+            actif: position === 'carte',
+            bascule: () => surPosition(position === 'carte' ? 'milieu' : 'carte'),
+          }}
+          survolee={survolee}
+          surSurvol={setSurvolee}
+        />
+      </div>
+      <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
+        <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
+          <CarteVotreGare
+            nom={gare.nom}
+            distanceM={gare.distanceM}
+            dureeVeloMin={gare.dureeVeloMin}
+            prochainDepart={liste ? prochainTrainDirect(liste) : null}
+            surChangement={surChangementGare}
+          />
+          <SectionAPied
+            titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}
+            rayonLibelle={libelleRayon(filtres.rayon)}
+            lieux={lieux.data?.lieux}
+            chargement={lieux.isPending}
+            erreur={lieux.isError}
+            surReessai={() => void lieux.refetch()}
+          />
+          <SectionDestinations
+            gareNom={gare.nom}
+            destinations={liste}
+            chargement={destinations.isPending}
+            erreur={destinations.isError ? destinations.error.message : null}
+            lienDe={lienDe}
+            survolee={survolee}
+            surSurvol={setSurvolee}
+            surReessai={() => void destinations.refetch()}
+            surAujourdhui={
+              destinations.error instanceof ErreurClient && destinations.error.statut === 400
+                ? () => surModification({ date: null })
+                : null
+            }
+            elargir={
+              suivante === null
+                ? null
+                : {
+                    libelle: `Élargir à ${libelleDureeMax(suivante)} de train`,
+                    action: () => surModification({ dureeMax: suivante }),
+                  }
+            }
+            surEffacer={() =>
+              surModification({
+                categories: FILTRES_PAR_DEFAUT.categories,
+                dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
+                faisable: FILTRES_PAR_DEFAUT.faisable,
+              })
+            }
+          />
+        </div>
+      </FeuilleResultats>
     </div>
   );
 }

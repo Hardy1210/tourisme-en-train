@@ -1,7 +1,7 @@
 # E11 — Écran Explorer
 
 > **Semaine :** S6 (09/11 → 15/11) · **Priorité :** P0 (tracés des lignes P1) · **Branche :** `etape/E11-explorer`
-> **Étapes préalables :** E08, E10 · **État :** 🟡 lots 1 à 4 faits, lots 3 et 4 à valider par Hardy
+> **Étapes préalables :** E08, E10 · **État :** 🟡 lots 1 à 5 faits, lots 3 à 5 à valider par Hardy
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -30,10 +30,10 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [ ] En-tête : puce de localisation « Autour de <commune> » (nom via `/api/geocodage/inverse`, « Autour de vous » en attendant), puce de date (Aujourd'hui · Demain · **Ce week-end** via `debutDuWeekEnd` · Choisir).
 - [ ] Rangée de catégories + feuille « Filtres » (rayon, durée max ; « faisable dans la journée » P1).
 - [x] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 destinations avec le plus de trains (D062), au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
-- [ ] Desktop : **survol croisé** carte de destination ↔ gare sur la carte.
+- [x] Desktop : **survol croisé** carte de destination ↔ gare sur la carte.
 - [ ] (P1) Bouton **Partager** (partage natif, sinon copie du lien + « Lien copié »).
 - [x] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
-- [ ] Desktop : panneau gauche 440 px + carte.
+- [x] Desktop : panneau gauche 440 px + carte.
 - [ ] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne, erreur.
 - [ ] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
 
@@ -67,3 +67,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : lot 2 fait : date (aujourd'hui, demain, ce week-end, calendrier borné par les horaires chargés : `horaires` dans `/api/sources`), catégories, feuille Filtres, état dans l'URL. Les filtres ne changent encore aucun résultat : ceux-ci arrivent au lot 3. « Faisable dans la journée » (P1 dans la fiche) est dans la feuille comme sur la maquette ; le filtre s'appliquera au lot 3.
 - 04/11/2026 : lot 3 fait : « Votre gare » et prochain départ direct, « À deux pas », « En train direct » et leurs états ; tous les filtres s'appliquent ; page provisoire `(app)/destinations/[uic]` jusqu'à E12. Les cartes de lieux ne s'ouvrent pas encore (fiche lieu : E12). Disposition définitive (feuille sur la carte, panneau desktop) : lot 5.
 - 04/11/2026 : lot 4 fait : fond OpenFreeMap aux couleurs des tokens, segments droits, destinations colorées par tranche, étiquettes, épingles de lieux au zoom, point utilisateur, mini-fiches, recentrer, attribution. Disposition provisoire au-dessus de la liste jusqu'au lot 5 ; survol croisé desktop : lot 5.
+- 04/11/2026 : lot 5 fait : carte en grand, feuille à 3 positions écrite pour le projet (poignée, glissement, flèches du clavier) au lieu de `vaul` : elle reste ouverte sans voile par-dessus la carte ; panneau de 440 px et survol croisé sur grand écran.

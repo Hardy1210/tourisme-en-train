@@ -18,7 +18,7 @@ function Cadre({
   children: ReactNode;
 }) {
   return (
-    <div className="absolute inset-x-3 bottom-11 flex flex-col gap-1 rounded-lg bg-surface-raised px-3 py-2 shadow-float">
+    <div className="absolute inset-x-3 top-[calc(var(--resultats-haut)-3rem)] flex -translate-y-full flex-col gap-1 rounded-lg bg-surface-raised px-3 py-2 shadow-float">
       <div className="flex items-center justify-between gap-2">
         <h3 className="min-w-0 truncate text-lg font-bold">{titre}</h3>
         <BoutonFermer className="-mr-2" onClick={surFermeture} />

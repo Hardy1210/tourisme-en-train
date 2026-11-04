@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { dateDuJour } from '@tourisme/commun';
 import { CalendarDays, ChevronDown, MapPin } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/classes';
 import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
 import { EnTete } from '@/components/ui/en-tete';
@@ -17,6 +18,7 @@ import { FeuilleDepart } from '@/features/localisation/ui/feuille-depart';
 import { libelleDate } from '../date';
 import { nombreFiltres } from '../filtres';
 import { useDepart, useFiltres } from '../hooks';
+import type { PositionFeuille } from '../position-feuille';
 import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
 import { RangeeFiltres } from './rangee-filtres';
@@ -25,6 +27,7 @@ import { ResultatsExplorer } from './resultats-explorer';
 export function EcranExplorer() {
   const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart();
   const [feuilleOuverte, setFeuilleOuverte] = useState(false);
+  const [positionFeuille, setPositionFeuille] = useState<PositionFeuille>('milieu');
   const [feuilleDate, setFeuilleDate] = useState(false);
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const [erreurChoix, setErreurChoix] = useState(false);
@@ -50,9 +53,20 @@ export function EcranExplorer() {
         ? `Autour de ${commune.data?.commune ?? 'vous'}`
         : 'Choisir une ville';
 
+  const pret = depart.etat === 'pret';
+
   return (
-    <>
+    <div
+      data-feuille={positionFeuille}
+      className={cn(
+        'flex h-full flex-col',
+        pret
+          ? 'overflow-hidden lg:grid lg:grid-cols-[var(--panneau-largeur)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(0,1fr)]'
+          : 'overflow-y-auto',
+      )}
+    >
       <EnTete
+        className={cn('flex-none', pret && 'lg:col-start-1 lg:row-start-1 lg:border-b')}
         action={
           depart.etat === 'pret' && (
             <Bouton
@@ -84,13 +98,12 @@ export function EcranExplorer() {
             surFiltres={() => setFeuilleFiltres(true)}
           />
         )}
+        {erreurChoix && (
+          <Bandeau variante="danger">
+            Aucune gare trouvée pour ce choix. Essayez une autre ville.
+          </Bandeau>
+        )}
       </EnTete>
-
-      {erreurChoix && (
-        <Bandeau variante="danger" className="mx-4 mb-2">
-          Aucune gare trouvée pour ce choix. Essayez une autre ville.
-        </Bandeau>
-      )}
 
       {depart.etat === 'chargement' && (
         <div className="flex flex-col gap-3 p-4">
@@ -135,6 +148,8 @@ export function EcranExplorer() {
           filtres={filtres}
           surModification={changer}
           surChangementGare={() => setFeuilleOuverte(true)}
+          position={positionFeuille}
+          surPosition={setPositionFeuille}
         />
       )}
 
@@ -162,6 +177,6 @@ export function EcranExplorer() {
         surChoixGare={choisirGareEtFermer}
         surChoixPoint={choisirPoint}
       />
-    </>
+    </div>
   );
 }

@@ -9,11 +9,21 @@ import { cn } from '@/lib/classes';
 import { couleurTranche, formaterDuree, formaterKg, formaterPrix } from '../presentation';
 import type { Destination } from '../schemas';
 
-type Proprietes = { destination: Destination; lien: string };
+type Proprietes = {
+  destination: Destination;
+  lien: string;
+  /** Survol croisé avec la carte, sur grand écran. */
+  survolee: boolean;
+  surSurvol: (uic: string | null) => void;
+};
 
-export function CarteDestination({ destination: d, lien }: Proprietes) {
+export function CarteDestination({ destination: d, lien, survolee, surSurvol }: Proprietes) {
   return (
-    <Carte className="relative">
+    <Carte
+      className={cn('relative', survolee && 'ring-2 ring-primary')}
+      onMouseEnter={() => surSurvol(d.gare.uic)}
+      onMouseLeave={() => surSurvol(null)}
+    >
       <span
         aria-hidden="true"
         className="absolute top-5.5 -left-6.5 size-3.25 rounded-pill border-3 border-primary bg-background"

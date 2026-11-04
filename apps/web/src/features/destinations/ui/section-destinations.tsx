@@ -13,6 +13,8 @@ type Proprietes = {
   /** Message d'erreur à montrer (ex. date hors des horaires) ; null sinon. */
   erreur: string | null;
   lienDe: (destination: Destination) => string;
+  survolee: string | null;
+  surSurvol: (uic: string | null) => void;
   surReessai: () => void;
   /** La date est hors des horaires : réessayer ne servirait à rien, on propose d'en changer. */
   surAujourdhui: (() => void) | null;
@@ -27,6 +29,8 @@ export function SectionDestinations({
   chargement,
   erreur,
   lienDe,
+  survolee,
+  surSurvol,
   surReessai,
   surAujourdhui,
   elargir,
@@ -103,6 +107,8 @@ export function SectionDestinations({
               key={destination.gare.uic}
               destination={destination}
               lien={lienDe(destination)}
+              survolee={survolee === destination.gare.uic}
+              surSurvol={surSurvol}
             />
           ))}
         </div>

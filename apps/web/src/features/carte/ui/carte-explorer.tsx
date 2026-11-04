@@ -1,7 +1,7 @@
 'use client';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { LocateFixed, TrainFront } from 'lucide-react';
+import { List, LocateFixed, Maximize2, TrainFront } from 'lucide-react';
 import type { StyleSpecification } from 'maplibre-gl';
 import { useRef, useState } from 'react';
 import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
@@ -33,9 +33,16 @@ export type ProprietesCarte = {
   destinations: readonly Destination[];
   lieux: readonly LieuResume[];
   lienDe: (destination: Destination) => string;
+  /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
+  masqueEnBas: () => number;
+  /** Carte plein écran sur mobile. */
+  pleinEcran: { actif: boolean; bascule: () => void };
+  /** Survol croisé sur grand écran : la destination survolée ici ou dans la liste. */
+  survolee: string | null;
+  surSurvol: (uic: string | null) => void;
 };
 
-const MARGE = { padding: 48, maxZoom: 12, duration: 0 };
+const MARGE_PX = 48;
 
 /** Fond OpenFreeMap aux couleurs des tokens ; toute information figure aussi dans la liste (`06` § 6). */
 export function CarteExplorer({
@@ -44,6 +51,10 @@ export function CarteExplorer({
   destinations,
   lieux,
   lienDe,
+  masqueEnBas,
+  pleinEcran,
+  survolee,
+  surSurvol,
 }: ProprietesCarte) {
   const carte = useRef<MapRef>(null);
   const [selection, setSelection] = useState<Selection>(null);
@@ -64,6 +75,12 @@ export function CarteExplorer({
     selection?.type === 'destination' ? selection.uic : null,
     parametres.carte.etiquettesMax,
   );
+  if (survolee !== null) etiquetees.add(survolee);
+  const marge = () => ({
+    padding: { top: MARGE_PX, left: MARGE_PX, right: MARGE_PX, bottom: MARGE_PX + masqueEnBas() },
+    maxZoom: 12,
+    duration: 0,
+  });
   const uicChoisi = selection?.type === 'destination' ? selection.uic : null;
   const etiquettes = pointsEtiquettes(
     destinations.map((d) => ({
@@ -84,31 +101,37 @@ export function CarteExplorer({
 
   if (style.isError) {
     return (
-      <p className="rounded-carte bg-surface-sunken p-4 text-sm text-muted-foreground">
+      <p className="h-full bg-surface-sunken p-4 text-sm text-muted-foreground">
         La carte n&apos;est pas disponible pour le moment. Toutes les informations restent dans la
         liste ci-dessous.
       </p>
     );
   }
   if (!style.data || !emprise) {
-    return <div aria-hidden="true" className="h-(--carte-geo-hauteur) rounded-carte bg-map-land" />;
+    return <div aria-hidden="true" className="h-full bg-map-land" />;
   }
 
   return (
     <div
       role="region"
       aria-label="Carte des lieux et des destinations"
-      className="relative h-(--carte-geo-hauteur) overflow-hidden rounded-carte"
+      className="relative h-full overflow-hidden"
     >
       {/* Isolée : les épingles restent sous la mini-fiche et le bouton. */}
       <div className="absolute inset-0 isolate">
         <Map
           ref={carte}
           mapStyle={style.data.style as StyleSpecification}
-          initialViewState={{ bounds: emprise, fitBoundsOptions: MARGE }}
+          initialViewState={{
+            bounds: emprise,
+            fitBoundsOptions: { padding: MARGE_PX, maxZoom: 12 },
+          }}
           attributionControl={false}
           onClick={() => setSelection(null)}
-          onLoad={(evenement) => setZoom(evenement.target.getZoom())}
+          onLoad={(evenement) => {
+            evenement.target.fitBounds(emprise, marge());
+            setZoom(evenement.target.getZoom());
+          }}
           onZoomEnd={(evenement) => setZoom(evenement.target.getZoom())}
         >
           <Source type="geojson" data={segmentsDepuis(gareDepart, arrivees)}>
@@ -164,17 +187,20 @@ export function CarteExplorer({
 
           {destinations.map((d) => {
             const choisie = selection?.type === 'destination' && selection.uic === d.gare.uic;
+            const enAvant = choisie || survolee === d.gare.uic;
             return (
               <Marker
                 key={d.gare.uic}
                 latitude={d.gare.lat}
                 longitude={d.gare.lon}
-                style={{ zIndex: choisie ? 2 : 1 }}
+                style={{ zIndex: enAvant ? 2 : 1 }}
               >
                 <button
                   type="button"
                   aria-label={`${d.titre}, ${formaterDuree(d.dureeMin)} en train direct`}
                   aria-pressed={choisie}
+                  onMouseEnter={() => surSurvol(d.gare.uic)}
+                  onMouseLeave={() => surSurvol(null)}
                   onClick={(evenement) => {
                     evenement.stopPropagation();
                     setSelection({ type: 'destination', uic: d.gare.uic });
@@ -184,7 +210,7 @@ export function CarteExplorer({
                   <span
                     className={cn(
                       'rounded-pill border-2 border-map-halo shadow-xs',
-                      choisie ? 'size-5' : 'size-3.5',
+                      enAvant ? 'size-5' : 'size-3.5',
                       couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
                     )}
                   />
@@ -216,22 +242,37 @@ export function CarteExplorer({
       </div>
 
       {/* Attribution exigée par la licence, toujours visible (config/sources.json). */}
-      <p className="absolute inset-x-0 bottom-0 bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground">
+      <p className="absolute inset-x-0 top-(--resultats-haut) -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:pb-1">
         {attributionFondCarte}
       </p>
 
-      <Bouton
-        variante="secondaire"
-        forme="icone"
-        aria-label="Recentrer"
-        className="absolute top-3 right-3 rounded-pill shadow-xs"
-        onClick={() => {
-          setSelection(null);
-          carte.current?.fitBounds(emprise, MARGE);
-        }}
-      >
-        <LocateFixed aria-hidden="true" className="size-5 text-primary" />
-      </Bouton>
+      <div className="absolute top-3 right-3 flex flex-col gap-2">
+        <Bouton
+          variante="secondaire"
+          forme="icone"
+          aria-label="Recentrer"
+          className="border-0 shadow-carte"
+          onClick={() => {
+            setSelection(null);
+            carte.current?.fitBounds(emprise, marge());
+          }}
+        >
+          <LocateFixed aria-hidden="true" className="size-5 text-primary" />
+        </Bouton>
+        <Bouton
+          variante="secondaire"
+          forme="icone"
+          aria-label={pleinEcran.actif ? 'Afficher la liste' : 'Carte plein écran'}
+          className="border-0 shadow-carte lg:hidden"
+          onClick={pleinEcran.bascule}
+        >
+          {pleinEcran.actif ? (
+            <List aria-hidden="true" className="size-5" />
+          ) : (
+            <Maximize2 aria-hidden="true" className="size-5" />
+          )}
+        </Bouton>
+      </div>
 
       {destinationChoisie && (
         <MiniFicheDestination

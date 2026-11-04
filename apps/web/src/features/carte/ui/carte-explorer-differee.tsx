@@ -7,8 +7,6 @@ export const CarteExplorerDifferee = dynamic(
   () => import('./carte-explorer').then((m) => m.CarteExplorer),
   {
     ssr: false,
-    loading: () => (
-      <div aria-hidden="true" className="h-(--carte-geo-hauteur) rounded-carte bg-map-land" />
-    ),
+    loading: () => <div aria-hidden="true" className="h-full bg-map-land" />,
   },
 );

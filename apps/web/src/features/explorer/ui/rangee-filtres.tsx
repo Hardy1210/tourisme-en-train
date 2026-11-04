@@ -22,11 +22,11 @@ export function RangeeFiltres({ categories, surCategories, nombre, surFiltres }:
     );
 
   return (
-    <div className="-mr-4 flex items-center gap-2">
+    <div className="-mr-4 flex items-center gap-2 lg:mr-0 lg:items-start">
       <div
         role="group"
         aria-label="Catégories"
-        className="scrollbar-none flex min-w-0 flex-1 gap-2 overflow-x-auto py-0.5"
+        className="scrollbar-none flex min-w-0 flex-1 gap-2 overflow-x-auto py-0.5 lg:flex-wrap lg:overflow-visible"
       >
         <Puce selectionnee={categories.length === 0} onClick={() => surCategories([])}>
           Tout
@@ -44,7 +44,7 @@ export function RangeeFiltres({ categories, surCategories, nombre, surFiltres }:
       </div>
       <Puce
         selectionnee={false}
-        className="mr-4 font-semibold"
+        className="mr-4 font-semibold lg:mt-0.5 lg:mr-0"
         aria-label={
           nombre > 0 ? `Filtres, ${nombre} ${nombre > 1 ? 'actifs' : 'actif'}` : 'Filtres'
         }
