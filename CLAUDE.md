@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E11 (écran Explorer), lots 1 à 3 faits sur `etape/E11-explorer` ; lot 3 à valider par Hardy ; E10 fusionnée (PR #56)
-- **Dernière session :** 04/11/2026 — socle de l'interface, route `/api/lieux`, règles sur les listes (D053 → D060), lots 1 à 3 de E11
-- **Fait :** données et API P0 ; design system en 3 niveaux, composants, navigation à 4 onglets ; `/api/lieux` ; fiches de ville, piscines, aires génériques, gares classées et spas retirés selon les règles (D057, D059) ; catégorie secondaire (D060) ; position, gare, date, filtres dans l'URL sans position (D058), résultats ; `pnpm verifier` 347 tests, `pnpm test:integration` 153
-- **À valider par Hardy :** lot 3 de E11 ; `etl/src/regles/corrections_manuelles.csv` ligne par ligne (avant E12) ; reste de `A-FAIRE` § 1
+- **Étape en cours :** E11 (écran Explorer), lots 1 à 5 faits sur `etape/E11-explorer` ; lots 3 à 5 à valider par Hardy ; lot 6 à faire
+- **Dernière session :** 04/11/2026 — corrections manuelles, catégorie secondaire, carte MapLibre 5, feuille à 3 positions, panneau desktop (D060 → D062)
+- **Fait :** données et API P0 ; design system, composants, navigation ; `/api/lieux` ; règles sur les listes et corrections validées (D057 → D061) ; Explorer : position, gare, filtres dans l'URL sans position (D058), résultats, carte, assemblage mobile et desktop ; `pnpm verifier` 374 tests, `pnpm test:integration` 153
+- **À valider par Hardy :** avis sur les lots 3 à 5 (`pnpm dev`, http://localhost:3000) ; autres jeux classés « enfants » à relire (`A-FAIRE` § 1) ; reste de `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** montrer le lot 3 à Hardy (`pnpm dev`, http://localhost:3000) ; s'il valide : lot 4, `features/carte/` (MapLibre + OpenFreeMap, couleurs lues depuis les tokens), après avoir branché les corrections validées ; maquettes : `Explorer Mobile v3`, `Explorer Desktop v3`
+- **Prochaine action précise :** recueillir l'avis de Hardy, puis lot 6 de E11 : comparaison avec les maquettes `Explorer Mobile v3` et `Explorer Desktop v3`, retouches, découpage de `features/carte/ui/carte-explorer.tsx` (287 lignes), test Playwright, chronomètre et 0,9 s de Dijon Porte Neuve sur `pnpm build` puis `pnpm start`, essai sur téléphone en HTTPS (fiche E11)
 ---
 
 ## 10. Réaliser une étape
@@ -394,4 +394,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
-| 03–04/11/2026 | 1.32 → 1.40 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
+| 03–04/11/2026 | 1.32 → 1.41 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |

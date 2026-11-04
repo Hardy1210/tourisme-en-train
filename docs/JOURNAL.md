@@ -24,6 +24,29 @@
 
 ---
 
+## 04/11/2026 — Étape E11 — corrections de lieux, carte et assemblage (lots 4 et 5)
+**Fait :**
+- 6 corrections de lieux validées par Hardy et appliquées par le traitement ; chiffre du pitch : 348 sorties pour enfants, 41 à 1,5 km à pied d'une gare (hors aires de jeux et piscines).
+- Lot 4 : carte MapLibre aux couleurs des tokens, segments, étiquettes sur les 5 destinations avec le plus de trains, mini-fiches, recentrage ; vérifiée aussi sur une version de production.
+- Lot 5 : carte en grand, feuille à 3 positions, panneau de 440 px, survol croisé.
+
+**Décisions :** D061, D062.
+
+**Problèmes rencontrés :**
+- MapLibre 6 laissait le fond de carte vide sous Next.js (« Worker failed to load ») : version 5 fixée.
+- Un chargement en échec a été commité avant d'être vu, et Dolescapegame avait perdu « enfants » en secondaire : corrigés avant tout envoi. Glissement de la feuille perdu hors de la poignée : corrigé.
+
+**À valider par Hardy :**
+- Lots 3 à 5, après son test.
+
+**Prochaine action :**
+- Lot 6 de E11 après l'avis de Hardy.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (374) · intégration ✅ (153)
+**Commit :** voir `docs(contexte): sauvegarde de session du 04/11` (branche `etape/E11-explorer`)
+
+---
+
 ## 04/11/2026 — Étapes E10 et E11 — socle de l'interface, règles sur les listes, lots 1 à 3 d'Explorer
 **Fait :**
 - E10 terminée et fusionnée (PR #56) : `globals.css` en 3 niveaux, composants, logo, navigation à 4 onglets, rail desktop, planche `/design`, validés par Hardy. Légende des temps 30, 60, 90.
