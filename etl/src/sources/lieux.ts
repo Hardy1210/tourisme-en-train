@@ -30,6 +30,8 @@ import {
 import { LIBELLES_ECART, type LieuACharger } from '../transformations/lieux';
 import { motifQuiExclut, type MotifExclu } from '../transformations/noms-exclus';
 import { lireReglesSecondaires } from '../chargement/categories-secondaires';
+import { lireCorrections } from '../chargement/corrections';
+import { corrigerLieu, type CorrectionLieu } from '../transformations/corrections';
 import { ecrireLieuxExclus, lireNomsExclus, type LieuExclu } from '../chargement/noms-exclus';
 import { estInchange, lireEmpreinteConnue, type FichierBrut } from './base';
 
@@ -44,12 +46,14 @@ export function empreinteLieux(
   regles: readonly RegleCategorie[],
   nomsExclus: readonly MotifExclu[] = [],
   secondaires: readonly RegleSecondaire[] = [],
+  corrections: readonly CorrectionLieu[] = [],
 ): string {
   return createHash('sha256')
     .update(fichier)
     .update(JSON.stringify(regles))
     .update(JSON.stringify(nomsExclus))
     .update(JSON.stringify(secondaires))
+    .update(JSON.stringify(corrections))
     .digest('hex');
 }
 
@@ -71,7 +75,17 @@ export async function chargerLieux(options: {
   ]).finally(() => client.release());
   const nomsExclus = await lireNomsExclus();
   const secondaires = await lireReglesSecondaires();
-  const empreinte = empreinteLieux(options.fichier.empreinte, regles, nomsExclus, secondaires);
+  const toutesCorrections = await lireCorrections();
+  const corrections = new Map(
+    toutesCorrections.filter((c) => c.source === source).map((c) => [c.idSource, c]),
+  );
+  const empreinte = empreinteLieux(
+    options.fichier.empreinte,
+    regles,
+    nomsExclus,
+    secondaires,
+    toutesCorrections,
+  );
   if (estInchange(empreinte, connue, options.force)) return 'IGNORE';
 
   const index = indexerRegles(regles);
@@ -93,8 +107,7 @@ export async function chargerLieux(options: {
           continue;
         }
         lus.add(resultat.lieu.idSource);
-        compter(compte, null, resultat.nonClassees);
-        yield {
+        const lieu = {
           ...resultat.lieu,
           categoriesSecondaires: categoriesSecondaires(secondaires, {
             source,
@@ -103,6 +116,14 @@ export async function chargerLieux(options: {
             categorie: resultat.lieu.categorie,
           }),
         };
+        const correction = corrections.get(lieu.idSource);
+        const corrige = correction ? corrigerLieu(lieu, correction) : lieu;
+        if (corrige === null) {
+          compter(compte, 'correction', resultat.nonClassees);
+          continue;
+        }
+        compter(compte, null, resultat.nonClassees);
+        yield corrige;
       }
     }
   }

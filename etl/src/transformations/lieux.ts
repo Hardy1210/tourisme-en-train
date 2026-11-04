@@ -24,7 +24,7 @@ export type LieuACharger = LieuNormalise & { categoriesSecondaires: readonly str
 
 /** Pourquoi une ligne de source n'est pas devenue un lieu (compté dans le rapport). */
 export type RaisonEcart =
-  'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon' | 'nom_exclu';
+  'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon' | 'nom_exclu' | 'correction';
 
 export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   exclu: 'écartés par une règle (hébergement, restauration, commerce, événement, générique…)',
@@ -33,6 +33,7 @@ export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   sans_position: 'sans position',
   doublon: 'identifiant déjà lu dans le fichier (même lieu publié par deux diffuseurs)',
   nom_exclu: 'écartés par leur nom (activité, objet, fermé : regles/noms_exclus.csv)',
+  correction: 'retirés par une correction manuelle (regles/corrections_manuelles.csv)',
 };
 
 const ENTITES: Readonly<Record<string, string>> = {

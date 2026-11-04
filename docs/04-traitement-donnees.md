@@ -274,6 +274,7 @@ Spécifique :
 - **Festivals (P1, après le P0) :** `periode` = mois de début–fin en texte (« juin–juillet »).
 
 ### 4.5 Catégorisation
+- **Corrections manuelles (D061) :** `etl/src/regles/corrections_manuelles.csv`, lignes validées par Hardy, appliquées après le classement.
 - **Catégories secondaires (D060) :** `etl/src/regles/categories_secondaires.csv` ajoute des catégories à un lieu, sans changer sa catégorie principale.
 - **Source de vérité :** `etl/src/regles/categories.csv` (colonnes `source;cle;valeur;categorie;sous_categorie;priorite;condition`, lignes `#` = commentaires), versionné, **modifiable sans code**, chargé par `pnpm etl regles` dans `categorie_regle` (remplacée en entier ; une ligne illisible ou une règle en double bloque le chargement).
 - **Clés :** DATAtourisme `categorie` + nom de classe (`Museum`) ; OSM nom du tag + valeur, `*` = toute valeur.

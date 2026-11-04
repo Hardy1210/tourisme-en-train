@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens · D059 balnéo hors de « enfants » · D060 catégorie secondaire |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens · D059 balnéo hors de « enfants » · D060 catégorie secondaire · D061 corrections manuelles, « enfants » justifié |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -603,3 +603,11 @@
 - **Écarté :** changer la catégorie principale (changerait la liste de tout le monde) ; élargir le rayon à pied (5 km à pied avec des enfants serait trompeur).
 - **Limite :** avec plusieurs envies choisies, un lieu peut compter dans deux d'entre elles sur le compteur d'une destination.
 - **Impact :** migration, `03` § 3.6, `04` § 4.5, `05`, `GLOSSAIRE`, échantillon.
+
+## D061 — Corrections manuelles, et un lieu n'est marqué « enfants » que si une source le justifie
+- **Date :** 04/11/2026
+- **En clair :** on n'affirme pas qu'une sortie convient aux enfants sans preuve : une fiche, un âge indiqué ou un public famille.
+- **Décision :** `regles/corrections_manuelles.csv`, relu ligne par ligne par Hardy, s'applique à chaque chargement (lignes « oui »). Validé : Médiathèque Henri Vincenot retirée ; Dolescapegame, Les Secrets du Heurtoir, jeu holographique de Tournus et HalluCiné en culture / jeu d'aventure, seul Dolescapegame gardant « enfants » (salle dès 8 ans, enquête 6-11 ans, relevé par Hardy) ; Amphélia en centre aquatique.
+- **Règle :** un lieu n'est marqué « enfants » que si une source le justifie. La classe DATAtourisme `LeisureComplex` seule ne prouve donc rien sur un escape game : les autres jeux restent à relire (`A-FAIRE`).
+- **Raison :** choix de Hardy ; chaque filtre doit donner un résultat fiable.
+- **Impact :** `etl/src/chargement/corrections.ts`, `04` § 4.5, `A-FAIRE`.

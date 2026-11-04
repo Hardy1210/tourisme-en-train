@@ -25,9 +25,9 @@
 | **Exclusions par nom à ajouter** (`noms_exclus.csv`) : « Collège Jules Ferry » et « Bataille de Nuits-Saint-Georges » | Remontés en tête de l'onglet Lieux, ce ne sont pas des sorties | Prochaine session sur les données, avant E12 |
 | **Le Klube (Ahuy)** : classé « centre aquatique » sans description, à vérifier | Pourrait être une salle de sport | Prochaine session sur les données |
 
-| **Corrections manuelles, à valider ligne par ligne** : `etl/src/regles/corrections_manuelles.csv`, colonne `decision` (Médiathèque Henri Vincenot, 4 jeux et escape games, Amphélia) | Le traitement ne lit pas encore ce fichier : il sera branché une fois les lignes validées | Réponse de Hardy, avant E12 |
 
-| **Chiffre du pitch à recalculer** : 350 sorties pour enfants, 43 à 1,5 km à pied d'une gare (hors aires de jeux et piscines) | Mesure du 04/11, avant les corrections manuelles | Après validation de `corrections_manuelles.csv`, puis E13 (`pitch.md`) |
+
+| **Autres jeux et escape games classés « enfants » à relire** (Megaloisirs Laser Game, Fug Game, Games Factory, Les Souterrains du Commando Games, La Clé du Bastion, 10 55…) | Règle de D061 : « enfants » seulement si une source le justifie ; la classe `LeisureComplex` seule ne le prouve pas | Avant E12, avec la même méthode de lignes validées |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
