@@ -32,6 +32,22 @@ export const schemaParametres = z
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
       /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
       emprise: schemaEmprise,
+      /** Proposées sans position ou hors région ; les trois premières servent de suggestions. */
+      garesPrincipales: z
+        .array(
+          z.strictObject({
+            uic: z.string().regex(/^\d{8}$/),
+            ville: z.string().min(1),
+            departement: z.string().min(1),
+          }),
+        )
+        .min(1),
+    }),
+    localisation: z.strictObject({
+      delaiPositionMs: z.number().int().positive(),
+      /** Pause dans la saisie avant de lancer une recherche de ville. */
+      delaiSaisieMs: z.number().int().positive(),
+      longueurMinRecherche: z.number().int().positive(),
     }),
     /** Positions acceptées par l'API (`lat`, `lon`) : France métropolitaine (docs/05-api.md § 1). */
     empriseFrance: schemaEmprise,

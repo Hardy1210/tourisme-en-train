@@ -5,8 +5,17 @@
     "codeInsee": "27",
     "nom": "Bourgogne-Franche-Comté",
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
-    "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 }
+    "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 },
+    "garesPrincipales": [
+      { "uic": "87713040", "ville": "Dijon", "departement": "Côte-d'Or" },
+      { "uic": "87718007", "ville": "Besançon", "departement": "Doubs" },
+      { "uic": "87713545", "ville": "Beaune", "departement": "Côte-d'Or" },
+      { "uic": "87725002", "ville": "Chalon-sur-Saône", "departement": "Saône-et-Loire" },
+      { "uic": "87713412", "ville": "Dole", "departement": "Jura" },
+      { "uic": "87184002", "ville": "Belfort", "departement": "Territoire de Belfort" }
+    ]
   },
+  "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
   "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
   "controles": {
     "communesFranceMin": 34000,

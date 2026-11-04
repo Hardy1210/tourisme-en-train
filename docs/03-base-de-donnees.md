@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.15 · **Date** 03/11/2026
+> **Version** 1.16 · **Date** 04/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -484,4 +484,4 @@ ORDER BY a.depart_s;
 | 02/11/2026 | 1.13 | § 3.6 : `lieu.site_de`, `lieu.trace`, requêtes qui ignorent aussi les membres d'un site ; § 3.8 : distance à pied au tracé ; migration `0009` (extension `unaccent`) — D043 |
 | 02/11/2026 | 1.14 | § 3.10 : une ligne par couple (arrêt, gare), type `CAR`, rayon à pied, contrainte d'unicité (migration `0010`) — D046 |
 | 03/11/2026 | 1.15 | § 3.6 : `lieu.cle`, clé publique générée et unique (migration `0011`) ; § 6 : échantillon complété (E08) — D052 |
-| 04/11/2026 | — | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 |
+| 04/11/2026 | 1.16 | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 |

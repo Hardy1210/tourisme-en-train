@@ -59,6 +59,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "tranchesTempsMin": [30, 60, 90]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
+  "region": { "garesPrincipales": "…" }, "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
   "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
   "dedoublonnage": {
     "distanceM": 75,
