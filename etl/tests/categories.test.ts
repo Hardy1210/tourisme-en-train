@@ -87,11 +87,11 @@ describe('règles de la décision D057', () => {
   const adresse = (...classes: string[]) =>
     classes.map((c) => `https://www.datatourisme.fr/ontology/core#${c}`).join('|');
 
-  it('piscine et balnéo → centre aquatique et bien-être, ni piscine ni exclu', () => {
+  it('piscine et balnéo → centre aquatique, ni piscine ni exclu', () => {
     const etiquettes = classesDe(adresse('SwimmingPool', 'BalneotherapyCentre'));
     expect(classer(index.datatourisme, etiquettes, nomme)).toMatchObject({
       type: 'classe',
-      sousCategorie: 'centre aquatique et bien-être',
+      sousCategorie: 'centre aquatique',
     });
   });
 

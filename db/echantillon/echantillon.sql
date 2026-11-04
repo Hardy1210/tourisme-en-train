@@ -307,7 +307,7 @@ FROM (VALUES
   ('ECH_L43', 'Exemple - Piscine municipale', 'enfants', 'piscine', false),
   ('ECH_L44', 'Aire de jeux', 'enfants', 'aire de jeux', false),
   ('ECH_L45', 'Exemple - Aire de jeux des Tilleuls', 'enfants', 'aire de jeux', false),
-  ('ECH_L46', 'Exemple - Espace aquatique', 'enfants', 'centre aquatique et bien-être', false)
+  ('ECH_L46', 'Exemple - Espace aquatique', 'enfants', 'centre aquatique', false)
 ) AS l (id_source, nom, categorie, sous_categorie, fiche);
 
 INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)

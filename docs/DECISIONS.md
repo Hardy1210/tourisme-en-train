@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens · D059 balnéo hors de « enfants » |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -572,7 +572,7 @@
 - **Décision :**
   1. **Fiches de ville** (DATAtourisme, « Ville de … » ou nom de la commune) : colonne `lieu.fiche_ville`, calculée par `pnpm etl rattachements` depuis `lieux.fichesVille` ; gardées en base, ouvertes par leur lien, **jamais listées ni comptées**, jamais fusionnées avec un autre lieu. Exceptions : « Village du Livre », « Lac des Rouges-Truites ». 57 fiches.
   2. **Onglet Lieux seulement** (`lieux.ongletLieux`) : retire les piscines ordinaires et les aires de jeux dont le nom n'est que « Aire de jeux ». Elles restent dans « À deux pas de vous » et sur la fiche destination, parce que les familles sont notre point fort.
-  3. **Piscines thermales ou de balnéo** : classe calculée `SwimmingPool+BalneotherapyCentre` → « centre aquatique et bien-être », gardées dans l'onglet. 12 lieux.
+  3. **Piscines thermales ou de balnéo** : classe calculée `SwimmingPool+BalneotherapyCentre` → « centre aquatique », gardées dans l'onglet (spas : voir D059).
   4. **`building=train_station`** : écarté (exclusion forte), même classé monument historique. 2 lieux.
 - **Raison :** mesures du 04/11 et choix de Hardy. Un essai a écarté une règle sur `BalneotherapyCentre` seul : sur 137 fiches brutes de ce type, elle aurait fait entrer plus de 100 spas d'hôtel et cabinets de massage.
 - **Résultat (Dijon, 10/11) :** onglet Lieux de 867 à 697 lieux ; enfants de 181 à 18.
@@ -586,3 +586,11 @@
 - **Raison :** règle 5 ; un lien se copie, s'envoie et finit dans des historiques. Demandé par Hardy.
 - **Écarté :** `?lat&lon` (fiche E11 d'origine) ; écrire d'office la gare la plus proche.
 - **Impact :** fiche E11, `06`.
+
+## D059 — La balnéo n'est pas classée « enfants »
+- **Date :** 04/11/2026
+- **En clair :** un spa n'est pas une sortie pour enfants ; on garde les centres aquatiques, on écarte les spas.
+- **Décision :** les noms commençant par « Spa » sont écartés (`noms_exclus.csv`), comme les autres spas d'hôtel déjà écartés par `BalneotherapyCentre` : Spa NUXE au Vertigo, Spa Les Rives Sauvages, Spa Alaena, SPA Thermal Valvital. Les 8 restants deviennent « centre aquatique » (bassins, pataugeoire), catégorie `enfants`. Complète D057.
+- **Raison :** demande de Hardy. Aucune des 5 catégories ne convient à un spa ; SPA Thermal Valvital n'est pas un spa d'hôtel et suit la même règle, à revoir si Hardy veut le garder.
+- **Écarté :** classer les spas en « nature » ou « patrimoine » (faux).
+- **Impact :** `noms_exclus.csv`, `categories.csv`, échantillon, `A-FAIRE`.

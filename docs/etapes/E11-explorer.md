@@ -63,3 +63,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : route de l'onglet Lieux faite avant l'écran, `GET /api/lieux` (D056) ; légende 30, 60, 90 (D055) ; maquettes de référence `Explorer Mobile v3` et `Explorer Desktop v3`.
 - 04/11/2026 : découpage validé par Hardy en 6 lots : (1) position et gare, (2) filtres, (3) résultats, (4) carte, (5) assemblage, (6) contrôle. « Bienvenue » et bannière d'installation : E14.
 - 04/11/2026 : lot 1 fait : position, refus, recherche de ville, hors région, choix et changement de gare, `?gare=<uic>` écrit seulement sur un choix (D058). À savoir pour l'essai sur téléphone (lot 6) : le navigateur ne donne la position qu'en HTTPS, le serveur de développement devra donc tourner en HTTPS sur le réseau local.
+- 04/11/2026 : à revérifier au lot 6 **sur une version de production** (`pnpm build`, puis `pnpm start`), pas sur le serveur de développement : l'écran « On cherche… » encore affiché 0,9 s après le choix de Dijon Porte Neuve.

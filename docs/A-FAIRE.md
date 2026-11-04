@@ -21,7 +21,11 @@
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
 | **Badge de label sur la carte de destination** (Plus Beaux Villages, Petites cités de caractère, Art et histoire…) : chercher une liste officielle et vérifier Besançon, absente de DATAtourisme alors qu'elle aurait, de mémoire, le label Art et histoire | DATAtourisme ne couvre que quelques communes (mesure du 04/11, D057) ; laissé de côté par Hardy | Après le P0 (22/11) |
-| **Lieux « enfants » de l'onglet Lieux** : 18 depuis Dijon (181 avant D057), dont 7 aires de jeux nommées | Les aires génériques restent dans « À deux pas » et la fiche ; à regarder sur le vrai écran, vu l'importance des familles | Écran de l'onglet Lieux |
+
+| **Filtre « enfants » trop pauvre : décision avant E12** | Depuis Dijon : 18 lieux, 20 avec une catégorie secondaire. Mesure du 04/11 : les vraies sorties sont déjà en `enfants`, mais peu sont à pied d'une gare. Sans filtre, l'ordre ne change pas (vérifié) | Réponse de Hardy, avant E12 |
+| **Exclusions par nom à ajouter** (`noms_exclus.csv`) : « Collège Jules Ferry » et « Bataille de Nuits-Saint-Georges » | Remontés en tête de l'onglet Lieux, ce ne sont pas des sorties | Prochaine session sur les données, avant E12 |
+| **SPA Thermal Valvital** : écarté avec les spas (D059), alors que ce n'est pas un spa d'hôtel | Aucune catégorie ne convient | Réponse de Hardy |
+| **Le Klube (Ahuy)** : classé « centre aquatique » sans description, à vérifier | Pourrait être une salle de sport | Prochaine session sur les données |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
