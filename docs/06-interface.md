@@ -59,7 +59,7 @@
 5. **Navigation basse** : Explorer · Lieux · Mon espace · Menu (D054). Lieux : données réelles. Mon espace (favoris, récompenses) : **fictif, marqué « Aperçu · bientôt »**.
 
 ### Desktop
-Panneau gauche de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; la fiche destination s'ouvre en panneau latéral de 480 px.
+Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; le Menu s'ouvre en panneau flottant à côté du rail ; la fiche destination s'ouvre en panneau latéral de 480 px.
 
 ### États (obligatoires)
 | État | Affichage |
@@ -159,4 +159,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : carte en segments + étiquettes, week-end, partage, vélos disponibles, temps réel limité, états sans description / sans prix / sans statut, variantes à concevoir — D017 à D021 |
 | 02/10/2026 | 1.2 | Nom de la commune de la puce de localisation par `/api/geocodage/inverse` — D022 ; écrans complémentaires listés en § 4 bis |
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
-| 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, composants réels — D054 |
+| 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, rail sur grand écran, composants réels — D054 |

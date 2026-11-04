@@ -230,7 +230,8 @@
    3. COMPOSANTS
    ========================================================================== */
 :root {
-  /* Barre du bas */
+  /* Navigation : barre du bas sur mobile, rail à gauche sur grand écran */
+  --rail-largeur: 5.5rem;
   --nav-bg: var(--barre);
   --nav-foreground: var(--primary-foreground);
   --nav-muted: var(--barre-texte);
@@ -448,6 +449,7 @@
   --shadow-carte: var(--carte-shadow);
 
   --spacing-touch: var(--taille-tactile);
+  --spacing-rail: var(--rail-largeur);
 
   --default-transition-duration: calc(200ms * var(--motion-speed));
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);

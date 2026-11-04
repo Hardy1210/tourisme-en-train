@@ -11,7 +11,6 @@
 | Quoi | Contexte | Déclencheur |
 |---|---|---|
 | Relire l'ensemble de la documentation (docs 00 → 08, fiches) | Rédigée le 30/09 | Avant de lancer E00 |
-| **Maquette desktop v3** : à transmettre après validation de la planche `/design` | Maquette mobile v3 reçue le 04/11 (D054) | Après la planche `/design` |
 | **Données réelles de l'onglet Lieux (session à prévoir)** : route des lieux accessibles depuis une gare de départ, toutes destinations confondues, avec gare, durée de train et temps à pied. L'API ne donne aujourd'hui les lieux que gare par gare (`/api/destinations/[uic]/lieux`) | D054 ; suivre `05` puis `route → service → requête` ; requête groupée et limite dans `parametres.json` | Avant l'écran Lieux, après le socle E10 |
 | Variantes de la maquette Explorer : carte avec ~20 destinations, lieu sans description, destination sans prix, trains sans statut, bascule Samedi/Dimanche, station sans nombre de vélos ; retirer le transport à la demande | Décisions D017 → D021 | Avant ~09/11 (E11–E12) |
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |

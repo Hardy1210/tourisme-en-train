@@ -196,8 +196,8 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E07 | Transports sur place, tracés des lignes, aménagements cyclables | S4 | ✅ |
 | E08 | Socle API + routes gares, autour, destinations | S5 | ✅ |
 | E09 | Routes lieux, trains, mobilités, impact (CO₂ et prix calculés localement), recherche de ville, sources | S5 | ✅ |
-| E10 | Socle interface : design system, mise en page, composants | S6 | 🟡 |
-| E11 | Écran Explorer | S6 | ⬜ |
+| E10 | Socle interface : design system, mise en page, composants | S6 | ✅ |
+| E11 | Écran Explorer | S6 | 🟡 |
 | E12 | Fiche destination | S7 | ⬜ |
 | E13 | Page « L'âme du produit » + écran Sources | S7 | ⬜ |
 | E14 | PWA, hors ligne | S7 | ⬜ |
@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E10 (socle interface) auditée, plan proposé, **rien codé** ; Hardy refait ses maquettes dans Claude Design ; branche `etape/E10-socle-interface` (sauvegarde du 04/11)
-- **Dernière session :** 03–04/11/2026 — audit E10 (écarts dans `A-FAIRE` § 1) ; avant : E08 et E09 fusionnées (PR #54, #55), **jalon « API complète » atteint le 03/11**
-- **Fait :** données en base (jalon du 01/11) ; **API P0 complète** (13 routes, `05`) : gares par code UIC, lieux par clé de source (migration `0011_lieu_cle`), une carte par ville, gare TGV à part, moins de 3 lieux en fin de liste, CO₂ (aller-retour) et prix calibré (aller simple), trains en jumelage réunis, retours après l'arrivée du premier aller, recherche de ville avec repli hors ligne ; vérifié par Hardy sur SNCF Connect ; 13 → 110 ms ; `pnpm verifier` 257 tests, `pnpm test:integration` 124
-- **À valider par Hardy :** `A-FAIRE` § 1 — **plan de E10** et dépendances ; **refonte des maquettes** avec les 7 écarts du kit à régler ; **favoris et « Carnet de voyage » en aperçu « Bientôt »** (après le P0) ; variantes de la maquette (avant E11), **légende des temps de trajet** (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
+- **Étape en cours :** E11 (écran Explorer), à préparer ; E10 terminée, pull request à fusionner par Hardy (branche `etape/E10-socle-interface`)
+- **Dernière session :** 04/11/2026 — socle de l'interface d'après les maquettes `Explorer Mobile v3` et `Explorer Desktop v3` (D053, D054, D055), validé par Hardy, qui pourra y revenir
+- **Fait :** données en base (jalon du 01/11) ; API P0 complète (jalon du 03/11, `05`) ; design system centralisé en 3 niveaux (`globals.css`), composants `components/ui/`, logo, navigation Explorer · Lieux · Mon espace · Menu (rail à partir de 1024 px), planche `/design` ; légende des temps 30, 60, 90 ; `pnpm verifier` 280 tests, `pnpm test:integration` 124
+- **À valider par Hardy :** `A-FAIRE` § 1 — variantes de la maquette (avant E11), photos et lien de billetterie (avant E12) ; arrêts de Dijon-Ville (plan Divia) ; Gevrey-Chambertin et Meursault ; pour E11 : « TER Mobigo », recherche sans lieux-dits
 - **Bloquant :** rien ; routes P1 (tracés, cyclable, temps réel, vélos) reportées après le P0 (D051) ; fenêtre des horaires et liaisons au 01/11 (jusqu'au 31/12) ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** demander à Hardy s'il valide le plan de E10 (`A-FAIRE` § 1) et si sa refonte change le design system ou seulement les écrans ; s'il valide : D053 (dépendances), puis la partie indépendante des maquettes (`apps/web/src/styles/globals.css`, polices dans `app/layout.tsx`, fournisseur TanStack Query, `features/lieux/ui/icone-categorie.tsx`) ; **ne pas relire les maquettes avant que Hardy les ait refaites**
+- **Prochaine action précise :** après la fusion de E10 : créer `etape/E11-explorer` ; concevoir la route de l'onglet Lieux (`A-FAIRE` § 1 : `05`, puis route → service → requête), à faire avant l'écran Explorer ; proposer le plan à Hardy avant de coder
 ---
 
 ## 10. Réaliser une étape
@@ -394,4 +394,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
-| 03–04/11/2026 | 1.32 → 1.38 | § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08 et E09 terminées (PR #54, #55), E10 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
+| 03–04/11/2026 | 1.32 → 1.39 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |

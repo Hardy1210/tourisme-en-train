@@ -30,7 +30,7 @@ const ENTREES_MENU: readonly { libelle: string; detail: string; Icone: LucideIco
 ];
 
 const CLASSES_ENTREE =
-  'flex h-14.5 min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 text-xs whitespace-nowrap';
+  'flex h-14.5 min-w-0 flex-1 cursor-pointer flex-col items-center justify-center gap-1 text-xs whitespace-nowrap lg:h-16 lg:flex-none';
 
 function ContenuEntree({
   actif,
@@ -56,6 +56,7 @@ function ContenuEntree({
   );
 }
 
+/** Barre du bas sur mobile, rail vertical à gauche sur grand écran. */
 export function NavBasse() {
   const chemin = usePathname();
   const [menuOuvert, setMenuOuvert] = useState(false);
@@ -63,8 +64,11 @@ export function NavBasse() {
     actif ? 'font-bold text-nav-foreground' : 'font-medium text-nav-muted';
 
   return (
-    <nav aria-label="Navigation principale" className="z-header flex-none bg-nav-bg safe-bottom">
-      <div className="flex px-1.5 py-2">
+    <nav
+      aria-label="Navigation principale"
+      className="z-header order-last flex-none bg-nav-bg safe-bottom lg:order-none lg:w-rail"
+    >
+      <div className="flex px-1.5 py-2 lg:h-full lg:flex-col lg:gap-1.5 lg:py-5">
         {ENTREES.map(({ href, libelle, Icone }) => {
           const actif = chemin === href && !menuOuvert;
           return (
@@ -85,7 +89,7 @@ export function NavBasse() {
           aria-haspopup="dialog"
           aria-expanded={menuOuvert}
           onClick={() => setMenuOuvert(true)}
-          className={cn(CLASSES_ENTREE, classesEtat(menuOuvert))}
+          className={cn(CLASSES_ENTREE, 'lg:mt-auto', classesEtat(menuOuvert))}
         >
           <ContenuEntree actif={menuOuvert} Icone={Menu}>
             Menu
@@ -93,7 +97,7 @@ export function NavBasse() {
         </button>
       </div>
 
-      <Feuille ouverte={menuOuvert} surChangement={setMenuOuvert} titre="Menu">
+      <Feuille ouverte={menuOuvert} surChangement={setMenuOuvert} titre="Menu" ancreeAuRail>
         <ul className="flex flex-col">
           {ENTREES_MENU.map(({ libelle, detail, Icone }) => (
             <li key={libelle} className="flex min-h-14 items-center gap-3">
