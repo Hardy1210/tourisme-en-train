@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.12 · **Date** 04/11/2026
+> **Version** 1.13 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -249,7 +249,8 @@ Passe par `lib/external/adresse.ts` (recherche inverse **sans filtre de type** :
 Sources affichées dans l'écran « Sources » (champ `affichee` de `config/sources.json`, D051) :
 ```ts
 { sources: Array<{ code: string; nom: string; producteur: string; page: string; licence: string;
-                   attribution: string; dateDonnees: string | null }> }   // dateDonnees : dernier chargement réussi (Paris)
+                   attribution: string; dateDonnees: string | null }>,   // dateDonnees : dernier chargement réussi (Paris)
+  horaires: { debut: string; fin: string } | null }                       // dates couvertes par les horaires : bornes du calendrier
 ```
 L'attribution exigée par chaque licence est toujours renvoyée (ODbL : « © les contributeurs d'OpenStreetMap »). Cache : `public, max-age=86400`.
 
@@ -314,3 +315,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 03/11/2026 | 1.9 | § 1.8 bis : identifiants publics stables (`uic`, `cle`) ; § 3.5 → 3.12 précisés après l'audit E09 (fiche destination, heures `Heure`, type d'impact le moins favorable, recherche inverse sans filtre ni cache, sources affichées) — D051, D052 |
 | 04/11/2026 | 1.11 | § 3.4 : tranches de temps `<=30`, `<=60`, `<=90`, `>90` — D055 |
 | 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |
+| 04/11/2026 | 1.13 | § 3.12 : `horaires`, bornes du calendrier de l'écran Explorer |

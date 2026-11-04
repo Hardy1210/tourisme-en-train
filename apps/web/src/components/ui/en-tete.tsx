@@ -5,11 +5,13 @@ import { cn } from '@/lib/classes';
 type Proprietes = {
   /** En-tête plein, à la couleur de la marque (écran Lieux). */
   surHero?: boolean;
-  /** Contrôles propres à l'écran (date, position, filtres). */
+  /** À droite du logo (choix de la date). */
+  action?: ReactNode;
+  /** Contrôles propres à l'écran (position, filtres). */
   children?: ReactNode;
 };
 
-export function EnTete({ surHero = false, children }: Proprietes) {
+export function EnTete({ surHero = false, action, children }: Proprietes) {
   return (
     <header
       className={cn(
@@ -19,6 +21,7 @@ export function EnTete({ surHero = false, children }: Proprietes) {
     >
       <div className="flex min-h-touch items-center justify-between gap-3">
         <Logo surHero={surHero} />
+        {action}
       </div>
       {children}
     </header>

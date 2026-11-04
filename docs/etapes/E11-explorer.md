@@ -1,7 +1,7 @@
 # E11 — Écran Explorer
 
 > **Semaine :** S6 (09/11 → 15/11) · **Priorité :** P0 (tracés des lignes P1) · **Branche :** `etape/E11-explorer`
-> **Étapes préalables :** E08, E10 · **État :** 🟡 lot 1 fait (position et gare), à valider par Hardy
+> **Étapes préalables :** E08, E10 · **État :** 🟡 lots 1 et 2 faits, lot 2 à valider par Hardy
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -26,7 +26,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 
 ## Tâches
 - [x] `features/localisation/` : hook de position du navigateur (permission, erreurs, délai), repli vers la recherche de ville (`/api/geocodage`), hors région pilote.
-- [ ] **État des filtres dans l'URL** (`?gare&date&categories&rayon&dureeMax`, jamais de position, D058) : partageable, retour arrière fonctionnel.
+- [x] **État des filtres dans l'URL** (`?gare&date&categories&rayon&dureeMax`, jamais de position, D058) : partageable, retour arrière fonctionnel.
 - [ ] En-tête : puce de localisation « Autour de <commune> » (nom via `/api/geocodage/inverse`, « Autour de vous » en attendant), puce de date (Aujourd'hui · Demain · **Ce week-end** via `debutDuWeekEnd` · Choisir).
 - [ ] Rangée de catégories + feuille « Filtres » (rayon, durée max ; « faisable dans la journée » P1).
 - [ ] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 plus proches, au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
@@ -64,3 +64,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : découpage validé par Hardy en 6 lots : (1) position et gare, (2) filtres, (3) résultats, (4) carte, (5) assemblage, (6) contrôle. « Bienvenue » et bannière d'installation : E14.
 - 04/11/2026 : lot 1 fait : position, refus, recherche de ville, hors région, choix et changement de gare, `?gare=<uic>` écrit seulement sur un choix (D058). À savoir pour l'essai sur téléphone (lot 6) : le navigateur ne donne la position qu'en HTTPS, le serveur de développement devra donc tourner en HTTPS sur le réseau local.
 - 04/11/2026 : à revérifier au lot 6 **sur une version de production** (`pnpm build`, puis `pnpm start`), pas sur le serveur de développement : l'écran « On cherche… » encore affiché 0,9 s après le choix de Dijon Porte Neuve.
+- 04/11/2026 : lot 2 fait : date (aujourd'hui, demain, ce week-end, calendrier borné par les horaires chargés : `horaires` dans `/api/sources`), catégories, feuille Filtres, état dans l'URL. Les filtres ne changent encore aucun résultat : ceux-ci arrivent au lot 3. « Faisable dans la journée » (P1 dans la fiche) est dans la feuille comme sur la maquette ; le filtre s'appliquera au lot 3.

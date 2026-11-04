@@ -1,7 +1,8 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, MapPin } from 'lucide-react';
+import { dateDuJour } from '@tourisme/commun';
+import { CalendarDays, ChevronDown, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
@@ -14,12 +15,20 @@ import { useCommune } from '@/features/localisation/hooks';
 import { EcranHorsRegion } from '@/features/localisation/ui/ecran-hors-region';
 import { EcranSansPosition } from '@/features/localisation/ui/ecran-sans-position';
 import { FeuilleDepart } from '@/features/localisation/ui/feuille-depart';
-import { useDepart } from '../hooks';
+import { libelleDate } from '../date';
+import { nombreFiltres } from '../filtres';
+import { useDepart, useFiltres } from '../hooks';
+import { FeuilleDate } from './feuille-date';
+import { FeuilleFiltres } from './feuille-filtres';
+import { RangeeFiltres } from './rangee-filtres';
 
 export function EcranExplorer() {
   const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart();
   const [feuilleOuverte, setFeuilleOuverte] = useState(false);
+  const [feuilleDate, setFeuilleDate] = useState(false);
+  const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const [erreurChoix, setErreurChoix] = useState(false);
+  const { filtres, changer } = useFiltres();
   const client = useQueryClient();
   const commune = useCommune(point);
 
@@ -43,7 +52,21 @@ export function EcranExplorer() {
 
   return (
     <>
-      <EnTete>
+      <EnTete
+        action={
+          depart.etat === 'pret' && (
+            <Bouton
+              variante="secondaire"
+              className="rounded-pill border-border px-3 font-medium"
+              onClick={() => setFeuilleDate(true)}
+            >
+              <CalendarDays aria-hidden="true" className="size-4.5 text-primary" />
+              {libelleDate(filtres.date, dateDuJour())}
+              <ChevronDown aria-hidden="true" className="size-4 text-primary" />
+            </Bouton>
+          )
+        }
+      >
         <Bouton
           variante="secondaire"
           className="w-full justify-start border-0 bg-surface text-base font-normal shadow-xs"
@@ -53,6 +76,14 @@ export function EcranExplorer() {
           <span className="min-w-0 flex-1 truncate text-left">{libelle}</span>
           <ChevronDown aria-hidden="true" className="size-4 flex-none text-primary" />
         </Bouton>
+        {depart.etat === 'pret' && (
+          <RangeeFiltres
+            categories={filtres.categories}
+            surCategories={(categories) => changer({ categories })}
+            nombre={nombreFiltres(filtres)}
+            surFiltres={() => setFeuilleFiltres(true)}
+          />
+        )}
       </EnTete>
 
       {erreurChoix && (
@@ -109,6 +140,18 @@ export function EcranExplorer() {
         </div>
       )}
 
+      <FeuilleDate
+        ouverte={feuilleDate}
+        surChangement={setFeuilleDate}
+        date={filtres.date}
+        surChoix={(date) => changer({ date })}
+      />
+      <FeuilleFiltres
+        ouverte={feuilleFiltres}
+        surChangement={setFeuilleFiltres}
+        filtres={filtres}
+        surModification={changer}
+      />
       <FeuilleDepart
         ouverte={feuilleOuverte}
         surChangement={setFeuilleOuverte}

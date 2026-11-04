@@ -1,11 +1,14 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 import { useGare, useGaresProches } from '@/features/gares/hooks';
 import { usePosition } from '@/features/localisation/hooks';
-import { ErreurClient } from '@/lib/http/client';
+import { schemaReponseSources } from '@/features/presentation/schemas';
+import { ErreurClient, lireApi } from '@/lib/http/client';
 import { calculerDepart } from './depart';
+import { ecrireFiltres, lireFiltres, type Filtres } from './filtres';
 
 const statutDe = (erreur: unknown): number | null => {
   if (erreur === null) return null;
@@ -51,4 +54,33 @@ export function useDepart() {
   }, [ecrireGare, redemander]);
 
   return { depart, point, essais, choisirGare: ecrireGare, revenirAMaPosition };
+}
+
+/** Filtres lus dans l'URL ; chaque changement crée une entrée d'historique (retour arrière). */
+export function useFiltres() {
+  const routeur = useRouter();
+  const chemin = usePathname();
+  const parametresUrl = useSearchParams();
+  const filtres = lireFiltres(parametresUrl);
+
+  const changer = useCallback(
+    (modifications: Partial<Filtres>) => {
+      const actuels = new URLSearchParams(parametresUrl.toString());
+      const suite = ecrireFiltres(actuels, { ...lireFiltres(actuels), ...modifications });
+      const texte = suite.toString();
+      routeur.push(texte ? `${chemin}?${texte}` : chemin, { scroll: false });
+    },
+    [chemin, parametresUrl, routeur],
+  );
+
+  return { filtres, changer };
+}
+
+/** Jusqu'où les horaires sont chargés, pour borner le calendrier. */
+export function useFenetreHoraires() {
+  return useQuery({
+    queryKey: ['sources'],
+    queryFn: ({ signal }) => lireApi('/api/sources', schemaReponseSources, signal),
+    select: (reponse) => reponse.horaires,
+  });
 }

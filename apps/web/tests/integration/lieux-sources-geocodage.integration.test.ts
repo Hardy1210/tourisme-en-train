@@ -124,6 +124,14 @@ describe('/api/lieux/[cle]', () => {
 });
 
 describe('/api/sources', () => {
+  it('donne les dates couvertes par les horaires, de l’échantillon d’été à celui d’hiver', async () => {
+    const reponse = await appeler(sources, '/api/sources');
+    expect(schemaReponseSources.parse(reponse.corps).horaires).toEqual({
+      debut: '2026-07-15',
+      fin: '2026-11-18',
+    });
+  });
+
   it('attribution OpenStreetMap exigée par l’ODbL ; sources P1 absentes', async () => {
     const { sources: liste } = schemaReponseSources.parse(
       (await appeler(sources, '/api/sources')).corps,

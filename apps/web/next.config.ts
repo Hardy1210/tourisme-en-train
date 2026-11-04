@@ -13,8 +13,8 @@ if (existsSync(FICHIER_ENV)) process.loadEnvFile(FICHIER_ENV);
 const nextConfig: NextConfig = {
   // Pas d'AGENTS.md généré par `next dev` : CLAUDE.md (racine) est le seul fichier maître du projet.
   agentRules: false,
-  // En haut à droite : en bas à gauche, l'indicateur de développement couvre la navigation.
-  devIndicators: { position: 'top-right' },
+  // Sans indicateur de développement : il couvrait la navigation ou le choix de la date. Les erreurs restent affichées.
+  devIndicators: false,
   transpilePackages: ['@tourisme/commun'],
   // Aucune URL de requête dans les journaux : elles contiennent la position (lat, lon) de l'utilisateur
   // (CLAUDE.md § 2, règle 5). Les erreurs passent par le journal JSON de l'application.
