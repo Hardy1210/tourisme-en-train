@@ -205,6 +205,11 @@ export const lieu = pgTable(
     // Fiche décrivant une ville entière : gardée en base, jamais listée (D057), recalculée par
     // `pnpm etl rattachements`.
     ficheVille: boolean('fiche_ville').notNull().default(false),
+    // Le lieu apparaît aussi sous ces catégories quand on filtre ; sa catégorie reste `categorie` (D060).
+    categoriesSecondaires: text('categories_secondaires')
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     geom: geographyPoint().notNull(),
     // Tracé d'un lieu en longueur (canal) : rattaché aux gares proches de son tracé (D043).
     trace: geographyMultiLigne(),
@@ -265,6 +270,8 @@ export const gareStats = pgTable(
       .references(() => gare.id),
     categorie: text().notNull(),
     nbLieux: integer().notNull(),
+    // Lieux dont c'est la catégorie secondaire : comptés seulement quand on filtre (D060).
+    nbSecondaires: integer('nb_secondaires').notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.gareId, t.categorie] })],
 );

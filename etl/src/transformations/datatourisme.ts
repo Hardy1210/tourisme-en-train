@@ -59,7 +59,7 @@ export function siteDesContacts(contacts: string): string | null {
 }
 
 export type ResultatLigne =
-  | { type: 'lieu'; lieu: LieuNormalise; nonClassees: string[] }
+  | { type: 'lieu'; lieu: LieuNormalise; etiquettes: readonly Etiquette[]; nonClassees: string[] }
   | { type: 'ecarte'; raison: RaisonEcart; nonClassees: string[] };
 
 export function lireLigneDatatourisme(
@@ -76,6 +76,7 @@ export function lireLigneDatatourisme(
   return {
     type: 'lieu',
     nonClassees,
+    etiquettes,
     lieu: {
       idSource: ligne.URI_ID_du_POI,
       nom,

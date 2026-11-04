@@ -62,6 +62,7 @@ describe('DATAtourisme', () => {
     expect(lireLigneDatatourisme(ligne, index, 500)).toEqual({
       type: 'lieu',
       nonClassees: [],
+      etiquettes: expect.arrayContaining([['categorie', 'Museum']]),
       lieu: {
         idSource: 'https://data.datatourisme.fr/1/abc',
         nom: 'Musée des Beaux-Arts',

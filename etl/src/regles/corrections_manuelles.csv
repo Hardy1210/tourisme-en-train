@@ -1,0 +1,11 @@
+# Corrections manuelles de lieux, À VALIDER PAR HARDY LIGNE PAR LIGNE (A-FAIRE § 1). Pas encore lu par le traitement.
+# Pour décider : écrire oui ou non dans la colonne decision. Une fois validé, le traitement appliquera les « oui ».
+# action : reclasser (nouvelle categorie et sous_categorie) ou retirer (le lieu n'est plus une sortie).
+# secondaire : retirer = pas de catégorie secondaire « enfants » pour ce lieu ; vide = règle normale (D060).
+source;id_source;nom;actuel;action;categorie;sous_categorie;secondaire;raison;decision
+datatourisme;"https://data.datatourisme.fr/6/cac35fb9-4f0a-396e-a243-ab56c18069b8";"Médiathèque Henri Vincenot";enfants / aire de jeux;retirer;;;;Une médiathèque, comme les bibliothèques déjà écartées (classes Library, PlayArea);
+datatourisme;"https://data.datatourisme.fr/6/3b0a808b-34c8-3b21-9ff8-630a85facadd";"Dolescapegame";enfants / base de loisirs;reclasser;culture;jeu d'aventure;retirer;Escape game en salle, pour tous publics plutôt que pour enfants;
+datatourisme;"https://data.datatourisme.fr/6/48e025ec-8c17-32bc-83a3-2f32af029470";"Les Secrets du Heurtoir";enfants / base de loisirs;reclasser;culture;jeu d'aventure;retirer;Escape game en salle à Besançon;
+datatourisme;"https://data.datatourisme.fr/6/1a56d4da-a4f6-334e-b53d-3023064773f0";"Jeu d'aventures holographiques : l'élixir oublié";enfants / base de loisirs;reclasser;culture;jeu d'aventure;;Jeu dans l'Hôtel-Dieu de Tournus : garde « enfants » en secondaire, à confirmer selon l'âge conseillé;
+datatourisme;"https://data.datatourisme.fr/6/da397f6c-570d-36aa-ad4f-01c63e8b1c83";"HalluCiné";enfants / base de loisirs;reclasser;culture;jeu d'aventure;retirer;Entre escape game et cinéma interactif;
+datatourisme;"https://data.datatourisme.fr/6/924db87d-24df-3e59-9a1b-8199619a64be";"Espace Aquatique Amphélia";enfants / aire de jeux;reclasser;enfants;centre aquatique;;Un centre aquatique, classé « aire de jeux » à cause de sa classe PlayArea;

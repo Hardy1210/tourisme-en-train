@@ -1,9 +1,10 @@
 import 'server-only';
-import { CATEGORIES, schemaCategorie, type Categorie } from '@tourisme/commun';
+import { schemaCategorie, type Categorie } from '@tourisme/commun';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '@/lib/db/client';
+import { filtreCategories } from '@/lib/db/filtre-categories';
 
 const schemaLigne = z.object({
   cle: z.string(),
@@ -33,17 +34,13 @@ export async function lieuxAutour(options: {
   limite: number;
 }): Promise<LieuAutourBrut[]> {
   const point = sql`ST_SetSRID(ST_MakePoint(${options.lon}, ${options.lat}), 4326)::geography`;
-  const categories = sql.join(
-    (options.categories ?? CATEGORIES).map((c) => sql`${c}`),
-    sql`, `,
-  );
   const { rows } = await db.execute(sql`
     SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            ST_Distance(l.geom, ${point}) AS vol_oiseau_m, count(*) OVER () AS total
     FROM lieu l
     WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
-      AND l.categorie IN (${categories})
+      AND ${filtreCategories(options.categories)}
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})
     ORDER BY vol_oiseau_m, l.cle
     LIMIT ${options.limite}`);

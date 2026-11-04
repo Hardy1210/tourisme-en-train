@@ -1,10 +1,11 @@
 import 'server-only';
-import { CATEGORIES, schemaCategorie, type Categorie } from '@tourisme/commun';
+import { schemaCategorie, type Categorie } from '@tourisme/commun';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
+import { filtreCategories } from '@/lib/db/filtre-categories';
 
 const { sousCategoriesRetirees, sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
 
@@ -53,10 +54,6 @@ export async function lieuxAccessibles(options: {
   limite: number;
   decalage: number;
 }): Promise<z.infer<typeof schemaResultat>> {
-  const categories = sql.join(
-    (options.categories ?? CATEGORIES).map((c) => sql`${c}`),
-    sql`, `,
-  );
   const { rows } = await db.execute(sql`
     WITH candidats AS (
       SELECT DISTINCT ON (lg.lieu_id)
@@ -70,7 +67,7 @@ export async function lieuxAccessibles(options: {
         AND ld.duree_min <= ${options.dureeMax}
         AND g.code_insee IS DISTINCT FROM ${options.codeInsee}
         AND l.doublon_de IS NULL AND l.site_de IS NULL
-        AND l.categorie IN (${categories})
+        AND ${filtreCategories(options.categories)}
         AND coalesce(l.sous_categorie, '') NOT IN (${liste(sousCategoriesRetirees)})
         AND NOT (coalesce(l.sous_categorie, '') IN (${liste(sousCategoriesNomPropreRequis)})
                  AND lower(unaccent(l.nom)) = lower(unaccent(l.sous_categorie)))

@@ -76,6 +76,7 @@ Utilisée par la supervision (SR) et le déploiement.
 Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
+`categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre.
 | Paramètre | Type | Défaut |
 |---|---|---|
 | `lat`, `lon` | nombre | obligatoire |

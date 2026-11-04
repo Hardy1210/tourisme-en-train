@@ -202,7 +202,14 @@ WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville;
 DELETE FROM gare_stats;
 
 -- @gare_stats
-INSERT INTO gare_stats (gare_id, categorie, nb_lieux)
-SELECT lg.gare_id, l.categorie, count(*)
-FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
-GROUP BY lg.gare_id, l.categorie;
+-- nb_lieux : catégorie principale (leur total = lignes de lieu_gare) ; nb_secondaires : catégorie secondaire (D060).
+INSERT INTO gare_stats (gare_id, categorie, nb_lieux, nb_secondaires)
+SELECT gare_id, categorie, count(*) FILTER (WHERE principale), count(*) FILTER (WHERE NOT principale)
+FROM (
+  SELECT lg.gare_id, l.categorie, true AS principale
+  FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+  UNION ALL
+  SELECT lg.gare_id, unnest(l.categories_secondaires), false
+  FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+) s
+GROUP BY gare_id, categorie;

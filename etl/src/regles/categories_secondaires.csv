@@ -1,0 +1,49 @@
+# Catégories secondaires des lieux (docs/04-traitement-donnees.md § 4.5, D060). Modifiable sans code.
+# Un lieu garde sa catégorie principale pour tout le monde ; il apparaît AUSSI quand on filtre sur la
+# catégorie secondaire. Sans filtre, la liste et son ordre ne changent pas.
+# source : datatourisme (cle = categorie, valeur = classe), osm (cle = tag, valeur = valeur, * = toute valeur),
+#   nom (valeur = motif cherché par mots entiers dans le nom, sans majuscules ni accents, toutes sources).
+source;cle;valeur;categorie
+datatourisme;categorie;Zoo;enfants
+datatourisme;categorie;ZooAnimalPark;enfants
+datatourisme;categorie;TeachingFarm;enfants
+datatourisme;categorie;AdventurePark;enfants
+datatourisme;categorie;ThemePark;enfants
+datatourisme;categorie;AmusementPark;enfants
+datatourisme;categorie;LeisureComplex;enfants
+datatourisme;categorie;VivariumAquarium;enfants
+datatourisme;categorie;Aquarium;enfants
+datatourisme;categorie;PlayArea;enfants
+datatourisme;categorie;MiniGolf;enfants
+datatourisme;categorie;RailBike;enfants
+datatourisme;categorie;TouristTrain;enfants
+datatourisme;categorie;SummerToboggan;enfants
+datatourisme;categorie;Trampoline;enfants
+datatourisme;categorie;KidsClub;enfants
+osm;zoo;*;enfants
+osm;tourism;zoo;enfants
+osm;tourism;aquarium;enfants
+osm;tourism;theme_park;enfants
+osm;attraction;animal;enfants
+osm;leisure;water_park;enfants
+osm;leisure;trampoline_park;enfants
+osm;leisure;miniature_golf;enfants
+osm;leisure;summer_toboggan;enfants
+osm;leisure;adventure_park;enfants
+osm;leisure;maze;enfants
+nom;;zoo;enfants
+nom;;parc animalier;enfants
+nom;;parc zoologique;enfants
+nom;;ferme pedagogique;enfants
+nom;;accrobranche;enfants
+nom;;parc aventure;enfants
+nom;;parc d aventure;enfants
+nom;;base de loisirs;enfants
+nom;;parc de loisirs;enfants
+nom;;labyrinthe;enfants
+nom;;aquarium;enfants
+nom;;mini golf;enfants
+nom;;minigolf;enfants
+nom;;velorail;enfants
+nom;;pour enfants;enfants
+nom;;pour les enfants;enfants

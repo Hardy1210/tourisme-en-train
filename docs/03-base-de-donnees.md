@@ -289,6 +289,7 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `doublon_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Rempli si fusionné dans un autre lieu ; remis à nul si ce lieu disparaît au rechargement de sa source. Recalculé par `pnpm etl rattachements` (D043) |
 | `site_de` | bigint | FK → lieu(id), ON DELETE SET NULL | Représentant du **site** dont le lieu fait partie (29 grottes d'Arcy-sur-Cure → 1 site) ; recalculé par `pnpm etl rattachements` (D043) |
 | `fiche_ville` | boolean | NN, défaut false | Fiche décrivant une ville entière, recalculée par `pnpm etl rattachements` : jamais listée, absente de `lieu_gare` (D057) |
+| `categories_secondaires` | text[] | NN, défaut `{}` | Le lieu apparaît aussi sous ces catégories quand on filtre ; `categorie` ne change pas (D060) |
 | `geom` | geography(Point, 4326) | NN | Lieu en longueur : point de son tracé le plus proche de son centre |
 | `trace` | geography(MultiLineString, 4326) | | Tracé d'un **lieu en longueur** (canal), tronçons de même nom réunis ; nul sinon (D043) |
 | `maj` | timestamptz | NN, défaut now() | |
@@ -328,7 +329,8 @@ Index : (`gare_id`, `distance_m`).
 |---|---|---|---|
 | `gare_id` | integer | PK (1/2), FK → gare | |
 | `categorie` | text | PK (2/2) | |
-| `nb_lieux` | integer | NN | Lieux de cette catégorie dans le rayon de la gare |
+| `nb_lieux` | integer | NN | Lieux de cette catégorie principale dans le rayon de la gare |
+| `nb_secondaires` | integer | NN, défaut 0 | Lieux dont c'est la catégorie secondaire : comptés seulement sous un filtre (D060) |
 
 ### 3.10 `mobilite_locale`
 | Colonne | Type | Contraintes | Description |
@@ -484,4 +486,4 @@ ORDER BY a.depart_s;
 | 02/11/2026 | 1.13 | § 3.6 : `lieu.site_de`, `lieu.trace`, requêtes qui ignorent aussi les membres d'un site ; § 3.8 : distance à pied au tracé ; migration `0009` (extension `unaccent`) — D043 |
 | 02/11/2026 | 1.14 | § 3.10 : une ligne par couple (arrêt, gare), type `CAR`, rayon à pied, contrainte d'unicité (migration `0010`) — D046 |
 | 03/11/2026 | 1.15 | § 3.6 : `lieu.cle`, clé publique générée et unique (migration `0011`) ; § 6 : échantillon complété (E08) — D052 |
-| 04/11/2026 | 1.16 | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 |
+| 04/11/2026 | 1.16 | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 ; `lieu.categories_secondaires`, `gare_stats.nb_secondaires` — D060 |

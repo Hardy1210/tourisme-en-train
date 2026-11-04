@@ -19,6 +19,9 @@ export interface LieuNormalise {
   trace: string | null;
 }
 
+/** Lieu prêt à charger : ses catégories secondaires sont ajoutées après le classement (D060). */
+export type LieuACharger = LieuNormalise & { categoriesSecondaires: readonly string[] };
+
 /** Pourquoi une ligne de source n'est pas devenue un lieu (compté dans le rapport). */
 export type RaisonEcart =
   'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon' | 'nom_exclu';

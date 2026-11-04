@@ -315,4 +315,24 @@ SELECT l.id, g.id, 200, 3
 FROM lieu l, gare g
 WHERE l.id_source IN ('ECH_L43', 'ECH_L44', 'ECH_L45', 'ECH_L46') AND g.uic = 'EX000005';
 
+-- D060 : parc animalier classé nature, apparaît aussi sous « enfants » ; un voisin sans secondaire.
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom, categories_secondaires)
+SELECT 'echantillon', l.id_source, l.nom, 'nature', l.sous_categorie, 'Donnée d''exemple.', '71076',
+       ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography, l.secondaires::text[]
+FROM (VALUES
+  ('ECH_L47', 'Exemple - Parc animalier', 'parc animalier', '{enfants}'),
+  ('ECH_L48', 'Exemple - Sentier des crêtes', 'sentier', '{}')
+) AS l (id_source, nom, sous_categorie, secondaires);
+
+INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
+SELECT l.id, g.id, 200, 3
+FROM lieu l, gare g
+WHERE l.id_source IN ('ECH_L47', 'ECH_L48') AND g.uic = 'EX000005';
+
+UPDATE gare_stats SET nb_secondaires = 1
+WHERE categorie = 'enfants' AND gare_id = (SELECT id FROM gare WHERE uic = 'EX000006');
+INSERT INTO gare_stats (gare_id, categorie, nb_lieux, nb_secondaires)
+SELECT id, 'enfants', 0, 1 FROM gare WHERE uic = 'EX000006'
+ON CONFLICT (gare_id, categorie) DO UPDATE SET nb_secondaires = 1;
+
 COMMIT;

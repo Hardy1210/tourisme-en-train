@@ -1,10 +1,11 @@
 // Lieux à pied d'une gare et fiche d'un lieu (docs/05-api.md § 3.6, § 3.7, D052).
 import 'server-only';
-import { CATEGORIES, schemaCategorie, type Categorie } from '@tourisme/commun';
+import { schemaCategorie, type Categorie } from '@tourisme/commun';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '@/lib/db/client';
+import { filtreCategories } from '@/lib/db/filtre-categories';
 
 const schemaLieuGare = z.object({
   cle: z.string(),
@@ -30,10 +31,6 @@ export async function lieuxDeLaGare(options: {
   categories: readonly Categorie[] | null;
   limite: number;
 }): Promise<LieuGareBrut[]> {
-  const categories = sql.join(
-    (options.categories ?? CATEGORIES).map((c) => sql`${c}`),
-    sql`, `,
-  );
   const { rows } = await db.execute(sql`
     SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
@@ -41,7 +38,7 @@ export async function lieuxDeLaGare(options: {
     FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
     WHERE lg.gare_id = ${options.gareId} AND lg.distance_m <= ${options.rayonM}
       AND l.doublon_de IS NULL AND l.site_de IS NULL
-      AND l.categorie IN (${categories})
+      AND ${filtreCategories(options.categories)}
     ORDER BY lg.distance_m, l.cle
     LIMIT ${options.limite}`);
   return z.array(schemaLieuGare).parse(rows);

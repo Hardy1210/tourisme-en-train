@@ -78,9 +78,9 @@ describe('/api/lieux', () => {
   });
 
   it('filtre par catégorie', async () => {
-    const { lieux } = await lire(DIJON, '&categories=enfants');
+    const { lieux } = await lire(DIJON, '&categories=culture');
     expect(lieux.length).toBeGreaterThan(0);
-    expect(lieux.every((l) => l.categorie === 'enfants')).toBe(true);
+    expect(lieux.every((l) => l.categorie === 'culture')).toBe(true);
   });
 
   it('garde le total au-delà de la dernière page, sans page suivante', async () => {
@@ -121,6 +121,24 @@ describe('/api/lieux', () => {
     expect(directe.statut).toBe(200);
     const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
     expect(cles).not.toContain(cle('ECH_L42'));
+  });
+
+  it('un lieu de catégorie secondaire apparaît aussi sous cette envie, et sous sa catégorie', async () => {
+    const enfants = (await lire(DIJON, '&categories=enfants')).lieux;
+    expect(enfants.find((l) => l.cle === cle('ECH_L47'))).toMatchObject({ categorie: 'nature' });
+    const nature = (await lire(DIJON, '&categories=nature')).lieux.map((l) => l.cle);
+    expect(nature).toContain(cle('ECH_L47'));
+  });
+
+  it('un lieu sans catégorie secondaire n’apparaît pas sous cette envie', async () => {
+    const enfants = (await lire(DIJON, '&categories=enfants')).lieux.map((l) => l.cle);
+    expect(enfants).not.toContain(cle('ECH_L48'));
+  });
+
+  it('sans filtre, il n’apparaît qu’une fois', async () => {
+    const { lieux, total } = await lire(DIJON);
+    expect(lieux.filter((l) => l.cle === cle('ECH_L47'))).toHaveLength(1);
+    expect(new Set(lieux.map((l) => l.cle)).size).toBe(total);
   });
 
   it.each([

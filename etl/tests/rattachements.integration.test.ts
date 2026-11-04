@@ -181,6 +181,29 @@ describe('rattachements — fiches de ville (D057)', () => {
   });
 });
 
+describe('rattachements — catégories secondaires (D060)', () => {
+  it('gare_stats les compte à part : le total principal reste celui de lieu_gare', async () => {
+    const [stats] = await apres(
+      [
+        ['A', 'osm', 'Test parc animalier', 'nature', 'parc animalier', DIJON.lon, nord(200)],
+        ['B', 'osm', 'Test sentier', 'nature', 'sentier', DIJON.lon, nord(400)],
+      ],
+      (client) =>
+        lignes(
+          client,
+          `SELECT (SELECT nb_lieux FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'nature') AS nature,
+                  (SELECT nb_lieux FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'enfants') AS enfants_principale,
+                  (SELECT nb_secondaires FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'enfants') AS enfants_secondaire`,
+        ),
+      "UPDATE lieu SET categories_secondaires = '{enfants}' WHERE id_source = 'A';",
+    );
+    expect(stats).toEqual({ nature: 2, enfants_principale: 0, enfants_secondaire: 1 });
+  });
+});
+
 describe('rattachements — doublons entre sources', () => {
   const doublons = (client: pg.PoolClient) =>
     lignes(

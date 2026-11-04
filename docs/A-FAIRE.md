@@ -22,10 +22,10 @@
 
 | **Badge de label sur la carte de destination** (Plus Beaux Villages, Petites cités de caractère, Art et histoire…) : chercher une liste officielle et vérifier Besançon, absente de DATAtourisme alors qu'elle aurait, de mémoire, le label Art et histoire | DATAtourisme ne couvre que quelques communes (mesure du 04/11, D057) ; laissé de côté par Hardy | Après le P0 (22/11) |
 
-| **Filtre « enfants » trop pauvre : décision avant E12** | Depuis Dijon : 18 lieux, 20 avec une catégorie secondaire. Mesure du 04/11 : les vraies sorties sont déjà en `enfants`, mais peu sont à pied d'une gare. Sans filtre, l'ordre ne change pas (vérifié) | Réponse de Hardy, avant E12 |
 | **Exclusions par nom à ajouter** (`noms_exclus.csv`) : « Collège Jules Ferry » et « Bataille de Nuits-Saint-Georges » | Remontés en tête de l'onglet Lieux, ce ne sont pas des sorties | Prochaine session sur les données, avant E12 |
-| **SPA Thermal Valvital** : écarté avec les spas (D059), alors que ce n'est pas un spa d'hôtel | Aucune catégorie ne convient | Réponse de Hardy |
 | **Le Klube (Ahuy)** : classé « centre aquatique » sans description, à vérifier | Pourrait être une salle de sport | Prochaine session sur les données |
+
+| **Corrections manuelles, à valider ligne par ligne** : `etl/src/regles/corrections_manuelles.csv`, colonne `decision` (Médiathèque Henri Vincenot, 4 jeux et escape games, Amphélia) | Le traitement ne lit pas encore ce fichier : il sera branché une fois les lignes validées | Réponse de Hardy, avant E12 |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
@@ -77,6 +77,12 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |
 
 ## 4. Idées d'évolution
+
+| Quoi | Pourquoi | Déclencheur |
+|---|---|---|
+| **Catégorie « bien-être / thermes »** (SPA Thermal Valvital, Luxeuil, Bourbon-Lancy, Salins…), utile pour tous les visiteurs | Aucune des 5 catégories ne convient : ces lieux restent écartés pour le P0 (D059) | Après le P0 |
+| **Mention « accessible à vélo ou en bus »** pour les lieux entre 1,5 et 3 km d'une gare, séparée des lieux à pied | 68 sorties pour enfants à moins de 3 km, contre 29 à pied (mesure du 04/11) | Après le P0 |
+
 
 | Idée | Intérêt |
 |---|---|

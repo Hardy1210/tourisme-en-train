@@ -30,6 +30,21 @@ beforeAll(async () => {
   service = await import('@/features/destinations/server/service');
 });
 
+describe('/api/destinations, catégories secondaires (D060)', () => {
+  // Dans l'échantillon, Mâcon-Ville (EX000006) n'a qu'un lieu dont « enfants » est la catégorie secondaire.
+  it('compte le lieu secondaire quand on filtre sur cette envie', async () => {
+    const macon = (await liste(`date=${HIVER}&categories=enfants`)).find(
+      (d) => d.gare.uic === 'EX000006',
+    );
+    expect(macon?.lieuxParCategorie).toEqual({ enfants: 1 });
+  });
+
+  it('ne le compte pas sans filtre : un lieu ne compte qu’une fois, l’ordre ne bouge pas', async () => {
+    const macon = (await liste(`date=${HIVER}`)).find((d) => d.gare.uic === 'EX000006');
+    expect(macon?.lieuxParCategorie.enfants).toBeUndefined();
+  });
+});
+
 describe('/api/destinations', () => {
   it('Beaune dans la tranche <=30 (critère de la fiche E08), cache de 300 s', async () => {
     const reponse = await appeler(route, `/api/destinations?gare=${dijon}&date=${HIVER}`);
