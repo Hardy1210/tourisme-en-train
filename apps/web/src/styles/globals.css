@@ -143,7 +143,7 @@
   --warning-soft: oklch(0.97 0.04 var(--warning-hue));
   --danger: var(--destructive);
   --danger-soft: color-mix(in oklch, var(--destructive) 10%, var(--card));
-  --info: oklch(0.55 0.12 var(--info-hue));
+  --info: oklch(0.52 0.12 var(--info-hue)); /* AA sur info-soft */
   --info-soft: oklch(0.96 0.025 var(--info-hue));
   --eco: var(--ecologie);
   --eco-soft: var(--ecologie-fond);
@@ -247,6 +247,48 @@
   --sortie-bg: var(--accent);
   --sortie-hover: color-mix(in oklch, var(--accent), black 8%);
   --sortie-foreground: var(--accent-foreground);
+
+  /* Logo */
+  --logo: var(--primary);
+  --logo-sur-hero: var(--nav-indicator);
+
+  /* Boutons */
+  --bouton-radius: var(--radius-base);
+
+  /* Cartes */
+  --carte-bg: var(--surface);
+  --carte-foreground: var(--foreground);
+  --carte-radius: calc(var(--radius-base) * 1.4);
+  --carte-shadow: var(--elev-card);
+
+  /* Sélection : la même partout (puces, sélecteurs) */
+  --selection-bg: var(--primary-soft);
+  --selection-foreground: var(--primary-soft-foreground);
+  --selection-border: var(--primary);
+
+  /* Puces */
+  --puce-bg: var(--surface);
+  --puce-foreground: var(--foreground);
+  --puce-border: var(--border);
+
+  /* Champs de saisie */
+  --champ-bg: var(--surface-sunken);
+  --champ-radius: var(--radius-base);
+
+  /* Onglets */
+  --onglets-bg: var(--surface-sunken);
+  --onglet-actif-bg: var(--surface);
+
+  /* Interrupteurs */
+  --interrupteur-actif: var(--primary);
+  --interrupteur-inactif: var(--border-strong);
+  --interrupteur-pastille: var(--blanc);
+
+  /* Feuilles */
+  --feuille-bg: var(--surface-raised);
+  --feuille-radius: calc(var(--radius-base) * 1.4);
+  --feuille-poignee: var(--border-strong);
+  --feuille-hauteur-max: 86dvh;
 
   /* Récompenses et favoris */
   --reward: var(--accent);
@@ -354,6 +396,24 @@
   --color-reward-foreground: var(--reward-foreground);
   --color-favorite: var(--favorite);
   --color-favorite-on-primary: var(--favorite-on-primary);
+  --color-logo: var(--logo);
+  --color-logo-sur-hero: var(--logo-sur-hero);
+  --color-carte-bg: var(--carte-bg);
+  --color-carte-foreground: var(--carte-foreground);
+  --color-selection-bg: var(--selection-bg);
+  --color-selection-foreground: var(--selection-foreground);
+  --color-selection-border: var(--selection-border);
+  --color-puce-bg: var(--puce-bg);
+  --color-puce-foreground: var(--puce-foreground);
+  --color-puce-border: var(--puce-border);
+  --color-champ-bg: var(--champ-bg);
+  --color-onglets-bg: var(--onglets-bg);
+  --color-onglet-actif-bg: var(--onglet-actif-bg);
+  --color-interrupteur-actif: var(--interrupteur-actif);
+  --color-interrupteur-inactif: var(--interrupteur-inactif);
+  --color-interrupteur-pastille: var(--interrupteur-pastille);
+  --color-feuille-bg: var(--feuille-bg);
+  --color-feuille-poignee: var(--feuille-poignee);
 
   --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
@@ -376,14 +436,20 @@
   --radius-xl: calc(var(--radius-base) * 1.4);
   --radius-2xl: calc(var(--radius-base) * 1.85);
   --radius-pill: 9999px;
+  --radius-bouton: var(--bouton-radius);
+  --radius-carte: var(--carte-radius);
+  --radius-champ: var(--champ-radius);
+  --radius-feuille: var(--feuille-radius);
 
   --shadow-xs: var(--elev-xs);
   --shadow-card: var(--elev-card);
   --shadow-float: var(--elev-float);
   --shadow-sheet: var(--elev-sheet);
+  --shadow-carte: var(--carte-shadow);
 
   --spacing-touch: var(--taille-tactile);
 
+  --default-transition-duration: calc(200ms * var(--motion-speed));
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --animate-fade-in: fade-in calc(200ms * var(--motion-speed)) var(--ease-soft) both;

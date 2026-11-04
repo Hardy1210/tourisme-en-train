@@ -7,8 +7,8 @@ const fusionner = extendTailwindMerge({
   extend: {
     theme: {
       text: ['2xs', 'md'],
-      radius: ['pill'],
-      shadow: ['card', 'float', 'sheet'],
+      radius: ['pill', 'bouton', 'carte', 'champ', 'feuille'],
+      shadow: ['card', 'float', 'sheet', 'carte'],
     },
     classGroups: {
       z: [{ z: ['map', 'sheet', 'header', 'overlay', 'toast'] }],

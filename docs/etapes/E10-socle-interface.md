@@ -26,21 +26,21 @@ Un socle visuel complet et centralisé : changer une ligne de `globals.css` chan
 3. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] Intégrer `globals.css` dans `src/styles/` ; remplacer toute mention « Pas Loin » par une référence neutre ; vérifier la compilation Tailwind 4.
-- [ ] Polices via `next/font` : Bricolage Grotesque (titres), Inter (texte), JetBrains Mono ; reliées aux variables `--font-*-family`.
-- [ ] shadcn/ui initialisé **sur les tokens** (aucune couleur shadcn par défaut restante).
-- [ ] Composants `components/ui/` : `Bouton` (principal/secondaire/fantôme), `Puce` (catégorie active/inactive, avec icône), `Feuille` (bottom sheet glissante, accessible), `Onglets`, `Carte`, `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`.
-- [ ] `features/lieux/ui/icone-categorie.tsx` : correspondance catégorie → icône Lucide + token.
-- [ ] Mise en page `(app)/layout.tsx` : en-tête collant (marque), navigation basse (Explorer, Menu : À propos · Sources des données) — pas de bouton « Mes sorties » en v1 (favoris = P2), zones sûres (`safe-top`, `safe-bottom`).
-- [ ] Fournisseur TanStack Query.
+- [x] Intégrer `globals.css` dans `src/styles/` ; remplacer toute mention « Pas Loin » par une référence neutre ; vérifier la compilation Tailwind 4.
+- [x] Polices via `next/font` : Bricolage Grotesque (titres), Inter (texte), JetBrains Mono ; reliées aux variables `--font-*-family`.
+- [x] shadcn/ui initialisé **sur les tokens** (aucune couleur shadcn par défaut restante).
+- [x] Composants `components/ui/` : `Bouton` (principal/secondaire/fantôme), `Puce` (catégorie active/inactive, avec icône), `Feuille` (bottom sheet glissante, accessible), `Onglets`, `Carte`, `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`.
+- [x] `features/lieux/ui/icone-categorie.tsx` : correspondance catégorie → icône Lucide + token.
+- [x] Mise en page `(app)/layout.tsx` : en-tête collant (marque), navigation basse (Explorer, Menu : À propos · Sources des données) — pas de bouton « Mes sorties » en v1 (favoris = P2), zones sûres (`safe-top`, `safe-bottom`).
+- [x] Fournisseur TanStack Query.
 - [ ] (P1) Mode sombre : bascule par classe `.dark` (décision de dépendance si `next-themes`).
-- [ ] Page `/design` **en développement uniquement** : planche de tous les composants et états.
+- [x] Page `/design` **en développement uniquement** : planche de tous les composants et états.
 
 ## Critères d'acceptation
-- [ ] Recherche dans le code : aucune couleur hexadécimale/oklch, aucun `rounded-[…]` arbitraire hors `globals.css`.
-- [ ] Modifier `--brand-hue` dans `globals.css` change la couleur principale partout (test manuel, puis retour à la valeur).
-- [ ] Composants utilisables au clavier ; focus visible.
-- [ ] Cibles tactiles ≥ 44 px.
+- [x] Recherche dans le code : aucune couleur hexadécimale/oklch, aucun `rounded-[…]` arbitraire hors `globals.css`.
+- [x] Modifier `--brand-hue` dans `globals.css` change la couleur principale partout (test manuel, puis retour à la valeur).
+- [x] Composants utilisables au clavier ; focus visible.
+- [x] Cibles tactiles ≥ 44 px.
 
 ## Vérifications manuelles
 - Planche `/design` en 390 px et 1440 px, clair (et sombre si P1).
@@ -58,3 +58,4 @@ Voir `_MODELE.md`. Mettre à jour `06` § 2 (composants réels).
 - 04/11/2026 : audit fait (phase d'audit 1 et 2) ; plan, écarts du kit et dépendances dans `A-FAIRE` § 1. Hardy refait les maquettes : l'aspect des composants et de la mise en page attend la nouvelle version.
 - 04/11/2026 : D053 : pas d'installateur shadcn, composants écrits à la main sur Radix. La tâche « shadcn/ui initialisé » devient : installer les dépendances de D053.
 - 04/11/2026 : D054 : maquette `Explorer Mobile v3`. Navigation à 4 onglets (Explorer, Lieux, Mon espace, Menu), à la place de « Explorer, Menu ». Critère d'acceptation « `--brand-hue` » remplacé par : modifier `--primary` dans `globals.css` change la couleur principale partout. Ajouter le composant `Logo`, seul endroit du logo provisoire. `globals.css`, polices, fournisseur et icônes de catégorie faits le 04/11.
+- 04/11/2026 : composants, `Logo`, `EtatVide`, navigation à 4 onglets et planche `/design` faits, en attente de la validation visuelle de Hardy. `Fenetre` attend la maquette desktop ; `Toast` reste reporté (P1). Lieux et Mon espace sont des pages provisoires ; À propos et Sources restent « Bientôt » dans le Menu jusqu'à E13. Critères vérifiés dans un navigateur (390 et 1440 px, clair et sombre). Les interrupteurs font 30 px de haut, mais leur rangée entière (56 px) est cliquable.

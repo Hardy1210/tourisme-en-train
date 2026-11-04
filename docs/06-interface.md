@@ -37,7 +37,7 @@
 
 - **Typographie :** `font-display` (titres, noms de lieux), `font-sans` (reste). Classe `tabular` sur **tous** les horaires, durées, distances, prix.
 - **Icônes :** Lucide, trait 1,75 px. Catégories : `enfants` → `FerrisWheel`, `nature` → `Mountain`, `parcs` → `Trees`, `patrimoine` → `Castle`, `culture` → `Theater`. Transports : `TrainFront`, `Bus`, `TramFront`, `Bike`.
-- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`.
+- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo`.
 - **Mode sombre** (P1) : uniquement par les tokens `.dark`.
 - **Maquettes Claude Design** : conseil visuel. On copie l'aspect, jamais le comportement sans vérification.
 
@@ -159,4 +159,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : carte en segments + étiquettes, week-end, partage, vélos disponibles, temps réel limité, états sans description / sans prix / sans statut, variantes à concevoir — D017 à D021 |
 | 02/10/2026 | 1.2 | Nom de la commune de la puce de localisation par `/api/geocodage/inverse` — D022 ; écrans complémentaires listés en § 4 bis |
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
-| 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets — D054 |
+| 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, composants réels — D054 |
