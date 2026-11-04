@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D055 légende des temps de trajet |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -611,3 +611,11 @@
 - **Règle :** un lieu n'est marqué « enfants » que si une source le justifie. La classe DATAtourisme `LeisureComplex` seule ne prouve donc rien sur un escape game : les autres jeux restent à relire (`A-FAIRE`).
 - **Raison :** choix de Hardy ; chaque filtre doit donner un résultat fiable.
 - **Impact :** `etl/src/chargement/corrections.ts`, `04` § 4.5, `A-FAIRE`.
+
+## D062 — Carte : MapLibre 5, premier cadrage sur les destinations proches
+- **Date :** 04/11/2026
+- **En clair :** on garde la version de la carte qui fonctionne avec notre outil de construction, et la carte s'ouvre sur les destinations à moins d'une heure pour rester lisible.
+- **Décision :** `maplibre-gl` fixé en version 5. Premier cadrage et « Recentrer » : le départ et les destinations à moins de `carte.dureeCadrageMin` (60 min), toutes s'il y en a moins de 3. Étiquettes en couche MapLibre, qui gère leurs collisions (`06` § 3). Épingles de lieux à partir du zoom `carte.zoomMinLieux`.
+- **Raison :** essai du 04/11 : MapLibre 6 charge un module de travail séparé que Next.js ne sert pas (« Worker failed to load »), et le fond de carte reste vide. Depuis Dijon, cadrer les 101 destinations jusqu'à Paris et Lyon entassait tout.
+- **Écarté :** servir à la main le module de MapLibre 6 (une pièce de plus à maintenir, y compris pour la PWA).
+- **Impact :** `apps/web/package.json`, `config/parametres.json`, `features/carte`, E14 à vérifier hors ligne.

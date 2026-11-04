@@ -15,6 +15,7 @@
       { "uic": "87184002", "ville": "Belfort", "departement": "Territoire de Belfort" }
     ]
   },
+  "carte": { "etiquettesMax": 5, "dureeCadrageMin": 60, "zoomMinLieux": 10.5 },
   "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
   "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
   "controles": {

@@ -6,6 +6,8 @@ export type GareDepart = {
   uic: string;
   nom: string;
   commune: string | null;
+  lat: number;
+  lon: number;
   /** Seulement si la gare vient de la position de l'utilisateur. */
   distanceM: number | null;
   dureeVeloMin: number | null;
@@ -64,6 +66,8 @@ export function calculerDepart({
         uic: gare.uic,
         nom: gare.nom,
         commune: gare.commune.nom,
+        lat: gare.lat,
+        lon: gare.lon,
         distanceM: null,
         dureeVeloMin: null,
       },
@@ -87,6 +91,8 @@ export function calculerDepart({
       uic: plusProche.uic,
       nom: plusProche.nom,
       commune: plusProche.commune,
+      lat: plusProche.lat,
+      lon: plusProche.lon,
       distanceM: plusProche.distanceM,
       dureeVeloMin: plusProche.dureeVeloMin,
     },

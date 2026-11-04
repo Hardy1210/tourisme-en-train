@@ -5,6 +5,7 @@ import { useDestinations } from '@/features/destinations/hooks';
 import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
 import { SectionDestinations } from '@/features/destinations/ui/section-destinations';
 import type { Destination } from '@/features/destinations/schemas';
+import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
 import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
 import { useLieuxAutour } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
@@ -50,6 +51,14 @@ export function ResultatsExplorer({
 
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-6 p-4">
+      {/* Disposition provisoire : la feuille glissante sur la carte arrive au lot 5. */}
+      <CarteExplorerDifferee
+        utilisateur={origine === 'position' ? point : null}
+        gareDepart={{ lat: gare.lat, lon: gare.lon, nom: gare.nom }}
+        destinations={liste ?? []}
+        lieux={lieux.data?.lieux ?? []}
+        lienDe={lienDe}
+      />
       <CarteVotreGare
         nom={gare.nom}
         distanceM={gare.distanceM}

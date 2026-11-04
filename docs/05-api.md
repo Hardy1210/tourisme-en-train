@@ -70,7 +70,7 @@ Utilisée par la supervision (SR) et le déploiement.
 | `lat`, `lon` | nombre | obligatoire |
 | `limite` | entier 1–10 | `parametres.limites.gares` |
 ```ts
-{ gares: Array<{ uic: string; nom: string; commune: string | null; distanceM: number;
+{ gares: Array<{ uic: string; nom: string; commune: string | null; lat: number; lon: number; distanceM: number;
                  dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }> }
 ```
 Cache : aucun (position).
@@ -317,3 +317,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 04/11/2026 | 1.11 | § 3.4 : tranches de temps `<=30`, `<=60`, `<=90`, `>90` — D055 |
 | 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |
 | 04/11/2026 | 1.13 | § 3.12 : `horaires`, bornes du calendrier de l'écran Explorer |
+| 04/11/2026 | 1.14 | § 3.2 : `lat`, `lon` des gares proches, pour la carte |

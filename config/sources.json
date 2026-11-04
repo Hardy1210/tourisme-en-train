@@ -468,9 +468,10 @@
       "mode": "direct",
       "page": "https://openfreemap.org",
       "telechargement": null,
+      "api": "https://tiles.openfreemap.org/styles/liberty",
       "licence": "ODbL (données OSM)",
       "attribution": "OpenFreeMap © OpenMapTiles, données © les contributeurs d'OpenStreetMap",
-      "verifie": false,
+      "verifie": true,
       "affichee": true
     },
     {

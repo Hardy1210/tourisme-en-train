@@ -7,6 +7,8 @@ const gareProche = (dansRegion: boolean): GareProche => ({
   uic: '87713040',
   nom: 'Dijon',
   commune: 'Dijon',
+  lat: 47.32,
+  lon: 5.03,
   distanceM: 900,
   dureeVeloMin: 5,
   dureeVoitureMin: 3,

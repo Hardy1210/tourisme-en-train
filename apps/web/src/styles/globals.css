@@ -47,6 +47,9 @@
   --ecologie-fond: #e1f2e7;
   --destructive: #c92f33;
 
+  /* Carte géographique */
+  --carte-geo-hauteur: 40dvh;
+
   /* Barre du bas */
   --barre: #623362;
   --barre-texte: #dcc3dc;

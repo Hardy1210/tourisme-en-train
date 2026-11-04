@@ -43,6 +43,14 @@ export const schemaParametres = z
         )
         .min(1),
     }),
+    carte: z.strictObject({
+      /** Destinations les plus proches étiquetées sur la carte (`06` § 3). */
+      etiquettesMax: z.number().int().positive(),
+      /** Le premier cadrage montre les destinations à moins de cette durée ; le reste en dézoomant. */
+      dureeCadrageMin: z.number().int().positive(),
+      /** Les épingles de lieux n'apparaissent qu'à partir de ce zoom : elles s'entasseraient sinon. */
+      zoomMinLieux: z.number().positive(),
+    }),
     localisation: z.strictObject({
       delaiPositionMs: z.number().int().positive(),
       /** Pause dans la saisie avant de lancer une recherche de ville. */
