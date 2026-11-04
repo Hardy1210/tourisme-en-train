@@ -10,7 +10,6 @@ import { EnTete } from '@/components/ui/en-tete';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { gareLaPlusProche } from '@/features/gares/hooks';
-import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
 import { useCommune } from '@/features/localisation/hooks';
 import { EcranHorsRegion } from '@/features/localisation/ui/ecran-hors-region';
 import { EcranSansPosition } from '@/features/localisation/ui/ecran-sans-position';
@@ -21,6 +20,7 @@ import { useDepart, useFiltres } from '../hooks';
 import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
 import { RangeeFiltres } from './rangee-filtres';
+import { ResultatsExplorer } from './resultats-explorer';
 
 export function EcranExplorer() {
   const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart();
@@ -130,14 +130,12 @@ export function EcranExplorer() {
       )}
 
       {depart.etat === 'pret' && (
-        <div className="mx-auto flex max-w-xl flex-col gap-6 p-4">
-          <CarteVotreGare
-            nom={depart.gare.nom}
-            distanceM={depart.gare.distanceM}
-            dureeVeloMin={depart.gare.dureeVeloMin}
-            surChangement={() => setFeuilleOuverte(true)}
-          />
-        </div>
+        <ResultatsExplorer
+          depart={depart}
+          filtres={filtres}
+          surModification={changer}
+          surChangementGare={() => setFeuilleOuverte(true)}
+        />
       )}
 
       <FeuilleDate

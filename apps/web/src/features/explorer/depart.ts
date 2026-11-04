@@ -16,7 +16,14 @@ export type Depart =
   | { etat: 'sans_position'; raison: 'refusee' | 'indisponible' | 'gare_inconnue' }
   | { etat: 'hors_region' }
   | { etat: 'erreur' }
-  | { etat: 'pret'; origine: 'position' | 'choix'; gare: GareDepart; proches: GareProche[] };
+  | {
+      etat: 'pret';
+      origine: 'position' | 'choix';
+      gare: GareDepart;
+      /** Point de « À deux pas » : l'utilisateur, ou la gare choisie. Jamais écrit dans l'URL (D058). */
+      point: { lat: number; lon: number };
+      proches: GareProche[];
+    };
 
 type Requete<T> = { donnees: T | undefined; statutErreur: number | null };
 
@@ -25,6 +32,8 @@ export type EntreesDepart = {
   gareChoisie: Requete<{
     uic: string;
     nom: string;
+    lat: number;
+    lon: number;
     dansRegion: boolean;
     commune: { nom: string | null };
   }>;
@@ -50,6 +59,7 @@ export function calculerDepart({
     return {
       etat: 'pret',
       origine: 'choix',
+      point: { lat: gare.lat, lon: gare.lon },
       gare: {
         uic: gare.uic,
         nom: gare.nom,
@@ -72,6 +82,7 @@ export function calculerDepart({
   return {
     etat: 'pret',
     origine: 'position',
+    point: { lat: position.lat, lon: position.lon },
     gare: {
       uic: plusProche.uic,
       nom: plusProche.nom,

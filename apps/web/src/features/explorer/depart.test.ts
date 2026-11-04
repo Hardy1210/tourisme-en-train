@@ -22,7 +22,7 @@ const entrees = (partiel: Partial<EntreesDepart>): EntreesDepart => ({
 const TROUVEE = { etat: 'trouvee', lat: 47.3, lon: 5 } as const;
 const gareChoisie = (dansRegion: boolean) => ({
   ...VIDE,
-  donnees: { uic: 'A', nom: 'Beaune', dansRegion, commune: { nom: 'Beaune' } },
+  donnees: { uic: 'A', nom: 'Beaune', lat: 47, lon: 4.8, dansRegion, commune: { nom: 'Beaune' } },
 });
 
 describe('calculerDepart, depuis la position', () => {
@@ -39,6 +39,7 @@ describe('calculerDepart, depuis la position', () => {
       etat: 'pret',
       origine: 'position',
       gare: { uic: '87713040', distanceM: 900 },
+      point: { lat: 47.3, lon: 5 },
     });
   });
 
@@ -73,6 +74,7 @@ describe('calculerDepart, depuis une gare choisie', () => {
       etat: 'pret',
       origine: 'choix',
       gare: { nom: 'Beaune', distanceM: null },
+      point: { lat: 47, lon: 4.8 },
     });
   });
 

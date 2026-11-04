@@ -1,7 +1,7 @@
 # E11 — Écran Explorer
 
 > **Semaine :** S6 (09/11 → 15/11) · **Priorité :** P0 (tracés des lignes P1) · **Branche :** `etape/E11-explorer`
-> **Étapes préalables :** E08, E10 · **État :** 🟡 lots 1 et 2 faits, lot 2 à valider par Hardy
+> **Étapes préalables :** E08, E10 · **État :** 🟡 lots 1 à 3 faits, lot 3 à valider par Hardy
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -32,7 +32,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [ ] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 plus proches, au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
 - [ ] Desktop : **survol croisé** carte de destination ↔ gare sur la carte.
 - [ ] (P1) Bouton **Partager** (partage natif, sinon copie du lien + « Lien copié »).
-- [ ] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
+- [x] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
 - [ ] Desktop : panneau gauche 440 px + carte.
 - [ ] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne, erreur.
 - [ ] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
@@ -65,3 +65,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : lot 1 fait : position, refus, recherche de ville, hors région, choix et changement de gare, `?gare=<uic>` écrit seulement sur un choix (D058). À savoir pour l'essai sur téléphone (lot 6) : le navigateur ne donne la position qu'en HTTPS, le serveur de développement devra donc tourner en HTTPS sur le réseau local.
 - 04/11/2026 : à revérifier au lot 6 **sur une version de production** (`pnpm build`, puis `pnpm start`), pas sur le serveur de développement : l'écran « On cherche… » encore affiché 0,9 s après le choix de Dijon Porte Neuve.
 - 04/11/2026 : lot 2 fait : date (aujourd'hui, demain, ce week-end, calendrier borné par les horaires chargés : `horaires` dans `/api/sources`), catégories, feuille Filtres, état dans l'URL. Les filtres ne changent encore aucun résultat : ceux-ci arrivent au lot 3. « Faisable dans la journée » (P1 dans la fiche) est dans la feuille comme sur la maquette ; le filtre s'appliquera au lot 3.
+- 04/11/2026 : lot 3 fait : « Votre gare » et prochain départ direct, « À deux pas », « En train direct » et leurs états ; tous les filtres s'appliquent ; page provisoire `(app)/destinations/[uic]` jusqu'à E12. Les cartes de lieux ne s'ouvrent pas encore (fiche lieu : E12). Disposition définitive (feuille sur la carte, panneau desktop) : lot 5.

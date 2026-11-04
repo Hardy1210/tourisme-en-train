@@ -7,10 +7,18 @@ type Proprietes = {
   nom: string;
   distanceM: number | null;
   dureeVeloMin: number | null;
+  /** « 10:12 → Beaune » ; null tant qu'on ne le connaît pas ou s'il n'y en a plus. */
+  prochainDepart: string | null;
   surChangement: () => void;
 };
 
-export function CarteVotreGare({ nom, distanceM, dureeVeloMin, surChangement }: Proprietes) {
+export function CarteVotreGare({
+  nom,
+  distanceM,
+  dureeVeloMin,
+  prochainDepart,
+  surChangement,
+}: Proprietes) {
   return (
     <Carte className="gap-3.5" aria-labelledby="votre-gare">
       <div className="flex items-center gap-3">
@@ -30,6 +38,13 @@ export function CarteVotreGare({ nom, distanceM, dureeVeloMin, surChangement }: 
           </span>
         )}
       </div>
+      {prochainDepart !== null && (
+        <p className="flex items-center gap-2.5 rounded-md bg-primary-soft px-3 py-2.5 text-primary-soft-foreground">
+          <span className="text-sm">Prochain départ direct</span>
+          <span aria-hidden="true" className="h-0.5 flex-1 bg-primary opacity-35" />
+          <strong className="tabular text-base">{prochainDepart}</strong>
+        </p>
+      )}
       <Bouton variante="secondaire" onClick={surChangement}>
         Changer de gare
       </Bouton>
