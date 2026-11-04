@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.7 · **Date** 03/11/2026
+> **Version** 1.8 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -71,7 +71,7 @@ apps/web/src/
 │  ├─ explorer/                         ← composition de l'écran principal, filtres
 │  ├─ presentation/                     ← page « L'âme du produit », écran Sources
 │  └─ sante/                            ← route de santé (état de la base et des données, D047)
-├─ components/ui/                       ← boutons, puces, feuilles, onglets (shadcn/ui sur tokens)
+├─ components/ui/                       ← boutons, puces, feuilles, onglets (Radix sur tokens, D053)
 ├─ config/
 │  ├─ marque.ts                         ← nom, slogan, description (l'URL est la variable URL_APP, lue côté serveur)
 │  └─ parametres.ts                     ← réexporte les paramètres validés de @tourisme/commun
@@ -219,3 +219,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 11/10/2026 | 1.5 | § 8 : pilote `pg` dans l'application, génération des migrations par `pnpm db:generer` — D033 |
 | 01/11/2026 | 1.6 | § 5 : faisable dans la journée précalculé par l'ETL, prochain départ en une requête groupée — D040 |
 | 03/11/2026 | 1.7 | § 3 : fonctionnalité `sante/` — D047 |
+| 04/11/2026 | 1.8 | § 3 : composants sur Radix, sans l'installateur shadcn — D053 |

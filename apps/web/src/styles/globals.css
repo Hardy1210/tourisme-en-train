@@ -1,3 +1,513 @@
-/* Provisoire (E00) : le design system complet arrive en E10, à partir de design/globals.css.
-   Aucune couleur, police, ombre ou rayon ici en attendant. */
+/* ==========================================================================
+   Design system : source unique de l'apparence de l'application (D054).
+
+   1. RÉGLAGES        les seules lignes à toucher pour changer l'identité
+   2. RÔLES           ce que les composants utilisent, calculés depuis 1
+   3. COMPOSANTS      un seul type d'élément, quand il s'écarte de son rôle
+   4. PONT TAILWIND   génère bg-primary, text-md, rounded-lg, etc.
+   5. BASE            règles globales et utilitaires
+
+   Règles :
+   - Aucune valeur d'apparence en dur dans les composants.
+   - Un besoin nouveau = un nouveau token ici, jamais une valeur locale.
+   - La classe .dark se pose sur <html> : les calculs de 2 et 3 suivent 1.
+   - Une couleur se règle en clair (:root) et en sombre (.dark).
+   - La police elle-même se charge dans app/polices.ts (next/font).
+   ========================================================================== */
+
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   1. RÉGLAGES
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  /* Couleurs de marque */
+  --primary: #623362;
+  --primary-foreground: #ffffff;
+  --secondary: #f1e4f1;
+  --secondary-foreground: #623362;
+  --accent: #edb345;
+  --accent-foreground: #1d1c2a;
+
+  /* Fonds et texte */
+  --background: #fbf7fb;
+  --card: #ffffff;
+  --foreground: #1d1c2a;
+  --muted-foreground: #65616d;
+  --border: #e2dce3;
+  --blanc: #ffffff;
+
+  /* Couleurs porteuses de sens */
+  --favori: #a83825;
+  --ecologie: #1f6441;
+  --ecologie-fond: #e1f2e7;
+  --destructive: #c92f33;
+
+  /* Barre du bas */
+  --barre: #623362;
+  --barre-texte: #dcc3dc;
+  --onglet-actif: #edb345;
+
+  /* Teintes OKLCH des couleurs d'information */
+  --transit-hue: 252;
+  --warning-hue: 80;
+  --info-hue: 245;
+
+  /* Ombres et voile */
+  --shadow-color: 80 20% 20%;
+  --overlay: oklch(0.15 0.01 80 / 0.45);
+
+  /* Typographie */
+  --font-display-family: var(--police-titres);
+  --font-body-family: var(--police-texte);
+  --font-mono-family: var(--police-mono);
+  --echelle-texte: 1; /* 1,1 = tous les textes 10 % plus grands */
+
+  /* Forme */
+  --radius-base: 0.875rem; /* tous les arrondis en découlent */
+  --taille-tactile: 2.75rem; /* 44 px, cible tactile minimale */
+  --icone-trait: 1.75;
+
+  /* Animations : 0 = aucune, 1 = normal, 2 = deux fois plus lent */
+  --motion-speed: 1;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --primary: #d09dcf;
+  --primary-foreground: #1d1c2a;
+  --secondary: #3d2c3d;
+  --secondary-foreground: #ebcdea;
+  --accent: #edbc58;
+  --accent-foreground: #1d1c2a;
+
+  --background: #1d1c2a;
+  --card: #292333;
+  --foreground: #f5f4f9;
+  --muted-foreground: #b0afc2;
+  --border: #3a3447;
+
+  --favori: #ec8d7a;
+  --ecologie: #80c39a;
+  --ecologie-fond: #1e352a;
+  --destructive: #f2938b;
+
+  --barre: #292333;
+  --barre-texte: #b0afc2;
+  --onglet-actif: #edbc58;
+
+  --shadow-color: 0 0% 0%;
+  --overlay: oklch(0 0 0 / 0.6);
+}
+
+/* ==========================================================================
+   2. RÔLES
+   ========================================================================== */
+:root {
+  /* Surfaces */
+  --surface: var(--card);
+  --surface-raised: var(--card);
+  --surface-sunken: color-mix(in oklch, var(--secondary) 55%, var(--background));
+
+  /* Texte et bordures */
+  --subtle-foreground: var(--muted-foreground);
+  --border-strong: color-mix(in oklch, var(--border), var(--foreground) 18%);
+  --ring: var(--primary);
+
+  /* Principal */
+  --primary-hover: color-mix(in oklch, var(--primary), black 15%);
+  --primary-soft: var(--secondary);
+  --primary-soft-foreground: var(--secondary-foreground);
+
+  /* Action */
+  --action: var(--primary);
+  --action-hover: var(--primary-hover);
+  --action-foreground: var(--primary-foreground);
+  --action-soft: var(--secondary);
+  --action-soft-foreground: var(--secondary-foreground);
+
+  /* Transports urbains */
+  --transit: oklch(0.52 0.13 var(--transit-hue));
+  --transit-soft: oklch(0.96 0.025 var(--transit-hue));
+  --transit-foreground: oklch(0.38 0.11 var(--transit-hue));
+
+  /* États */
+  --success: var(--ecologie);
+  --success-soft: var(--ecologie-fond);
+  --warning: oklch(0.52 0.13 var(--warning-hue)); /* AA sur surface et warning-soft */
+  --warning-soft: oklch(0.97 0.04 var(--warning-hue));
+  --danger: var(--destructive);
+  --danger-soft: color-mix(in oklch, var(--destructive) 10%, var(--card));
+  --info: oklch(0.55 0.12 var(--info-hue));
+  --info-soft: oklch(0.96 0.025 var(--info-hue));
+  --eco: var(--ecologie);
+  --eco-soft: var(--ecologie-fond);
+
+  /* Catégories : une seule couleur par défaut, distinction par icône et nom.
+     Chaque catégorie garde ses tokens pour pouvoir s'en écarter. */
+  --cat-enfants: var(--primary);
+  --cat-enfants-soft: var(--secondary);
+  --cat-enfants-foreground: var(--secondary-foreground);
+  --cat-nature: var(--primary);
+  --cat-nature-soft: var(--secondary);
+  --cat-nature-foreground: var(--secondary-foreground);
+  --cat-parcs: var(--primary);
+  --cat-parcs-soft: var(--secondary);
+  --cat-parcs-foreground: var(--secondary-foreground);
+  --cat-patrimoine: var(--primary);
+  --cat-patrimoine-soft: var(--secondary);
+  --cat-patrimoine-foreground: var(--secondary-foreground);
+  --cat-culture: var(--primary);
+  --cat-culture-soft: var(--secondary);
+  --cat-culture-foreground: var(--secondary-foreground);
+
+  /* Carte : proche = clair, loin = foncé */
+  --map-user: var(--primary);
+  --map-station: color-mix(in oklch, var(--primary), var(--foreground) 35%);
+  --map-route: color-mix(in oklch, var(--primary), var(--background) 25%);
+  --map-halo: var(--card);
+  --map-land: color-mix(in oklch, var(--border) 45%, var(--background));
+  --map-road: var(--card);
+  --map-water: oklch(0.9 0.04 var(--transit-hue));
+  --map-green: var(--ecologie-fond);
+  --map-time-1: color-mix(in oklch, var(--primary), var(--background) 50%);
+  --map-time-2: color-mix(in oklch, var(--primary), var(--background) 22%);
+  --map-time-3: var(--primary);
+  --map-time-4: color-mix(in oklch, var(--primary), var(--foreground) 45%);
+
+  /* Ombres */
+  --elev-xs: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --elev-card:
+    0 1px 2px hsl(var(--shadow-color) / 0.05), 0 4px 12px hsl(var(--shadow-color) / 0.06);
+  --elev-float: 0 8px 24px hsl(var(--shadow-color) / 0.12);
+  --elev-sheet: 0 -8px 32px hsl(var(--shadow-color) / 0.14);
+
+  /* Superpositions */
+  --z-map: 0;
+  --z-sheet: 20;
+  --z-header: 30;
+  --z-overlay: 40;
+  --z-toast: 50;
+}
+
+/* Rôles qui ne se déduisent pas de la même façon en sombre */
+.dark {
+  --surface-raised: color-mix(in oklch, var(--card), var(--foreground) 5%);
+  --surface-sunken: color-mix(in oklch, var(--background), black 25%);
+  --primary-hover: color-mix(in oklch, var(--primary), white 15%);
+
+  --transit: oklch(0.72 0.12 var(--transit-hue));
+  --transit-soft: oklch(0.28 0.05 var(--transit-hue));
+  --transit-foreground: oklch(0.85 0.07 var(--transit-hue));
+
+  --warning: oklch(0.8 0.14 var(--warning-hue));
+  --warning-soft: oklch(0.3 0.05 var(--warning-hue));
+  --danger-soft: color-mix(in oklch, var(--destructive) 14%, var(--card));
+  --info: oklch(0.72 0.11 var(--info-hue));
+  --info-soft: oklch(0.28 0.05 var(--info-hue));
+
+  --map-station: color-mix(in oklch, var(--primary), var(--foreground) 45%);
+  --map-land: var(--card);
+  --map-road: var(--border);
+  --map-water: oklch(0.32 0.045 var(--transit-hue));
+  --map-time-1: color-mix(in oklch, var(--primary), var(--foreground) 55%);
+  --map-time-2: var(--primary);
+  --map-time-3: color-mix(in oklch, var(--primary), var(--background) 25%);
+  --map-time-4: color-mix(in oklch, var(--primary), var(--background) 45%);
+
+  --elev-xs: 0 1px 2px hsl(var(--shadow-color) / 0.3);
+  --elev-card: 0 1px 2px hsl(var(--shadow-color) / 0.3), 0 4px 12px hsl(var(--shadow-color) / 0.25);
+  --elev-float: 0 8px 24px hsl(var(--shadow-color) / 0.45);
+  --elev-sheet: 0 -8px 32px hsl(var(--shadow-color) / 0.5);
+}
+
+/* ==========================================================================
+   3. COMPOSANTS
+   ========================================================================== */
+:root {
+  /* Barre du bas */
+  --nav-bg: var(--barre);
+  --nav-foreground: var(--primary-foreground);
+  --nav-muted: var(--barre-texte);
+  --nav-indicator: var(--onglet-actif);
+  --nav-indicator-foreground: var(--accent-foreground);
+
+  /* En-têtes pleins */
+  --hero-bg: var(--primary);
+  --hero-foreground: var(--primary-foreground);
+  --hero-muted: var(--barre-texte);
+  --hero-tile: color-mix(in oklch, var(--hero-foreground) 13%, transparent);
+
+  /* Bouton « Voir la sortie » : ocre, à la différence de l'achat du billet */
+  --sortie-bg: var(--accent);
+  --sortie-hover: color-mix(in oklch, var(--accent), black 8%);
+  --sortie-foreground: var(--accent-foreground);
+
+  /* Récompenses et favoris */
+  --reward: var(--accent);
+  --reward-soft: var(--accent);
+  --reward-foreground: var(--accent-foreground);
+  --favorite: var(--favori);
+  --favorite-on-primary: var(--primary-foreground);
+}
+
+.dark {
+  --nav-foreground: var(--foreground);
+  --hero-bg: var(--secondary);
+  --hero-foreground: var(--secondary-foreground);
+  --hero-muted: var(--muted-foreground);
+  --hero-tile: color-mix(in oklch, var(--hero-foreground) 10%, transparent);
+  --sortie-hover: color-mix(in oklch, var(--accent), white 12%);
+  --favorite-on-primary: var(--foreground);
+}
+
+/* ==========================================================================
+   4. PONT TAILWIND
+   ========================================================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-overlay: var(--overlay);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-foreground: var(--action-foreground);
+  --color-action-soft: var(--action-soft);
+  --color-action-soft-foreground: var(--action-soft-foreground);
+
+  --color-transit: var(--transit);
+  --color-transit-soft: var(--transit-soft);
+  --color-transit-foreground: var(--transit-foreground);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-eco: var(--eco);
+  --color-eco-soft: var(--eco-soft);
+
+  --color-cat-enfants: var(--cat-enfants);
+  --color-cat-enfants-soft: var(--cat-enfants-soft);
+  --color-cat-enfants-foreground: var(--cat-enfants-foreground);
+  --color-cat-nature: var(--cat-nature);
+  --color-cat-nature-soft: var(--cat-nature-soft);
+  --color-cat-nature-foreground: var(--cat-nature-foreground);
+  --color-cat-parcs: var(--cat-parcs);
+  --color-cat-parcs-soft: var(--cat-parcs-soft);
+  --color-cat-parcs-foreground: var(--cat-parcs-foreground);
+  --color-cat-patrimoine: var(--cat-patrimoine);
+  --color-cat-patrimoine-soft: var(--cat-patrimoine-soft);
+  --color-cat-patrimoine-foreground: var(--cat-patrimoine-foreground);
+  --color-cat-culture: var(--cat-culture);
+  --color-cat-culture-soft: var(--cat-culture-soft);
+  --color-cat-culture-foreground: var(--cat-culture-foreground);
+
+  --color-map-user: var(--map-user);
+  --color-map-station: var(--map-station);
+  --color-map-route: var(--map-route);
+  --color-map-halo: var(--map-halo);
+  --color-map-land: var(--map-land);
+  --color-map-road: var(--map-road);
+  --color-map-water: var(--map-water);
+  --color-map-green: var(--map-green);
+  --color-map-time-1: var(--map-time-1);
+  --color-map-time-2: var(--map-time-2);
+  --color-map-time-3: var(--map-time-3);
+  --color-map-time-4: var(--map-time-4);
+
+  --color-nav-bg: var(--nav-bg);
+  --color-nav-foreground: var(--nav-foreground);
+  --color-nav-muted: var(--nav-muted);
+  --color-nav-indicator: var(--nav-indicator);
+  --color-nav-indicator-foreground: var(--nav-indicator-foreground);
+  --color-hero-bg: var(--hero-bg);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-tile: var(--hero-tile);
+  --color-sortie-bg: var(--sortie-bg);
+  --color-sortie-hover: var(--sortie-hover);
+  --color-sortie-foreground: var(--sortie-foreground);
+  --color-reward: var(--reward);
+  --color-reward-soft: var(--reward-soft);
+  --color-reward-foreground: var(--reward-foreground);
+  --color-favorite: var(--favorite);
+  --color-favorite-on-primary: var(--favorite-on-primary);
+
+  --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-family), ui-monospace, monospace;
+
+  --text-2xs: calc(0.75rem * var(--echelle-texte));
+  --text-xs: calc(0.8125rem * var(--echelle-texte));
+  --text-sm: calc(0.875rem * var(--echelle-texte));
+  --text-md: calc(0.9375rem * var(--echelle-texte));
+  --text-base: calc(1rem * var(--echelle-texte));
+  --text-lg: calc(1.125rem * var(--echelle-texte));
+  --text-xl: calc(1.25rem * var(--echelle-texte));
+  --text-2xl: calc(1.375rem * var(--echelle-texte));
+  --text-3xl: calc(2rem * var(--echelle-texte));
+
+  --radius-xs: calc(var(--radius-base) * 0.35);
+  --radius-sm: calc(var(--radius-base) * 0.55);
+  --radius-md: calc(var(--radius-base) * 0.75);
+  --radius-lg: var(--radius-base);
+  --radius-xl: calc(var(--radius-base) * 1.4);
+  --radius-2xl: calc(var(--radius-base) * 1.85);
+  --radius-pill: 9999px;
+
+  --shadow-xs: var(--elev-xs);
+  --shadow-card: var(--elev-card);
+  --shadow-float: var(--elev-float);
+  --shadow-sheet: var(--elev-sheet);
+
+  --spacing-touch: var(--taille-tactile);
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --animate-fade-in: fade-in calc(200ms * var(--motion-speed)) var(--ease-soft) both;
+  --animate-slide-up: slide-up calc(320ms * var(--motion-speed)) var(--ease-soft) both;
+  --animate-pulse-dot: pulse-dot calc(1800ms * var(--motion-speed)) ease-out infinite;
+  --animate-skeleton: skeleton calc(1400ms * var(--motion-speed)) ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--map-user) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 14px color-mix(in oklch, var(--map-user) 0%, transparent);
+  }
+}
+@keyframes skeleton {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ==========================================================================
+   5. BASE
+   ========================================================================== */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .lucide {
+    stroke-width: var(--icone-trait);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-speed: 0;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Chiffres alignés : horaires, durées, distances, prix */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Zones sûres des téléphones à encoche */
+@utility safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Rangées de filtres horizontales */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Superpositions */
+@utility z-map {
+  z-index: var(--z-map);
+}
+@utility z-sheet {
+  z-index: var(--z-sheet);
+}
+@utility z-header {
+  z-index: var(--z-header);
+}
+@utility z-overlay {
+  z-index: var(--z-overlay);
+}
+@utility z-toast {
+  z-index: var(--z-toast);
+}

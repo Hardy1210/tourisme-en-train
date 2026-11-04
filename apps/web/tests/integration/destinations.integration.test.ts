@@ -31,11 +31,11 @@ beforeAll(async () => {
 });
 
 describe('/api/destinations', () => {
-  it('Beaune dans la tranche <30 (critère de la fiche E08), cache de 300 s', async () => {
+  it('Beaune dans la tranche <=30 (critère de la fiche E08), cache de 300 s', async () => {
     const reponse = await appeler(route, `/api/destinations?gare=${dijon}&date=${HIVER}`);
     expect(reponse.cache).toBe('public, max-age=300');
     const beaune = ville(schemaReponseDestinations.parse(reponse.corps).destinations, 'Beaune');
-    expect(beaune).toMatchObject({ dureeMin: 22, trancheTemps: '<30', nbTrains: 2 });
+    expect(beaune).toMatchObject({ dureeMin: 22, trancheTemps: '<=30', nbTrains: 2 });
   });
 
   it('une seule carte « Paris » : Gare de Lyon en tête (2 trains), Bercy à côté (1 train)', async () => {

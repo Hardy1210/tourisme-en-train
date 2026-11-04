@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D055 légende des temps de trajet |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -528,3 +528,32 @@
 - **Raison :** l'`id` d'un lieu est stable d'un chargement à l'autre (mise à jour par source et identifiant, `04` § 4.4), mais **pas** quand la base est recréée (production des SR, données figées de E16, `pnpm db:reinitialiser`), ni pour un lieu qui disparaît de sa source puis revient ; un lieu devenu doublon renverrait `404`. Question de Hardy (liens partagés, favoris).
 - **Écarté :** garder l'`id` numérique ; clé construite par l'application (deux endroits pour une même règle) ; identifiant interne de la gare.
 - **Impact :** migration (`lieu.cle`), `03` § 3.6, `05` § 1.8 bis, § 3.2 → 3.10, `GLOSSAIRE` (clé de lieu, code UIC), `features/gares`, `features/lieux`, `features/destinations`, échantillon, fiches E08 (modifié après coup) et E09.
+
+## D053 — Dépendances de l'interface : composants écrits à la main, sans l'installation automatique de shadcn
+- **Date :** 04/11/2026
+- **En clair :** on écrit nos composants nous-mêmes sur des briques accessibles (Radix), en suivant la façon de faire de shadcn/ui, sans son outil d'installation qui écraserait notre design system.
+- **Décision :** `lucide-react` (icônes), `radix-ui` (paquet unique : comportement et accessibilité), `vaul` (feuille glissante), `@tanstack/react-query` (données client), `clsx` + `tailwind-merge` (fonction `cn`) et `class-variance-authority` (variantes des composants). Pas de `npx shadcn` ; pas de `next-themes` : si le mode sombre (P1) est fait, ce sera par un petit script.
+- **Raison :** l'outil de shadcn réécrit `globals.css`, et son `--accent` entre en conflit avec notre palette (règle 1). React 19 est accepté par les sept paquets (vérifié le 04/11).
+- **Écarté :** `npx shadcn init` ; `next-themes` (une dépendance pour une bascule de classe, en P1).
+- **Impact :** `CLAUDE.md` § 4, `01` § 3, `06` § 2, fiche E10.
+
+## D054 — Design system centralisé en 3 niveaux, palette et navigation de la maquette mobile v3
+- **Date :** 04/11/2026
+- **En clair :** tout l'aspect de l'application (couleurs, tailles, police, arrondis, animations) se règle dans un seul fichier, pour pouvoir adapter le produit à un client ; on reprend les couleurs et les 4 onglets de la maquette de Hardy.
+- **Décision :**
+  1. **`globals.css` en 3 niveaux :** réglages → rôles → composants. Une couleur se règle sur une ligne en clair et une en sombre ; une échelle (`--echelle-texte`) agrandit tous les textes. Le chargement d'une police reste dans `app/polices.ts` (imposé par `next/font`).
+  2. **Palette prune et ocre** de `tokens-v3.css`, sans teinte de marque calculée. Les noms de tokens espagnols passent en français.
+  3. **`--action` reste prune** (« Acheter mon billet ») ; « Voir la sortie » a son propre token de composant, ocre (`--sortie-*`). Ainsi, l'écran reste celui que Hardy a validé, sans couleur en dur.
+  4. **Catégories en une seule couleur** par défaut, distinguées par l'icône et le nom ; chacune garde ses tokens.
+  5. **Navigation : Explorer, Lieux, Mon espace, Menu.** Lieux montre des données réelles (nouvelle route à prévoir). Mon espace, favoris et récompenses sont **fictifs, marqués « Aperçu · bientôt »** : aucune fonctionnalité réelle derrière en v1.
+- **Raison :** Hardy veut pouvoir tout changer à un seul endroit, dans l'optique de proposer le produit à une région ou à la SNCF. Il a jugé les couleurs de sa maquette bonnes et a demandé une solution aux contradictions plutôt qu'un changement d'aspect.
+- **Écarté :** `--action` ocre (aurait changé « Acheter mon billet ») ; sombre calculé depuis le clair (moins lisible) ; deux onglets au lieu de quatre.
+- **Impact :** `apps/web/src/styles/globals.css`, `06` § 2 et § 3, fiche E10, `GLOSSAIRE`, `A-FAIRE`.
+
+## D055 — Légende des temps de trajet : 30, 60, 90 min, limite comprise
+- **Date :** 04/11/2026
+- **En clair :** sur la carte, quatre couleurs : jusqu'à 30 min, 1 h, 1 h 30, puis plus de 1 h 30 ; un train de 60 min tombe dans « jusqu'à 1 h », comme le lit l'utilisateur.
+- **Décision :** `durees.tranchesTempsMin` = 30, 60, 90 ; `trancheTemps` compare avec `<=` et renvoie `<=30`, `<=60`, `<=90` ou `>90`. La dernière tranche couvre tout le reste, jusqu'à la limite de 3 h du filtre (`trainMaxOptionsMin`) : Paris (94 min depuis Dijon) a donc une couleur. La tranche ne filtre rien ; au-delà de 3 h, c'est `dureeMax` qui écarte la destination de la liste.
+- **Raison :** pour une sortie à la journée, surtout avec des enfants, 1 h 05 et 2 h de train ne demandent pas le même effort. La répartition des liaisons ne départage pas (31, 25, 17, 28 % contre 31, 25, 28, 17 % avec 2 h). Choix de Hardy.
+- **Écarté :** 30, 60, 120 (premier choix de Claude Code, contraire à la maquette) ; 5 tranches (trop de couleurs à distinguer).
+- **Impact :** `config/parametres.json`, `lib/dates/tranche-temps`, tests, `04` § 2 et § 6, `05` § 3.4, `GLOSSAIRE`, fiche E08 (modifié après coup).

@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.13 · **Date** 03/11/2026
+> **Version** 1.14 · **Date** 04/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -33,6 +33,7 @@
 | **Peu de lieux** | Destination de la région avec moins de `destinations.lieuxMinEnTete` (3) lieux à pied des catégories demandées : en fin de liste, jamais supprimée (D050) | `peuDeLieux` | — | Sans lieu (0 : retirée par le filtre des envies) |
 | **Gare en tête** | Gare d'une destination qui a le plus de trains ce jour-là (à égalité, la plus rapide) : ses valeurs remplissent la carte de destination ; les autres gares de la ville sont listées à côté (D047) | `gare` (dans `Destination`), `autresGares` | — | Gare d'arrivée |
 | **Lieu** | Point d'intérêt : musée, château, parc, aire de jeux, festival… | `Lieu`, `lieuId` | table `lieu`, `lieu_id` | « POI » (terme interdit dans le code) |
+| **Mon espace** | Onglet montrant favoris et récompenses, **fictif en v1**, marqué « Aperçu · bientôt » (D054) | `MonEspace` | — | Compte utilisateur |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
 | **Sous-catégorie** | Précision libre dans une catégorie (ex. « aire de jeux », « château ») | `sousCategorie` | `sous_categorie` | — |
 | **Doublon** | Même lieu publié par deux sources (DATAtourisme et OSM) : le lieu de la source prioritaire est gardé, l'autre pointe vers lui (D043) | `doublonDe` | `lieu.doublon_de` | Site ; trains en jumelage |
@@ -72,7 +73,7 @@
 | **Impact** | Regroupe le CO₂ et le prix estimé d'un trajet | `Impact` | — | — |
 | **CO₂ économisé** | Émissions voiture − émissions train pour le même trajet | `co2EconomiseKg` | — | — |
 | **Prix estimé** | Fourchette de prix calculée au kilomètre, jamais un prix réel | `prixEstime` | — | Prix |
-| **Tranche de temps** | Classe de durée pour colorer la carte : `<30`, `<60`, `<120`, `≥120` min | `trancheTemps` | — | — |
+| **Tranche de temps** | Classe de durée pour colorer la carte : `<=30`, `<=60`, `<=90`, `>90` min (D055) | `trancheTemps` | — | — |
 | **Source de données** | Un jeu de données ouvert utilisé (gares, GTFS, DATAtourisme…) | `SourceDonnees` | table `source_donnees` | — |
 | **Exécution ETL** | Un lancement du traitement pour une source, avec son résultat | `ExecutionEtl` | table `execution_etl` | — |
 | **Statut d'exécution** | Résultat d'une exécution ETL : `EN_COURS`, `SUCCES`, `ECHEC`, `IGNORE` (fichier inchangé) | `StatutExecution` | `statut` | — |
@@ -134,3 +135,4 @@
 | 03/11/2026 | 1.11 | Destination = une ville ; gare en tête (E08) — D047 |
 | 03/11/2026 | 1.12 | Gare hors de la ville, peu de lieux — D049, D050 |
 | 03/11/2026 | 1.13 | Code UIC identifiant public, clé de lieu — D052 |
+| 04/11/2026 | 1.14 | Mon espace — D054 ; tranches de temps — D055 |
