@@ -10,6 +10,22 @@
 UPDATE lieu SET doublon_de = NULL, site_de = NULL
 WHERE doublon_de IS NOT NULL OR site_de IS NOT NULL;
 
+-- @fiches_ville
+-- Fiche décrivant une ville entière (« Ville de Decize », « Pontarlier ») : gardée, jamais listée (D057).
+WITH noms AS (
+  SELECT l.id,
+         trim(regexp_replace(lower(unaccent(l.nom)), '[^a-z0-9]+', ' ', 'g')) AS nom_comparable,
+         trim(regexp_replace(lower(unaccent(coalesce(c.nom, ''))), '[^a-z0-9]+', ' ', 'g')) AS commune_comparable
+  FROM lieu l LEFT JOIN commune c ON c.code_insee = l.code_insee
+)
+UPDATE lieu l SET fiche_ville =
+  l.source = ANY(:sources_fiche_ville::text[])
+  AND NOT n.nom_comparable = ANY(:exceptions_fiche_ville::text[])
+  AND (n.nom_comparable = n.commune_comparable
+       OR EXISTS (SELECT 1 FROM unnest(:prefixes_fiche_ville::text[]) p
+                  WHERE n.nom_comparable LIKE p || ' %'))
+FROM noms n WHERE n.id = l.id;
+
 -- @noms
 -- Nom comparable : minuscules, sans accents ni ponctuation (« Le Scènacle » = « Le Scénacle »).
 -- Générique : le nom n'est que la sous-catégorie (« Aire de jeux »), jamais fusionné de loin.
@@ -20,7 +36,8 @@ SELECT l.id, l.source, l.categorie, l.sous_categorie, l.geom,
        trim(regexp_replace(lower(unaccent(l.nom)), '[^a-z0-9]+', ' ', 'g'))
          = trim(regexp_replace(lower(unaccent(coalesce(l.sous_categorie, ''))), '[^a-z0-9]+', ' ', 'g'))
          AS generique
-FROM lieu l;
+FROM lieu l
+WHERE NOT l.fiche_ville;
 
 -- @index_noms
 CREATE INDEX ON tmp_nom USING gist (geom);
@@ -179,7 +196,7 @@ SELECT l.id, g.id,
 FROM lieu l
 JOIN gare g
   ON ST_DWithin(coalesce(l.trace::geography, l.geom::geography), g.geom, :rayon_m::float8 / :coef_detour::float8)
-WHERE l.doublon_de IS NULL AND l.site_de IS NULL;
+WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville;
 
 -- @vider_gare_stats
 DELETE FROM gare_stats;

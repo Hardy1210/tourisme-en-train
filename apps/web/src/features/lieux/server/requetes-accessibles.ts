@@ -3,7 +3,16 @@ import { CATEGORIES, schemaCategorie, type Categorie } from '@tourisme/commun';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 
+import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
+
+const { sousCategoriesRetirees, sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
+
+const liste = (valeurs: readonly string[]) =>
+  sql.join(
+    valeurs.map((v) => sql`${v}`),
+    sql`, `,
+  );
 
 const schemaLigne = z.object({
   cle: z.string(),
@@ -33,6 +42,7 @@ export type LieuAccessibleBrut = z.infer<typeof schemaLigne>;
  * Lieux à pied d'une gare atteinte en train direct, le temps total (train + marche) le plus court
  * d'abord (D056). Un lieu proche de plusieurs gares apparaît une fois, par la plus rapide. Les lieux
  * de la ville de départ sont écartés : à pied de la gare de départ, ou à côté d'une gare de sa commune.
+ * Piscines ordinaires et aires de jeux sans nom propre sont réservées à « À deux pas » et à la fiche (D057).
  */
 export async function lieuxAccessibles(options: {
   gareId: number;
@@ -61,6 +71,9 @@ export async function lieuxAccessibles(options: {
         AND g.code_insee IS DISTINCT FROM ${options.codeInsee}
         AND l.doublon_de IS NULL AND l.site_de IS NULL
         AND l.categorie IN (${categories})
+        AND coalesce(l.sous_categorie, '') NOT IN (${liste(sousCategoriesRetirees)})
+        AND NOT (coalesce(l.sous_categorie, '') IN (${liste(sousCategoriesNomPropreRequis)})
+                 AND lower(unaccent(l.nom)) = lower(unaccent(l.sous_categorie)))
         AND NOT EXISTS (SELECT 1 FROM lieu_gare depart
                         WHERE depart.lieu_id = lg.lieu_id AND depart.gare_id = ${options.gareId})
       ORDER BY lg.lieu_id, ld.duree_min + lg.duree_marche_min, g.uic

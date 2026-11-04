@@ -1,11 +1,14 @@
 // /api/lieux (onglet Lieux, D056) sur l'échantillon : section E11 de db/echantillon/echantillon.sql.
 import { beforeAll, describe, expect, it } from 'vitest';
 
-import { schemaReponseLieuxAccessibles } from '@/features/lieux/schemas';
+import { schemaReponseAutour, schemaReponseLieuxAccessibles } from '@/features/lieux/schemas';
 
 import { appeler, erreurDe, type Route } from './outils-api';
 
 let route: Route;
+let autour: Route;
+let lieuxGare: Route;
+let fiche: Route;
 const DIJON = 'EX000001';
 const PORTE_NEUVE = 'EX000023';
 const HIVER = '2026-11-18';
@@ -20,6 +23,9 @@ const cle = (identifiant: string) => `echantillon-${identifiant}`;
 
 beforeAll(async () => {
   route = await import('@/app/api/lieux/route');
+  autour = await import('@/app/api/autour/route');
+  lieuxGare = await import('@/app/api/destinations/[uic]/lieux/route');
+  fiche = await import('@/app/api/lieux/[cle]/route');
 });
 
 describe('/api/lieux', () => {
@@ -81,6 +87,40 @@ describe('/api/lieux', () => {
     const { total } = await lire(DIJON);
     const loin = await lire(DIJON, '&page=99');
     expect(loin).toMatchObject({ lieux: [], total, pageSuivante: null });
+  });
+
+  it('retire de l’onglet les piscines ordinaires et les aires de jeux sans nom propre', async () => {
+    const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
+    expect(cles).not.toContain(cle('ECH_L43'));
+    expect(cles).not.toContain(cle('ECH_L44'));
+  });
+
+  it('garde les aires de jeux nommées et les centres aquatiques', async () => {
+    const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
+    expect(cles).toContain(cle('ECH_L45'));
+    expect(cles).toContain(cle('ECH_L46'));
+  });
+
+  it('garde ces lieux dans « À deux pas de vous », sans la fiche de ville', async () => {
+    const reponse = await appeler(autour, '/api/autour?lat=46.3&lon=6.9');
+    const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L43'), cle('ECH_L44')]));
+    expect(cles).not.toContain(cle('ECH_L42'));
+  });
+
+  it('garde ces lieux sur la fiche destination', async () => {
+    const reponse = await appeler(lieuxGare, '/api/destinations/EX000005/lieux', {
+      uic: 'EX000005',
+    });
+    const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L43'), cle('ECH_L44')]));
+  });
+
+  it('garde une fiche de ville accessible par son lien, sans la lister', async () => {
+    const directe = await appeler(fiche, `/api/lieux/${cle('ECH_L42')}`, { cle: cle('ECH_L42') });
+    expect(directe.statut).toBe(200);
+    const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
+    expect(cles).not.toContain(cle('ECH_L42'));
   });
 
   it.each([

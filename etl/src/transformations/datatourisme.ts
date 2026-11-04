@@ -25,6 +25,9 @@ export interface LigneDatatourisme {
 /** Clé des règles DATAtourisme dans `categories.csv`. */
 export const CLE_DATATOURISME = 'categorie';
 
+/** Classe calculée : le lieu est à la fois piscine et centre de balnéo. */
+export const CLASSE_PISCINE_BIEN_ETRE = 'SwimmingPool+BalneotherapyCentre';
+
 /** « …/core#Museum|http://schema.org/Product » → classes courtes, sans doublon (`Museum`, `Product`). */
 export function classesDe(categories: string): Etiquette[] {
   const classes = new Set(
@@ -33,6 +36,10 @@ export function classesDe(categories: string): Etiquette[] {
       .map((c) => c.trim().replace(/^.*[#/]/, ''))
       .filter((c) => c !== ''),
   );
+  // Une règle sur Balnéo seul ferait entrer spas d'hôtel et cabinets de massage : il faut les deux (D057).
+  if (classes.has('SwimmingPool') && classes.has('BalneotherapyCentre')) {
+    classes.add(CLASSE_PISCINE_BIEN_ETRE);
+  }
   return [...classes].map((c) => [CLE_DATATOURISME, c] as const);
 }
 

@@ -9,7 +9,7 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
@@ -565,3 +565,24 @@
 - **Raison :** depuis Dijon, près de 1 000 lieux sont atteignables : la limite de 40 de la maquette en rendrait la plupart inaccessibles. Validé par Hardy.
 - **Écarté :** assembler les lieux gare par gare côté interface (une requête par destination, doublons à gérer dans l'écran).
 - **Impact :** `05`, `config/parametres.json`, `04` § 2, `features/lieux`, échantillon, fiche E11, `GLOSSAIRE`, `A-FAIRE`.
+
+## D057 — Ce qui est listé : fiches de ville, piscines, aires de jeux, gares classées
+- **Date :** 04/11/2026
+- **En clair :** une fiche qui décrit une ville entière ou une gare n'est pas une sortie ; une piscine municipale ou une aire de jeux sans nom ne vaut pas un trajet en train, mais reste utile une fois sur place.
+- **Décision :**
+  1. **Fiches de ville** (DATAtourisme, « Ville de … » ou nom de la commune) : colonne `lieu.fiche_ville`, calculée par `pnpm etl rattachements` depuis `lieux.fichesVille` ; gardées en base, ouvertes par leur lien, **jamais listées ni comptées**, jamais fusionnées avec un autre lieu. Exceptions : « Village du Livre », « Lac des Rouges-Truites ». 57 fiches.
+  2. **Onglet Lieux seulement** (`lieux.ongletLieux`) : retire les piscines ordinaires et les aires de jeux dont le nom n'est que « Aire de jeux ». Elles restent dans « À deux pas de vous » et sur la fiche destination, parce que les familles sont notre point fort.
+  3. **Piscines thermales ou de balnéo** : classe calculée `SwimmingPool+BalneotherapyCentre` → « centre aquatique et bien-être », gardées dans l'onglet. 12 lieux.
+  4. **`building=train_station`** : écarté (exclusion forte), même classé monument historique. 2 lieux.
+- **Raison :** mesures du 04/11 et choix de Hardy. Un essai a écarté une règle sur `BalneotherapyCentre` seul : sur 137 fiches brutes de ce type, elle aurait fait entrer plus de 100 spas d'hôtel et cabinets de massage.
+- **Résultat (Dijon, 10/11) :** onglet Lieux de 867 à 697 lieux ; enfants de 181 à 18.
+- **Écarté :** supprimer ces lieux de la base ; afficher les labels (après le P0, `A-FAIRE`).
+- **Impact :** migration `0012`, `03` § 3.6, `04` § 2, `05` § 3.3 et 3.6 bis, `GLOSSAIRE`, `A-FAIRE`, `categories.csv`, `parametres.json`, échantillon.
+
+## D058 — Aucune position dans les liens : `?gare=<uic>` à la place de `?lat&lon`
+- **Date :** 04/11/2026
+- **En clair :** un lien partagé ne doit jamais révéler où se trouve la personne qui l'a envoyé.
+- **Décision :** l'état de l'écran Explorer dans l'URL utilise `?gare=<uic>` (`date`, `categories`, `rayon`, `dureeMax` inchangés), jamais `lat` ni `lon`. **La gare n'y est écrite que si l'utilisateur la choisit** (recherche, « Changer de gare ») : la gare la plus proche, calculée depuis sa position, en dit trop sur l'endroit où il est. Sans `gare`, l'écran redemande la position.
+- **Raison :** règle 5 ; un lien se copie, s'envoie et finit dans des historiques. Demandé par Hardy.
+- **Écarté :** `?lat&lon` (fiche E11 d'origine) ; écrire d'office la gare la plus proche.
+- **Impact :** fiche E11, `06`.

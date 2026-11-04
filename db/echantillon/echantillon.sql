@@ -298,4 +298,21 @@ FROM (VALUES
 JOIN lieu l ON l.id_source = r.id_source
 JOIN gare g ON g.uic = r.uic;
 
+-- D057 : fiche de ville (jamais listée) et lieux retirés de l'onglet Lieux seulement, au même point.
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom, fiche_ville)
+SELECT 'echantillon', l.id_source, l.nom, l.categorie, l.sous_categorie, 'Donnée d''exemple.', '71076',
+       ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography, l.fiche
+FROM (VALUES
+  ('ECH_L42', 'Exemple - Ville de Chalon', 'patrimoine', 'patrimoine urbain', true),
+  ('ECH_L43', 'Exemple - Piscine municipale', 'enfants', 'piscine', false),
+  ('ECH_L44', 'Aire de jeux', 'enfants', 'aire de jeux', false),
+  ('ECH_L45', 'Exemple - Aire de jeux des Tilleuls', 'enfants', 'aire de jeux', false),
+  ('ECH_L46', 'Exemple - Espace aquatique', 'enfants', 'centre aquatique et bien-être', false)
+) AS l (id_source, nom, categorie, sous_categorie, fiche);
+
+INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
+SELECT l.id, g.id, 200, 3
+FROM lieu l, gare g
+WHERE l.id_source IN ('ECH_L43', 'ECH_L44', 'ECH_L45', 'ECH_L46') AND g.uic = 'EX000005';
+
 COMMIT;

@@ -42,7 +42,7 @@ export async function lieuxAutour(options: {
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            ST_Distance(l.geom, ${point}) AS vol_oiseau_m, count(*) OVER () AS total
     FROM lieu l
-    WHERE l.doublon_de IS NULL AND l.site_de IS NULL
+    WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
       AND l.categorie IN (${categories})
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})
     ORDER BY vol_oiseau_m, l.cle

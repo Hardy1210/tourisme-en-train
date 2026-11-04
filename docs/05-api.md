@@ -176,7 +176,7 @@ Onglet Lieux (D056).
 ```
 - **Tri :** temps total (train + marche), le plus court d'abord. `distanceM` et `dureeMarcheMin` : depuis la gare d'arrivée (`lieu_gare`).
 - **Un lieu proche de plusieurs gares** apparaît une fois, par celle au temps total le plus court.
-- **Lieux écartés :** à pied de la gare de départ, ou à côté d'une gare de la même commune.
+- **Lieux écartés :** à pied de la gare de départ, ou à côté d'une gare de la même commune ; piscines ordinaires et aires de jeux sans nom propre, seulement dans cette route (`lieux.ongletLieux`, D057). Une fiche de ville n'est listée dans aucune route (`lieu.fiche_ville`), mais `/api/lieux/[cle]` l'ouvre.
 - `parametres.limites.lieuxParPage` lieux par page. Page au-delà de la fin : `lieux` vide, `total` conservé. `404` si la gare est inconnue. Cache : `public, max-age=3600`.
 
 ### 3.7 `GET /api/lieux/[cle]`
@@ -313,4 +313,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 03/11/2026 | 1.10 | § 3.10 : champ `trajet` (CO₂ aller-retour, prix aller simple) — D051 |
 | 03/11/2026 | 1.9 | § 1.8 bis : identifiants publics stables (`uic`, `cle`) ; § 3.5 → 3.12 précisés après l'audit E09 (fiche destination, heures `Heure`, type d'impact le moins favorable, recherche inverse sans filtre ni cache, sources affichées) — D051, D052 |
 | 04/11/2026 | 1.11 | § 3.4 : tranches de temps `<=30`, `<=60`, `<=90`, `>90` — D055 |
-| 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056 |
+| 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |

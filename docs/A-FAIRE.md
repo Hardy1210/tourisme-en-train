@@ -20,6 +20,9 @@
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
+| **Badge de label sur la carte de destination** (Plus Beaux Villages, Petites cités de caractère, Art et histoire…) : chercher une liste officielle et vérifier Besançon, absente de DATAtourisme alors qu'elle aurait, de mémoire, le label Art et histoire | DATAtourisme ne couvre que quelques communes (mesure du 04/11, D057) ; laissé de côté par Hardy | Après le P0 (22/11) |
+| **Lieux « enfants » de l'onglet Lieux** : 18 depuis Dijon (181 avant D057), dont 7 aires de jeux nommées | Les aires génériques restent dans « À deux pas » et la fiche ; à regarder sur le vrai écran, vu l'importance des familles | Écran de l'onglet Lieux |
+
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
 | Quoi | Pour quelle étape | Déclencheur |

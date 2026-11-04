@@ -85,6 +85,13 @@
       "when": 1793707046455,
       "tag": "0011_lieu_cle",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793788924561,
+      "tag": "0012_lieu_fiche_ville",
+      "breakpoints": true
     }
   ]
 }

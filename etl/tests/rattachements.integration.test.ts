@@ -110,6 +110,77 @@ describe('rattachements — lieux à pied des gares (04 § 4.6, D043)', () => {
   });
 });
 
+describe('rattachements — fiches de ville (D057)', () => {
+  const marques = (client: pg.PoolClient) =>
+    lignes(client, 'SELECT id_source FROM lieu WHERE fiche_ville ORDER BY 1');
+
+  it('marque « Ville de … » et le nom de sa commune, venus de DATAtourisme', async () => {
+    const liste = await apres(
+      [
+        [
+          'V1',
+          'datatourisme',
+          'Ville de Test',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['V2', 'datatourisme', 'Dijon', 'patrimoine', 'site culturel', DIJON.lon, nord(300)],
+      ],
+      marques,
+    );
+    expect(liste.map((l) => l.id_source)).toEqual(['V1', 'V2']);
+  });
+
+  it('ne marque ni les exceptions, ni un autre nom, ni OpenStreetMap', async () => {
+    const liste = await apres(
+      [
+        [
+          'E1',
+          'datatourisme',
+          'Village du Livre',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['E2', 'datatourisme', 'Ville-Musée Test', 'culture', 'musée', DIJON.lon, nord(300)],
+        ['E3', 'osm', 'Dijon', 'nature', 'point de vue', DIJON.lon, nord(500)],
+      ],
+      marques,
+    );
+    expect(liste).toEqual([]);
+  });
+
+  it('une fiche de ville n’est ni rattachée à une gare, ni comptée, ni fusionnée avec un lieu', async () => {
+    const [etat] = await apres(
+      [
+        [
+          'V1',
+          'datatourisme',
+          'Ville de Test',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['L1', 'osm', 'Ville de Test', 'patrimoine', 'patrimoine urbain', DIJON.lon, nord(105)],
+      ],
+      (client) =>
+        lignes(
+          client,
+          `SELECT (SELECT count(*)::int FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+                   WHERE l.id_source = 'V1') AS liens_fiche,
+                  (SELECT count(*)::int FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+                   WHERE l.id_source = 'L1') > 0 AS lieu_rattache,
+                  (SELECT doublon_de FROM lieu WHERE id_source = 'L1') AS doublon`,
+        ),
+    );
+    expect(etat).toEqual({ liens_fiche: 0, lieu_rattache: true, doublon: null });
+  });
+});
+
 describe('rattachements — doublons entre sources', () => {
   const doublons = (client: pg.PoolClient) =>
     lignes(

@@ -37,7 +37,28 @@
   "lieux": {
     "descriptionMaxCaracteres": 500,
     "enLongueurOsm": ["waterway=canal"],
-    "raccordTronconsM": 1000
+    "raccordTronconsM": 1000,
+    "fichesVille": {
+      "sources": ["datatourisme"],
+      "prefixes": [
+        "ville de",
+        "ville d",
+        "village de",
+        "village d",
+        "village du",
+        "cite medievale",
+        "centre ancien",
+        "centre historique",
+        "vieille ville",
+        "vieux bourg",
+        "coeur de ville"
+      ],
+      "exceptions": ["village du livre", "lac des rouges truites"]
+    },
+    "ongletLieux": {
+      "sousCategoriesRetirees": ["piscine"],
+      "sousCategoriesNomPropreRequis": ["aire de jeux"]
+    }
   },
   "dedoublonnage": {
     "distanceM": 75,

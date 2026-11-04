@@ -59,7 +59,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "tranchesTempsMin": [30, 60, 90]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
-  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000 },
+  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
@@ -383,4 +383,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
 | 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |
 | 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |
-| 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 |
+| 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 ; `lieux.fichesVille`, `lieux.ongletLieux` — D057 |

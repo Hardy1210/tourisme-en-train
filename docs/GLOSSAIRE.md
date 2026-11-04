@@ -33,6 +33,7 @@
 | **Peu de lieux** | Destination de la région avec moins de `destinations.lieuxMinEnTete` (3) lieux à pied des catégories demandées : en fin de liste, jamais supprimée (D050) | `peuDeLieux` | — | Sans lieu (0 : retirée par le filtre des envies) |
 | **Gare en tête** | Gare d'une destination qui a le plus de trains ce jour-là (à égalité, la plus rapide) : ses valeurs remplissent la carte de destination ; les autres gares de la ville sont listées à côté (D047) | `gare` (dans `Destination`), `autresGares` | — | Gare d'arrivée |
 | **Lieu** | Point d'intérêt : musée, château, parc, aire de jeux, festival… | `Lieu`, `lieuId` | table `lieu`, `lieu_id` | « POI » (terme interdit dans le code) |
+| **Fiche de ville** | Fiche DATAtourisme décrivant une ville entière : gardée en base, jamais listée (D057) | `ficheVille` | `lieu.fiche_ville` | Lieu, label |
 | **Lieu accessible** | Lieu à pied d'une gare atteinte en train direct depuis la gare de départ (onglet Lieux, D056) | `lieuxAccessibles` | — | Lieu autour de l'utilisateur |
 | **Mon espace** | Onglet montrant favoris et récompenses, **fictif en v1**, marqué « Aperçu · bientôt » (D054) | `MonEspace` | — | Compte utilisateur |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
@@ -137,4 +138,4 @@
 | 03/11/2026 | 1.12 | Gare hors de la ville, peu de lieux — D049, D050 |
 | 03/11/2026 | 1.13 | Code UIC identifiant public, clé de lieu — D052 |
 | 04/11/2026 | 1.14 | Mon espace — D054 ; tranches de temps — D055 |
-| 04/11/2026 | 1.15 | Lieu accessible — D056 |
+| 04/11/2026 | 1.15 | Lieu accessible — D056 ; fiche de ville — D057 |

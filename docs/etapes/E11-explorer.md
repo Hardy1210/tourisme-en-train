@@ -26,7 +26,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 
 ## Tâches
 - [ ] `features/localisation/` : hook de position du navigateur (permission, erreurs, délai), repli vers la recherche de ville (`/api/geocodage`), hors région pilote.
-- [ ] **État des filtres dans l'URL** (`?lat&lon&date&categories&rayon&dureeMax`) : partageable, retour arrière fonctionnel.
+- [ ] **État des filtres dans l'URL** (`?gare&date&categories&rayon&dureeMax`, jamais de position, D058) : partageable, retour arrière fonctionnel.
 - [ ] En-tête : puce de localisation « Autour de <commune> » (nom via `/api/geocodage/inverse`, « Autour de vous » en attendant), puce de date (Aujourd'hui · Demain · **Ce week-end** via `debutDuWeekEnd` · Choisir).
 - [ ] Rangée de catégories + feuille « Filtres » (rayon, durée max ; « faisable dans la journée » P1).
 - [ ] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 plus proches, au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
@@ -61,3 +61,4 @@ Voir `_MODELE.md`.
 - 02/10/2026 : nom de la commune dans la puce de localisation (D022).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 04/11/2026 : route de l'onglet Lieux faite avant l'écran, `GET /api/lieux` (D056) ; légende 30, 60, 90 (D055) ; maquettes de référence `Explorer Mobile v3` et `Explorer Desktop v3`.
+- 04/11/2026 : découpage validé par Hardy en 6 lots : (1) position et gare, (2) filtres, (3) résultats, (4) carte, (5) assemblage, (6) contrôle. « Bienvenue » et bannière d'installation : E14.

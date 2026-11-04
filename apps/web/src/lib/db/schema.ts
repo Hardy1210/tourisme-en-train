@@ -202,6 +202,9 @@ export const lieu = pgTable(
     siteDe: bigint({ mode: 'number' }).references((): AnyPgColumn => lieu.id, {
       onDelete: 'set null',
     }),
+    // Fiche décrivant une ville entière : gardée en base, jamais listée (D057), recalculée par
+    // `pnpm etl rattachements`.
+    ficheVille: boolean('fiche_ville').notNull().default(false),
     geom: geographyPoint().notNull(),
     // Tracé d'un lieu en longueur (canal) : rattaché aux gares proches de son tracé (D043).
     trace: geographyMultiLigne(),
