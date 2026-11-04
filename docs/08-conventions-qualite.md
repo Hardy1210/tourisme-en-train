@@ -1,6 +1,6 @@
 # 08 — Conventions de code et qualité
 
-> **Version** 1.3 · **Date** 11/10/2026
+> **Version** 1.4 · **Date** 04/11/2026
 > **Dépend de :** `01-architecture.md`, `GLOSSAIRE.md`
 > **Utilisé par :** toutes les fiches d'étape
 > **Document de référence pour :** style de code, nommage détaillé, gestion des erreurs, journaux, tests, Git, définition de « terminé ».
@@ -91,7 +91,7 @@ Règles de `CLAUDE.md` § 3. En pratique :
 | Format | `pnpm format` (vérification seule : `pnpm format:verifier`) |
 | Tests unitaires | `pnpm test` |
 | Tests d'intégration | `pnpm test:integration` (recrée la base de test, puis lance les fichiers `*.integration.test.ts` ; Docker nécessaire, hors de `pnpm verifier`) |
-| Tests de parcours | `pnpm test:e2e` |
+| Tests de parcours | `pnpm test:e2e` (recrée la base de test, compile la version de production et lance les fichiers `*.e2e.ts` en 390 px et 1440 px, sans réseau ; Docker requis) |
 | Migrations | `pnpm db:generer` · `pnpm db:migrer` · `pnpm db:reinitialiser` (local, demande confirmation) · `pnpm db:test:preparer` |
 | Tout vérifier | `pnpm verifier` (typecheck + lint + format + test) |
 | Traitement des données | `pnpm etl <source|all>` ou `docker compose run --rm etl <source|all>` |
@@ -146,3 +146,4 @@ Une tâche est terminée quand **tout** est vrai :
 | 05/10/2026 | 1.1 | Traitement des données en TypeScript + SQL : règles du § 2, tests Vitest, commandes `pnpm etl` — D024 |
 | 09/10/2026 | 1.2 | Exceptions `export default` et `server-only`, journal dans le code commun, `maintenantParis()` — D031 |
 | 11/10/2026 | 1.3 | § 8 : scripts de base et tests d'intégration réels (E01) |
+| 04/11/2026 | 1.4 | § 8 : tests de parcours réels (E11) |

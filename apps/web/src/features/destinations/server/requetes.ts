@@ -88,13 +88,16 @@ export async function garesAtteintes(options: {
     (options.categories ?? CATEGORIES).map((c) => sql`${c}`),
     sql`, `,
   );
+  // Sans filtre : catégorie principale seule, un lieu n'est compté qu'une fois et l'ordre ne bouge pas.
+  // Avec un filtre : aussi les catégories secondaires (D060) ; un lieu peut alors compter dans deux envies.
+  const compte = options.categories === null ? sql`s.nb_lieux` : sql`s.nb_lieux + s.nb_secondaires`;
   const { rows } = await db.execute(sql`
     SELECT g.id AS gare_id, g.uic, g.nom, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
            g.dans_region, ${CLE_COMMUNE} AS cle_commune, c.nom AS commune, g.code_insee,
            l.duree_min, l.nb_trains, l.premier_depart_s, r.dernier_depart_s AS dernier_retour_s,
            l.types_train, l.distance_km, l.faisable_journee,
-           coalesce((SELECT jsonb_object_agg(s.categorie, s.nb_lieux) FROM gare_stats s
-                     WHERE s.gare_id = g.id AND s.nb_lieux > 0 AND s.categorie IN (${categories})),
+           coalesce((SELECT jsonb_object_agg(s.categorie, ${compte}) FROM gare_stats s
+                     WHERE s.gare_id = g.id AND ${compte} > 0 AND s.categorie IN (${categories})),
                     '{}'::jsonb) AS lieux
     FROM liaison_directe l
     JOIN gare g ON g.id = l.gare_arrivee_id

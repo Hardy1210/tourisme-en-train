@@ -32,6 +32,30 @@ export const schemaParametres = z
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
       /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
       emprise: schemaEmprise,
+      /** Proposées sans position ou hors région ; les trois premières servent de suggestions. */
+      garesPrincipales: z
+        .array(
+          z.strictObject({
+            uic: z.string().regex(/^\d{8}$/),
+            ville: z.string().min(1),
+            departement: z.string().min(1),
+          }),
+        )
+        .min(1),
+    }),
+    carte: z.strictObject({
+      /** Destinations avec le plus de trains étiquetées sur la carte (`06` § 3, D062). */
+      etiquettesMax: z.number().int().positive(),
+      /** Le premier cadrage montre les destinations à moins de cette durée ; le reste en dézoomant. */
+      dureeCadrageMin: z.number().int().positive(),
+      /** Les épingles de lieux n'apparaissent qu'à partir de ce zoom : elles s'entasseraient sinon. */
+      zoomMinLieux: z.number().positive(),
+    }),
+    localisation: z.strictObject({
+      delaiPositionMs: z.number().int().positive(),
+      /** Pause dans la saisie avant de lancer une recherche de ville. */
+      delaiSaisieMs: z.number().int().positive(),
+      longueurMinRecherche: z.number().int().positive(),
     }),
     /** Positions acceptées par l'API (`lat`, `lon`) : France métropolitaine (docs/05-api.md § 1). */
     empriseFrance: schemaEmprise,
@@ -76,6 +100,18 @@ export const schemaParametres = z
       enLongueurOsm: z.array(z.string().regex(/^[^=\s]+=[^=\s]+$/, 'clé=valeur attendu')),
       /** Tronçons de même nom à moins de cette distance : un seul lieu en longueur (D043). */
       raccordTronconsM: schemaDistanceM,
+      /** Fiches décrivant une ville entière : gardées en base, jamais listées (D057). Noms comparables. */
+      fichesVille: z.strictObject({
+        sources: z.array(z.string().min(1)),
+        prefixes: z.array(z.string().min(1)),
+        exceptions: z.array(z.string().min(1)),
+      }),
+      /** Retirés de l'onglet Lieux seulement (D057) ; restent dans « À deux pas » et la fiche destination. */
+      ongletLieux: z.strictObject({
+        sousCategoriesRetirees: z.array(z.string().min(1)),
+        /** Retirées quand le nom n'est que la sous-catégorie (« Aire de jeux »). */
+        sousCategoriesNomPropreRequis: z.array(z.string().min(1)),
+      }),
     }),
     /** Doublons entre sources, en deux paliers (docs/04 § 4.6, D043). Noms comparés sans accents. */
     dedoublonnage: z.strictObject({
@@ -108,6 +144,8 @@ export const schemaParametres = z
     limites: z.strictObject({
       gares: z.number().int().positive(),
       lieux: z.number().int().positive(),
+      /** Onglet Lieux : nombre de lieux par « Voir plus » (D056). */
+      lieuxParPage: z.number().int().positive(),
       destinations: z.number().int().positive(),
       trains: z.number().int().positive(),
       mobilites: z.number().int().positive(),

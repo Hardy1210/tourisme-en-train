@@ -18,6 +18,7 @@ import { constatsRattachements, pairesRapport, type PaireRapport } from './ratta
 
 const SECTIONS = [
   'reinitialiser',
+  'fiches_ville',
   'noms',
   'index_noms',
   'paires',
@@ -55,6 +56,9 @@ export function valeursRattachements(p = parametres): Record<string, unknown> {
         distance_m: r.distanceM,
       })),
     ),
+    sources_fiche_ville: p.lieux.fichesVille.sources,
+    prefixes_fiche_ville: p.lieux.fichesVille.prefixes,
+    exceptions_fiche_ville: p.lieux.fichesVille.exceptions,
     parc_chateau_m: p.regroupementParcChateau.distanceM,
     rayon_m: p.rayons.lieuxGareM,
     coef_detour: p.marche.coefDetour,
@@ -109,6 +113,11 @@ export function controlesRattachements(rejetsDecisions = 0): Controle[] {
       'Doublons ou membres de site dans lieu_gare',
       `SELECT count(*)::int AS n FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
        WHERE l.doublon_de IS NOT NULL OR l.site_de IS NOT NULL`,
+    ),
+    aucune(
+      'Fiches de ville dans lieu_gare',
+      `SELECT count(*)::int AS n FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+       WHERE l.fiche_ville`,
     ),
     aucune(
       'Rattachements au-delà du rayon à pied',

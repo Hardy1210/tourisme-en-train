@@ -17,6 +17,8 @@ export async function garesProches({
       uic: g.uic,
       nom: g.nom,
       commune: g.commune,
+      lat: g.lat,
+      lon: g.lon,
       distanceM: Math.round(g.distance_m),
       dureeVeloMin: dureeVeloMin(g.distance_m),
       dureeVoitureMin: dureeVoitureMin(g.distance_m),

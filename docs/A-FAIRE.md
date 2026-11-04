@@ -11,7 +11,6 @@
 | Quoi | Contexte | Déclencheur |
 |---|---|---|
 | Relire l'ensemble de la documentation (docs 00 → 08, fiches) | Rédigée le 30/09 | Avant de lancer E00 |
-| **Données réelles de l'onglet Lieux (session à prévoir)** : route des lieux accessibles depuis une gare de départ, toutes destinations confondues, avec gare, durée de train et temps à pied. L'API ne donne aujourd'hui les lieux que gare par gare (`/api/destinations/[uic]/lieux`) | D054 ; suivre `05` puis `route → service → requête` ; requête groupée et limite dans `parametres.json` | Avant l'écran Lieux, après le socle E10 |
 | Variantes de la maquette Explorer : carte avec ~20 destinations, lieu sans description, destination sans prix, trains sans statut, bascule Samedi/Dimanche, station sans nombre de vélos ; retirer le transport à la demande | Décisions D017 → D021 | Avant ~09/11 (E11–E12) |
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
 | Maquettes « L'âme du produit » + Sources | — | Avant ~16/11 (E13) |
@@ -20,6 +19,16 @@
 | Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
 | Lien de billetterie : où le ranger (`marque.ts`, `parametres.json` ou `sources.json`) | Fiche E12 | Avant E12 |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
+
+| **Badge de label sur la carte de destination** (Plus Beaux Villages, Petites cités de caractère, Art et histoire…) : chercher une liste officielle et vérifier Besançon, absente de DATAtourisme alors qu'elle aurait, de mémoire, le label Art et histoire | DATAtourisme ne couvre que quelques communes (mesure du 04/11, D057) ; laissé de côté par Hardy | Après le P0 (22/11) |
+
+| **Exclusions par nom à ajouter** (`noms_exclus.csv`) : « Collège Jules Ferry » et « Bataille de Nuits-Saint-Georges » | Remontés en tête de l'onglet Lieux, ce ne sont pas des sorties | Prochaine session sur les données, avant E12 |
+| **Le Klube (Ahuy)** : classé « centre aquatique » sans description, à vérifier | Pourrait être une salle de sport | Prochaine session sur les données |
+
+
+
+| **Explorer, à vérifier point par point (E11 ⏸)** :<br>☐ comparer l'écran aux maquettes `Explorer Mobile v3` et `Explorer Desktop v3`, noter ce qui semble bizarre, puis retoucher<br>☐ étiquettes de carte coupées par les épingles (ex. « Beaune » en 390 px)<br>☐ essai au doigt sur téléphone en HTTPS, surtout la feuille (essayée seulement à la souris)<br>☐ chronomètre sur téléphone : ouverture → liste < 3 s (un essai à 3,4 s sur ordinateur)<br>☐ changement de gare → titre de la nouvelle gare : mesuré de 1,1 à 3,6 s sur ordinateur, à mesurer sur téléphone avant de corriger<br>☐ prix non calibré : aucune ligne de prix sur les cartes<br>☐ lisibilité de la carte avec beaucoup de destinations (101 depuis Dijon) et étiquette de la destination sélectionnée | Hardy préfère juger le design une fois la fiche destination en place : certaines retouches pourraient devenir inutiles. Détail : fiche E11 | Dès la fin de E12, avec la fiche ; au plus tard avant le jalon P0 du 22/11 |
+| **Autres jeux et escape games classés « enfants » à relire** (Megaloisirs Laser Game, Fug Game, Games Factory, Les Souterrains du Commando Games, La Clé du Bastion, 10 55…) | Règle de D061 : « enfants » seulement si une source le justifie ; la classe `LeisureComplex` seule ne le prouve pas | Avant E12, avec la même méthode de lignes validées |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
 
@@ -71,6 +80,12 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |
 
 ## 4. Idées d'évolution
+
+| Quoi | Pourquoi | Déclencheur |
+|---|---|---|
+| **Catégorie « bien-être / thermes »** (SPA Thermal Valvital, Luxeuil, Bourbon-Lancy, Salins…), utile pour tous les visiteurs | Aucune des 5 catégories ne convient : ces lieux restent écartés pour le P0 (D059) | Après le P0 |
+| **Mention « accessible à vélo ou en bus »** pour les lieux entre 1,5 et 3 km d'une gare, séparée des lieux à pied | 68 sorties pour enfants à moins de 3 km, contre 29 à pied (mesure du 04/11) | Après le P0 |
+
 
 | Idée | Intérêt |
 |---|---|

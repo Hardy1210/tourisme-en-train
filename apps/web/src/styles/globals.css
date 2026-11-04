@@ -47,6 +47,11 @@
   --ecologie-fond: #e1f2e7;
   --destructive: #c92f33;
 
+  /* Écran Explorer : panneau sur grand écran, feuille à 3 positions sur mobile */
+  --panneau-largeur: 27.5rem;
+  --resultats-haut-milieu: 18.125rem;
+  --resultats-haut-carte: calc(100% - 4rem);
+
   /* Barre du bas */
   --barre: #623362;
   --barre-texte: #dcc3dc;
@@ -521,6 +526,21 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     text-wrap: balance;
+  }
+  /* Position de la feuille de résultats : la carte s'y cale pour que rien ne passe dessous. */
+  [data-feuille='plein'] {
+    --resultats-haut: 0px;
+  }
+  [data-feuille='milieu'] {
+    --resultats-haut: var(--resultats-haut-milieu);
+  }
+  [data-feuille='carte'] {
+    --resultats-haut: var(--resultats-haut-carte);
+  }
+  @media (width >= 64rem) {
+    [data-feuille] {
+      --resultats-haut: 100%;
+    }
   }
   .lucide {
     stroke-width: var(--icone-trait);

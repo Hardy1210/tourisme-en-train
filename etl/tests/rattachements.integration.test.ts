@@ -110,6 +110,100 @@ describe('rattachements — lieux à pied des gares (04 § 4.6, D043)', () => {
   });
 });
 
+describe('rattachements — fiches de ville (D057)', () => {
+  const marques = (client: pg.PoolClient) =>
+    lignes(client, 'SELECT id_source FROM lieu WHERE fiche_ville ORDER BY 1');
+
+  it('marque « Ville de … » et le nom de sa commune, venus de DATAtourisme', async () => {
+    const liste = await apres(
+      [
+        [
+          'V1',
+          'datatourisme',
+          'Ville de Test',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['V2', 'datatourisme', 'Dijon', 'patrimoine', 'site culturel', DIJON.lon, nord(300)],
+      ],
+      marques,
+    );
+    expect(liste.map((l) => l.id_source)).toEqual(['V1', 'V2']);
+  });
+
+  it('ne marque ni les exceptions, ni un autre nom, ni OpenStreetMap', async () => {
+    const liste = await apres(
+      [
+        [
+          'E1',
+          'datatourisme',
+          'Village du Livre',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['E2', 'datatourisme', 'Ville-Musée Test', 'culture', 'musée', DIJON.lon, nord(300)],
+        ['E3', 'osm', 'Dijon', 'nature', 'point de vue', DIJON.lon, nord(500)],
+      ],
+      marques,
+    );
+    expect(liste).toEqual([]);
+  });
+
+  it('une fiche de ville n’est ni rattachée à une gare, ni comptée, ni fusionnée avec un lieu', async () => {
+    const [etat] = await apres(
+      [
+        [
+          'V1',
+          'datatourisme',
+          'Ville de Test',
+          'patrimoine',
+          'patrimoine urbain',
+          DIJON.lon,
+          nord(100),
+        ],
+        ['L1', 'osm', 'Ville de Test', 'patrimoine', 'patrimoine urbain', DIJON.lon, nord(105)],
+      ],
+      (client) =>
+        lignes(
+          client,
+          `SELECT (SELECT count(*)::int FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+                   WHERE l.id_source = 'V1') AS liens_fiche,
+                  (SELECT count(*)::int FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+                   WHERE l.id_source = 'L1') > 0 AS lieu_rattache,
+                  (SELECT doublon_de FROM lieu WHERE id_source = 'L1') AS doublon`,
+        ),
+    );
+    expect(etat).toEqual({ liens_fiche: 0, lieu_rattache: true, doublon: null });
+  });
+});
+
+describe('rattachements — catégories secondaires (D060)', () => {
+  it('gare_stats les compte à part : le total principal reste celui de lieu_gare', async () => {
+    const [stats] = await apres(
+      [
+        ['A', 'osm', 'Test parc animalier', 'nature', 'parc animalier', DIJON.lon, nord(200)],
+        ['B', 'osm', 'Test sentier', 'nature', 'sentier', DIJON.lon, nord(400)],
+      ],
+      (client) =>
+        lignes(
+          client,
+          `SELECT (SELECT nb_lieux FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'nature') AS nature,
+                  (SELECT nb_lieux FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'enfants') AS enfants_principale,
+                  (SELECT nb_secondaires FROM gare_stats s JOIN gare g ON g.id = s.gare_id
+                   WHERE g.uic = 'EX000001' AND categorie = 'enfants') AS enfants_secondaire`,
+        ),
+      "UPDATE lieu SET categories_secondaires = '{enfants}' WHERE id_source = 'A';",
+    );
+    expect(stats).toEqual({ nature: 2, enfants_principale: 0, enfants_secondaire: 1 });
+  });
+});
+
 describe('rattachements — doublons entre sources', () => {
   const doublons = (client: pg.PoolClient) =>
     lignes(

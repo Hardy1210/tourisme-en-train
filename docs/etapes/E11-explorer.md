@@ -1,7 +1,7 @@
 # E11 — Écran Explorer
 
 > **Semaine :** S6 (09/11 → 15/11) · **Priorité :** P0 (tracés des lignes P1) · **Branche :** `etape/E11-explorer`
-> **Étapes préalables :** E08, E10 · **État :** ⬜ à faire
+> **Étapes préalables :** E08, E10 · **État :** ⏸ fonctionnelle ; vérifications de design et téléphone reportées après E12 (`A-FAIRE` § 1)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -25,26 +25,26 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 3. Proposer le découpage en composants ; attendre la validation.
 
 ## Tâches
-- [ ] `features/localisation/` : hook de position du navigateur (permission, erreurs, délai), repli vers la recherche de ville (`/api/geocodage`), hors région pilote.
-- [ ] **État des filtres dans l'URL** (`?lat&lon&date&categories&rayon&dureeMax`) : partageable, retour arrière fonctionnel.
-- [ ] En-tête : puce de localisation « Autour de <commune> » (nom via `/api/geocodage/inverse`, « Autour de vous » en attendant), puce de date (Aujourd'hui · Demain · **Ce week-end** via `debutDuWeekEnd` · Choisir).
-- [ ] Rangée de catégories + feuille « Filtres » (rayon, durée max ; « faisable dans la journée » P1).
-- [ ] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 plus proches, au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
-- [ ] Desktop : **survol croisé** carte de destination ↔ gare sur la carte.
+- [x] `features/localisation/` : hook de position du navigateur (permission, erreurs, délai), repli vers la recherche de ville (`/api/geocodage`), hors région pilote.
+- [x] **État des filtres dans l'URL** (`?gare&date&categories&rayon&dureeMax`, jamais de position, D058) : partageable, retour arrière fonctionnel.
+- [x] En-tête : puce de localisation « Autour de <commune> » (nom via `/api/geocodage/inverse`, « Autour de vous » en attendant), puce de date (Aujourd'hui · Demain · **Ce week-end** via `debutDuWeekEnd` · Choisir).
+- [x] Rangée de catégories + feuille « Filtres » (rayon, durée max ; « faisable dans la journée » P1).
+- [x] `features/carte/` : carte MapLibre + OpenFreeMap, style lu depuis les tokens ; point utilisateur pulsant ; épingles de lieux par catégorie ; gares de destination colorées par tranche de temps + légende ; **segments droits** gare de départ → destinations ; **étiquettes** pour les 5 destinations avec le plus de trains (D062), au survol et à la sélection ; mini-fiche au toucher ; recentrer ; attribution. (P1) vrais tracés via `/api/lignes`.
+- [x] Desktop : **survol croisé** carte de destination ↔ gare sur la carte.
 - [ ] (P1) Bouton **Partager** (partage natif, sinon copie du lien + « Lien copié »).
-- [ ] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
-- [ ] Desktop : panneau gauche 440 px + carte.
+- [x] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
+- [x] Desktop : panneau gauche 440 px + carte.
 - [ ] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne, erreur.
-- [ ] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
+- [x] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
 
 ## Critères d'acceptation
 - [ ] **Chronomètre :** de l'ouverture à la liste des destinations en < 3 s en local.
-- [ ] Localisation refusée → recherche de ville utilisable **et** acceptée → résultats sans action.
-- [ ] Changer une catégorie met à jour carte **et** liste.
+- [x] Localisation refusée → recherche de ville utilisable **et** acceptée → résultats sans action.
+- [x] Changer une catégorie met à jour carte **et** liste.
 - [ ] Toute information de la carte existe aussi dans la liste.
 - [ ] Avec ~20 destinations, la carte reste lisible (étiquettes limitées) **et** la destination sélectionnée a toujours son étiquette.
 - [ ] Prix non calibré → aucune ligne de prix dans les cartes.
-- [ ] Vérifié dans le navigateur en 390 px et 1440 px.
+- [x] Vérifié dans le navigateur en 390 px et 1440 px.
 
 ## Vérifications manuelles
 - Sur téléphone réel, en Wi-Fi local : position réelle, filtres, défilement de la feuille.
@@ -60,3 +60,15 @@ Voir `_MODELE.md`.
 - 30/09/2026 : alignement sur la maquette validée (D017, D018, D021).
 - 02/10/2026 : nom de la commune dans la puce de localisation (D022).
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 04/11/2026 : route de l'onglet Lieux faite avant l'écran, `GET /api/lieux` (D056) ; légende 30, 60, 90 (D055) ; maquettes de référence `Explorer Mobile v3` et `Explorer Desktop v3`.
+- 04/11/2026 : découpage validé par Hardy en 6 lots : (1) position et gare, (2) filtres, (3) résultats, (4) carte, (5) assemblage, (6) contrôle. « Bienvenue » et bannière d'installation : E14.
+- 04/11/2026 : lot 1 fait : position, refus, recherche de ville, hors région, choix et changement de gare, `?gare=<uic>` écrit seulement sur un choix (D058). À savoir pour l'essai sur téléphone (lot 6) : le navigateur ne donne la position qu'en HTTPS, le serveur de développement devra donc tourner en HTTPS sur le réseau local.
+- 04/11/2026 : à revérifier au lot 6 **sur une version de production** (`pnpm build`, puis `pnpm start`), pas sur le serveur de développement : l'écran « On cherche… » encore affiché 0,9 s après le choix de Dijon Porte Neuve.
+- 04/11/2026 : lot 2 fait : date (aujourd'hui, demain, ce week-end, calendrier borné par les horaires chargés : `horaires` dans `/api/sources`), catégories, feuille Filtres, état dans l'URL. Les filtres ne changent encore aucun résultat : ceux-ci arrivent au lot 3. « Faisable dans la journée » (P1 dans la fiche) est dans la feuille comme sur la maquette ; le filtre s'appliquera au lot 3.
+- 04/11/2026 : lot 3 fait : « Votre gare » et prochain départ direct, « À deux pas », « En train direct » et leurs états ; tous les filtres s'appliquent ; page provisoire `(app)/destinations/[uic]` jusqu'à E12. Les cartes de lieux ne s'ouvrent pas encore (fiche lieu : E12). Disposition définitive (feuille sur la carte, panneau desktop) : lot 5.
+- 04/11/2026 : lot 4 fait : fond OpenFreeMap aux couleurs des tokens, segments droits, destinations colorées par tranche, étiquettes, épingles de lieux au zoom, point utilisateur, mini-fiches, recentrer, attribution. Disposition provisoire au-dessus de la liste jusqu'au lot 5 ; survol croisé desktop : lot 5.
+- 04/11/2026 : lot 5 fait : carte en grand, feuille à 3 positions écrite pour le projet (poignée, glissement, flèches du clavier) au lieu de `vaul` : elle reste ouverte sans voile par-dessus la carte ; panneau de 440 px et survol croisé sur grand écran.
+- 04/11/2026 : reste pour le lot 6 : avis de Hardy, comparaison avec les maquettes, découpage de `carte-explorer.tsx`, test Playwright, chronomètre sur version de production, essai au doigt sur téléphone (la feuille n'a été essayée qu'à la souris).
+- 04/11/2026 : lot 6, partie sans design (Hardy préfère avancer sur les fonctionnalités et affiner le design ensuite) : `carte-explorer.tsx` découpé (184 lignes + `couches-carte`, `marqueurs-carte`, `commandes-carte`) ; `pnpm test:e2e` : parcours en 390 et 1440 px, sur l'échantillon, sans réseau, cassé une fois pour vérifier qu'il échoue. Mesures sur version de production, vraies données, Chromium sans accélération graphique : ouverture → liste 0,8 à 1,5 s sur 8 essais, mais 1,9 à 3,4 s sur les 4 essais d'une première série (un au-dessus de 3 s) : chronomètre à refaire sur téléphone. « On cherche… » après le choix de Dijon Porte Neuve : 0,14 à 0,25 s (au lieu de 0,9 s). Le titre de la nouvelle gare met 1,1 à 3,6 s à s'afficher : à mesurer sur téléphone avant de corriger.
+- 04/11/2026 : reste pour E11 : comparaison avec les maquettes et retouches (dont les étiquettes de carte coupées par les épingles, ex. « Beaune » en 390 px), essai au doigt sur téléphone en HTTPS, contrôle du critère « prix non calibré » et des étiquettes. Bandeau hors ligne : E14 (fiche E14). Bouton Partager (P1) : après le P0.
+- 04/11/2026 : décision de Hardy : fusionner E11 telle quelle et passer à E12 ; la liste des vérifications restantes est dans `A-FAIRE` § 1, à reprendre point par point une fois la fiche en place.

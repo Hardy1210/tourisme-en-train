@@ -19,7 +19,8 @@
     "db:migrer": "pnpm --filter @tourisme/web db:migrer",
     "db:reinitialiser": "pnpm --filter @tourisme/web db:reinitialiser",
     "db:test:preparer": "pnpm --filter @tourisme/web db:test:preparer",
-    "test:integration": "pnpm db:test:preparer && vitest run --config vitest.integration.config.ts"
+    "test:integration": "pnpm db:test:preparer && vitest run --config vitest.integration.config.ts",
+    "test:e2e": "pnpm db:test:preparer && pnpm --filter @tourisme/web test:e2e"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

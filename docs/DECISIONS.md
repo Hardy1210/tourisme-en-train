@@ -9,11 +9,11 @@
 
 | Thème | Décisions |
 |---|---|
-| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables |
+| **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens · D059 balnéo hors de « enfants » · D060 catégorie secondaire · D061 corrections manuelles, « enfants » justifié |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D055 légende des temps de trajet |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -557,3 +557,65 @@
 - **Raison :** pour une sortie à la journée, surtout avec des enfants, 1 h 05 et 2 h de train ne demandent pas le même effort. La répartition des liaisons ne départage pas (31, 25, 17, 28 % contre 31, 25, 28, 17 % avec 2 h). Choix de Hardy.
 - **Écarté :** 30, 60, 120 (premier choix de Claude Code, contraire à la maquette) ; 5 tranches (trop de couleurs à distinguer).
 - **Impact :** `config/parametres.json`, `lib/dates/tranche-temps`, tests, `04` § 2 et § 6, `05` § 3.4, `GLOSSAIRE`, fiche E08 (modifié après coup).
+
+## D056 — Onglet Lieux : tous les lieux atteignables en train direct depuis la gare de départ
+- **Date :** 04/11/2026
+- **En clair :** l'onglet Lieux montre où l'on peut aller à pied depuis une gare, en train direct depuis la sienne ; chaque lieu n'apparaît qu'une fois, du plus rapide au plus long, 30 à la fois.
+- **Décision :** nouvelle route `GET /api/lieux` (`05` § 3.6 bis). (1) Un lieu proche de plusieurs gares apparaît une fois, par la gare au temps total le plus court. (2) `limites.lieuxParPage` = 30, avec « Voir plus ». (3) Tri par temps total, train + marche. (4) Les lieux de la ville de départ sont écartés, y compris à côté d'une autre gare de la même commune : pas besoin de train, et ils sont déjà dans « À deux pas de vous ».
+- **Raison :** depuis Dijon, près de 1 000 lieux sont atteignables : la limite de 40 de la maquette en rendrait la plupart inaccessibles. Validé par Hardy.
+- **Écarté :** assembler les lieux gare par gare côté interface (une requête par destination, doublons à gérer dans l'écran).
+- **Impact :** `05`, `config/parametres.json`, `04` § 2, `features/lieux`, échantillon, fiche E11, `GLOSSAIRE`, `A-FAIRE`.
+
+## D057 — Ce qui est listé : fiches de ville, piscines, aires de jeux, gares classées
+- **Date :** 04/11/2026
+- **En clair :** une fiche qui décrit une ville entière ou une gare n'est pas une sortie ; une piscine municipale ou une aire de jeux sans nom ne vaut pas un trajet en train, mais reste utile une fois sur place.
+- **Décision :**
+  1. **Fiches de ville** (DATAtourisme, « Ville de … » ou nom de la commune) : colonne `lieu.fiche_ville`, calculée par `pnpm etl rattachements` depuis `lieux.fichesVille` ; gardées en base, ouvertes par leur lien, **jamais listées ni comptées**, jamais fusionnées avec un autre lieu. Exceptions : « Village du Livre », « Lac des Rouges-Truites ». 57 fiches.
+  2. **Onglet Lieux seulement** (`lieux.ongletLieux`) : retire les piscines ordinaires et les aires de jeux dont le nom n'est que « Aire de jeux ». Elles restent dans « À deux pas de vous » et sur la fiche destination, parce que les familles sont notre point fort.
+  3. **Piscines thermales ou de balnéo** : classe calculée `SwimmingPool+BalneotherapyCentre` → « centre aquatique », gardées dans l'onglet (spas : voir D059).
+  4. **`building=train_station`** : écarté (exclusion forte), même classé monument historique. 2 lieux.
+- **Raison :** mesures du 04/11 et choix de Hardy. Un essai a écarté une règle sur `BalneotherapyCentre` seul : sur 137 fiches brutes de ce type, elle aurait fait entrer plus de 100 spas d'hôtel et cabinets de massage.
+- **Résultat (Dijon, 10/11) :** onglet Lieux de 867 à 697 lieux ; enfants de 181 à 18.
+- **Écarté :** supprimer ces lieux de la base ; afficher les labels (après le P0, `A-FAIRE`).
+- **Impact :** migration `0012`, `03` § 3.6, `04` § 2, `05` § 3.3 et 3.6 bis, `GLOSSAIRE`, `A-FAIRE`, `categories.csv`, `parametres.json`, échantillon.
+
+## D058 — Aucune position dans les liens : `?gare=<uic>` à la place de `?lat&lon`
+- **Date :** 04/11/2026
+- **En clair :** un lien partagé ne doit jamais révéler où se trouve la personne qui l'a envoyé.
+- **Décision :** l'état de l'écran Explorer dans l'URL utilise `?gare=<uic>` (`date`, `categories`, `rayon`, `dureeMax` inchangés), jamais `lat` ni `lon`. **La gare n'y est écrite que si l'utilisateur la choisit** (recherche, « Changer de gare ») : la gare la plus proche, calculée depuis sa position, en dit trop sur l'endroit où il est. Sans `gare`, l'écran redemande la position.
+- **Raison :** règle 5 ; un lien se copie, s'envoie et finit dans des historiques. Demandé par Hardy.
+- **Écarté :** `?lat&lon` (fiche E11 d'origine) ; écrire d'office la gare la plus proche.
+- **Impact :** fiche E11, `06`.
+
+## D059 — La balnéo n'est pas classée « enfants »
+- **Date :** 04/11/2026
+- **En clair :** un spa n'est pas une sortie pour enfants ; on garde les centres aquatiques, on écarte les spas.
+- **Décision :** les noms commençant par « Spa » sont écartés (`noms_exclus.csv`), comme les autres spas d'hôtel déjà écartés par `BalneotherapyCentre` : Spa NUXE au Vertigo, Spa Les Rives Sauvages, Spa Alaena, SPA Thermal Valvital. Les 8 restants deviennent « centre aquatique » (bassins, pataugeoire), catégorie `enfants`. Complète D057.
+- **Raison :** demande de Hardy. Aucune des 5 catégories ne convient à un spa ; SPA Thermal Valvital n'est pas un spa d'hôtel et suit la même règle, à revoir si Hardy veut le garder.
+- **Écarté :** classer les spas en « nature » ou « patrimoine » (faux).
+- **Impact :** `noms_exclus.csv`, `categories.csv`, échantillon, `A-FAIRE`.
+
+## D060 — Catégorie secondaire : un lieu peut apparaître sous une autre envie, sans changer pour les autres visiteurs
+- **Date :** 04/11/2026
+- **En clair :** un parc animalier reste « nature » pour tout le monde, et apparaît aussi quand on cherche une sortie pour enfants. Wagoo s'adresse à tous : sans filtre, la liste reste la même.
+- **Décision :** colonne `lieu.categories_secondaires`, remplie au chargement des lieux depuis `regles/categories_secondaires.csv` (classes DATAtourisme, tags OSM, mots du nom). Filtre : catégorie principale **ou** secondaire ; sans filtre, aucune condition. `gare_stats.nb_secondaires` les compte à part : les destinations ne les ajoutent que sous un filtre, pour qu'un lieu ne compte qu'une fois et que l'ordre sans filtre ne bouge pas.
+- **Raison :** demande de Hardy. Simulation du 04/11 : ordre sans filtre identique (Dijon, 697 lieux). L'effet reste faible (Dijon de 18 à 20 lieux) : les vraies sorties pour enfants sont déjà en `enfants`, mais peu sont à pied d'une gare.
+- **Écarté :** changer la catégorie principale (changerait la liste de tout le monde) ; élargir le rayon à pied (5 km à pied avec des enfants serait trompeur).
+- **Limite :** avec plusieurs envies choisies, un lieu peut compter dans deux d'entre elles sur le compteur d'une destination.
+- **Impact :** migration, `03` § 3.6, `04` § 4.5, `05`, `GLOSSAIRE`, échantillon.
+
+## D061 — Corrections manuelles, et un lieu n'est marqué « enfants » que si une source le justifie
+- **Date :** 04/11/2026
+- **En clair :** on n'affirme pas qu'une sortie convient aux enfants sans preuve : une fiche, un âge indiqué ou un public famille.
+- **Décision :** `regles/corrections_manuelles.csv`, relu ligne par ligne par Hardy, s'applique à chaque chargement (lignes « oui »). Validé : Médiathèque Henri Vincenot retirée ; Dolescapegame, Les Secrets du Heurtoir, jeu holographique de Tournus et HalluCiné en culture / jeu d'aventure, seul Dolescapegame gardant « enfants » (salle dès 8 ans, enquête 6-11 ans, relevé par Hardy) ; Amphélia en centre aquatique.
+- **Règle :** un lieu n'est marqué « enfants » que si une source le justifie. La classe DATAtourisme `LeisureComplex` seule ne prouve donc rien sur un escape game : les autres jeux restent à relire (`A-FAIRE`).
+- **Raison :** choix de Hardy ; chaque filtre doit donner un résultat fiable.
+- **Impact :** `etl/src/chargement/corrections.ts`, `04` § 4.5, `A-FAIRE`.
+
+## D062 — Carte : MapLibre 5, premier cadrage sur les destinations proches
+- **Date :** 04/11/2026
+- **En clair :** on garde la version de la carte qui fonctionne avec notre outil de construction, et la carte s'ouvre sur les destinations à moins d'une heure pour rester lisible.
+- **Décision :** `maplibre-gl` fixé en version 5. Premier cadrage et « Recentrer » : le départ et les destinations à moins de `carte.dureeCadrageMin` (60 min), toutes s'il y en a moins de 3. Étiquettes en couche MapLibre, qui gère leurs collisions (`06` § 3), sur les 5 destinations avec le plus de trains : les plus proches se serraient toutes autour de la gare (choix de Hardy). Épingles de lieux à partir du zoom `carte.zoomMinLieux`.
+- **Raison :** essai du 04/11 : MapLibre 6 charge un module de travail séparé que Next.js ne sert pas (« Worker failed to load »), et le fond de carte reste vide. Depuis Dijon, cadrer les 101 destinations jusqu'à Paris et Lyon entassait tout.
+- **Écarté :** servir à la main le module de MapLibre 6 (une pièce de plus à maintenir, y compris pour la PWA).
+- **Impact :** `apps/web/package.json`, `config/parametres.json`, `features/carte`, E14 à vérifier hors ligne.

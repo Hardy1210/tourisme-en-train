@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.11 · **Date** 04/11/2026
+> **Version** 1.13 · **Date** 04/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -39,6 +39,7 @@
 | GET | `/api/destinations` | Destinations en train direct depuis une gare | P0 | E08 |
 | GET | `/api/destinations/[uic]` | Résumé d'une destination (gare, lieux par catégorie, liaison) | P0 | E09 |
 | GET | `/api/destinations/[uic]/lieux` | Lieux à pied depuis une gare | P0 | E09 |
+| GET | `/api/lieux` | Lieux accessibles en train direct depuis une gare (onglet Lieux) | P0 | E11 |
 | GET | `/api/lieux/[cle]` | Détail d'un lieu | P0 | E09 |
 | GET | `/api/trains` | Trains directs aller et retour | P0 | E09 |
 | GET | `/api/mobilites/[uic]` | Transports sur place | P0 | E09 |
@@ -69,12 +70,13 @@ Utilisée par la supervision (SR) et le déploiement.
 | `lat`, `lon` | nombre | obligatoire |
 | `limite` | entier 1–10 | `parametres.limites.gares` |
 ```ts
-{ gares: Array<{ uic: string; nom: string; commune: string | null; distanceM: number;
+{ gares: Array<{ uic: string; nom: string; commune: string | null; lat: number; lon: number; distanceM: number;
                  dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }> }
 ```
 Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
+`categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre.
 | Paramètre | Type | Défaut |
 |---|---|---|
 | `lat`, `lon` | nombre | obligatoire |
@@ -157,6 +159,27 @@ Mêmes valeurs que la carte de destination (§ 3.4) : la fiche n'affiche jamais 
 ```
 Les plus proches d'abord ; limite `parametres.limites.lieux`. `404` si la gare est inconnue. Cache : `public, max-age=86400`.
 
+### 3.6 bis `GET /api/lieux?gare&date&categories&dureeMax&page`
+Onglet Lieux (D056).
+| Paramètre | Type | Défaut |
+|---|---|---|
+| `gare` | code UIC de la gare de départ | obligatoire |
+| `date` | `AAAA-MM-JJ` | date du jour (Paris) |
+| `categories` | liste | toutes |
+| `dureeMax` | une valeur de `durees.trainMaxOptionsMin` | la plus grande |
+| `page` | entier à partir de 1 | 1 |
+```ts
+{
+  lieux: Array<LieuResume & { gare: { uic: string; nom: string }; dureeTrainMin: number }>;
+  total: number;                // toutes pages confondues
+  pageSuivante: number | null;  // pour « Voir plus »
+}
+```
+- **Tri :** temps total (train + marche), le plus court d'abord. `distanceM` et `dureeMarcheMin` : depuis la gare d'arrivée (`lieu_gare`).
+- **Un lieu proche de plusieurs gares** apparaît une fois, par celle au temps total le plus court.
+- **Lieux écartés :** à pied de la gare de départ, ou à côté d'une gare de la même commune ; piscines ordinaires et aires de jeux sans nom propre, seulement dans cette route (`lieux.ongletLieux`, D057). Une fiche de ville n'est listée dans aucune route (`lieu.fiche_ville`), mais `/api/lieux/[cle]` l'ouvre.
+- `parametres.limites.lieuxParPage` lieux par page. Page au-delà de la fin : `lieux` vide, `total` conservé. `404` si la gare est inconnue. Cache : `public, max-age=3600`.
+
 ### 3.7 `GET /api/lieux/[cle]`
 ```ts
 { cle, demande: string | null,   // `demande` : clé du lien suivi, si elle désignait un doublon ou un membre de site
@@ -227,7 +250,8 @@ Passe par `lib/external/adresse.ts` (recherche inverse **sans filtre de type** :
 Sources affichées dans l'écran « Sources » (champ `affichee` de `config/sources.json`, D051) :
 ```ts
 { sources: Array<{ code: string; nom: string; producteur: string; page: string; licence: string;
-                   attribution: string; dateDonnees: string | null }> }   // dateDonnees : dernier chargement réussi (Paris)
+                   attribution: string; dateDonnees: string | null }>,   // dateDonnees : dernier chargement réussi (Paris)
+  horaires: { debut: string; fin: string } | null }                       // dates couvertes par les horaires : bornes du calendrier
 ```
 L'attribution exigée par chaque licence est toujours renvoyée (ODbL : « © les contributeurs d'OpenStreetMap »). Cache : `public, max-age=86400`.
 
@@ -291,3 +315,6 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 03/11/2026 | 1.10 | § 3.10 : champ `trajet` (CO₂ aller-retour, prix aller simple) — D051 |
 | 03/11/2026 | 1.9 | § 1.8 bis : identifiants publics stables (`uic`, `cle`) ; § 3.5 → 3.12 précisés après l'audit E09 (fiche destination, heures `Heure`, type d'impact le moins favorable, recherche inverse sans filtre ni cache, sources affichées) — D051, D052 |
 | 04/11/2026 | 1.11 | § 3.4 : tranches de temps `<=30`, `<=60`, `<=90`, `>90` — D055 |
+| 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |
+| 04/11/2026 | 1.13 | § 3.12 : `horaires`, bornes du calendrier de l'écran Explorer |
+| 04/11/2026 | 1.14 | § 3.2 : `lat`, `lon` des gares proches, pour la carte |

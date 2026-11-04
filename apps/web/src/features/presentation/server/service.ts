@@ -4,6 +4,7 @@ import 'server-only';
 import { dateDuJour, sources, type SourceDonnees } from '@tourisme/commun';
 
 import { parametres } from '@/config/parametres';
+import { fenetreLiaisons } from '@/lib/db/requetes-partagees';
 
 import type { ReponseSources } from '../schemas';
 
@@ -16,7 +17,7 @@ const DATES_LOCALES: Record<string, string | null> = {
 };
 
 export async function sourcesAffichees(): Promise<ReponseSources> {
-  const dates = await datesDesDonnees();
+  const [dates, horaires] = await Promise.all([datesDesDonnees(), fenetreLiaisons()]);
   const dateDe = (s: SourceDonnees): string | null => {
     const telechargement = dates.telechargements[s.code];
     if (telechargement) return dateDuJour(telechargement);
@@ -24,6 +25,7 @@ export async function sourcesAffichees(): Promise<ReponseSources> {
     return DATES_LOCALES[s.code] ?? null;
   };
   return {
+    horaires,
     sources: sources.sources
       .filter((s) => s.affichee)
       .map((s) => ({

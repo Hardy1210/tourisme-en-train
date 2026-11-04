@@ -144,6 +144,7 @@ export function lireElementOsm(
   return {
     type: 'lieu',
     nonClassees,
+    etiquettes,
     lieu: {
       idSource: `${element.type}/${element.id}`,
       // Sans nom (règle `sans_nom`, aires de jeux) : le libellé de la sous-catégorie.

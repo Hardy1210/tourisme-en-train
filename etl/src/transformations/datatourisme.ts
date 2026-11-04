@@ -25,6 +25,9 @@ export interface LigneDatatourisme {
 /** Clé des règles DATAtourisme dans `categories.csv`. */
 export const CLE_DATATOURISME = 'categorie';
 
+/** Classe calculée : le lieu est à la fois piscine et centre de balnéo. */
+export const CLASSE_PISCINE_BIEN_ETRE = 'SwimmingPool+BalneotherapyCentre';
+
 /** « …/core#Museum|http://schema.org/Product » → classes courtes, sans doublon (`Museum`, `Product`). */
 export function classesDe(categories: string): Etiquette[] {
   const classes = new Set(
@@ -33,6 +36,10 @@ export function classesDe(categories: string): Etiquette[] {
       .map((c) => c.trim().replace(/^.*[#/]/, ''))
       .filter((c) => c !== ''),
   );
+  // Une règle sur Balnéo seul ferait entrer spas d'hôtel et cabinets de massage : il faut les deux (D057).
+  if (classes.has('SwimmingPool') && classes.has('BalneotherapyCentre')) {
+    classes.add(CLASSE_PISCINE_BIEN_ETRE);
+  }
   return [...classes].map((c) => [CLE_DATATOURISME, c] as const);
 }
 
@@ -52,7 +59,7 @@ export function siteDesContacts(contacts: string): string | null {
 }
 
 export type ResultatLigne =
-  | { type: 'lieu'; lieu: LieuNormalise; nonClassees: string[] }
+  | { type: 'lieu'; lieu: LieuNormalise; etiquettes: readonly Etiquette[]; nonClassees: string[] }
   | { type: 'ecarte'; raison: RaisonEcart; nonClassees: string[] };
 
 export function lireLigneDatatourisme(
@@ -69,6 +76,7 @@ export function lireLigneDatatourisme(
   return {
     type: 'lieu',
     nonClassees,
+    etiquettes,
     lieu: {
       idSource: ligne.URI_ID_du_POI,
       nom,

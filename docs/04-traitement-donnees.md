@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.18 · **Date** 04/11/2026
+> **Version** 1.19 · **Date** 04/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -59,7 +59,8 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
     "tranchesTempsMin": [30, 60, 90]
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
-  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000 },
+  "region": { "garesPrincipales": "…" }, "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
+  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
@@ -75,7 +76,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
+  "limites": { "gares": 3, "lieux": 50, "lieuxParPage": 30, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
   "impact": {
     "source": "ADEME — Impact CO2",
     "dateReleve": "2026-11-03",
@@ -273,6 +274,8 @@ Spécifique :
 - **Festivals (P1, après le P0) :** `periode` = mois de début–fin en texte (« juin–juillet »).
 
 ### 4.5 Catégorisation
+- **Corrections manuelles (D061) :** `etl/src/regles/corrections_manuelles.csv`, lignes validées par Hardy, appliquées après le classement.
+- **Catégories secondaires (D060) :** `etl/src/regles/categories_secondaires.csv` ajoute des catégories à un lieu, sans changer sa catégorie principale.
 - **Source de vérité :** `etl/src/regles/categories.csv` (colonnes `source;cle;valeur;categorie;sous_categorie;priorite;condition`, lignes `#` = commentaires), versionné, **modifiable sans code**, chargé par `pnpm etl regles` dans `categorie_regle` (remplacée en entier ; une ligne illisible ou une règle en double bloque le chargement).
 - **Clés :** DATAtourisme `categorie` + nom de classe (`Museum`) ; OSM nom du tag + valeur, `*` = toute valeur.
 - **Une règle par étiquette ; la plus petite priorité gagne** parmi les règles des étiquettes du lieu dont la condition est remplie. À égalité, l'exclusion l'emporte, puis l'ordre alphabétique (résultat stable).
@@ -383,3 +386,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 02/11/2026 | 1.16 | § 2 : `mobilite.regroupementQuaisM` ; § 4.7 réécrit (réseaux de `sources.json`, licence, CAR, couple arrêt-gare, rayon à pied, contrôles, chiffres) ; § 4.8 reporté — D046 |
 | 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |
 | 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |
+| 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 ; `lieux.fichesVille`, `lieux.ongletLieux` — D057 |

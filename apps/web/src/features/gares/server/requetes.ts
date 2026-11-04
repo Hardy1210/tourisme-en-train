@@ -8,6 +8,8 @@ const schemaLigne = z.object({
   uic: z.string(),
   nom: z.string(),
   commune: z.string().nullable(),
+  lat: z.number(),
+  lon: z.number(),
   distance_m: z.coerce.number(),
   dans_region: z.boolean(),
 });
@@ -22,7 +24,8 @@ export async function garesLesPlusProches(
 ): Promise<GareProcheBrute[]> {
   const point = sql`ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography`;
   const { rows } = await db.execute(sql`
-    SELECT g.uic, g.nom, c.nom AS commune, ST_Distance(g.geom, ${point}) AS distance_m, g.dans_region
+    SELECT g.uic, g.nom, c.nom AS commune, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
+           ST_Distance(g.geom, ${point}) AS distance_m, g.dans_region
     FROM gare g LEFT JOIN commune c ON c.code_insee = g.code_insee
     ORDER BY g.geom <-> ${point}
     LIMIT ${limite}`);

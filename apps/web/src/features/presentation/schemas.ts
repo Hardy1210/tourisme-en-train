@@ -13,6 +13,10 @@ export const schemaSourceAffichee = z.object({
   dateDonnees: z.iso.date().nullable(),
 });
 
-export const schemaReponseSources = z.object({ sources: z.array(schemaSourceAffichee) });
+export const schemaReponseSources = z.object({
+  sources: z.array(schemaSourceAffichee),
+  /** Dates couvertes par les horaires chargés ; null si aucun. Borne le calendrier de l'écran Explorer. */
+  horaires: z.object({ debut: z.iso.date(), fin: z.iso.date() }).nullable(),
+});
 
 export type ReponseSources = z.infer<typeof schemaReponseSources>;

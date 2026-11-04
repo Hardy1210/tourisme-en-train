@@ -10,6 +10,7 @@ import {
   type IndexRegles,
   type RegleCategorie,
 } from '../src/transformations/categories';
+import { classesDe } from '../src/transformations/datatourisme';
 
 const index: Record<'datatourisme' | 'osm', IndexRegles> = {
   datatourisme: indexerRegles([]),
@@ -79,6 +80,37 @@ describe('classer — DATAtourisme', () => {
     expect(etiquettesNonClassees(index.datatourisme, dt('Museum', 'ClasseInventee'))).toEqual([
       'categorie=ClasseInventee',
     ]);
+  });
+});
+
+describe('règles de la décision D057', () => {
+  const adresse = (...classes: string[]) =>
+    classes.map((c) => `https://www.datatourisme.fr/ontology/core#${c}`).join('|');
+
+  it('piscine et balnéo → centre aquatique, ni piscine ni exclu', () => {
+    const etiquettes = classesDe(adresse('SwimmingPool', 'BalneotherapyCentre'));
+    expect(classer(index.datatourisme, etiquettes, nomme)).toMatchObject({
+      type: 'classe',
+      sousCategorie: 'centre aquatique',
+    });
+  });
+
+  it('balnéo seul reste écarté (spa d’hôtel, massage) ; piscine seule reste une piscine', () => {
+    const balneo = classesDe(adresse('BalneotherapyCentre'));
+    expect(classer(index.datatourisme, balneo, nomme)).toEqual({ type: 'exclu' });
+    const piscine = classesDe(adresse('SwimmingPool'));
+    expect(classer(index.datatourisme, piscine, nomme)).toMatchObject({ sousCategorie: 'piscine' });
+  });
+
+  it('une gare classée monument historique est écartée ; un autre monument non', () => {
+    const monument: [string, string][] = [
+      ['historic', 'building'],
+      ['ref:mhs', 'PA00000000'],
+    ];
+    expect(classer(index.osm, monument, nomme).type).toBe('classe');
+    expect(classer(index.osm, [...monument, ['building', 'train_station']], nomme)).toEqual({
+      type: 'exclu',
+    });
   });
 });
 

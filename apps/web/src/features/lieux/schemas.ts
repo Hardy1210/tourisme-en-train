@@ -3,7 +3,14 @@ import { schemaCategorie } from '@tourisme/commun';
 import { z } from 'zod';
 
 import { parametres } from '@/config/parametres';
-import { schemaCategories, schemaLat, schemaLon, schemaParmi } from '@/lib/http/valider';
+import {
+  schemaCategories,
+  schemaDate,
+  schemaLat,
+  schemaLon,
+  schemaParmi,
+  schemaUic,
+} from '@/lib/http/valider';
 
 export const schemaParametresAutour = z.object({
   lat: schemaLat,
@@ -55,6 +62,38 @@ export const schemaParametresLieuxGare = z.object({
     .transform((rayon) => rayon ?? parametres.rayons.lieuxGareM),
 });
 
+const optionsDureeMax = parametres.durees.trainMaxOptionsMin;
+
+/** GET /api/lieux (docs/05-api.md § 3.6 bis, D056) : l'onglet Lieux. */
+export const schemaParametresLieuxAccessibles = z.object({
+  gare: schemaUic,
+  date: schemaDate,
+  categories: schemaCategories,
+  dureeMax: schemaParmi(optionsDureeMax, 'Durées maximales (min)')
+    .optional()
+    .transform((duree) => duree ?? Math.max(...optionsDureeMax)),
+  page: z.coerce
+    .number({ error: 'La page doit être un entier à partir de 1.' })
+    .int('La page doit être un entier à partir de 1.')
+    .min(1, 'La page doit être un entier à partir de 1.')
+    .optional()
+    .transform((page) => page ?? 1),
+});
+
+export const schemaLieuAccessible = schemaLieuResume.extend({
+  /** Gare d'arrivée : la plus rapide (train + marche) si le lieu est proche de plusieurs gares. */
+  gare: z.object({ uic: z.string(), nom: z.string() }),
+  dureeTrainMin: z.number().int(),
+});
+
+export const schemaReponseLieuxAccessibles = z.object({
+  lieux: z.array(schemaLieuAccessible),
+  /** Tous les lieux correspondants, toutes pages confondues. */
+  total: z.number().int(),
+  /** Page à demander pour « Voir plus » ; null s'il n'y en a plus. */
+  pageSuivante: z.number().int().nullable(),
+});
+
 /** GET /api/lieux/[cle] (docs/05-api.md § 3.7, D052). */
 export const schemaFicheLieu = z.object({
   cle: z.string(),
@@ -90,3 +129,5 @@ export type FicheLieu = z.infer<typeof schemaFicheLieu>;
 export type ParametresAutour = z.infer<typeof schemaParametresAutour>;
 export type LieuResume = z.infer<typeof schemaLieuResume>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;
+export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAccessibles>;
+export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
