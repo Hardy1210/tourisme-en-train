@@ -77,3 +77,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : changer d'onglet ne recharge plus la position ni les appels récents ; un train parti disparaît de l'écran (D068).
 - 05/11/2026 : « Votre gare » montre le temps à pied et la gare la plus proche quand une autre est proposée (D064).
 - 05/11/2026 : Explorer gardé en vie entre les écrans, sans appel quand il est caché (D069).
+- 05/11/2026 : chaque écran retrouve ses filtres au retour sur son onglet (D070).

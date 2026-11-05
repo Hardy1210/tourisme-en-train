@@ -15,7 +15,7 @@ import { Suspense, useState, type ComponentProps, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Feuille } from '@/components/ui/feuille';
 import { marque } from '@/config/marque';
-import { lienAvecDepart } from '@/features/explorer/filtres';
+import { filtresDeLUrl, lienAvecDepart } from '@/features/explorer/filtres';
 import { cn } from '@/lib/classes';
 
 const ENTREES = [
@@ -57,10 +57,20 @@ function ContenuEntree({
   );
 }
 
-/** Explorer et Lieux gardent la gare choisie et la date ; l'URL n'est connue que dans le navigateur. */
+/**
+ * Explorer et Lieux gardent la gare choisie, la date et leurs propres filtres : chaque onglet retient
+ * ceux de son écran, en mémoire (D070). L'URL n'est connue que dans le navigateur.
+ */
 function LienEntree({ href, children, ...reste }: ComponentProps<typeof Link> & { href: string }) {
   const url = useSearchParams();
-  const lien = href === '/' || href === '/lieux' ? lienAvecDepart(href, url) : href;
+  const surCetEcran = usePathname() === href;
+  const [filtres, setFiltres] = useState('');
+  const filtresActuels = filtresDeLUrl(url);
+  if (surCetEcran && filtres !== filtresActuels) setFiltres(filtresActuels);
+  const lien =
+    href === '/' || href === '/lieux'
+      ? lienAvecDepart(href, url, surCetEcran ? filtresActuels : filtres)
+      : href;
   return (
     <Link href={lien} {...reste}>
       {children}

@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D065 MapLibre 5 jusqu'au P0, risque accepté |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D065 MapLibre 5 jusqu'au P0, risque accepté |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -699,3 +699,11 @@
 - **Écarté :** `reuseMaps` de react-map-gl seul : 0 tuile, mais retour de 666 à 2 334 ms ; `cacheComponents` de Next.js, qui préserve les écrans avec `<Activity>` d'après sa documentation : non essayé.
 - **Limite :** les liens de navigation ne gardent que la gare et la date (D067) : des catégories choisies sur Explorer sont perdues au retour.
 - **Impact :** `app/(app)/layout.tsx`, `app/(app)/page.tsx`, `lib/ecran-visible.tsx`, `01` § 3 et § 3 bis, `06`, `A-FAIRE`, parcours `explorer-en-vie.e2e.ts`.
+
+## D070 — Chaque écran retrouve ses filtres quand on revient sur son onglet
+- **Date :** 05/11/2026
+- **En clair :** les filtres choisis sur Explorer ou sur Lieux sont encore là quand on revient sur cet onglet, sans passer d'un écran à l'autre.
+- **Décision :** chaque lien de la navigation retient les filtres de son écran, en mémoire (`filtresDeLUrl`, `lienAvecDepart`). La gare choisie et la date restent communes aux deux écrans. Remplace la limite notée dans D067 et D069.
+- **Raison :** demande de Hardy. Aucune position dans les liens (D058) : seuls les filtres connus sont repris.
+- **Écarté :** partager les filtres entre les écrans : un filtre choisi sur Lieux changerait Explorer sans qu'on le voie.
+- **Impact :** `app/(app)/nav-basse.tsx`, `features/explorer/filtres.ts`, `06`, parcours `explorer-en-vie.e2e.ts`. Aucun changement d'apparence. Perdus au rechargement de la page, car ils sont en mémoire et dans l'adresse de l'écran seulement.
