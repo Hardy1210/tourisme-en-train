@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.2 · **Date** 19/10/2026
+> **Version** 1.3 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · `equipe/guide-SR.md` § 4 (tâches I01 → I22)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -32,28 +32,28 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 
 | ID | User story | Priorité | Pts | Critère d'acceptation | Tâches | Livrée en | État |
 |---|---|---|---|---|---|---|---|
-| F01 | En tant que voyageur, je veux être localisé dès l'ouverture (ou saisir une ville si je refuse) afin d'avoir des résultats sans rien taper. | Must (P0) | 3 | Position demandée à l'ouverture ; refus → recherche de ville ; position jamais enregistrée. | E09 · E11 | S6 | ⬜ |
-| F02 | En tant que voyageur, je veux voir tout de suite les lieux à pied et les gares proches afin de savoir ce qu'il y a autour de moi. | Must (P0) | 3 | Lieux dans le rayon défini par les paramètres ; gares proches avec distance. | E08 · E11 | S6 | ⬜ |
-| F03 | En tant que voyageur, je veux connaître mes gares de départ les plus proches et pouvoir en changer. | Must (P0) | 2 | Par défaut, la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064) ; changement de gare possible. | E08 · E11 | S6 | ⬜ |
-| F04 | En tant que voyageur, je veux voir les destinations atteignables en train direct à la date choisie afin de choisir une sortie. | Must (P0) | 8 | Aucune correspondance ; durée, trains par jour, premier départ, dernier retour. | E02 · E03 · E04 · E08 · E11 | S6 | ⬜ |
-| F05 | En tant que voyageur, je veux filtrer (rayon, durée de train, ville, catégories, date) afin d'affiner mes idées. | Must (P0) | 3 | Chaque filtre modifie la liste et la carte ; filtres conservés dans l'adresse de la page. | E11 | S6 | ⬜ |
-| F06 | En tant que voyageur, je veux une fiche destination avec les lieux à pied depuis la gare afin de préparer ma visite. | Must (P0) | 5 | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel. | E05 · E06 · E09 · E12 | S7 | ⬜ |
-| F07 | En tant que voyageur, je veux les trains aller et retour de la journée afin de savoir quand partir et rentrer. | Must (P0) | 3 | Horaires théoriques de la date ; dernier retour mis en évidence. | E03 · E09 · E12 | S7 | ⬜ |
-| F08 | En tant que voyageur, je veux une carte avec les gares colorées selon le temps de trajet afin de visualiser les distances. | Must (P0) | 5 | Position, gares, lieux par catégorie ; couleurs par tranche de temps ; bascule liste / carte. | E11 | S6 | ⬜ |
-| F09 | En tant que voyageur, je veux connaître les transports sur place (bus, tram, vélos) afin de me déplacer à l'arrivée. | Must (P0) | 5 | Arrêts et stations proches de la gare d'arrivée. | E07 · E09 · E12 | S7 | ⬜ |
-| F10 | En tant que voyageur, je veux voir le CO₂ économisé par rapport à la voiture afin de mesurer l'intérêt du train. | Must (P0) | 2 | Train / voiture seule / voiture partagée ; source ADEME affichée. | E09 · E12 | S7 | ⬜ |
-| F11 | En tant que voyageur, je veux un prix estimé afin d'avoir un ordre d'idée du budget. | Must (P0) | 2 | Toujours libellé « estimation » ; lien vers la billetterie ; masqué s'il n'est pas calibré. | E09 · E12 | S7 | ⬜ |
+| F01 | En tant que voyageur, je veux être localisé dès l'ouverture (ou saisir une ville si je refuse) afin d'avoir des résultats sans rien taper. | Must (P0) | 3 | Position demandée à l'ouverture ; refus → recherche de ville ; position jamais enregistrée. | E09 · E11 | S6 | ✅ |
+| F02 | En tant que voyageur, je veux voir tout de suite les lieux à pied et les gares proches afin de savoir ce qu'il y a autour de moi. | Must (P0) | 3 | Lieux dans le rayon défini par les paramètres ; gares proches avec distance. | E08 · E11 | S6 | ✅ |
+| F03 | En tant que voyageur, je veux connaître mes gares de départ les plus proches et pouvoir en changer. | Must (P0) | 2 | Par défaut, la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064) ; changement de gare possible. | E08 · E11 | S6 | ✅ |
+| F04 | En tant que voyageur, je veux voir les destinations atteignables en train direct à la date choisie afin de choisir une sortie. | Must (P0) | 8 | Aucune correspondance ; durée, trains par jour, premier départ, dernier retour. | E02 · E03 · E04 · E08 · E11 | S6 | ✅ |
+| F05 | En tant que voyageur, je veux filtrer (rayon, durée de train, ville, catégories, date) afin d'affiner mes idées. | Must (P0) | 3 | Chaque filtre modifie la liste et la carte ; filtres conservés dans l'adresse de la page. | E11 | S6 | 🟡 |
+| F06 | En tant que voyageur, je veux une fiche destination avec les lieux à pied depuis la gare afin de préparer ma visite. | Must (P0) | 5 | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel. | E05 · E06 · E09 · E12 | S7 | 🟡 |
+| F07 | En tant que voyageur, je veux les trains aller et retour de la journée afin de savoir quand partir et rentrer. | Must (P0) | 3 | Horaires théoriques de la date ; dernier retour mis en évidence. | E03 · E09 · E12 | S7 | ✅ |
+| F08 | En tant que voyageur, je veux une carte avec les gares colorées selon le temps de trajet afin de visualiser les distances. | Must (P0) | 5 | Position, gares, lieux par catégorie ; couleurs par tranche de temps ; bascule liste / carte. | E11 | S6 | 🟡 |
+| F09 | En tant que voyageur, je veux connaître les transports sur place (bus, tram, vélos) afin de me déplacer à l'arrivée. | Must (P0) | 5 | Arrêts et stations proches de la gare d'arrivée. | E07 · E09 · E12 | S7 | 🟡 |
+| F10 | En tant que voyageur, je veux voir le CO₂ économisé par rapport à la voiture afin de mesurer l'intérêt du train. | Must (P0) | 2 | Train / voiture seule / voiture partagée ; source ADEME affichée. | E09 · E12 | S7 | ✅ |
+| F11 | En tant que voyageur, je veux un prix estimé afin d'avoir un ordre d'idée du budget. | Must (P0) | 2 | Toujours libellé « estimation » ; lien vers la billetterie ; masqué s'il n'est pas calibré. | E09 · E12 | S7 | ✅ |
 | F12 | En tant que voyageur, je veux installer l'application sur mon téléphone et revoir mes dernières recherches hors ligne. | Must (P0) | 3 | Installable ; dernières recherches consultables sans connexion. | E14 | S7 | ⬜ |
 | F13 | En tant que jury ou réutilisateur, je veux voir les sources et licences des données utilisées. | Must (P0) | 1 | Chaque source citée avec sa licence et son attribution. | E13 | S7 | ⬜ |
 | F14 | En tant que jury, je veux une page qui présente le sens du projet. | Must (P0) | 2 | Page narrative accessible depuis le menu. | E13 | S7 | ⬜ |
-| F15 | En tant que voyageur, je veux savoir si l'aller-retour est faisable dans la journée. | Should (P1) | 3 | Badge « Faisable dans la journée » ou mention « Retour tôt, plutôt sur 2 jours ». | E12 | S7 | ⬜ |
+| F15 | En tant que voyageur, je veux savoir si l'aller-retour est faisable dans la journée. | Should (P1) | 3 | Badge « Faisable dans la journée » ou mention « Retour tôt, plutôt sur 2 jours ». | E12 | S7 | ✅ |
 | F16 | En tant que voyageur, je veux voir les lignes ferroviaires sur la carte. | Should (P1) | 2 | Tracés affichés sans ralentir la carte. | E07 · E11 | S6 | ⬜ |
 | F17 | En tant que cycliste, je veux voir les voies vertes et pistes près de la gare d'arrivée. | Should (P1) | 2 | Aménagements affichés autour de la gare. | E07 · E12 | S7 | ⬜ |
 | F18 | En tant que voyageur, je veux connaître les retards des prochains trains d'aujourd'hui. | Should (P1) | 3 | Statut pour les trains des 3 prochaines heures uniquement ; sinon horaires théoriques. | E09 · E12 | S7 | ⬜ |
 | F19 | En tant que personne en situation de handicap, je veux une application accessible. | Should (P1) | 3 | WCAG 2.1 AA : contrastes, clavier, liste équivalente à la carte. | E15 | S8 | ⬜ |
-| F20 | En tant que voyageur, je veux un mode sombre. | Should (P1) | 1 | Bascule clair / sombre via le design system. | E10 | S6 | ⬜ |
+| F20 | En tant que voyageur, je veux un mode sombre. | Should (P1) | 1 | Bascule clair / sombre via le design system. | E10 | S6 | 🟡 |
 | F21 | En tant que voyageur, je veux partager une sortie. | Should (P1) | 1 | Copie du lien (filtres inclus) ou partage natif du téléphone. | E11 · E12 | S7 | ⬜ |
-| F25 | En tant que voyageur, je veux trouver une sortie pour ce week-end en un clic. | Should (P1) | 1 | L'option « Ce week-end » ouvre le samedi ; passage au dimanche possible. | E11 · E12 | S7 | ⬜ |
+| F25 | En tant que voyageur, je veux trouver une sortie pour ce week-end en un clic. | Should (P1) | 1 | L'option « Ce week-end » ouvre le samedi ; passage au dimanche possible. | E11 · E12 | S7 | ✅ |
 | F26 | En tant que cycliste, je veux voir les vélos disponibles en direct près de la gare. | Should (P1) | 2 | Nombre de vélos par station (villes publiant un flux GBFS). | E07 · E09 · E12 | S7 | ⬜ |
 | F27 | En tant que voyageur, je veux garder mes destinations favorites. | Could (P2) | 2 | Favoris enregistrés dans le navigateur. | — | après v1 | ⬜ |
 | F22 | En tant que voyageur, je veux découvrir des pépites peu fréquentées. | Could (P2) | 3 | Badge calculé à partir des données Insee. | — | après v1 | ⬜ |
@@ -89,7 +89,7 @@ Total : **38 points**. Les SR travaillent uniquement dans `infra/` ; le lien ave
 |---|---|---|---|---|---|
 | T1 | Initialisation du dépôt, des outils et des conventions | E00 | S1 | terminé le 09/10 | ✅ |
 | T2 | Base de données locale (PostgreSQL + PostGIS), schéma et migrations | E01 | S1 | fusionnée le 11/10 (#44) | ✅ |
-| T3 | Chaîne de données : gares, horaires, trains directs, lieux, rattachements, transports | E02 → E07 | S2 → S4 | Jalon : données en base le 01/11 | ⬜ |
+| T3 | Chaîne de données : gares, horaires, trains directs, lieux, rattachements, transports | E02 → E07 | S2 → S4 | Jalon : données en base le 01/11 | ✅ |
 | T4 | API de l'application | E08 · E09 | S5 | Jalon : API complète le 08/11 | ✅ |
 | T5 | Socle de l'interface et design system | E10 | S6 | — | ✅ |
 | T6 | Qualité : tests, accessibilité, performance | E15 | S8 | Gel des fonctionnalités le 27/11 | ⬜ |
@@ -176,6 +176,22 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 
 ---
 
+## Vérification de l'état (05/11/2026)
+
+Lignes relues une à une dans le code et les tests. ✅ = le critère est dans le code ; l'essai sur téléphone reste à faire par Hardy.
+
+| Ligne | État | Ce qui manque |
+|---|---|---|
+| F05 | 🟡 | Seules les catégories ont un parcours ; rien de tel pour le rayon, la durée et la ville. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` |
+| F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
+| F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
+| F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
+| F20 | 🟡 | Couleurs sombres présentes ; bascule seulement sur la planche `/design`, pas dans l'application |
+| F15, F25 | ✅ | Dans le code et, pour F25, dans les tests unitaires ; aucun parcours dédié |
+| INF0 → INF9 | ⬜ | Non vérifiables d'ici : `infra/` ne contient que `CLAUDE.md` et `JOURNAL.md`, et toutes les tâches I01 → I22 y sont à ⬜ |
+
+---
+
 ## Historique
 
 | Date | Version | Modification |
@@ -183,3 +199,4 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 | 09/10/2026 | 1.0 | Création à partir de `00-vision.md` § 6, des étapes E00 → E18 et des tâches I01 → I22 ; requêtes testées au plus tôt |
 | 11/10/2026 | 1.1 | Intégré au dépôt (D032) ; T2 en cours (E01 réalisée, PR à fusionner) |
 | 19/10/2026 | 1.2 | T2 terminé (E01 fusionnée) |
+| 05/11/2026 | 1.3 | États relus dans le code et les tests : F01, F02, F03, F04, F07, F10, F11, F15, F25, T3 terminés ; F05, F06, F08, F09, F20 en cours |

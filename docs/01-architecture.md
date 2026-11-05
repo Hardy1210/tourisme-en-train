@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.9 · **Date** 05/11/2026
+> **Version** 1.10 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -53,7 +53,7 @@
 ```
 apps/web/src/
 ├─ app/
-│  ├─ (app)/page.tsx                    ← écran Explorer
+│  ├─ (app)/layout.tsx                  ← écran Explorer, gardé en vie (D069) ; page.tsx est vide
 │  ├─ (app)/destinations/[gareId]/      ← fiche destination (page ou panneau)
 │  ├─ (app)/a-propos/                   ← « L'âme du produit » + Sources
 │  ├─ api/…/route.ts                    ← routes API (contrats dans 05-api.md)
@@ -273,3 +273,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 03/11/2026 | 1.7 | § 3 : fonctionnalité `sante/` — D047 |
 | 04/11/2026 | 1.8 | § 3 : composants sur Radix, sans l'installateur shadcn — D053 |
 | 05/11/2026 | 1.9 | § 3 bis : structure complète du dépôt, déplacée de `CLAUDE.md` § 6 — D066 |
+| 05/11/2026 | 1.10 | § 3 : Explorer dans la mise en page — D069 |

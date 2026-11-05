@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D065 MapLibre 5 jusqu'au P0, risque accepté |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D065 MapLibre 5 jusqu'au P0, risque accepté |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -690,3 +690,12 @@
 - **Limite :** l'heure vient de l'appareil de l'utilisateur : une horloge fausse fausse la comparaison.
 - **Écarté :** une durée de cache plus courte, seule (ne protège ni d'un cache plus ancien, ni du futur cache hors ligne, E14).
 - **Impact :** `config/parametres.json` et son schéma, `05` § 3.4 et § 3.8, `06`, `features/localisation/fournisseur-position.tsx`, `lib/dates/heures.ts`, `lib/dates/use-maintenant.ts`, `A-FAIRE`, E14 à vérifier.
+
+## D069 — Explorer gardé en vie entre les écrans, sans aucun appel quand il est caché
+- **Date :** 05/11/2026
+- **En clair :** une fois ouvert, Explorer reste caché quand on va ailleurs : au retour, la carte et ses points sont déjà là, sans rien recharger.
+- **Décision :** `ExplorerPersistant` dans la mise en page de `(app)`, créé à la première visite, caché ensuite (`features/explorer/ui/explorer-persistant.tsx`). Conditions de Hardy : caché, il ne fait aucun appel (`useEcranVisible`, et `useUrlEcran` garde son adresse) ; au retour, il ne se met à jour que si les filtres ou la date ont changé, ou si la durée de réutilisation est dépassée. Un train parti pendant qu'il était caché disparaît dès le retour (D068).
+- **Mesure de la mémoire (05/11, production, 390 px, 5 allers-retours, 3 essais, sans carte graphique) :** tas JavaScript après ramassage. Sur Lieux : de 12,6 à 21,2 Mo, et de 1 654 à 12 170 nœuds. Sur Explorer : de 19 à 20,7 Mo. Mémoire de tous les processus du navigateur : sur Lieux, de 710-721 à 725-738 Mo ; sur Explorer, de 841-850 à 761-788 Mo, car la carte n'est plus recréée. La mémoire réelle d'un téléphone n'est pas mesurée : essai de Hardy.
+- **Écarté :** `reuseMaps` de react-map-gl seul : 0 tuile, mais retour de 666 à 2 334 ms ; `cacheComponents` de Next.js, qui préserve les écrans avec `<Activity>` d'après sa documentation : non essayé.
+- **Limite :** les liens de navigation ne gardent que la gare et la date (D067) : des catégories choisies sur Explorer sont perdues au retour.
+- **Impact :** `app/(app)/layout.tsx`, `app/(app)/page.tsx`, `lib/ecran-visible.tsx`, `01` § 3 et § 3 bis, `06`, `A-FAIRE`, parcours `explorer-en-vie.e2e.ts`.
