@@ -39,6 +39,8 @@ export type ProprietesCarte = {
   lienDe: (destination: Destination) => string;
   /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
   masqueEnBas: () => number;
+  /** Même chose en haut, sous l'en-tête posé sur la carte (mobile). */
+  masqueEnHaut: () => number;
   /** Carte plein écran sur mobile. */
   pleinEcran: { actif: boolean; bascule: () => void };
   /** Survol croisé sur grand écran : la destination survolée ici ou dans la liste. */
@@ -56,6 +58,7 @@ export function CarteExplorer({
   lieux,
   lienDe,
   masqueEnBas,
+  masqueEnHaut,
   pleinEcran,
   survolee,
   surSurvol,
@@ -82,7 +85,12 @@ export function CarteExplorer({
   );
   if (survolee !== null) etiquetees.add(survolee);
   const marge = () => ({
-    padding: { top: MARGE_PX, left: MARGE_PX, right: MARGE_PX, bottom: MARGE_PX + masqueEnBas() },
+    padding: {
+      top: MARGE_PX + masqueEnHaut(),
+      left: MARGE_PX,
+      right: MARGE_PX,
+      bottom: MARGE_PX + masqueEnBas(),
+    },
     maxZoom: 12,
     duration: 0,
   });
@@ -156,7 +164,7 @@ export function CarteExplorer({
       </div>
 
       {/* Attribution exigée par la licence, toujours visible (config/sources.json). */}
-      <p className="absolute inset-x-0 top-(--resultats-haut) -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:pb-1">
+      <p className="absolute inset-x-0 top-(--resultats-haut) hidden -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:block lg:pb-1">
         {attributionFondCarte}
       </p>
 

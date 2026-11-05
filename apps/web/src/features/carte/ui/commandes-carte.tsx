@@ -11,7 +11,7 @@ type Proprietes = {
 /** Boutons posés sur la carte : recentrer, et carte plein écran sur mobile. */
 export function CommandesCarte({ surRecentrer, pleinEcran }: Proprietes) {
   return (
-    <div className="absolute top-3 right-3 flex flex-col gap-2">
+    <div className="absolute top-[calc(var(--en-tete-hauteur,0px)+0.75rem)] right-3 flex flex-col gap-2 lg:top-3">
       <Bouton
         variante="secondaire"
         forme="icone"

@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
+import { attributionFondCarte } from '@/lib/external/fond-carte';
 import { useDestinations } from '@/features/destinations/hooks';
 import {
   dureeElargie,
@@ -29,6 +30,8 @@ type Proprietes = {
   surChoixGare: (uic: string) => void;
   position: PositionFeuille;
   surPosition: (position: PositionFeuille) => void;
+  /** Hauteur de l'en-tête posé sur la carte, pour ne rien cadrer dessous. */
+  masqueEnHaut: () => number;
 };
 
 /** « Votre gare », « À deux pas de vous », « En train direct » : tout suit les filtres de l'URL. */
@@ -40,6 +43,7 @@ export function ResultatsExplorer({
   surChoixGare,
   position,
   surPosition,
+  masqueEnHaut,
 }: Proprietes) {
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
@@ -75,7 +79,8 @@ export function ResultatsExplorer({
   const suivante = dureeElargie(filtres.dureeMax, parametres.durees.trainMaxOptionsMin);
 
   return (
-    <div className="relative min-h-0 flex-1 lg:contents">
+    <div className="min-h-0 flex-1 lg:contents">
+      {/* Relative à l'écran entier sur mobile : la carte passe sous l'en-tête (D072). */}
       <div className="absolute inset-0 lg:relative lg:col-start-2 lg:row-span-2 lg:row-start-1">
         <CarteExplorerDifferee
           key={gare.uic}
@@ -84,6 +89,7 @@ export function ResultatsExplorer({
           destinations={liste ?? []}
           lieux={lieux.data?.lieux ?? []}
           lienDe={lienDe}
+          masqueEnHaut={masqueEnHaut}
           masqueEnBas={() => {
             const element = feuille.current;
             return element && getComputedStyle(element).position === 'absolute'
@@ -98,63 +104,70 @@ export function ResultatsExplorer({
           surSurvol={setSurvolee}
         />
       </div>
-      <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
-        <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
-          <CarteVotreGare
-            nom={gare.nom}
-            distanceM={gare.distanceM}
-            dureeMarcheMin={gare.dureeMarcheMin}
-            dureeVeloMin={gare.dureeVeloMin}
-            prochainDepart={liste ? prochainTrainDirect(liste) : null}
-            surChangement={surChangementGare}
-            plusProche={
-              plusProche && {
-                nom: plusProche.nom,
-                dureeMarcheMin: plusProche.dureeMarcheMin,
-                surChoix: () => surChoixGare(plusProche.uic),
+      {/* Transparente au toucher : seule la feuille réagit, la carte reste utilisable autour. */}
+      <div className="pointer-events-none relative h-full lg:contents">
+        {/* Attribution exigée par la licence, posée sur la feuille (config/sources.json). */}
+        <p className="absolute inset-x-0 top-(--resultats-haut) z-sheet -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:hidden">
+          {attributionFondCarte}
+        </p>
+        <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
+          <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
+            <CarteVotreGare
+              nom={gare.nom}
+              distanceM={gare.distanceM}
+              dureeMarcheMin={gare.dureeMarcheMin}
+              dureeVeloMin={gare.dureeVeloMin}
+              prochainDepart={liste ? prochainTrainDirect(liste) : null}
+              surChangement={surChangementGare}
+              plusProche={
+                plusProche && {
+                  nom: plusProche.nom,
+                  dureeMarcheMin: plusProche.dureeMarcheMin,
+                  surChoix: () => surChoixGare(plusProche.uic),
+                }
               }
-            }
-          />
-          <SectionAPied
-            titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}
-            rayonLibelle={libelleRayon(filtres.rayon)}
-            lieux={lieux.data?.lieux}
-            chargement={lieux.isPending}
-            erreur={lieux.isError}
-            surReessai={() => void lieux.refetch()}
-          />
-          <SectionDestinations
-            gareNom={gare.nom}
-            destinations={liste}
-            chargement={destinations.isPending}
-            erreur={destinations.isError ? destinations.error.message : null}
-            lienDe={lienDe}
-            survolee={survolee}
-            surSurvol={setSurvolee}
-            surReessai={() => void destinations.refetch()}
-            surAujourdhui={
-              destinations.error instanceof ErreurClient && destinations.error.statut === 400
-                ? () => surModification({ date: null })
-                : null
-            }
-            elargir={
-              suivante === null
-                ? null
-                : {
-                    libelle: `Élargir à ${libelleDureeMax(suivante)} de train`,
-                    action: () => surModification({ dureeMax: suivante }),
-                  }
-            }
-            surEffacer={() =>
-              surModification({
-                categories: FILTRES_PAR_DEFAUT.categories,
-                dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
-                faisable: FILTRES_PAR_DEFAUT.faisable,
-              })
-            }
-          />
-        </div>
-      </FeuilleResultats>
+            />
+            <SectionAPied
+              titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}
+              rayonLibelle={libelleRayon(filtres.rayon)}
+              lieux={lieux.data?.lieux}
+              chargement={lieux.isPending}
+              erreur={lieux.isError}
+              surReessai={() => void lieux.refetch()}
+            />
+            <SectionDestinations
+              gareNom={gare.nom}
+              destinations={liste}
+              chargement={destinations.isPending}
+              erreur={destinations.isError ? destinations.error.message : null}
+              lienDe={lienDe}
+              survolee={survolee}
+              surSurvol={setSurvolee}
+              surReessai={() => void destinations.refetch()}
+              surAujourdhui={
+                destinations.error instanceof ErreurClient && destinations.error.statut === 400
+                  ? () => surModification({ date: null })
+                  : null
+              }
+              elargir={
+                suivante === null
+                  ? null
+                  : {
+                      libelle: `Élargir à ${libelleDureeMax(suivante)} de train`,
+                      action: () => surModification({ dureeMax: suivante }),
+                    }
+              }
+              surEffacer={() =>
+                surModification({
+                  categories: FILTRES_PAR_DEFAUT.categories,
+                  dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
+                  faisable: FILTRES_PAR_DEFAUT.faisable,
+                })
+              }
+            />
+          </div>
+        </FeuilleResultats>
+      </div>
     </div>
   );
 }

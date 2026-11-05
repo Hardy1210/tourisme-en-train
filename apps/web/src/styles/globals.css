@@ -50,7 +50,11 @@
   /* Écran Explorer : panneau sur grand écran, feuille à 3 positions sur mobile */
   --panneau-largeur: 27.5rem;
   --resultats-haut-milieu: 18.125rem;
-  --resultats-haut-carte: calc(100% - 4rem);
+  /* La poignée seule, posée sur le menu : sa hauteur est celle d'une zone tactile. */
+  --resultats-haut-carte: calc(100% - var(--spacing-touch));
+  /* Écart minimal avec le bord de l'écran, quand le téléphone n'impose pas plus (D072). */
+  --espace-bord: 0.5rem;
+  --degrade-statut-marge: 1rem;
 
   /* Barre du bas */
   --barre: #623362;
@@ -244,6 +248,7 @@
   --nav-indicator-foreground: var(--accent-foreground);
 
   /* En-têtes pleins */
+  --degrade-statut: color-mix(in oklch, var(--primary) 55%, transparent);
   --hero-bg: var(--primary);
   --hero-foreground: var(--primary-foreground);
   --hero-muted: var(--barre-texte);
@@ -571,10 +576,15 @@
 
 /* Zones sûres des téléphones à encoche */
 @utility safe-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(env(safe-area-inset-top), var(--espace-bord));
 }
 @utility safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(env(safe-area-inset-bottom), var(--espace-bord));
+}
+/* Dégradé derrière l'heure et la batterie, quand la carte passe sous la barre d'état (D072) */
+@utility degrade-statut {
+  height: calc(env(safe-area-inset-top) + var(--degrade-statut-marge));
+  background-image: linear-gradient(to bottom, var(--degrade-statut), transparent);
 }
 
 /* Rangées de filtres horizontales */
