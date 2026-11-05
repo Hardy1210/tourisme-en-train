@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -630,3 +630,23 @@
 - **Écarté :** feuille interceptant la navigation par-dessus Explorer (routes parallèles de Next.js : plus de code, à l'œil le même plein écran) ; lien TER Bourgogne-Franche-Comté de la maquette.
 - **Impact :** `config/parametres.json`, `06` § 4, fiche E12. La liste de l'onglet Lieux montre nom, durée, sous-catégorie et Qualité Tourisme : description et horaires restent dans la fiche lieu, car `LieuResume` (`05` § 3.6) ne les contient pas.
 
+---
+
+## D064 — Gare de départ par défaut : à pied, nettement mieux desservie, sans destination perdue
+- **Date :** 05/11/2026
+- **En clair :** quelqu'un qui habite à Dijon part par défaut de la gare de Dijon, même si la petite gare de Porte Neuve est un peu plus près de chez lui. On ne change de gare que si l'autre se rejoint à pied, a nettement plus de trains et ne fait disparaître aucune destination.
+- **Décision :** par défaut, la gare la plus proche. Elle n'est remplacée que par une gare de la région qui, le même jour, remplit trois conditions : à `gareConseillee.distanceMaxM` (3 km) au plus de la position ; au moins `gareConseillee.ratioTrainsMin` (1,5) fois plus de trains ; desserte d'au moins toutes les destinations de la plus proche (la gare remplaçante elle-même mise à part). S'il y en a plusieurs, celle qui a le plus de trains, à égalité la plus proche. Si la plus proche est hors région, aucune destination n'y est affichée : il n'y a rien à préserver, seules la région et la distance comptent. Même règle pour une ville choisie dans la recherche. « Changer de gare » reste libre, et un choix de l'utilisateur prime toujours.
+- **Mesure des trains :** somme des `nb_trains` de chaque destination, utilisée seulement pour comparer des gares et jamais exposée par l'API : un train y est compté une fois par arrêt desservi. Le 05/11, Dijon : score 1 035 pour 148 départs réels ; Porte Neuve : score 97 pour 20 départs.
+- **Raison :** constat de Hardy : Beaune et tout le sud absents depuis Dijon Porte Neuve (aucun train vers Beaune dans les horaires), alors que Dijon est à 2,1 km. Mais le critère « le plus de trains » dans 5 km posait trois problèmes mesurés : des destinations perdues (Belfort-Montbéliard TGV → Méroux : 26, dont Paris), des changements pour un seul train (Bretigny-Norges → Ruffey), et des gares qu'on ne rejoint pas à pied (Santenay → Chagny, Mesvres → Étang-sur-Arroux, Liesle → Arc-et-Senans, choix de Hardy : prendre une voiture pour rejoindre la gare va contre le but de Wagoo).
+- **Mesure de la distance (05/11, seuil de 1,5) :** route appelée sur les 194 gares de la région ayant des trains et 8 points autour de chacune, soit 1 746 positions, dont 2 hors région. Aucune destination perdue et aucun cas sous le seuil pour les trois distances.
+
+| Distance | Marche (`dureeMarcheMin`) | Positions où la gare change | Sur la position exacte d'une gare | Porte Neuve → Dijon, position sur la gare |
+|---|---|---|---|---|
+| 1,5 km | 26 min | 6 | 1 | non |
+| 2 km | 35 min | 14 | 2 | non |
+| 3 km | 52 min | 48 | 8 | **oui** (2 092 m, 37 min) |
+
+  3 km retenus : seule valeur mesurée qui garde Porte Neuve → Dijon sur la position de la gare. Besançon Mouillère → Viotte (1 166 m, 21 min) est corrigé dans les trois cas.
+- **Limite connue, gardée pour l'instant (choix de Hardy) :** la comparaison se fait sur le jour même. Si l'utilisateur choisit ensuite une autre date, la gare proposée ne change pas. Mesuré sur les couples du 05/11, jusqu'au 31/12 : seul Nevers Le Banlay → Nevers perd une destination (Les Perrières, sur 6 jours entre le 07/11 et le 12/12).
+- **Écarté :** garder la plus proche et afficher une suggestion (l'utilisateur tombe d'abord sur la liste pauvre) ; réunir les destinations de plusieurs gares (le départ deviendrait flou) ; 1,5 km et 2 km (voir la mesure).
+- **Impact :** `config/parametres.json`, `05` § 3.2, `features/gares/conseil.ts`, `features/gares/server/requetes.ts`, `features/explorer/depart.ts`. La carte reste honnête : « Votre gare » affiche la vraie distance.

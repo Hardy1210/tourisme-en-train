@@ -10,7 +10,7 @@ import { Bouton } from '@/components/ui/bouton';
 import { EnTete } from '@/components/ui/en-tete';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
-import { gareLaPlusProche } from '@/features/gares/hooks';
+import { gareConseilleePour } from '@/features/gares/hooks';
 import { useCommune } from '@/features/localisation/hooks';
 import { EcranHorsRegion } from '@/features/localisation/ui/ecran-hors-region';
 import { EcranSansPosition } from '@/features/localisation/ui/ecran-sans-position';
@@ -41,7 +41,7 @@ export function EcranExplorer() {
     choisirGare(uic);
   };
   const choisirPoint = async ({ lat, lon }: { lat: number; lon: number }) => {
-    const gare = await gareLaPlusProche(client, lat, lon).catch(() => null);
+    const gare = await gareConseilleePour(client, lat, lon).catch(() => null);
     if (gare) choisirGareEtFermer(gare.uic);
     else setErreurChoix(true);
   };

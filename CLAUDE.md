@@ -215,12 +215,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E12 fonctionnelle, PR ouverte à fusionner ; E11 et E12 ⏸ : vérifications de design et téléphone dans `A-FAIRE` § 1
-- **Dernière session :** 04/11/2026 — E11 fusionnée, fiche destination et fiche lieu (D063)
-- **Fait :** données et API P0 ; Explorer, fiche destination, fiche lieu en mobile et desktop ; `pnpm verifier` 388 tests, `pnpm test:integration` 153, `pnpm test:e2e` 38
-- **À valider par Hardy :** fusion de la PR de E12 ; liste de vérifications et reste de `A-FAIRE` § 1 (dont les photos des lieux)
+- **Étape en cours :** écran Lieux à planifier ; E11 et E12 ⏸ : vérifications de design et téléphone dans `A-FAIRE` § 1
+- **Dernière session :** 05/11/2026 — E11 et E12 fusionnées ; gare de départ par défaut (D064), PR #60 ouverte
+- **Fait :** données et API P0 ; Explorer, fiche destination, fiche lieu en mobile et desktop ; `pnpm verifier` 401 tests, `pnpm test:integration` 156, `pnpm test:e2e` 38
+- **À valider par Hardy :** fusion de la PR #60, puis Beaune visible chez lui sans `?gare=` ; reste de `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** après la fusion, lire `docs/etapes/E13-*.md` et proposer le plan de E13 (« L'âme du produit » et écran Sources)
+- **Prochaine action précise :** après la fusion de la PR #60, proposer le plan de l'écran Lieux (`apps/web/src/app/(app)/lieux/page.tsx`, page provisoire ; `/api/lieux` prête, D056), à valider avant de coder
 ---
 
 ## 10. Réaliser une étape
@@ -396,4 +396,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
 | 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
 | 03–04/11/2026 | 1.32 → 1.41 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
-| 04/11/2026 | 1.42 | § 16 : `pnpm test:e2e` ; § 8 et § 9 : E11 et E12 ⏸ — D063 |
+| 04–05/11/2026 | 1.42 | § 16 : `pnpm test:e2e` ; § 8 et § 9 : E11 et E12 ⏸ — D063, D064 |

@@ -28,8 +28,8 @@ export function useGare(uic: string | null) {
   });
 }
 
-/** Gare la plus proche d'un point choisi dans la recherche de ville ; null s'il n'y en a aucune. */
-export async function gareLaPlusProche(client: QueryClient, lat: number, lon: number) {
-  const { gares } = await client.fetchQuery(optionsProches(lat, lon));
-  return gares[0] ?? null;
+/** Gare conseillée pour un point choisi dans la recherche de ville ; null s'il n'y en a aucune. */
+export async function gareConseilleePour(client: QueryClient, lat: number, lon: number) {
+  const { gares, uicConseille } = await client.fetchQuery(optionsProches(lat, lon));
+  return gares.find((g) => g.uic === uicConseille) ?? null;
 }

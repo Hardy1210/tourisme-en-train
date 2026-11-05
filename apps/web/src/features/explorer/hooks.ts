@@ -17,7 +17,7 @@ const statutDe = (erreur: unknown): number | null => {
 
 /**
  * Gare de départ de l'écran. `?gare=<uic>` n'est écrit que sur un choix de l'utilisateur : la gare
- * la plus proche, calculée depuis sa position, ne doit jamais se retrouver dans un lien (D058).
+ * conseillée, calculée depuis sa position, ne doit jamais se retrouver dans un lien (D058).
  */
 export function useDepart() {
   const routeur = useRouter();
@@ -35,6 +35,7 @@ export function useDepart() {
     gareChoisie: { donnees: gareChoisie.data, statutErreur: statutDe(gareChoisie.error) },
     position,
     proches: { donnees: proches.data?.gares, statutErreur: statutDe(proches.error) },
+    uicConseille: proches.data?.uicConseille ?? null,
   });
 
   const ecrireGare = useCallback(

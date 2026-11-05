@@ -1,6 +1,6 @@
 # 00 — Vision, utilisateurs et périmètre
 
-> **Version** 1.2 · **Date** 11/10/2026
+> **Version** 1.3 · **Date** 05/11/2026
 > **Dépend de :** `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents ; en particulier `05-api.md`, `06-interface.md`, fiches E08 → E13, `BACKLOG.md`
 > **Document de référence pour :** le produit, les fonctionnalités, les priorités, le périmètre.
@@ -63,7 +63,7 @@ Priorités : **P0** indispensable au rendu · **P1** prévu, abandonné seulemen
 |---|---|---|---|---|
 | F01 | Localisation automatique | Position demandée à l'ouverture ; refus → recherche de ville/adresse | P0 | E09, E11 |
 | F02 | Autour de moi | Résultats immédiats : lieux à pied et gares proches de la position | P0 | E08, E11 |
-| F03 | Gare de départ | Les gares les plus proches, avec distance ; changement possible | P0 | E08, E11 |
+| F03 | Gare de départ | La plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064), avec distance ; changement possible | P0 | E08, E11 |
 | F04 | Destinations en train direct | Gares atteignables sans correspondance à la date choisie : durée, fréquence, premier départ, dernier retour | P0 | E02, E03, E04, E08, E11 |
 | F05 | Filtres | Rayon, durée de train maximale, autre ville, catégories, date | P0 | E11 |
 | F06 | Fiche destination | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel | P0 | E05, E06, E09, E12 |
@@ -134,3 +134,4 @@ Nom de code : `tourisme-en-train`. Marque : **Wagoo** (provisoire), définie uni
 | 30/09/2026 | 1.0 | Création |
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : partage (P1), week-end (P1), vélos disponibles (P1), temps réel limité à aujourd'hui, transport à la demande exclu — D017 à D020 |
 | 11/10/2026 | 1.2 | Renvoi vers `BACKLOG.md` ; colonne « Étape » alignée sur les tâches du backlog — D032 |
+| 05/11/2026 | 1.3 | F03 : gare mieux desservie et à pied, sans destination perdue — D064 |
