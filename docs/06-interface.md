@@ -125,7 +125,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 |---|---|
 | Manifest | Généré par `app/manifest.ts` depuis `config/marque.ts` ; icônes 192/512 + maskable ; `display: standalone` ; `lang: fr` |
 | Service worker | Serwist : précache de l'interface ; réseau d'abord pour une liste explicite de routes et les pages (`lib/pwa/routes-hors-ligne.ts`, `cache.reseauMaxS`, `cache.horsLigneS`, `cache.horsLigneEntrees`) ; **jamais une adresse avec une position** (D071). Le cache hors ligne ne change rien aux trains partis : l'écran compare toujours l'heure du train à l'heure actuelle (D068). |
-| Hors ligne | Dernières recherches lisibles, à partir de la dernière gare gardée sur l'appareil ; bandeau « Vous êtes hors ligne » ; carte sans fond ; page jamais ouverte : message, navigation et retour ; réseau revenu : tout se met à jour seul |
+| Hors ligne | Dernières recherches lisibles, à partir de la dernière gare gardée sur l'appareil ; bandeau « Vous êtes hors ligne » ; carte sans fond ; page jamais ouverte : message, navigation et lien vers Explorer ; réseau revenu : tout se met à jour seul |
 | Scripts qui ne se chargent pas | Message et lien pour recharger, après 8 s, au lieu d'une page blanche |
 | Installation | Android et iPhone. Icônes provisoires. Invitation discrète après une première recherche réussie, jamais au premier affichage : reportée (`A-FAIRE`) |
 

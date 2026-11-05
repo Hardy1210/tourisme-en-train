@@ -91,7 +91,7 @@ test.describe('avec le service worker', () => {
     await expect(page.getByRole('tab').first()).toBeVisible();
   });
 
-  test('hors ligne, une fiche jamais ouverte montre un message, la navigation reste là, et le retour marche', async ({
+  test('hors ligne, une fiche jamais ouverte montre un message, la navigation reste là, et on peut revenir', async ({
     page,
     context,
   }) => {
@@ -101,8 +101,10 @@ test.describe('avec le service worker', () => {
 
     await expect(page.getByRole('heading', { name: PAS_DISPONIBLE })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Navigation principale' })).toBeVisible();
-    await page.getByRole('button', { name: 'Retour' }).click();
-    await expect(sorties(page).first()).toBeVisible();
+    await page.getByRole('button', { name: 'Revenir à Explorer' }).click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByText(BANDEAU)).toBeVisible();
+    await expect(page.getByRole('heading', { name: PAS_DISPONIBLE })).toHaveCount(0);
   });
 
   test('le réseau revient : la fiche demandée s’ouvre toute seule', async ({ page, context }) => {

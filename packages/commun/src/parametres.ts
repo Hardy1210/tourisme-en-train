@@ -105,6 +105,8 @@ export const schemaParametres = z
       horsLigneEntrees: z.number().int().positive(),
       /** Sans réponse du réseau après ce délai, la copie est servie. */
       reseauMaxS: z.number().int().positive(),
+      /** Page indisponible hors ligne : rythme de vérification du retour du réseau. */
+      verificationReseauS: z.number().int().positive(),
     }),
     durees: z.strictObject({
       trainMaxOptionsMin: z.array(z.number().int().positive()).min(1),

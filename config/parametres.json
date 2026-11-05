@@ -46,7 +46,8 @@
     "horlogeTrainsS": 10,
     "horsLigneS": 86400,
     "horsLigneEntrees": 50,
-    "reseauMaxS": 4
+    "reseauMaxS": 4,
+    "verificationReseauS": 5
   },
   "durees": {
     "trainMaxOptionsMin": [30, 60, 120, 180],
