@@ -74,3 +74,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : décision de Hardy : fusionner E11 telle quelle et passer à E12 ; la liste des vérifications restantes est dans `A-FAIRE` § 1, à reprendre point par point une fois la fiche en place.
 - 05/11/2026 : gare de départ par défaut : la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064).
 - 05/11/2026 : écran Lieux en mobile et sur grand écran, d'après les maquettes `Explorer Mobile v3` et `Explorer Desktop v3` (D067).
+- 05/11/2026 : changer d'onglet ne recharge plus la position ni les appels récents ; un train parti disparaît de l'écran (D068).

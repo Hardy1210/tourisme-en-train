@@ -1,5 +1,6 @@
 // /api/destinations sur l'échantillon (db/echantillon/echantillon.sql, section E08) : liaisons au
 // départ de Dijon-Ville le 18/11 (hiver) et le 15/07 (été). D047, D049, D050 (seuil de 3 lieux).
+import { parametres as reglages } from '@/config/parametres';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { type Destination, schemaReponseDestinations } from '@/features/destinations/schemas';
@@ -48,7 +49,7 @@ describe('/api/destinations, catégories secondaires (D060)', () => {
 describe('/api/destinations', () => {
   it('Beaune dans la tranche <=30 (critère de la fiche E08), cache de 300 s', async () => {
     const reponse = await appeler(route, `/api/destinations?gare=${dijon}&date=${HIVER}`);
-    expect(reponse.cache).toBe('public, max-age=300');
+    expect(reponse.cache).toBe(`public, max-age=${reglages.cache.horairesPrevusS}`);
     const beaune = ville(schemaReponseDestinations.parse(reponse.corps).destinations, 'Beaune');
     expect(beaune).toMatchObject({ dureeMin: 22, trancheTemps: '<=30', nbTrains: 2 });
   });

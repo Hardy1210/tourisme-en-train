@@ -1,4 +1,5 @@
 // Mise en forme des destinations : calculs purs, sans lecture de l'horloge.
+import { trainParti } from '@/lib/dates/heures';
 import type { Destination } from './schemas';
 
 /** « 22 min », « 1 h », « 1 h 34 ». */
@@ -6,6 +7,25 @@ export function formaterDuree(minutes: number): string {
   if (minutes < 60) return `${minutes} min`;
   const reste = minutes % 60;
   return `${Math.floor(minutes / 60)} h${reste === 0 ? '' : ` ${String(reste).padStart(2, '0')}`}`;
+}
+
+/** Le train annoncé est parti et la réponse suivante n'est pas encore là. */
+export type DestinationAffichee = Destination & { prochainPerime?: boolean };
+
+/**
+ * Un train déjà parti n'est jamais affiché, quel que soit l'âge de la réponse (cache, D068). Sans lui,
+ * la carte ne doit pas annoncer « Plus de train » : le suivant existe peut-être.
+ */
+export function sansTrainsPartis(
+  destinations: readonly Destination[],
+  dateService: string,
+  maintenant: { dateDuJour: string; heureActuelleS: number },
+): DestinationAffichee[] {
+  return destinations.map((d) =>
+    d.prochainDepart !== null && trainParti(d.prochainDepart.s, dateService, maintenant)
+      ? { ...d, prochainDepart: null, prochaineArrivee: null, prochainPerime: true }
+      : d,
+  );
 }
 
 /** Couleur de la tranche de temps ; classes entières pour que Tailwind les trouve. */

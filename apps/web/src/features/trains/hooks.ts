@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { parametres } from '@/config/parametres';
 import { lireApi } from '@/lib/http/client';
 import { schemaReponseTrains } from './schemas';
 
@@ -10,6 +11,7 @@ export function useTrains(depart: string, arrivee: string, date: string | null) 
   const chemin = `/api/trains?${requete.toString()}`;
   return useQuery({
     queryKey: ['trains', chemin],
+    staleTime: parametres.cache.horairesPrevusS * 1000,
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseTrains, signal),
   });
 }

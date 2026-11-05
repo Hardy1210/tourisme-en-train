@@ -2,13 +2,14 @@ import { Route } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
+import type { DestinationAffichee } from '../presentation';
 import type { Destination } from '../schemas';
 import { CarteDestination } from './carte-destination';
 import { LegendeTemps } from './legende-temps';
 
 type Proprietes = {
   gareNom: string;
-  destinations: readonly Destination[] | undefined;
+  destinations: readonly DestinationAffichee[] | undefined;
   chargement: boolean;
   /** Message d'erreur à montrer (ex. date hors des horaires) ; null sinon. */
   erreur: string | null;

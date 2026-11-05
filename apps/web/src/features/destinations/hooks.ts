@@ -1,9 +1,12 @@
 'use client';
 
-import type { Categorie } from '@tourisme/commun';
+import { dateDuJour, type Categorie } from '@tourisme/commun';
 import { useQuery } from '@tanstack/react-query';
+import { parametres } from '@/config/parametres';
 import { lireApi } from '@/lib/http/client';
 import { schemaFicheDestination, schemaReponseDestinations } from './schemas';
+
+const DUREE_HORAIRES_MS = parametres.cache.horairesPrevusS * 1000;
 
 type Options = {
   gare: string;
@@ -19,6 +22,9 @@ export function useDestinations({ gare, date, categories, dureeMax }: Options) {
   const chemin = `/api/destinations?${requete.toString()}`;
   return useQuery({
     queryKey: ['destinations', chemin],
+    staleTime: DUREE_HORAIRES_MS,
+    // Aujourd'hui seulement : le prochain train dépend de l'heure (D068).
+    refetchInterval: date === null || date === dateDuJour() ? DUREE_HORAIRES_MS : false,
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseDestinations, signal),
   });
 }

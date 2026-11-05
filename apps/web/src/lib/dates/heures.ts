@@ -41,3 +41,16 @@ export function heure(secondes: number): Heure {
 export function heureOuNull(secondes: number | null | undefined): Heure | null {
   return secondes === null || secondes === undefined ? null : heure(secondes);
 }
+
+/**
+ * Vrai si le train est déjà parti. Compté en secondes depuis minuit de la date de service, comme
+ * l'horaire GTFS : à 00:30 le lendemain, un train à « 24:45 » est encore à venir (CLAUDE.md § 3).
+ */
+export function trainParti(
+  secondes: number,
+  dateService: string,
+  maintenant: { dateDuJour: string; heureActuelleS: number },
+): boolean {
+  const jours = (Date.parse(maintenant.dateDuJour) - Date.parse(dateService)) / 86_400_000;
+  return secondes < maintenant.heureActuelleS + jours * SECONDES_PAR_JOUR;
+}

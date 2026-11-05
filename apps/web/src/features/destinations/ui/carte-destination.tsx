@@ -13,10 +13,10 @@ import {
   formaterPrix,
   MENTION_ESTIMATION,
 } from '../presentation';
-import type { Destination } from '../schemas';
+import type { DestinationAffichee } from '../presentation';
 
 type Proprietes = {
-  destination: Destination;
+  destination: DestinationAffichee;
   lien: string;
   /** Survol croisé avec la carte, sur grand écran. */
   survolee: boolean;
@@ -125,7 +125,9 @@ export function CarteDestination({ destination: d, lien, survolee, surSurvol }: 
             </strong>
           </span>
         ) : (
-          <span className="text-muted-foreground">Plus de train direct ce jour</span>
+          <span className="text-muted-foreground">
+            {d.prochainPerime ? 'Prochain train : mise à jour…' : 'Plus de train direct ce jour'}
+          </span>
         )}
         {d.prixEstime && (
           <span
