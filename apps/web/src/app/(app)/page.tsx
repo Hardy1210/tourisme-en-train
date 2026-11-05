@@ -1,11 +1,4 @@
-import { Suspense } from 'react';
-import { EcranExplorer } from '@/features/explorer/ui/ecran-explorer';
-
-// Suspense : l'écran lit l'URL (useSearchParams), connue seulement dans le navigateur.
+// Explorer vit dans la mise en page, pour rester en vie entre les écrans (D069).
 export default function Accueil() {
-  return (
-    <Suspense>
-      <EcranExplorer />
-    </Suspense>
-  );
+  return null;
 }

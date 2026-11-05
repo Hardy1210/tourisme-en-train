@@ -2,6 +2,7 @@
 
 import { useQuery, type QueryClient } from '@tanstack/react-query';
 import { schemaFicheDestination } from '@/features/destinations/schemas';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { lireApi } from '@/lib/http/client';
 import { schemaReponseGaresProches } from './schemas';
 
@@ -12,17 +13,19 @@ const optionsProches = (lat: number, lon: number) => ({
 });
 
 export function useGaresProches(position: { lat: number; lon: number } | null) {
+  const visible = useEcranVisible();
   return useQuery({
     ...optionsProches(position?.lat ?? 0, position?.lon ?? 0),
-    enabled: position !== null,
+    enabled: visible && position !== null,
   });
 }
 
 /** Gare désignée par son code UIC (lien, choix de l'utilisateur). */
 export function useGare(uic: string | null) {
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['gare', uic],
-    enabled: uic !== null,
+    enabled: visible && uic !== null,
     queryFn: ({ signal }) => lireApi(`/api/destinations/${uic}`, schemaFicheDestination, signal),
     select: (fiche) => fiche.gare,
   });

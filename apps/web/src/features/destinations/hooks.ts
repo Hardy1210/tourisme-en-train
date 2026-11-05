@@ -3,6 +3,7 @@
 import { dateDuJour, type Categorie } from '@tourisme/commun';
 import { useQuery } from '@tanstack/react-query';
 import { parametres } from '@/config/parametres';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { lireApi } from '@/lib/http/client';
 import { schemaFicheDestination, schemaReponseDestinations } from './schemas';
 
@@ -20,11 +21,14 @@ export function useDestinations({ gare, date, categories, dureeMax }: Options) {
   if (date !== null) requete.set('date', date);
   if (categories.length > 0) requete.set('categories', categories.join(','));
   const chemin = `/api/destinations?${requete.toString()}`;
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['destinations', chemin],
+    enabled: visible,
     staleTime: DUREE_HORAIRES_MS,
     // Aujourd'hui seulement : le prochain train dépend de l'heure (D068).
-    refetchInterval: date === null || date === dateDuJour() ? DUREE_HORAIRES_MS : false,
+    refetchInterval:
+      visible && (date === null || date === dateDuJour()) ? DUREE_HORAIRES_MS : false,
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseDestinations, signal),
   });
 }

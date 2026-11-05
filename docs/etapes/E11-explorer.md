@@ -76,4 +76,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : écran Lieux en mobile et sur grand écran, d'après les maquettes `Explorer Mobile v3` et `Explorer Desktop v3` (D067).
 - 05/11/2026 : changer d'onglet ne recharge plus la position ni les appels récents ; un train parti disparaît de l'écran (D068).
 - 05/11/2026 : « Votre gare » montre le temps à pied et la gare la plus proche quand une autre est proposée (D064).
-- 05/11/2026 : audit du retour sur Explorer : la carte est recréée à chaque retour ; décision de Hardy attendue (`A-FAIRE` § 1).
+- 05/11/2026 : Explorer gardé en vie entre les écrans, sans appel quand il est caché (D069).
