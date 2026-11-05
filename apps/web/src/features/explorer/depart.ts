@@ -41,6 +41,8 @@ export type EntreesDepart = {
   }>;
   position: EtatPosition;
   proches: Requete<GareProche[]>;
+  /** Gare proposée par défaut (D064) ; sans elle, la plus proche. */
+  uicConseille?: string | null;
 };
 
 export function calculerDepart({
@@ -48,6 +50,7 @@ export function calculerDepart({
   gareChoisie,
   position,
   proches,
+  uicConseille = null,
 }: EntreesDepart): Depart {
   if (uicChoisi !== null) {
     // 400 : code mal formé dans un lien ; 404 : gare disparue. Dans les deux cas, on redemande.
@@ -80,21 +83,21 @@ export function calculerDepart({
   if (proches.statutErreur !== null) return { etat: 'erreur' };
   if (!proches.donnees) return { etat: 'chargement' };
 
-  const [plusProche] = proches.donnees;
-  if (!plusProche) return { etat: 'erreur' };
-  if (!plusProche.dansRegion) return { etat: 'hors_region' };
+  const gare = proches.donnees.find((g) => g.uic === uicConseille) ?? proches.donnees[0];
+  if (!gare) return { etat: 'erreur' };
+  if (!gare.dansRegion) return { etat: 'hors_region' };
   return {
     etat: 'pret',
     origine: 'position',
     point: { lat: position.lat, lon: position.lon },
     gare: {
-      uic: plusProche.uic,
-      nom: plusProche.nom,
-      commune: plusProche.commune,
-      lat: plusProche.lat,
-      lon: plusProche.lon,
-      distanceM: plusProche.distanceM,
-      dureeVeloMin: plusProche.dureeVeloMin,
+      uic: gare.uic,
+      nom: gare.nom,
+      commune: gare.commune,
+      lat: gare.lat,
+      lon: gare.lon,
+      distanceM: gare.distanceM,
+      dureeVeloMin: gare.dureeVeloMin,
     },
     proches: proches.donnees,
   };

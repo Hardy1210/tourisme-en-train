@@ -87,6 +87,11 @@ export const schemaParametres = z
       mobiliteM: schemaDistanceM,
       cyclableM: schemaDistanceM,
     }),
+    /** Remplacer la gare la plus proche (D064) : gare à pied, avec assez de trains en plus. */
+    gareConseillee: z.strictObject({
+      distanceMaxM: schemaDistanceM,
+      ratioTrainsMin: z.number().min(1),
+    }),
     durees: z.strictObject({
       trainMaxOptionsMin: z.array(z.number().int().positive()).min(1),
       tranchesTempsMin: z.array(z.number().int().positive()).min(1),
