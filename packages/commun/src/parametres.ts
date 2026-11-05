@@ -100,6 +100,11 @@ export const schemaParametres = z
       donneesStablesS: z.number().int().positive(),
       /** Un train parti disparaît de l'écran au plus tard après ce délai. */
       horlogeTrainsS: z.number().int().positive(),
+      /** Service worker (D071) : durée d'une copie hors ligne et nombre de copies par cache. */
+      horsLigneS: z.number().int().positive(),
+      horsLigneEntrees: z.number().int().positive(),
+      /** Sans réponse du réseau après ce délai, la copie est servie. */
+      reseauMaxS: z.number().int().positive(),
     }),
     durees: z.strictObject({
       trainMaxOptionsMin: z.array(z.number().int().positive()).min(1),

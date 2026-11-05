@@ -24,7 +24,8 @@ export default defineConfig({
   outputDir: '../../test-results',
   reporter: 'list',
   forbidOnly: true,
-  use: { baseURL: urlApp, trace: 'retain-on-failure' },
+  // Sans service worker par défaut : il masquerait les réponses simulées. Activé dans pwa.e2e.ts.
+  use: { baseURL: urlApp, trace: 'retain-on-failure', serviceWorkers: 'block' },
   projects: [
     {
       name: 'mobile',

@@ -140,3 +140,40 @@ describe('plusProcheDifferente', () => {
     expect(plusProcheDifferente(pret('GRANDE', [horsRegion, grande]))).toBeNull();
   });
 });
+
+describe('calculerDepart hors ligne', () => {
+  const copie = { uic: 'DIJON', nom: 'Dijon', commune: 'Dijon', lat: 47.3, lon: 5 };
+  const ERREUR = { donnees: undefined, statutErreur: 500 };
+
+  it('reprend la dernière gare si les gares proches ne répondent pas', () => {
+    const depart = calculerDepart(
+      entrees({ position: TROUVEE, proches: ERREUR, gareHorsLigne: copie }),
+    );
+    expect(depart).toMatchObject({ etat: 'pret', origine: 'choix', gare: { uic: 'DIJON' } });
+  });
+  it('ne garde jamais la position de l’utilisateur comme point de départ', () => {
+    const depart = calculerDepart(
+      entrees({ position: TROUVEE, proches: ERREUR, gareHorsLigne: copie }),
+    );
+    expect(depart).toMatchObject({ point: { lat: copie.lat, lon: copie.lon } });
+  });
+  it('sans dernière gare, reste en erreur', () => {
+    expect(calculerDepart(entrees({ position: TROUVEE, proches: ERREUR })).etat).toBe('erreur');
+  });
+  it('une réponse du réseau passe avant la copie', () => {
+    const depart = calculerDepart(
+      entrees({
+        position: TROUVEE,
+        proches: { donnees: [gareProche(true)], statutErreur: null },
+        gareHorsLigne: copie,
+      }),
+    );
+    expect(depart).toMatchObject({ gare: { uic: '87713040' } });
+  });
+  it('une autre gare choisie dans le lien ne prend pas la copie', () => {
+    const depart = calculerDepart(
+      entrees({ uicChoisi: 'AUTRE', gareChoisie: ERREUR, gareHorsLigne: copie }),
+    );
+    expect(depart.etat).toBe('erreur');
+  });
+});

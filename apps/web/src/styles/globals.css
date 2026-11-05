@@ -462,6 +462,8 @@
   --animate-fade-in: fade-in calc(200ms * var(--motion-speed)) var(--ease-soft) both;
   --animate-slide-up: slide-up calc(320ms * var(--motion-speed)) var(--ease-soft) both;
   --animate-pulse-dot: pulse-dot calc(1800ms * var(--motion-speed)) ease-out infinite;
+  /* Message de secours (D071) : n'apparaît que si l'application n'a pas démarré après 8 s. */
+  --animate-chargement-lent: fade-in calc(200ms * var(--motion-speed)) ease-out 8s both;
   --animate-skeleton: skeleton calc(1400ms * var(--motion-speed)) ease-in-out infinite;
 }
 

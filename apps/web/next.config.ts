@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { withSerwist } from '@serwist/turbopack';
 import type { NextConfig } from 'next';
 
 // Racine de l'espace de travail : le fichier .env et config/parametres.json y vivent.
@@ -23,4 +24,4 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: RACINE,
 };
 
-export default nextConfig;
+export default withSerwist(nextConfig);

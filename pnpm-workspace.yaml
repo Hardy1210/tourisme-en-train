@@ -6,5 +6,6 @@ packages:
 # Scripts d'installation des dépendances : autorisés un par un (pnpm 11, D029).
 # false = refusé : le paquet fonctionne avec ses binaires précompilés.
 allowBuilds:
+  '@swc/core': false # paquet natif déjà compilé : aucun script d'installation (E14)
   esbuild: true # binaire natif utilisé par tsx (traitement des données) et, en E14, par Serwist
   unrs-resolver: false

@@ -40,7 +40,14 @@
     "cyclableM": 3000
   },
   "gareConseillee": { "distanceMaxM": 3000, "ratioTrainsMin": 1.5 },
-  "cache": { "horairesPrevusS": 60, "donneesStablesS": 600, "horlogeTrainsS": 10 },
+  "cache": {
+    "horairesPrevusS": 60,
+    "donneesStablesS": 600,
+    "horlogeTrainsS": 10,
+    "horsLigneS": 86400,
+    "horsLigneEntrees": 50,
+    "reseauMaxS": 4
+  },
   "durees": {
     "trainMaxOptionsMin": [30, 60, 120, 180],
     "tranchesTempsMin": [30, 60, 90]
