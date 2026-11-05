@@ -6,6 +6,9 @@ const DIJON_VILLE = { latitude: 47.3233, longitude: 5.0272 };
 const DATE = '2026-11-18';
 const ECRAN = `/lieux?date=${DATE}`;
 
+// Une réponse encore en cours à la fin d'un test ne doit pas faire échouer le suivant.
+test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
+
 test.beforeEach(async ({ context, baseURL }) => {
   await couperLeReseau(context, baseURL);
   await context.route('**/api/geocodage/inverse*', (requete) =>

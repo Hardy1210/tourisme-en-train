@@ -6,6 +6,7 @@ import {
   formaterKg,
   formaterPrix,
   prochainTrainDirect,
+  sansTrainsPartis,
 } from './presentation';
 import type { Destination } from './schemas';
 
@@ -77,5 +78,32 @@ describe('dureeElargie', () => {
 
   it('ne propose rien depuis la plus grande', () => {
     expect(dureeElargie(180, [30, 60, 120, 180])).toBeNull();
+  });
+});
+
+describe('sansTrainsPartis', () => {
+  const JOUR = '2026-11-18';
+  const a = (heureActuelleS: number) => ({ dateDuJour: JOUR, heureActuelleS });
+  const dix = destination('Beaune', heure(36_000, '10:00'));
+
+  it('garde un train à l’heure exacte de son départ', () => {
+    expect(sansTrainsPartis([dix], JOUR, a(36_000))[0]?.prochainDepart?.texte).toBe('10:00');
+  });
+  it('retire un train parti, sans annoncer qu’il n’y en a plus', () => {
+    const [carte] = sansTrainsPartis([dix], JOUR, a(36_001));
+    expect(carte?.prochainDepart).toBeNull();
+    expect(carte?.prochaineArrivee).toBeNull();
+    expect(carte?.prochainPerime).toBe(true);
+  });
+  it('ne marque pas une destination qui n’a réellement plus de train', () => {
+    const [carte] = sansTrainsPartis([destination('Dole', null)], JOUR, a(36_001));
+    expect(carte?.prochainPerime).toBeUndefined();
+  });
+  it('« Votre gare » annonce le train suivant encore à venir', () => {
+    const liste = [dix, destination('Dole', heure(36_600, '10:10'))];
+    expect(prochainTrainDirect(sansTrainsPartis(liste, JOUR, a(36_001)))).toBe('10:10 → Dole');
+  });
+  it('« Votre gare » n’annonce rien quand tous sont partis', () => {
+    expect(prochainTrainDirect(sansTrainsPartis([dix], JOUR, a(36_001)))).toBeNull();
   });
 });

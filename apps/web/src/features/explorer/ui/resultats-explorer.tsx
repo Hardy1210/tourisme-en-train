@@ -3,7 +3,12 @@
 import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
 import { useDestinations } from '@/features/destinations/hooks';
-import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
+import {
+  dureeElargie,
+  prochainTrainDirect,
+  sansTrainsPartis,
+} from '@/features/destinations/presentation';
+import { useMaintenant } from '@/lib/dates/use-maintenant';
 import { SectionDestinations } from '@/features/destinations/ui/section-destinations';
 import type { Destination } from '@/features/destinations/schemas';
 import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
@@ -37,6 +42,7 @@ export function ResultatsExplorer({
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
   const { gare, point, origine } = depart;
+  const maintenant = useMaintenant();
   const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
   const destinations = useDestinations({
     gare: gare.uic,
@@ -46,9 +52,16 @@ export function ResultatsExplorer({
   });
 
   // « Faisable dans la journée » s'applique ici, dans l'interface (docs/05-api.md § 3.4).
-  const liste = filtres.faisable
-    ? destinations.data?.destinations.filter((d) => d.faisableJournee)
-    : destinations.data?.destinations;
+  const reponse = destinations.data;
+  const filtrees = filtres.faisable
+    ? reponse?.destinations.filter((d) => d.faisableJournee)
+    : reponse?.destinations;
+  // Une autre date, choisie exprès, montre sa journée entière.
+  const pourAujourdhui = filtres.date === null || filtres.date === maintenant.dateDuJour;
+  const liste =
+    filtrees && reponse && pourAujourdhui
+      ? sansTrainsPartis(filtrees, reponse.date, maintenant)
+      : filtrees;
 
   const lienDe = (destination: Destination) => {
     const suite = new URLSearchParams({ depuis: gare.uic });

@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D065 MapLibre 5 jusqu'au P0, risque accepté |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D065 MapLibre 5 jusqu'au P0, risque accepté |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -678,3 +678,15 @@
 - **Choix confirmés par Hardy (05/11) :** favoris et récompenses gardés pour Mon espace ; photos après les objectifs principaux (`A-FAIRE` § 1) ; maquettes HTML hors du dépôt (2,5 Mo chacune, `.gitignore`).
 - **Écarté :** boutons favoris et récompenses (message « bientôt » seulement) ; la limite de 40 cartes de la maquette (`limites.lieuxParPage` et « Voir plus », D056).
 - **Impact :** `06`, `features/explorer/ui/ecran-lieux.tsx`, `controles-depart.tsx`, `features/lieux/ui/liste-lieux-accessibles.tsx`, `app/(app)/nav-basse.tsx`, `A-FAIRE`, fiche E11.
+
+## D068 — Position gardée entre les écrans, durée de cache par type de données, train parti jamais affiché
+- **Date :** 05/11/2026
+- **En clair :** passer d'Explorer à Lieux ne relance plus la recherche de position ni les appels récents, et un train déjà parti disparaît de l'écran, même si la réponse enregistrée l'annonce encore.
+- **Décision :**
+  1. **Position** gardée au-dessus des écrans (`FournisseurPosition`), en mémoire seulement : ni stockage du navigateur, ni base, ni journal (règle 5). Redemandée au rechargement de la page ou avec « Ma position ». Compromis accepté par Hardy : elle ne suit pas un déplacement pendant que l'application reste ouverte.
+  2. **Durées par type de données** dans `parametres.cache` : `horairesPrevusS` (60 s : réponses avec le prochain train, navigateur, réutilisation et rafraîchissement) ; `donneesStablesS` (600 s : lieux, gares, sources, réutilisation pendant la navigation) ; `horlogeTrainsS` (10 s : voir 3). Le temps réel (P1) aura sa propre durée, sans toucher aux autres.
+  3. **Train parti :** la durée de cache n'est pas ce qui protège. L'écran compare l'heure de chaque train à l'heure actuelle (`trainParti`, en secondes de la date de service, y compris après minuit), relue toutes les `horlogeTrainsS` et au retour sur l'onglet. Un train parti disparaît donc en 10 s au plus, quel que soit l'âge de la réponse. La carte annonce « Prochain train : mise à jour… » et non « Plus de train », qui serait faux. Une autre date, choisie exprès, montre sa journée entière.
+- **Raison :** constat de Hardy : rechargement à chaque changement d'onglet, mesuré aussi en production. Avant cette décision, le cache du navigateur gardait `/api/destinations` 5 min et `/api/trains` 15 min : un train parti pouvait déjà rester affiché aussi longtemps.
+- **Limite :** l'heure vient de l'appareil de l'utilisateur : une horloge fausse fausse la comparaison.
+- **Écarté :** une durée de cache plus courte, seule (ne protège ni d'un cache plus ancien, ni du futur cache hors ligne, E14).
+- **Impact :** `config/parametres.json` et son schéma, `05` § 3.4 et § 3.8, `06`, `features/localisation/fournisseur-position.tsx`, `lib/dates/heures.ts`, `lib/dates/use-maintenant.ts`, `A-FAIRE`, E14 à vérifier.

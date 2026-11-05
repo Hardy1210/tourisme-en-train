@@ -7,8 +7,9 @@ import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { formaterDuree } from '@/features/destinations/presentation';
 import { cn } from '@/lib/classes';
+import { useMaintenant } from '@/lib/dates/use-maintenant';
 import { useTrains } from '../hooks';
-import { formaterHeure, libelleTrain, lignesRetour } from '../presentation';
+import { formaterHeure, libelleTrain, lignesRetour, trainsAVenir } from '../presentation';
 import type { Train } from '../schemas';
 
 function LigneTrain({ train, dernier = false }: { train: Train; dernier?: boolean }) {
@@ -87,6 +88,7 @@ function Horaires({
   surAutreDate,
 }: Proprietes & { depart: { uic: string; nom: string } }) {
   const trains = useTrains(depart.uic, arrivee.uic, date);
+  const maintenant = useMaintenant();
 
   if (trains.isPending) {
     return (
@@ -106,9 +108,13 @@ function Horaires({
     );
   }
 
-  const { aller, retour, dernierRetour } = trains.data;
+  // Une autre date, choisie exprès, montre sa journée entière.
+  const pourAujourdhui = date === null || date === maintenant.dateDuJour;
+  const { aller, retour, dernierRetour } = pourAujourdhui
+    ? trainsAVenir(trains.data, maintenant)
+    : trains.data;
   if (aller.length === 0) {
-    return date === null ? (
+    return pourAujourdhui ? (
       <EtatVide
         titre="Plus de train direct aujourd'hui"
         texte="Le dernier train direct de la journée est déjà parti."

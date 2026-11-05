@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formaterHeure, libelleTrain, lignesRetour } from './presentation';
+import { formaterHeure, libelleTrain, lignesRetour, trainsAVenir } from './presentation';
 import type { Train } from './schemas';
 
 const train = (id: string): Train => ({
@@ -43,5 +43,29 @@ describe('lignesRetour', () => {
   });
   it('n’ajoute rien quand il n’y a aucun retour à prendre', () => {
     expect(lignesRetour([], train('z'))).toEqual([]);
+  });
+});
+
+describe('trainsAVenir', () => {
+  const JOUR = '2026-11-18';
+  const a = (heureActuelleS: number) => ({ dateDuJour: JOUR, heureActuelleS });
+  const reponse = {
+    date: JOUR,
+    aller: [train('aller')],
+    retour: [train('retour')],
+    dernierRetour: train('dernier'),
+  };
+
+  it('garde les trains à l’heure exacte du départ', () => {
+    const resultat = trainsAVenir(reponse, a(36_000));
+    expect(resultat.aller).toHaveLength(1);
+    expect(resultat.retour).toHaveLength(1);
+    expect(resultat.dernierRetour).not.toBeNull();
+  });
+  it('retire les trains partis, une seconde après', () => {
+    const resultat = trainsAVenir(reponse, a(36_001));
+    expect(resultat.aller).toEqual([]);
+    expect(resultat.retour).toEqual([]);
+    expect(resultat.dernierRetour).toBeNull();
   });
 });

@@ -92,6 +92,15 @@ export const schemaParametres = z
       distanceMaxM: schemaDistanceM,
       ratioTrainsMin: z.number().min(1),
     }),
+    /** Durées de validité par type de données (D068) ; le temps réel (P1) aura la sienne. */
+    cache: z.strictObject({
+      /** Réponses contenant le prochain train : navigateur, réutilisation et rafraîchissement. */
+      horairesPrevusS: z.number().int().positive(),
+      /** Réponses sans heure de train (lieux, gares, sources) : réutilisation pendant la navigation. */
+      donneesStablesS: z.number().int().positive(),
+      /** Un train parti disparaît de l'écran au plus tard après ce délai. */
+      horlogeTrainsS: z.number().int().positive(),
+    }),
     durees: z.strictObject({
       trainMaxOptionsMin: z.array(z.number().int().positive()).min(1),
       tranchesTempsMin: z.array(z.number().int().positive()).min(1),

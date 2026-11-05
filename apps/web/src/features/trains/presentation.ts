@@ -1,5 +1,6 @@
 // Mise en forme des trains : calculs purs, sans lecture de l'horloge.
-import type { Train } from './schemas';
+import { trainParti } from '@/lib/dates/heures';
+import type { ReponseTrains, Train } from './schemas';
 
 /** « 10:12 », ou « 00:35 (+1) » après minuit (`06` § 9). */
 export function formaterHeure(heure: { texte: string; lendemain: boolean }): string {
@@ -10,6 +11,21 @@ export function formaterHeure(heure: { texte: string; lendemain: boolean }): str
 export function libelleTrain(train: Pick<Train, 'typeTrain' | 'numeros'>): string {
   const type = train.typeTrain === 'INTERCITES' ? 'Intercités' : train.typeTrain;
   return train.numeros.length > 0 ? `${type} ${train.numeros.join(' / ')}` : type;
+}
+
+/** Retire les trains déjà partis, quel que soit l'âge de la réponse (cache, D068). */
+export function trainsAVenir(
+  reponse: ReponseTrains,
+  maintenant: { dateDuJour: string; heureActuelleS: number },
+): ReponseTrains {
+  const aVenir = (train: Train) => !trainParti(train.depart.s, reponse.date, maintenant);
+  return {
+    ...reponse,
+    aller: reponse.aller.filter(aVenir),
+    retour: reponse.retour.filter(aVenir),
+    dernierRetour:
+      reponse.dernierRetour && aVenir(reponse.dernierRetour) ? reponse.dernierRetour : null,
+  };
 }
 
 export type LigneRetour = { train: Train; dernier: boolean };
