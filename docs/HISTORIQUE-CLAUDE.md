@@ -40,3 +40,4 @@
 | 05/11/2026 | 1.43 → 1.44 | § 6 : arborescence détaillée déplacée vers `01` § 3 bis ; historique déplacé ici ; aucune règle retirée — D066 |
 | 05/11/2026 | 1.45 | § 9 : sauvegarde de session (PR #66 et #67 à fusionner, retour sur Explorer à décider) |
 | 05/11/2026 | 1.46 | § 8 : E14 en cours — D071 |
+| 05/11/2026 | 1.47 | § 9 : sauvegarde de session (PR #70 et #71 en attente de l'essai sur iPhone) |

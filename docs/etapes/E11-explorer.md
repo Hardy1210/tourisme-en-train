@@ -78,3 +78,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : « Votre gare » montre le temps à pied et la gare la plus proche quand une autre est proposée (D064).
 - 05/11/2026 : Explorer gardé en vie entre les écrans, sans appel quand il est caché (D069).
 - 05/11/2026 : chaque écran retrouve ses filtres au retour sur son onglet (D070).
+- 05/11/2026 : carte sous les filtres sur mobile, marges iPhone, poignée posée sur le menu (D072, PR #71), à valider sur iPhone.

@@ -24,6 +24,33 @@
 
 ---
 
+## 05/11/2026 — Étapes E11 et E14 — Explorer gardé en vie, PWA, essais sur iPhone
+**Fait :**
+- PR #66 → #69 fusionnées : navigation sans rechargement, « Votre gare », Explorer gardé en vie (mémoire mesurée), filtres gardés entre les onglets. `BACKLOG.md` relu ligne par ligne.
+- PR #70 ouverte (E14) : manifest, service worker, liste explicite des routes gardées, dernière gare sur l'appareil, bandeau, page indisponible hors ligne, retour du réseau, message si les scripts manquent.
+- PR #71 ouverte : carte sous les filtres sur mobile, marges iPhone, dégradé, poignée posée sur le menu.
+- Hardy a installé la PWA sur son iPhone : plein écran et localisation fonctionnent, liste de retouches reçue.
+
+**Décisions :** D069, D070, D071, D072. Hardy : fonctionnalités, performance et bugs d'abord ; logo et icônes à la fin ; E14 avant E13 ; PWA pour Android **et** iPhone.
+
+**Problèmes rencontrés :**
+- Écran blanc sur l'iPhone de Hardy : mes parcours ont reconstruit le `.next` de son serveur (12 scripts sur 18 en erreur 500). Depuis, parcours et builds dans une copie.
+- Tunnel Cloudflare décroché : adresse disparue, serveur sain ; il a fallu un nouveau tunnel.
+- Localisation « bloquée » dans un navigateur iPhone autre que Safari : réglage du téléphone, marche dans la PWA. Meilleur message noté dans `A-FAIRE`.
+- Gel hors ligne constaté par Hardy : une fiche jamais ouverte menait à la page d'erreur du navigateur.
+- Trois bugs de ma part trouvés par les parcours : page hors ligne qui se rechargeait en boucle, bouton retour qui restait sur place, couche invisible sur la carte. Un commit fait avant de voir un test échouer, repris ensuite.
+
+**À valider par Hardy :**
+- Sur iPhone : gel et retour du réseau, marges, carte, poignée ; puis fusion de la #70 et de la #71. Android à trouver.
+
+**Prochaine action :**
+- Corriger ce qu'il signale ; recaler la #71 après la #70 ; plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (462) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
 ## 05/11/2026 — Étape E11 — gare par défaut corrigée, écran Lieux, navigation sans rechargement
 **Fait :**
 - PR #60 corrigée puis fusionnée : gare la plus proche, sauf gare à 3 km au plus, au moins 1,5 fois plus de trains et aucune destination perdue. Beaune validée par Hardy chez lui.

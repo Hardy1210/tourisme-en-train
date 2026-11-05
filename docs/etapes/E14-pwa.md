@@ -45,3 +45,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 09/10/2026 : compatibilité Serwist / Next.js 16 vérifiée par un essai en E00 (D029) : `@serwist/turbopack` (route `app/serwist/[path]/route.ts`, `withSerwist()`, `SerwistProvider`) au lieu de `app/sw.ts` seul ; la phase d'audit n'a plus qu'à confirmer la version.
 - 05/11/2026 : fait : voir D071. Vérifié avec Chromium ; reste l'essai sur un vrai iPhone et un vrai Android. Invitation à installer reportée (`A-FAIRE`).
+- 05/11/2026 : essai sur iPhone : plein écran et localisation fonctionnent ; gel hors ligne constaté, corrigé dans la PR #70, à revérifier sur iPhone.

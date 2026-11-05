@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.9 · **Date** 05/11/2026
+> **Version** 1.10 · **Date** 05/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -296,6 +296,25 @@
 - **À retenir :** un cache plus court réduit le risque, seul un contrôle à l'affichage le supprime.
 - **Origine :** D068.
 
+
+### L44 — Ne jamais reconstruire le dossier d'un serveur en marche
+- **Problème :** un écran blanc sur iPhone semblait venir de l'ajout à l'écran d'accueil. En réalité, des tests avaient reconstruit `.next` pendant que le serveur le lisait : ses scripts répondaient en erreur 500.
+- **Solution :** compter les scripts servis et comparer l'heure du build à celle du démarrage ; lancer ensuite tests et builds dans une copie (`git worktree`).
+- **À retenir :** quand un seul morceau de la page s'affiche, se demander ce qui existe avant le JavaScript ; et se demander aussi si son propre outil n'a pas changé l'environnement de l'autre.
+- **Origine :** essai du 05/11, D071.
+
+### L45 — Hors ligne, prévoir la sortie : pas de cul-de-sac, et ne pas se fier à l'événement `online`
+- **Problème :** une page jamais ouverte menait à la page d'erreur du navigateur, sans bouton dans une PWA. Et l'événement `online` part avant que la connexion soit prête : recharger à ce moment retombait sur le message.
+- **Solution :** une page de secours avec une issue, qui interroge le serveur et se recharge quand il répond vraiment.
+- **À retenir :** tester le chemin complet (coupure, navigation, retour du réseau) : c'est là qu'étaient les défauts, pas dans le cas nominal.
+- **Origine :** D071.
+
+### L46 — Le cache par défaut d'un outil peut garder ce qui ne doit jamais l'être
+- **Problème :** le cache par défaut de Serwist garde tout `/api/*`, donc aussi les adresses contenant la position de l'utilisateur.
+- **Solution :** une liste explicite de ce qui peut être gardé, testée en paires, et un parcours qui relit le cache réel.
+- **À retenir :** lire ce que fait un réglage par défaut avant de l'adopter, surtout quand une règle de confidentialité est en jeu.
+- **Origine :** D071, règle 5.
+
 ---
 
 ## Historique
@@ -312,3 +331,4 @@
 | 03/11/2026 | 1.7 | L36, L37 (liste pensée depuis le moment du voyageur, périmètre de chaque chiffre) |
 | 05/11/2026 | 1.8 | L38, L39 (tester depuis une position ordinaire, action sans réaction visible) |
 | 05/11/2026 | 1.9 | L40 → L43 (règle simulée sur toutes les données, chiffre mesuré, écran vraiment dessiné, donnée liée à l'heure) |
+| 05/11/2026 | 1.10 | L44 → L46 (serveur en marche, sortie du hors-ligne, cache par défaut) |
