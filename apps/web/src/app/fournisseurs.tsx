@@ -2,7 +2,7 @@
 
 import { SerwistProvider } from '@serwist/turbopack/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { parametres } from '@/config/parametres';
 import { fautReessayer } from '@/lib/http/client';
 
@@ -21,6 +21,13 @@ export function Fournisseurs({ children }: { children: ReactNode }) {
         },
       }),
   );
+  // Réseau revenu : les copies lues hors ligne sont redemandées, sans geste de l'utilisateur (D071).
+  useEffect(() => {
+    const actualiser = () => void clientRequetes.invalidateQueries();
+    window.addEventListener('online', actualiser);
+    return () => window.removeEventListener('online', actualiser);
+  }, [clientRequetes]);
+
   return (
     // En production seulement : en développement, il garderait d'anciens fichiers. `cacheOnNavigation` :
     // une fiche ouverte sans recharger la page reste disponible hors ligne (aucune position, D058).

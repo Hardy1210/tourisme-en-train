@@ -7,6 +7,7 @@ const DATE = '2026-11-18';
 const ECRAN = `/?date=${DATE}`;
 const BANDEAU = 'Vous êtes hors ligne : voici vos dernières recherches';
 const SECOURS = 'Le chargement prend plus de temps que prévu.';
+const PAS_DISPONIBLE = "Cette page n'est pas disponible hors ligne";
 
 test.use({
   geolocation: { latitude: 47.3233, longitude: 5.0272 },
@@ -88,6 +89,49 @@ test.describe('avec le service worker', () => {
 
     await page.goto(lien ?? '/');
     await expect(page.getByRole('tab').first()).toBeVisible();
+  });
+
+  test('hors ligne, une fiche jamais ouverte montre un message, la navigation reste là, et le retour marche', async ({
+    page,
+    context,
+  }) => {
+    await installer(page, ECRAN);
+    await context.setOffline(true);
+    await sorties(page).nth(1).click();
+
+    await expect(page.getByRole('heading', { name: PAS_DISPONIBLE })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Navigation principale' })).toBeVisible();
+    await page.getByRole('button', { name: 'Retour' }).click();
+    await expect(sorties(page).first()).toBeVisible();
+  });
+
+  test('le réseau revient : la fiche demandée s’ouvre toute seule', async ({ page, context }) => {
+    await installer(page, ECRAN);
+    await context.setOffline(true);
+    await sorties(page).nth(1).click();
+    await expect(page.getByRole('heading', { name: PAS_DISPONIBLE })).toBeVisible();
+
+    await context.setOffline(false);
+    await expect(page.getByRole('heading', { name: PAS_DISPONIBLE })).toHaveCount(0, {
+      timeout: 15_000,
+    });
+    await expect(page.getByRole('tab').first()).toBeVisible();
+  });
+
+  test('le réseau revient : les données sont redemandées et le bandeau part, sans toucher à rien', async ({
+    page,
+    context,
+  }) => {
+    await installer(page, ECRAN);
+    await context.setOffline(true);
+    await page.reload();
+    await expect(page.getByText(BANDEAU)).toBeVisible();
+
+    const requete = page.waitForRequest((r) => r.url().includes('/api/gares/proches'));
+    await context.setOffline(false);
+    await requete;
+    await expect(page.getByText(BANDEAU)).toHaveCount(0);
+    await expect(sorties(page).first()).toBeVisible();
   });
 
   test('aucune adresse gardée ne contient la position (règle 5)', async ({ page }) => {

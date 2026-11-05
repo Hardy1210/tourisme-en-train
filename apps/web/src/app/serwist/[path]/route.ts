@@ -11,6 +11,7 @@ export const { dynamic, dynamicParams, revalidate, generateStaticParams, GET } =
     additionalPrecacheEntries: [
       { url: '/', revision },
       { url: '/lieux', revision },
+      { url: '/hors-ligne', revision },
     ],
   },
 );

@@ -23,6 +23,10 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
+  // Une page jamais ouverte, sans réseau : cette page, et jamais le cul-de-sac d'erreur du navigateur.
+  fallbacks: {
+    entries: [{ url: '/hors-ligne', matcher: ({ request }) => request.destination === 'document' }],
+  },
   runtimeCaching: [
     {
       matcher: ({ url, sameOrigin }) => sameOrigin && apiGardeeHorsLigne(url),

@@ -42,7 +42,8 @@ export function useDepart() {
     position,
     proches: { donnees: proches.data?.gares, statutErreur: statutDe(proches.error) },
     uicConseille: proches.data?.uicConseille ?? null,
-    gareHorsLigne: enLigne ? null : derniereGare,
+    // Pendant le rattrapage au retour du réseau, on garde la dernière gare : pas d'écran d'erreur.
+    gareHorsLigne: !enLigne || (proches.isError && proches.isFetching) ? derniereGare : null,
   });
   const gareConnue = depart.etat === 'pret' ? depart.gare : null;
   useEffect(() => {
