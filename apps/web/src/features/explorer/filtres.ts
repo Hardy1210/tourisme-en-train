@@ -74,6 +74,22 @@ export function nombreFiltres(filtres: Filtres): number {
   );
 }
 
+/** Écran Lieux : ni rayon ni « faisable », que sa route n'utilise pas (`05` § 3.6 bis). */
+export function nombreFiltresLieux(filtres: Filtres): number {
+  return filtres.categories.length + (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1);
+}
+
+/** Entre Explorer et Lieux, la gare choisie et la date restent ; les filtres restent à leur écran. */
+export function lienAvecDepart(chemin: string, url: URLSearchParams): string {
+  const suite = new URLSearchParams();
+  for (const cle of ['gare', 'date']) {
+    const valeur = url.get(cle);
+    if (valeur !== null) suite.set(cle, valeur);
+  }
+  const texte = suite.toString();
+  return texte ? `${chemin}?${texte}` : chemin;
+}
+
 /** « 30 min », « 1 h », « 3 h ». */
 export const libelleDureeMax = (minutes: number): string =>
   minutes < 60 ? `${minutes} min` : `${minutes / 60} h`;

@@ -10,11 +10,12 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState, type ReactNode } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense, useState, type ComponentProps, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Feuille } from '@/components/ui/feuille';
 import { marque } from '@/config/marque';
+import { lienAvecDepart } from '@/features/explorer/filtres';
 import { cn } from '@/lib/classes';
 
 const ENTREES = [
@@ -56,6 +57,17 @@ function ContenuEntree({
   );
 }
 
+/** Explorer et Lieux gardent la gare choisie et la date ; l'URL n'est connue que dans le navigateur. */
+function LienEntree({ href, children, ...reste }: ComponentProps<typeof Link> & { href: string }) {
+  const url = useSearchParams();
+  const lien = href === '/' || href === '/lieux' ? lienAvecDepart(href, url) : href;
+  return (
+    <Link href={lien} {...reste}>
+      {children}
+    </Link>
+  );
+}
+
 /** Barre du bas sur mobile, rail vertical à gauche sur grand écran. */
 export function NavBasse() {
   const chemin = usePathname();
@@ -71,17 +83,19 @@ export function NavBasse() {
       <div className="flex px-1.5 py-2 lg:h-full lg:flex-col lg:gap-1.5 lg:py-5">
         {ENTREES.map(({ href, libelle, Icone }) => {
           const actif = chemin === href && !menuOuvert;
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={chemin === href ? 'page' : undefined}
-              className={cn(CLASSES_ENTREE, classesEtat(actif))}
-            >
+          const proprietes = {
+            'aria-current': chemin === href ? ('page' as const) : undefined,
+            className: cn(CLASSES_ENTREE, classesEtat(actif)),
+            children: (
               <ContenuEntree actif={actif} Icone={Icone}>
                 {libelle}
               </ContenuEntree>
-            </Link>
+            ),
+          };
+          return (
+            <Suspense key={href} fallback={<Link href={href} {...proprietes} />}>
+              <LienEntree href={href} {...proprietes} />
+            </Suspense>
           );
         })}
         <button

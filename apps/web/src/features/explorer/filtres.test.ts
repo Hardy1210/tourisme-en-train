@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   ecrireFiltres,
+  lienAvecDepart,
+  nombreFiltresLieux,
   FILTRES_PAR_DEFAUT,
   libelleDureeMax,
   libelleRayon,
@@ -89,5 +91,25 @@ describe('libellés', () => {
 
   it('écrit le rayon en kilomètres', () => {
     expect(libelleRayon(2000)).toBe('2 km');
+  });
+});
+
+describe('nombreFiltresLieux', () => {
+  it('compte les catégories et la durée de train', () => {
+    expect(nombreFiltresLieux(lireFiltres(url('categories=nature,culture&dureeMax=60')))).toBe(3);
+  });
+  it('ne compte ni le rayon ni « faisable », sans effet sur cet écran', () => {
+    expect(nombreFiltresLieux(lireFiltres(url('rayon=5000&faisable=1')))).toBe(0);
+  });
+});
+
+describe('lienAvecDepart', () => {
+  it('garde la gare choisie et la date', () => {
+    expect(lienAvecDepart('/lieux', url('gare=87713040&date=2026-11-18'))).toBe(
+      '/lieux?gare=87713040&date=2026-11-18',
+    );
+  });
+  it('ne garde ni les filtres ni une position arrivée par un ancien lien', () => {
+    expect(lienAvecDepart('/lieux', url('categories=nature&lat=47.3&lon=5'))).toBe('/lieux');
   });
 });

@@ -1,20 +1,14 @@
-// Page provisoire : l'écran Lieux arrivera avec sa route de données réelles (D054).
 import type { Metadata } from 'next';
-import { EnTete } from '@/components/ui/en-tete';
-import { EtatVide } from '@/components/ui/etat-vide';
+import { Suspense } from 'react';
+import { EcranLieux } from '@/features/explorer/ui/ecran-lieux';
 
 export const metadata: Metadata = { title: 'Lieux' };
 
+// Suspense : l'écran lit l'URL (useSearchParams), connue seulement dans le navigateur.
 export default function PageLieux() {
   return (
-    <>
-      <EnTete surHero />
-      <div className="p-4">
-        <EtatVide
-          titre="Lieux à visiter"
-          texte="Bientôt ici : les lieux à pied depuis une gare, en train direct depuis la vôtre."
-        />
-      </div>
-    </>
+    <Suspense>
+      <EcranLieux />
+    </Suspense>
   );
 }

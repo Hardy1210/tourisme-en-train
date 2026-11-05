@@ -12,3 +12,11 @@ export function grouperParCategorie<L extends { categorie: Categorie }>(
     lieux: lieux.filter((l) => l.categorie === categorie),
   })).filter((groupe) => groupe.lieux.length > 0);
 }
+
+/** « Patrimoine · château », mais « Parcs » seul si la sous-catégorie ne fait que le répéter. */
+export function libelleCategorieDetaillee(libelle: string, sousCategorie: string | null): string {
+  if (!sousCategorie) return libelle;
+  return libelle.toLowerCase().startsWith(sousCategorie.toLowerCase())
+    ? libelle
+    : `${libelle} · ${sousCategorie}`;
+}
