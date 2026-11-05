@@ -34,6 +34,7 @@
   "rail": { "coefDetour": 1.2 },
   "rayons": {
     "lieuxGareM": 1500,
+    "gareConseilleeM": 5000,
     "autourDeMoiDefautM": 2000,
     "autourDeMoiOptionsM": [1000, 2000, 5000, 10000],
     "mobiliteM": 800,

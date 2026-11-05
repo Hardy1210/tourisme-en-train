@@ -13,6 +13,7 @@ const gareProche = (dansRegion: boolean): GareProche => ({
   dureeVeloMin: 5,
   dureeVoitureMin: 3,
   dansRegion,
+  nbTrainsJour: 10,
 });
 const entrees = (partiel: Partial<EntreesDepart>): EntreesDepart => ({
   uicChoisi: null,
@@ -92,5 +93,23 @@ describe('calculerDepart, depuis une gare choisie', () => {
     expect(avec(404)).toEqual({ etat: 'sans_position', raison: 'gare_inconnue' });
     expect(avec(400)).toEqual({ etat: 'sans_position', raison: 'gare_inconnue' });
     expect(avec(500)).toEqual({ etat: 'erreur' });
+  });
+});
+
+describe('gare conseillée (D064)', () => {
+  const avecUic = (uic: string) => ({ ...gareProche(true), uic });
+  const donnees = [avecUic('proche'), avecUic('grande')];
+
+  it('part de la gare conseillée, pas de la plus proche', () => {
+    const depart = calculerDepart(
+      entrees({ position: TROUVEE, proches: { ...VIDE, donnees }, uicConseille: 'grande' }),
+    );
+    expect(depart).toMatchObject({ etat: 'pret', gare: { uic: 'grande' } });
+  });
+  it('sans conseil, part de la plus proche', () => {
+    const depart = calculerDepart(
+      entrees({ position: TROUVEE, proches: { ...VIDE, donnees }, uicConseille: null }),
+    );
+    expect(depart).toMatchObject({ etat: 'pret', gare: { uic: 'proche' } });
   });
 });

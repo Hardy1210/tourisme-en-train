@@ -1,19 +1,30 @@
 import 'server-only';
 
+import { parametres } from '@/config/parametres';
 import { dureeVeloMin, dureeVoitureMin } from '@/lib/geo/distances';
 
+import { gareConseillee, garesAProposer } from '../conseil';
 import type { ParametresGaresProches, ReponseGaresProches } from '../schemas';
 
-import { garesLesPlusProches } from './requetes';
+import { garesAutourDuPoint } from './requetes';
 
-export async function garesProches({
-  lat,
-  lon,
-  limite,
-}: ParametresGaresProches): Promise<ReponseGaresProches> {
-  const gares = await garesLesPlusProches(lat, lon, limite);
+/** `dateDuJour` vient de la route : le service ne lit jamais l'horloge. */
+export async function garesProches(
+  { lat, lon, limite }: ParametresGaresProches,
+  dateDuJour: string,
+): Promise<ReponseGaresProches> {
+  const rayonM = parametres.rayons.gareConseilleeM;
+  const autour = await garesAutourDuPoint(lat, lon, limite, rayonM, dateDuJour);
+  const candidates = autour.map((g) => ({
+    ...g,
+    distanceM: g.distance_m,
+    dansRegion: g.dans_region,
+    nbTrainsJour: g.nb_trains_jour,
+  }));
+  const conseillee = gareConseillee(candidates, rayonM);
   return {
-    gares: gares.map((g) => ({
+    uicConseille: conseillee?.uic ?? null,
+    gares: garesAProposer(candidates, conseillee, limite).map((g) => ({
       uic: g.uic,
       nom: g.nom,
       commune: g.commune,
@@ -23,6 +34,7 @@ export async function garesProches({
       dureeVeloMin: dureeVeloMin(g.distance_m),
       dureeVoitureMin: dureeVoitureMin(g.distance_m),
       dansRegion: g.dans_region,
+      nbTrainsJour: g.nb_trains_jour,
     })),
   };
 }

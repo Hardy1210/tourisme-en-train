@@ -30,9 +30,16 @@ export const schemaGareProche = z.object({
   dureeVeloMin: z.number().int(),
   dureeVoitureMin: z.number().int(),
   dansRegion: z.boolean(),
+  /** Trains directs au départ de cette gare aujourd'hui. */
+  nbTrainsJour: z.number().int(),
 });
 
-export const schemaReponseGaresProches = z.object({ gares: z.array(schemaGareProche) });
+export const schemaReponseGaresProches = z.object({
+  /** Les plus proches d'abord. */
+  gares: z.array(schemaGareProche),
+  /** Gare de départ proposée par défaut (D064) ; null sans gare. */
+  uicConseille: z.string().nullable(),
+});
 
 export type ParametresGaresProches = z.infer<typeof schemaParametresGaresProches>;
 export type GareProche = z.infer<typeof schemaGareProche>;
