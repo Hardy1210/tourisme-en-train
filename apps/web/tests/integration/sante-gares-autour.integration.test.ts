@@ -142,13 +142,13 @@ describe('gare conseillée (D064), échantillon du 18/11/2026', () => {
   ) => (await import('@/features/gares/server/service')).garesProches(parametres, date);
   const parametresDe = (lat: number, lon: number) => ({ lat, lon, limite: 3 });
 
-  it('plus près de Dijon-Porte-Neuve, à moins de 5 km de Dijon-Ville : Dijon-Ville', async () => {
+  it('plus près de Dijon-Porte-Neuve, à pied de Dijon-Ville : Dijon-Ville', async () => {
     const reponse = await serviceGaresProches(parametresDe(47.343, 5.003), DATE);
     expect(reponse.gares[0]?.uic).toBe('EX000023');
     expect(reponse.uicConseille).toBe('EX000001');
   });
 
-  it('à plus de 5 km de Dijon-Ville : Dijon-Porte-Neuve reste conseillée', async () => {
+  it('trop loin de Dijon-Ville pour y aller à pied : Dijon-Porte-Neuve reste conseillée', async () => {
     const reponse = await serviceGaresProches(parametresDe(47.36, 4.98), DATE);
     expect(reponse.gares[0]?.uic).toBe('EX000023');
     expect(reponse.uicConseille).toBe('EX000023');

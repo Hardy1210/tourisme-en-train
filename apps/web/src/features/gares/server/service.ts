@@ -13,15 +13,15 @@ export async function garesProches(
   { lat, lon, limite }: ParametresGaresProches,
   dateDuJour: string,
 ): Promise<ReponseGaresProches> {
-  const rayonM = parametres.rayons.gareConseilleeM;
-  const autour = await garesAutourDuPoint(lat, lon, limite, rayonM, dateDuJour);
+  const limites = parametres.gareConseillee;
+  const autour = await garesAutourDuPoint(lat, lon, limite, limites.distanceMaxM, dateDuJour);
   const candidates = autour.map((g) => ({
     ...g,
     distanceM: g.distance_m,
     dansRegion: g.dans_region,
     trainsParDestination: g.trains_par_destination,
   }));
-  const conseillee = gareConseillee(candidates, rayonM);
+  const conseillee = gareConseillee(candidates, limites);
   return {
     uicConseille: conseillee?.uic ?? null,
     gares: garesAProposer(candidates, conseillee, limite).map((g) => ({

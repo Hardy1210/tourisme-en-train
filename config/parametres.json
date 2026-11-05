@@ -34,12 +34,12 @@
   "rail": { "coefDetour": 1.2 },
   "rayons": {
     "lieuxGareM": 1500,
-    "gareConseilleeM": 5000,
     "autourDeMoiDefautM": 2000,
     "autourDeMoiOptionsM": [1000, 2000, 5000, 10000],
     "mobiliteM": 800,
     "cyclableM": 3000
   },
+  "gareConseillee": { "distanceMaxM": 3000, "ratioTrainsMin": 1.5 },
   "durees": {
     "trainMaxOptionsMin": [30, 60, 120, 180],
     "tranchesTempsMin": [30, 60, 90]

@@ -16,18 +16,27 @@ function couvre(gare: Candidate, reference: Candidate): boolean {
   return reference.destinations.every((uic) => uic === gare.uic || desservies.has(uic));
 }
 
+type Limites = { distanceMaxM: number; ratioTrainsMin: number };
+
 /**
- * La plus proche, sauf si une gare de la région dans le rayon a plus de trains et dessert au moins
- * toutes ses destinations ; à égalité, la plus proche. `gares` est trié par distance.
+ * La plus proche, sauf si une gare de la région rejoignable à pied a assez de trains en plus et
+ * dessert au moins toutes ses destinations ; à égalité, la plus proche. `gares` est trié par distance.
  * Hors région, la plus proche n'affiche aucune destination : il n'y a rien à préserver.
  */
-export function gareConseillee<G extends Candidate>(gares: readonly G[], rayonM: number): G | null {
+export function gareConseillee<G extends Candidate>(
+  gares: readonly G[],
+  { distanceMaxM, ratioTrainsMin }: Limites,
+): G | null {
   const plusProche = gares[0];
   if (!plusProche) return null;
   let meilleure: G | null = plusProche.dansRegion ? plusProche : null;
   for (const gare of gares) {
-    if (!gare.dansRegion || gare.distanceM > rayonM) continue;
-    if (plusProche.dansRegion && !couvre(gare, plusProche)) continue;
+    if (!gare.dansRegion || gare.distanceM > distanceMaxM) continue;
+    if (plusProche.dansRegion) {
+      const assezDeTrains =
+        gare.trainsParDestination >= plusProche.trainsParDestination * ratioTrainsMin;
+      if (!assezDeTrains || !couvre(gare, plusProche)) continue;
+    }
     if (gare.trainsParDestination > (meilleure?.trainsParDestination ?? 0)) meilleure = gare;
   }
   return meilleure ?? plusProche;

@@ -74,7 +74,7 @@ Utilisée par la supervision (SR) et le déploiement.
                  dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }>,
   uicConseille: string | null }
 ```
-`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à moins de `rayons.gareConseilleeM` a plus de trains aujourd'hui **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
+`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à `gareConseillee.distanceMaxM` au plus a aujourd'hui au moins `gareConseillee.ratioTrainsMin` fois plus de trains **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
 `categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre.

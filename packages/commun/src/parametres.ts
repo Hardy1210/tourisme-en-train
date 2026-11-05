@@ -82,12 +82,15 @@ export const schemaParametres = z
     rail: z.strictObject({ coefDetour: z.number().min(1) }),
     rayons: z.strictObject({
       lieuxGareM: schemaDistanceM,
-      /** Dans ce rayon, la gare conseillée est celle qui a le plus de trains (D064). */
-      gareConseilleeM: schemaDistanceM,
       autourDeMoiDefautM: schemaDistanceM,
       autourDeMoiOptionsM: z.array(schemaDistanceM).min(1),
       mobiliteM: schemaDistanceM,
       cyclableM: schemaDistanceM,
+    }),
+    /** Remplacer la gare la plus proche (D064) : gare à pied, avec assez de trains en plus. */
+    gareConseillee: z.strictObject({
+      distanceMaxM: schemaDistanceM,
+      ratioTrainsMin: z.number().min(1),
     }),
     durees: z.strictObject({
       trainMaxOptionsMin: z.array(z.number().int().positive()).min(1),
