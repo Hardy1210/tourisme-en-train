@@ -647,7 +647,7 @@
 | 3 km | 52 min | 48 | 8 | **oui** (2 092 m, 37 min) |
 
   3 km retenus : seule valeur mesurée qui garde Porte Neuve → Dijon sur la position de la gare. Besançon Mouillère → Viotte (1 166 m, 21 min) est corrigé dans les trois cas.
-- **Condition de Hardy pour garder 3 km (05/11) :** quand la gare proposée n'est pas la plus proche, l'écran affiche le temps à pied jusqu'à elle et la gare la plus proche, avec « Changer de gare » en un geste (`A-FAIRE` § 3).
+- **Condition de Hardy pour garder 3 km (05/11) :** quand la gare proposée n'est pas la plus proche, l'écran affiche le temps à pied jusqu'à elle et la gare la plus proche, avec « Changer de gare » en un geste. Fait : bouton « Partir de <gare la plus proche> » sur « Votre gare » ; `dureeMarcheMin` ajouté à `/api/gares/proches`.
 - **Limite connue, gardée pour l'instant (choix de Hardy) :** la comparaison se fait sur le jour même. Si l'utilisateur choisit ensuite une autre date, la gare proposée ne change pas. Mesuré sur les couples du 05/11, jusqu'au 31/12 : seul Nevers Le Banlay → Nevers perd une destination (Les Perrières, sur 6 jours entre le 07/11 et le 12/12).
 - **Écarté :** garder la plus proche et afficher une suggestion (l'utilisateur tombe d'abord sur la liste pauvre) ; réunir les destinations de plusieurs gares (le départ deviendrait flou) ; 1,5 km et 2 km (voir la mesure).
 - **Impact :** `config/parametres.json`, `05` § 3.2, `features/gares/conseil.ts`, `features/gares/server/requetes.ts`, `features/explorer/depart.ts`. La carte reste honnête : « Votre gare » affiche la vraie distance.

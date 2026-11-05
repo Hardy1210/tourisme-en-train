@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.16 · **Date** 05/11/2026
+> **Version** 1.17 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -71,7 +71,7 @@ Utilisée par la supervision (SR) et le déploiement.
 | `limite` | entier 1–10 | `parametres.limites.gares` |
 ```ts
 { gares: Array<{ uic: string; nom: string; commune: string | null; lat: number; lon: number; distanceM: number;
-                 dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }>,
+                 dureeMarcheMin: number; dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }>,
   uicConseille: string | null }
 ```
 `gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à `gareConseillee.distanceMaxM` au plus a aujourd'hui au moins `gareConseillee.ratioTrainsMin` fois plus de trains **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
@@ -321,3 +321,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 04/11/2026 | 1.14 | § 3.2 : `lat`, `lon` des gares proches, pour la carte |
 | 05/11/2026 | 1.15 | § 3.2 : `uicConseille` — D064 |
 | 05/11/2026 | 1.16 | § 3.4 et § 3.8 : cache de `cache.horairesPrevusS` — D068 |
+| 05/11/2026 | 1.17 | § 3.2 : `dureeMarcheMin` — D064 |

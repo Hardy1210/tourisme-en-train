@@ -135,3 +135,40 @@ test.describe('position refusée', () => {
     await expect(sorties(page).first()).toBeVisible();
   });
 });
+
+test.describe('gare proposée qui n’est pas la plus proche (D064)', () => {
+  test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
+  test.use({ geolocation: { latitude: 47.343, longitude: 5.003 }, permissions: ['geolocation'] });
+
+  test('dit le temps à pied, montre la plus proche, et y revient d’un geste', async ({ page }) => {
+    // La route choisit sur les trains du jour réel, absents de l'échantillon : réponse simulée.
+    await page.route('**/api/gares/proches*', async (requete) => {
+      const reponse = await requete.fetch();
+      const corps = (await reponse.json()) as Record<string, unknown>;
+      await requete.fulfill({ json: { ...corps, uicConseille: 'EX000001' } });
+    });
+    await page.goto(ECRAN);
+    await expect(titreDestinations(page)).toBeVisible();
+    await expect(page.getByText(/min à pied ·/).first()).toBeVisible();
+    await expect(page.getByText(/Gare la plus proche/)).toContainText('Dijon-Porte-Neuve');
+
+    await page.getByRole('button', { name: 'Partir de Dijon-Porte-Neuve' }).click();
+
+    await expect(
+      page.getByRole('heading', { name: 'En train direct depuis Dijon-Porte-Neuve' }),
+    ).toBeVisible();
+    expect(new URL(page.url()).searchParams.get('gare')).toBe('EX000023');
+    await expect(page.getByText(/Gare la plus proche/)).toHaveCount(0);
+  });
+});
+
+test.describe('gare proposée qui est la plus proche', () => {
+  test.use({ geolocation: DIJON_VILLE, permissions: ['geolocation'] });
+
+  test('n’ajoute ni le temps à pied ni le bouton', async ({ page }) => {
+    await page.goto(ECRAN);
+    await expect(titreDestinations(page)).toBeVisible();
+    await expect(page.getByText(/Gare la plus proche/)).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^Partir de/ })).toHaveCount(0);
+  });
+});

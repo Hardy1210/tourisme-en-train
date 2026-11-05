@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { parametres } from '@/config/parametres';
-import { dureeVeloMin, dureeVoitureMin } from '@/lib/geo/distances';
+import { dureeMarcheMin, dureeVeloMin, dureeVoitureMin } from '@/lib/geo/distances';
 
 import { gareConseillee, garesAProposer } from '../conseil';
 import type { ParametresGaresProches, ReponseGaresProches } from '../schemas';
@@ -31,6 +31,7 @@ export async function garesProches(
       lat: g.lat,
       lon: g.lon,
       distanceM: Math.round(g.distance_m),
+      dureeMarcheMin: dureeMarcheMin(g.distance_m),
       dureeVeloMin: dureeVeloMin(g.distance_m),
       dureeVoitureMin: dureeVoitureMin(g.distance_m),
       dansRegion: g.dans_region,

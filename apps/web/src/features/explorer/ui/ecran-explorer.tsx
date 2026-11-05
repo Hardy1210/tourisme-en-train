@@ -62,6 +62,7 @@ export function EcranExplorer() {
           filtres={filtres}
           surModification={changer}
           surChangementGare={() => choix.setFeuilleOuverte(true)}
+          surChoixGare={choix.choisirGareEtFermer}
           position={positionFeuille}
           surPosition={setPositionFeuille}
         />

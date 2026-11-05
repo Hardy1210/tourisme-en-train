@@ -10,6 +10,7 @@ export type GareDepart = {
   lon: number;
   /** Seulement si la gare vient de la position de l'utilisateur. */
   distanceM: number | null;
+  dureeMarcheMin: number | null;
   dureeVeloMin: number | null;
 };
 
@@ -72,6 +73,7 @@ export function calculerDepart({
         lat: gare.lat,
         lon: gare.lon,
         distanceM: null,
+        dureeMarcheMin: null,
         dureeVeloMin: null,
       },
       proches: proches.donnees ?? [],
@@ -97,8 +99,21 @@ export function calculerDepart({
       lat: gare.lat,
       lon: gare.lon,
       distanceM: gare.distanceM,
+      dureeMarcheMin: gare.dureeMarcheMin,
       dureeVeloMin: gare.dureeVeloMin,
     },
     proches: proches.donnees,
   };
+}
+
+/**
+ * La gare la plus proche, quand la gare proposée en est une autre (D064) : l'écran doit le dire et
+ * permettre d'y revenir d'un geste. Jamais hors région, où rien ne serait affiché.
+ */
+export function plusProcheDifferente(depart: Extract<Depart, { etat: 'pret' }>): GareProche | null {
+  if (depart.origine !== 'position') return null;
+  const plusProche = depart.proches[0];
+  return plusProche && plusProche.dansRegion && plusProche.uic !== depart.gare.uic
+    ? plusProche
+    : null;
 }

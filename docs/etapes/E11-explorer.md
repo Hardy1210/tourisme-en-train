@@ -75,3 +75,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : gare de départ par défaut : la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064).
 - 05/11/2026 : écran Lieux en mobile et sur grand écran, d'après les maquettes `Explorer Mobile v3` et `Explorer Desktop v3` (D067).
 - 05/11/2026 : changer d'onglet ne recharge plus la position ni les appels récents ; un train parti disparaît de l'écran (D068).
+- 05/11/2026 : « Votre gare » montre le temps à pied et la gare la plus proche quand une autre est proposée (D064).
