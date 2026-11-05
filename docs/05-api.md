@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.17 · **Date** 05/11/2026
+> **Version** 1.18 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -274,7 +274,7 @@ Via `lib/external/sncf.ts`. Cache serveur 30 s ; limitation d'appels par IP. San
 
 - Un **hook TanStack Query par route** dans `features/*/hooks.ts` ; clé de cache = route + paramètres.
 - Les hooks lisent les **types** de `features/*/types.ts` : aucune redéfinition côté client.
-- Les réponses des routes P0 sont mises en cache hors ligne par le service worker (voir `06-interface.md` § PWA).
+- Les réponses de la liste de `lib/pwa/routes-hors-ligne.ts` sont gardées hors ligne par le service worker, jamais celles qui reçoivent une position (`06-interface.md` § PWA, D071).
 
 
 ---
@@ -322,3 +322,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/11/2026 | 1.15 | § 3.2 : `uicConseille` — D064 |
 | 05/11/2026 | 1.16 | § 3.4 et § 3.8 : cache de `cache.horairesPrevusS` — D068 |
 | 05/11/2026 | 1.17 | § 3.2 : `dureeMarcheMin` — D064 |
+| 05/11/2026 | 1.18 | § 4 : routes gardées hors ligne — D071 |

@@ -90,7 +90,10 @@ test('la carte dessine son fond, sans erreur du module de travail', async ({
   });
 
   await page.goto('/?date=2026-11-18');
-  await expect(page.getByRole('button', { name: /en train direct$/ }).first()).toBeAttached();
+  // Délai large : c'est souvent le premier parcours, sur un serveur qui vient de démarrer.
+  await expect(page.getByRole('button', { name: /en train direct$/ }).first()).toBeAttached({
+    timeout: 20_000,
+  });
 
   await expect
     .poll(() => partDuFondDessine(page), { timeout: 15_000 })
