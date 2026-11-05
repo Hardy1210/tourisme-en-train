@@ -24,6 +24,29 @@
 
 ---
 
+## 05/11/2026 — Étapes E11 et E14 — retour de Hardy sur iPhone : gel validé, marges corrigées
+**Fait :**
+- Gel hors ligne validé par Hardy sur iPhone : les pages parcourues restent lisibles, les autres non, ce qu'il juge correct.
+- Carte sous les filtres validée par Hardy.
+- Marges : 5 px en bas au lieu de toute la marge de l'iPhone ; hauteur corrigée dans l'application installée (`--hauteur-app`) pour supprimer la bande blanche ; bandeau hors ligne sous la caméra. PR #71.
+
+**Décisions :** D072 précisée : en bas, quelques pixels seulement (choix de Hardy).
+
+**Problèmes rencontrés :**
+- J'avais appliqué toute la marge de l'iPhone alors que Hardy demandait quelques pixels, ce qui a fait monter la barre de menu. Avec la bande blanche, le rendu était mauvais.
+- La cause de la bande blanche est déduite de la capture de Hardy et simulée dans Chromium, pas mesurée sur un iPhone.
+
+**À valider par Hardy :**
+- Fusion de la #70 ; marges sur iPhone (#71). Avec 5 px, le texte de la barre de menu peut approcher le trait de l'iPhone : une seule valeur à changer (`--espace-bas`).
+
+**Prochaine action :**
+- Recaler la #71 après la #70 ; plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (465) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
 ## 05/11/2026 — Étapes E11 et E14 — Explorer gardé en vie, PWA, essais sur iPhone
 **Fait :**
 - PR #66 → #69 fusionnées : navigation sans rechargement, « Votre gare », Explorer gardé en vie (mémoire mesurée), filtres gardés entre les onglets. `BACKLOG.md` relu ligne par ligne.

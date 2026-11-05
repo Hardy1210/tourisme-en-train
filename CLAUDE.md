@@ -186,10 +186,10 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 - **Étape en cours :** E14 🟡, PR #70 ; retouches mobiles d'Explorer, PR #71 (s'appuie sur la #70) ; essai de Hardy sur iPhone en attente
 - **Dernière session :** 05/11/2026 — Explorer gardé en vie (D069), filtres gardés (D070), PWA (D071), carte sous les filtres et marges iPhone (D072)
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches en mobile et desktop ; PWA vérifiée avec Chromium ; sur la branche de la PR #71 : `pnpm verifier` 462 tests, `pnpm test:integration` 158, `pnpm test:e2e` 106
-- **À valider par Hardy :** sur iPhone, gel hors ligne et retour du réseau (#70), marges et carte (#71), puis fusions dans cet ordre ; Android à trouver ; `A-FAIRE` § 1
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches en mobile et desktop ; PWA : gel hors ligne validé par Hardy sur iPhone ; sur la branche de la PR #71 : `pnpm verifier` 465 tests, `pnpm test:integration` 158, `pnpm test:e2e` 106
+- **À valider par Hardy :** fusion de la PR #70 ; sur iPhone : 5 px en bas, plus de bande blanche, bandeau hors ligne sous la caméra (#71) ; Android à trouver ; `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours et builds dans une copie (`git worktree`)
-- **Prochaine action précise :** après le retour de Hardy, corriger ce qu'il signale ; après la fusion de la #70, recaler `etape/E11-carte-plein-ecran` sur `main` ; puis proposer le plan de E13 (`docs/etapes/E13-ame-sources.md`)
+- **Prochaine action précise :** après la fusion de la #70, recaler `etape/E11-carte-plein-ecran` sur `main` et le dire à Hardy ; après son retour sur les marges, fusion de la #71, puis proposer le plan de E13 (`docs/etapes/E13-ame-sources.md`)
 ---
 
 ## 10. Réaliser une étape
