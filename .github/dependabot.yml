@@ -1,0 +1,15 @@
+# Limite à 0 : aucune mise à jour de version automatique ; seules les alertes de sécurité ouvrent une PR.
+# maplibre-gl reste en 5 jusqu'au P0 : la version 6 vide la carte (D062, D065). À retirer lors du passage en 6.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /apps/web
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: maplibre-gl
+        versions:
+          - '>=6.0.0'
