@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.8 · **Date** 04/11/2026
+> **Version** 1.9 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -100,6 +100,58 @@ features/destinations/
 ├─ schemas.ts                 ← schémas Zod des paramètres et réponses (partagés client/serveur)
 ├─ types.ts                   ← types publics (dérivés des schémas Zod)
 └─ hooks.ts                   ← hooks TanStack Query côté client
+```
+
+## 3 bis. Structure complète du dépôt
+
+Déplacée de `CLAUDE.md` § 6, qui en garde un résumé (D066). Toute nouvelle arborescence respecte cette structure ; la modifier = mettre à jour cette section, `CLAUDE.md` § 6 et `DECISIONS.md`.
+
+```
+tourisme-en-train/
+├─ CLAUDE.md · README.md · .env.example · docker-compose.yml · package.json · pnpm-workspace.yaml
+├─ .github/                     ← CODEOWNERS (Hardy relit tout) · modèle de pull request · dependabot.yml (D065)
+├─ design/                      ← globals.css source, prompt et captures Claude Design (référence, hors code)
+├─ config/
+│  ├─ parametres.json            ← seuils métier partagés app + traitement (rayons, vitesses, durées)
+│  └─ sources.json               ← adresses et licences des sources de données (dont fichier régional DATAtourisme, réseaux locaux)
+├─ docs/
+│  ├─ 00-vision.md               ← produit, utilisateurs, fonctionnalités, périmètre
+│  ├─ 01-architecture.md         ← composants, couches, flux, choix techniques
+│  ├─ 02-sources-donnees.md      ← chaque source : format, champs, licence, usage
+│  ├─ 03-base-de-donnees.md      ← tables, colonnes, index, rôles
+│  ├─ 04-traitement-donnees.md   ← pipeline ETL et ses algorithmes
+│  ├─ 05-api.md                  ← contrat de chaque route
+│  ├─ 06-interface.md            ← écrans, états, composants, design system, PWA
+│  ├─ 07-contrat-infra.md        ← interface avec les SR
+│  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
+│  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
+│  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
+│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md · LECONS.md (leçons réutilisables, pour Hardy)
+│  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
+│  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
+├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
+├─ apps/web/src/
+│  ├─ app/                       ← pages et routes API, fines
+│  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
+│  │                                impact/ carte/ explorer/ presentation/ sante/
+│  │                                chacune : ui/ · server/ · schemas.ts · types.ts · hooks.ts
+│  ├─ components/ui/             ← composants génériques (shadcn/ui sur tokens)
+│  ├─ config/                    ← marque.ts · parametres.ts (réexporte @tourisme/commun)
+│  ├─ lib/db/                    ← connexion, schéma Drizzle, requêtes PostGIS partagées
+│  ├─ lib/external/              ← adaptateurs : adresse.ts · sncf.ts · gbfs.ts
+│  ├─ lib/http/                  ← erreurs, validation des paramètres, réponses, cache
+│  ├─ lib/geo/ · lib/dates/ · lib/impact/  ← calculs purs (distances, durées, heures, CO₂, prix) ; dateDuJour(), maintenantParis() : @tourisme/commun
+│  ├─ lib/env.ts                 ← variables d'environnement validées par Zod
+│  └─ styles/globals.css         ← design system
+├─ packages/commun/src/         ← @tourisme/commun : schémas Zod de parametres.json et sources.json · dateDuJour() et maintenantParis() à Paris · journal JSON · types partagés
+├─ etl/                          ← @tourisme/etl : traitement des données (TypeScript + SQL)
+│  ├─ src/run.ts                 ← pnpm etl <source|all> [--force] [--hors-ligne]
+│  ├─ src/                       ← config.ts · db.ts · sources/ · transformations/ (TS pur + .sql) · chargement/ · controles/ · regles/
+│  └─ tests/                     ← Vitest, GTFS miniature
+├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
+├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
+├─ data/brut/ · data/traite/     ← ignorés par Git
+└─ infra/                        ← production (SR) : CLAUDE.md propre · JOURNAL.md · compose prod, Caddy, sauvegardes
 ```
 
 ## 4. Règles de dépendance (qui a le droit d'importer quoi)
@@ -220,3 +272,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 01/11/2026 | 1.6 | § 5 : faisable dans la journée précalculé par l'ETL, prochain départ en une requête groupée — D040 |
 | 03/11/2026 | 1.7 | § 3 : fonctionnalité `sante/` — D047 |
 | 04/11/2026 | 1.8 | § 3 : composants sur Radix, sans l'installateur shadcn — D053 |
+| 05/11/2026 | 1.9 | § 3 bis : structure complète du dépôt, déplacée de `CLAUDE.md` § 6 — D066 |
