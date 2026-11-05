@@ -54,6 +54,11 @@
   --resultats-haut-carte: calc(100% - var(--spacing-touch));
   /* Écart minimal avec le bord de l'écran, quand le téléphone n'impose pas plus (D072). */
   --espace-bord: 0.5rem;
+  --espace-bas: 0.3125rem;
+  /* Hauteur de l'application ; `HauteurEcran` la remplace là où `100dvh` est faux. */
+  --hauteur-app: 100dvh;
+  /* Les éléments fixés en bas suivent la vraie hauteur. */
+  --decalage-bas: calc(100dvh - var(--hauteur-app));
   --degrade-statut-marge: 1rem;
 
   /* Barre du bas */
@@ -578,8 +583,16 @@
 @utility safe-top {
   padding-top: max(env(safe-area-inset-top), var(--espace-bord));
 }
+/* En bas : quelques pixels seulement, partout (choix de Hardy) ; pas toute la marge de l'iPhone. */
 @utility safe-bottom {
-  padding-bottom: max(env(safe-area-inset-bottom), var(--espace-bord));
+  padding-bottom: var(--espace-bas);
+}
+/* Hors ligne : le bandeau descend sous la caméra, et l'écran dessous n'a plus à le faire (D072). */
+.bandeau-hors-ligne {
+  padding-top: calc(env(safe-area-inset-top) + var(--espace-bas));
+}
+.bandeau-hors-ligne + main .safe-top {
+  padding-top: var(--espace-bord);
 }
 /* Dégradé derrière l'heure et la batterie, quand la carte passe sous la barre d'état (D072) */
 @utility degrade-statut {

@@ -7,7 +7,7 @@ import { NavBasse } from './nav-basse';
 
 export default function MiseEnPage({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-dvh flex-col lg:flex-row">
+    <div className="flex h-(--hauteur-app) flex-col overflow-hidden lg:flex-row">
       {/* La navigation d'abord : le rail est à gauche sur grand écran, où l'on navigue au clavier. */}
       <NavBasse />
       <FournisseurPosition>

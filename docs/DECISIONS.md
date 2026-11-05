@@ -730,7 +730,7 @@
 - **Date :** 05/11/2026
 - **En clair :** sur téléphone, la carte occupe tout l'écran, derrière le logo et les filtres, et plus rien ne touche les bords de l'iPhone. Le grand écran ne change pas.
 - **Décision :**
-  1. `viewportFit: 'cover'` : sans lui, iPhone laisse les marges de sécurité à zéro. `safe-top` et `safe-bottom` valent au moins `--espace-bord` (0,5 rem).
+  1. `viewportFit: 'cover'` : la carte peut passer sous l'heure. En haut, `safe-top` respecte la caméra. **En bas, `safe-bottom` ne vaut que `--espace-bas` (5 px), partout** : choix de Hardy, après un premier essai avec toute la marge de l'iPhone (34 px), jugé trop haut. `--hauteur-app` corrige la hauteur annoncée par iOS dans l'application installée, qui laissait une bande vide en bas. Le bandeau hors ligne descend sous la caméra.
   2. Sur mobile, l'en-tête d'Explorer flotte sur la carte, sans fond ; le logo reste sans fond (choix de Hardy). La carte reste utilisable entre les boutons.
   3. `statusBarStyle: 'black-translucent'` : la carte passe sous l'heure et la batterie sur iPhone, avec un léger dégradé (`degrade-statut`) pour les garder lisibles. Android garde sans doute sa barre colorée : à voir sur un vrai téléphone.
   4. Cadrage : la carte centre ses points sous l'en-tête (`masqueEnHaut`), et ses boutons passent en dessous.

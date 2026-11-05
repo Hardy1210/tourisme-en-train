@@ -10,7 +10,7 @@ export function BandeauHorsLigne() {
     <Bandeau
       variante="avertissement"
       icone={<WifiOff aria-hidden="true" className="size-4 flex-none" />}
-      className="flex-none rounded-none"
+      className="bandeau-hors-ligne flex-none rounded-none"
     >
       Vous êtes hors ligne : voici vos dernières recherches
     </Bandeau>
