@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** écran Lieux à planifier ; E11 et E12 ⏸ : vérifications de design et téléphone dans `A-FAIRE` § 1
-- **Dernière session :** 05/11/2026 — E11 et E12 fusionnées ; gare de départ par défaut (D064), PR #60 ouverte
-- **Fait :** données et API P0 ; Explorer, fiche destination, fiche lieu en mobile et desktop ; `pnpm verifier` 401 tests, `pnpm test:integration` 156, `pnpm test:e2e` 38
-- **À valider par Hardy :** fusion de la PR #60, puis Beaune visible chez lui sans `?gare=` ; reste de `A-FAIRE` § 1
+- **Étape en cours :** E11 et E12 ⏸ : vérifications de design et téléphone dans `A-FAIRE` § 1 ; retour sur Explorer à décider
+- **Dernière session :** 05/11/2026 — gare par défaut (D064), MapLibre 5 (D065), `CLAUDE.md` raccourci (D066), écran Lieux (D067), navigation sans rechargement (D068)
+- **Fait :** données et API P0 ; Explorer, Lieux, fiche destination, fiche lieu en mobile et desktop ; sur la branche de la PR #67 : `pnpm verifier` 431 tests, `pnpm test:integration` 158, `pnpm test:e2e` 68
+- **À valider par Hardy :** fusion des PR #66 puis #67 ; essai sur téléphone (`A-FAIRE` § 1) ; garder Explorer en vie au changement d'onglet ou non (`A-FAIRE` § 1)
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** après la fusion de la PR #60, proposer le plan de l'écran Lieux (`apps/web/src/app/(app)/lieux/page.tsx`, page provisoire ; `/api/lieux` prête, D056), à valider avant de coder
+- **Prochaine action précise :** après la fusion de la #66, recaler `etape/E11-retouches-gare` sur `main` ; puis coder le maintien d'Explorer si Hardy le décide (`app/(app)/layout.tsx`), corriger ce qu'il trouve sur téléphone, et proposer le plan de E13
 ---
 
 ## 10. Réaliser une étape

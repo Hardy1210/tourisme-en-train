@@ -16,7 +16,7 @@ import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
 import { useLieuxAutour } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
-import type { Depart } from '../depart';
+import { plusProcheDifferente, type Depart } from '../depart';
 import type { PositionFeuille } from '../position-feuille';
 import { FeuilleResultats } from './feuille-resultats';
 import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
@@ -26,6 +26,7 @@ type Proprietes = {
   filtres: Filtres;
   surModification: (modifications: Partial<Filtres>) => void;
   surChangementGare: () => void;
+  surChoixGare: (uic: string) => void;
   position: PositionFeuille;
   surPosition: (position: PositionFeuille) => void;
 };
@@ -36,12 +37,14 @@ export function ResultatsExplorer({
   filtres,
   surModification,
   surChangementGare,
+  surChoixGare,
   position,
   surPosition,
 }: Proprietes) {
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
   const { gare, point, origine } = depart;
+  const plusProche = plusProcheDifferente(depart);
   const maintenant = useMaintenant();
   const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
   const destinations = useDestinations({
@@ -100,9 +103,17 @@ export function ResultatsExplorer({
           <CarteVotreGare
             nom={gare.nom}
             distanceM={gare.distanceM}
+            dureeMarcheMin={gare.dureeMarcheMin}
             dureeVeloMin={gare.dureeVeloMin}
             prochainDepart={liste ? prochainTrainDirect(liste) : null}
             surChangement={surChangementGare}
+            plusProche={
+              plusProche && {
+                nom: plusProche.nom,
+                dureeMarcheMin: plusProche.dureeMarcheMin,
+                surChoix: () => surChoixGare(plusProche.uic),
+              }
+            }
           />
           <SectionAPied
             titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}

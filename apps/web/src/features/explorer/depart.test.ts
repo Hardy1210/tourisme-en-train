@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GareProche } from '@/features/gares/schemas';
-import { calculerDepart, type EntreesDepart } from './depart';
+import { calculerDepart, plusProcheDifferente, type EntreesDepart } from './depart';
 
 const VIDE = { donnees: undefined, statutErreur: null };
 const gareProche = (dansRegion: boolean): GareProche => ({
@@ -10,6 +10,7 @@ const gareProche = (dansRegion: boolean): GareProche => ({
   lat: 47.32,
   lon: 5.03,
   distanceM: 900,
+  dureeMarcheMin: 15,
   dureeVeloMin: 5,
   dureeVoitureMin: 3,
   dansRegion,
@@ -110,5 +111,32 @@ describe('gare conseillée (D064)', () => {
       entrees({ position: TROUVEE, proches: { ...VIDE, donnees }, uicConseille: null }),
     );
     expect(depart).toMatchObject({ etat: 'pret', gare: { uic: 'proche' } });
+  });
+});
+
+describe('plusProcheDifferente', () => {
+  const petite = { ...gareProche(true), uic: 'PETITE', nom: 'Petite' };
+  const grande = { ...gareProche(true), uic: 'GRANDE', nom: 'Grande' };
+  const pret = (uicConseille: string, proches = [petite, grande]) => {
+    const depart = calculerDepart(
+      entrees({
+        position: TROUVEE,
+        proches: { donnees: proches, statutErreur: null },
+        uicConseille,
+      }),
+    );
+    if (depart.etat !== 'pret') throw new Error('Départ attendu.');
+    return depart;
+  };
+
+  it('donne la plus proche si une autre gare est proposée', () => {
+    expect(plusProcheDifferente(pret('GRANDE'))?.uic).toBe('PETITE');
+  });
+  it('ne donne rien si la gare proposée est la plus proche', () => {
+    expect(plusProcheDifferente(pret('PETITE'))).toBeNull();
+  });
+  it('ne propose pas une gare hors région', () => {
+    const horsRegion = { ...petite, dansRegion: false };
+    expect(plusProcheDifferente(pret('GRANDE', [horsRegion, grande]))).toBeNull();
   });
 });

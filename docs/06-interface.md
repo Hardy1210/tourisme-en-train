@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.7 · **Date** 05/11/2026
+> **Version** 1.8 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -53,7 +53,7 @@
    - **Étiquettes « Beaune 22 min » :** affichées pour les 5 destinations avec le plus de trains (D062), au survol et pour la destination sélectionnée ; les autres gares restent des points. Collisions gérées par MapLibre.
    - **Survol croisé (desktop) :** survoler une carte de destination met la gare en évidence sur la carte, et inversement.
 4. **Feuille de résultats (glissante, par-dessus la carte)** :
-   - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».
+   - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ». Si la gare proposée n'est pas la plus proche (D064) : temps à pied jusqu'à elle, gare la plus proche, et bouton pour y revenir d'un geste.
    - **b. À deux pas de vous** : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »).
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
 5. **Écran Lieux** (maquette `Explorer Mobile v3`, D067) : même en-tête qu'Explorer sur fond de marque (date, gare, catégories, « Filtres » réduit au temps de train) ; titre « Lieux à visiter » et nombre de lieux ; cartes : illustration de catégorie, catégorie, nom, gare et temps de train, temps et distance à pied, badge Qualité Tourisme ; « Voir plus » (D056) ; états : chargement, sans position, hors région, aucun résultat (« Tout afficher »), date hors horaires, erreur. La gare choisie et la date suivent entre Explorer et Lieux. Grand écran (`Explorer Desktop v3`) : contrôles dans le panneau de gauche, titre et grille de cartes à droite. Une colonne de cartes sur mobile, autant que la largeur en permet sur grand écran.
@@ -164,3 +164,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 04/11/2026 | 1.5 | § 4 : page plein écran, contenu de la liste des lieux — D063 |
 | 05/11/2026 | 1.6 | § Explorer : écran Lieux, mobile et grand écran — D067 |
 | 05/11/2026 | 1.7 | § Explorer et PWA : position gardée entre les écrans, train parti jamais affiché — D068 |
+| 05/11/2026 | 1.8 | § Explorer : « Votre gare » quand la gare proposée n'est pas la plus proche — D064 |

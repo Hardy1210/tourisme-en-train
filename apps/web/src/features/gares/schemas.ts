@@ -27,6 +27,7 @@ export const schemaGareProche = z.object({
   lon: z.number(),
   /** À vol d'oiseau. */
   distanceM: z.number().int(),
+  dureeMarcheMin: z.number().int(),
   dureeVeloMin: z.number().int(),
   dureeVoitureMin: z.number().int(),
   dansRegion: z.boolean(),

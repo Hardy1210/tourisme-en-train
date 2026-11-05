@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.8 · **Date** 05/11/2026
+> **Version** 1.9 · **Date** 05/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -271,6 +271,31 @@
 - **À retenir :** un bouton doit réagir tout de suite, même si le résultat arrive après ; et un « ça ne marche pas » tiré d'un délai trop court n'est pas un résultat.
 - **Origine :** diagnostic du 05/11.
 
+
+### L40 — Simuler une règle sur toutes les données, pas sur le cas qui l'a fait naître
+- **Problème :** la règle « la gare qui a le plus de trains » corrigeait Dijon, mais faisait perdre 26 destinations, dont Paris, à une gare TGV.
+- **Solution :** appeler la vraie route sur chaque gare et autour, puis recalculer les pertes à part depuis la base.
+- **À retenir :** un correctif peut recréer ailleurs le défaut qu'il corrige ; on le voit seulement en le passant sur toutes les données.
+- **Origine :** D064.
+
+### L41 — Un chiffre annoncé doit sortir d'une mesure, et dire ce qu'il compte
+- **Problème :** une somme par destination a été présentée comme un nombre de trains (1 035 au lieu de 148 départs), et un pourcentage a été annoncé sans mesure.
+- **Solution :** ne citer que ce qu'une requête ou un test vient de produire, et dire « non mesuré » sinon.
+- **À retenir :** un chiffre faux dit avec assurance coûte plus cher que « je ne sais pas » : il finit dans les décisions.
+- **Origine :** D064, demande de Hardy du 05/11.
+
+### L42 — Des tests verts ne prouvent pas qu'un écran est dessiné
+- **Problème :** avec MapLibre 6, le fond de carte était vide, mais tous les parcours passaient : ils lisaient des épingles en HTML.
+- **Solution :** un test qui regarde les pixels, et qu'on fait tourner contre la version cassée pour vérifier qu'il échoue.
+- **À retenir :** tester ce que l'utilisateur voit, et prouver que le test peut échouer. Relire aussi les décisions : D062 connaissait déjà cette panne.
+- **Origine :** D062, D065.
+
+### L43 — Une donnée liée à l'heure se contrôle à l'affichage, pas seulement par la durée du cache
+- **Problème :** le navigateur pouvait garder 15 min une liste de trains, donc montrer des trains partis.
+- **Solution :** comparer chaque train à l'heure actuelle au moment d'afficher, quel que soit l'âge de la réponse, et distinguer « mise à jour » de « plus de train ».
+- **À retenir :** un cache plus court réduit le risque, seul un contrôle à l'affichage le supprime.
+- **Origine :** D068.
+
 ---
 
 ## Historique
@@ -286,3 +311,4 @@
 | 03/11/2026 | 1.6 | L32 → L35 (identifiant public, API réelle appelée avant de coder, panne d'un service externe testée, un seul calcul pour deux écrans) |
 | 03/11/2026 | 1.7 | L36, L37 (liste pensée depuis le moment du voyageur, périmètre de chaque chiffre) |
 | 05/11/2026 | 1.8 | L38, L39 (tester depuis une position ordinaire, action sans réaction visible) |
+| 05/11/2026 | 1.9 | L40 → L43 (règle simulée sur toutes les données, chiffre mesuré, écran vraiment dessiné, donnée liée à l'heure) |
