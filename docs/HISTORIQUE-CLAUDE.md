@@ -42,3 +42,4 @@
 | 05/11/2026 | 1.46 | § 8 : E14 en cours — D071 |
 | 05/11/2026 | 1.47 | § 9 : sauvegarde de session (PR #70 et #71 en attente de l'essai sur iPhone) |
 | 05/11/2026 | 1.48 | § 9 : sauvegarde de session (gel validé, marges à revérifier sur iPhone) |
+| 05/11/2026 | 1.49 | § 9 : sauvegarde de session (PR #70 fusionnée, #71 recalée) |

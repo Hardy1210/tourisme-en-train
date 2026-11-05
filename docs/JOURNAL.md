@@ -24,6 +24,24 @@
 
 ---
 
+## 05/11/2026 — Étape E14 — PR #70 fusionnée, #71 recalée
+**Fait :**
+- PR #70 (PWA) fusionnée par Hardy ; PR #71 recalée sur `main`.
+- Tunnel décroché après une coupure d'Internet : `cloudflared` tourne encore mais l'adresse n'existe plus (`/ready` à 503). Serveur local sain.
+
+**Décisions :** aucune.
+
+**À valider par Hardy :**
+- Marges sur iPhone, puis fusion de la #71.
+
+**Prochaine action :**
+- Corriger ce qu'il signale ; après la fusion, plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (465) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
 ## 05/11/2026 — Étapes E11 et E14 — retour de Hardy sur iPhone : gel validé, marges corrigées
 **Fait :**
 - Gel hors ligne validé par Hardy sur iPhone : les pages parcourues restent lisibles, les autres non, ce qu'il juge correct.
