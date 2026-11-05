@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D065 MapLibre 5 jusqu'au P0, risque accepté |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D065 MapLibre 5 jusqu'au P0, risque accepté |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -660,3 +660,11 @@
 - **Raison :** la PR #58 (MapLibre 6.16.0) vide la carte sur mobile et desktop, cause déjà établie par D062 ; corriger cela maintenant retarderait le P0.
 - **Écarté :** fusionner la PR #58 (plus de fond de carte) ; une 5.x corrigée (aucune n'est publiée) ; `update-types` dans `ignore` : la documentation de GitHub ne dit pas si ce filtre s'applique aux mises à jour de sécurité, alors qu'elle dit que `ignore` les couvre.
 - **Impact :** `.github/dependabot.yml`, `A-FAIRE` § 3, `CLAUDE.md` § 6. Annule D062 sur un point seulement si le passage en 6 aboutit.
+
+## D067 — Écran Lieux : liste d'après la maquette mobile, sans favoris ni récompenses
+- **Date :** 05/11/2026
+- **En clair :** l'onglet Lieux suit la maquette mobile. La gare choisie et la date suivent quand on passe d'Explorer à Lieux. Les boutons favoris et récompenses de la maquette ne sont pas repris, car ils ne feraient rien.
+- **Décision :** liste seule pour le moment (carte à décider pour le P0, choix de Hardy) ; filtres réduits à ceux de `/api/lieux` (catégories, temps de train, date) ; `gare` et `date` gardées dans les liens Explorer et Lieux, les autres filtres restent à leur écran ; illustration de catégorie sur toutes les cartes, comme « À deux pas de vous » ; « Parcs · parc » affiché « Parcs ».
+- **Raison :** maquette `Explorer Mobile v3` (`design/maquettes/`), référence d'aspect et non de comportement. Photos : 126 lieux sur 12 242 ont une image en base (mesuré le 05/11), et le crédit de chaque photo n'est pas encore prévu à l'écran.
+- **Écarté :** boutons favoris et récompenses (message « bientôt » seulement, décision à prendre avec Mon espace) ; la limite de 40 cartes de la maquette (`limites.lieuxParPage` et « Voir plus », D056).
+- **Impact :** `06`, `features/explorer/ui/ecran-lieux.tsx`, `controles-depart.tsx`, `features/lieux/ui/liste-lieux-accessibles.tsx`, `app/(app)/nav-basse.tsx`, `A-FAIRE`, fiche E11.

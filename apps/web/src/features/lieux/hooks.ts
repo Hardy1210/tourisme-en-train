@@ -1,9 +1,9 @@
 'use client';
 
 import type { Categorie } from '@tourisme/commun';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { lireApi } from '@/lib/http/client';
-import { schemaFicheLieu, schemaReponseAutour } from './schemas';
+import { schemaFicheLieu, schemaReponseAutour, schemaReponseLieuxAccessibles } from './schemas';
 
 type Options = {
   point: { lat: number; lon: number };
@@ -33,6 +33,29 @@ export function useLieuxGare(uic: string, actif: boolean) {
     queryKey: ['lieux-gare', chemin],
     enabled: actif,
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseAutour, signal),
+  });
+}
+
+type OptionsAccessibles = {
+  gare: string;
+  date: string | null;
+  categories: readonly Categorie[];
+  dureeMax: number;
+};
+
+/** Onglet Lieux : pages de `/api/lieux`, avec « Voir plus » ; la liste reste affichée pendant un filtre. */
+export function useLieuxAccessibles({ gare, date, categories, dureeMax }: OptionsAccessibles) {
+  const requete = new URLSearchParams({ gare, dureeMax: String(dureeMax) });
+  if (date !== null) requete.set('date', date);
+  if (categories.length > 0) requete.set('categories', categories.join(','));
+  const chemin = `/api/lieux?${requete.toString()}`;
+  return useInfiniteQuery({
+    queryKey: ['lieux-accessibles', chemin],
+    initialPageParam: 1,
+    placeholderData: keepPreviousData,
+    queryFn: ({ pageParam, signal }) =>
+      lireApi(`${chemin}&page=${pageParam}`, schemaReponseLieuxAccessibles, signal),
+    getNextPageParam: (reponse) => reponse.pageSuivante,
   });
 }
 

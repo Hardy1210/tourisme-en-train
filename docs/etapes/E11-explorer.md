@@ -73,3 +73,4 @@ Voir `_MODELE.md`.
 - 04/11/2026 : reste pour E11 : comparaison avec les maquettes et retouches (dont les étiquettes de carte coupées par les épingles, ex. « Beaune » en 390 px), essai au doigt sur téléphone en HTTPS, contrôle du critère « prix non calibré » et des étiquettes. Bandeau hors ligne : E14 (fiche E14). Bouton Partager (P1) : après le P0.
 - 04/11/2026 : décision de Hardy : fusionner E11 telle quelle et passer à E12 ; la liste des vérifications restantes est dans `A-FAIRE` § 1, à reprendre point par point une fois la fiche en place.
 - 05/11/2026 : gare de départ par défaut : la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064).
+- 05/11/2026 : écran Lieux en mobile, d'après la maquette `Explorer Mobile v3` (D067) ; grand écran en attente de la maquette desktop.

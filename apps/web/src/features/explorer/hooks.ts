@@ -1,10 +1,10 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
-import { useGare, useGaresProches } from '@/features/gares/hooks';
-import { usePosition } from '@/features/localisation/hooks';
+import { useCallback, useState } from 'react';
+import { gareConseilleePour, useGare, useGaresProches } from '@/features/gares/hooks';
+import { useCommune, usePosition } from '@/features/localisation/hooks';
 import { schemaReponseSources } from '@/features/presentation/schemas';
 import { ErreurClient, lireApi } from '@/lib/http/client';
 import { calculerDepart } from './depart';
@@ -55,6 +55,45 @@ export function useDepart() {
   }, [ecrireGare, redemander]);
 
   return { depart, point, essais, choisirGare: ecrireGare, revenirAMaPosition };
+}
+
+/** Gare de départ et feuille pour en changer, communes aux écrans Explorer et Lieux. */
+export function useChoixDepart() {
+  const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart();
+  const [feuilleOuverte, setFeuilleOuverte] = useState(false);
+  const [erreurChoix, setErreurChoix] = useState(false);
+  const client = useQueryClient();
+  const commune = useCommune(point);
+
+  const choisirGareEtFermer = (uic: string) => {
+    setFeuilleOuverte(false);
+    setErreurChoix(false);
+    choisirGare(uic);
+  };
+  const choisirPoint = async ({ lat, lon }: { lat: number; lon: number }) => {
+    const gare = await gareConseilleePour(client, lat, lon).catch(() => null);
+    if (gare) choisirGareEtFermer(gare.uic);
+    else setErreurChoix(true);
+  };
+
+  const libelle =
+    depart.etat === 'pret' && depart.origine === 'choix'
+      ? `Au départ de ${depart.gare.nom}`
+      : depart.etat === 'pret'
+        ? `Autour de ${commune.data?.commune ?? 'vous'}`
+        : 'Choisir une ville';
+
+  return {
+    depart,
+    essais,
+    libelle,
+    erreurChoix,
+    feuilleOuverte,
+    setFeuilleOuverte,
+    choisirGareEtFermer,
+    choisirPoint,
+    revenirAMaPosition,
+  };
 }
 
 /** Filtres lus dans l'URL ; chaque changement crée une entrée d'historique (retour arrière). */

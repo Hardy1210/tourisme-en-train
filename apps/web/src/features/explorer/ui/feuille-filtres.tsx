@@ -22,39 +22,51 @@ type Proprietes = {
   surChangement: (ouverte: boolean) => void;
   filtres: Filtres;
   surModification: (modifications: Partial<Filtres>) => void;
+  /** Écran Lieux : sa route ne connaît que la durée de train. */
+  dureeSeulement?: boolean;
 };
 
 /** Rayon, durée de train et faisabilité : chaque choix s'applique tout de suite. */
-export function FeuilleFiltres({ ouverte, surChangement, filtres, surModification }: Proprietes) {
+export function FeuilleFiltres({
+  ouverte,
+  surChangement,
+  filtres,
+  surModification,
+  dureeSeulement = false,
+}: Proprietes) {
   return (
     <Feuille ouverte={ouverte} surChangement={surChangement} titre="Filtres">
       <div className="flex flex-col gap-5">
-        <Selecteur
-          libelle="Rayon autour de moi"
-          options={OPTIONS_RAYON}
-          valeur={String(filtres.rayon)}
-          surChangement={(valeur) => surModification({ rayon: Number(valeur) })}
-        />
+        {!dureeSeulement && (
+          <Selecteur
+            libelle="Rayon autour de moi"
+            options={OPTIONS_RAYON}
+            valeur={String(filtres.rayon)}
+            surChangement={(valeur) => surModification({ rayon: Number(valeur) })}
+          />
+        )}
         <Selecteur
           libelle="Temps de train maximum"
           options={OPTIONS_DUREE}
           valeur={String(filtres.dureeMax)}
           surChangement={(valeur) => surModification({ dureeMax: Number(valeur) })}
         />
-        <div className="flex flex-col divide-y">
-          <Interrupteur
-            libelle="Faisable dans la journée"
-            description="Aller et retour le même jour"
-            actif={filtres.faisable}
-            surChangement={(faisable) => surModification({ faisable })}
-          />
-          <Interrupteur
-            libelle="Adapté aux poussettes"
-            mention={<Badge>Bientôt</Badge>}
-            actif={false}
-            desactive
-          />
-        </div>
+        {!dureeSeulement && (
+          <div className="flex flex-col divide-y">
+            <Interrupteur
+              libelle="Faisable dans la journée"
+              description="Aller et retour le même jour"
+              actif={filtres.faisable}
+              surChangement={(faisable) => surModification({ faisable })}
+            />
+            <Interrupteur
+              libelle="Adapté aux poussettes"
+              mention={<Badge>Bientôt</Badge>}
+              actif={false}
+              desactive
+            />
+          </div>
+        )}
         <div className="flex gap-2">
           <Bouton
             variante="secondaire"
@@ -71,7 +83,7 @@ export function FeuilleFiltres({ ouverte, surChangement, filtres, surModificatio
             Réinitialiser
           </Bouton>
           <Bouton className="flex-1" onClick={() => surChangement(false)}>
-            Voir les sorties
+            {dureeSeulement ? 'Voir les lieux' : 'Voir les sorties'}
           </Bouton>
         </div>
       </div>

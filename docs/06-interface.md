@@ -56,7 +56,8 @@
    - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».
    - **b. À deux pas de vous** : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »).
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
-5. **Navigation basse** : Explorer · Lieux · Mon espace · Menu (D054). Lieux : données réelles. Mon espace (favoris, récompenses) : **fictif, marqué « Aperçu · bientôt »**.
+5. **Écran Lieux** (mobile, maquette `Explorer Mobile v3`, D067) : même en-tête qu'Explorer sur fond de marque (date, gare, catégories, « Filtres » réduit au temps de train) ; titre « Lieux à visiter » et nombre de lieux ; cartes : illustration de catégorie, catégorie, nom, gare et temps de train, temps et distance à pied, badge Qualité Tourisme ; « Voir plus » (D056) ; états : chargement, sans position, hors région, aucun résultat (« Tout afficher »), date hors horaires, erreur. La gare choisie et la date suivent entre Explorer et Lieux. Grand écran : à faire d'après la maquette desktop.
+6. **Navigation basse** : Explorer · Lieux · Mon espace · Menu (D054). Lieux : données réelles. Mon espace (favoris, récompenses) : **fictif, marqué « Aperçu · bientôt »**.
 
 ### Desktop
 Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-tête, filtres, résultats) + carte pleine hauteur à droite ; le Menu s'ouvre en panneau flottant à côté du rail ; la fiche destination s'ouvre en panneau latéral de 480 px.
@@ -161,3 +162,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
 | 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, rail sur grand écran, composants réels — D054 |
 | 04/11/2026 | 1.5 | § 4 : page plein écran, contenu de la liste des lieux — D063 |
+| 05/11/2026 | — | § Explorer : écran Lieux en mobile — D067 |

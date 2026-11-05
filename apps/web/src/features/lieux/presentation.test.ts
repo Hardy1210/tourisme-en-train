@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { grouperParCategorie } from './presentation';
+import { grouperParCategorie, libelleCategorieDetaillee } from './presentation';
 
 describe('grouperParCategorie', () => {
   it('regroupe en gardant l’ordre des lieux', () => {
@@ -13,5 +13,15 @@ describe('grouperParCategorie', () => {
   });
   it('n’a aucun groupe vide', () => {
     expect(grouperParCategorie([])).toEqual([]);
+  });
+});
+
+describe('libelleCategorieDetaillee', () => {
+  it('ajoute une sous-catégorie qui apporte une information', () => {
+    expect(libelleCategorieDetaillee('Patrimoine', 'château')).toBe('Patrimoine · château');
+  });
+  it('ne répète pas la catégorie, et accepte l’absence de sous-catégorie', () => {
+    expect(libelleCategorieDetaillee('Parcs', 'parc')).toBe('Parcs');
+    expect(libelleCategorieDetaillee('Parcs', null)).toBe('Parcs');
   });
 });
