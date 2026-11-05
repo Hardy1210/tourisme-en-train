@@ -158,4 +158,14 @@ describe('gare conseillée (D064), échantillon du 18/11/2026', () => {
     const reponse = await serviceGaresProches(parametresDe(47.343, 5.003), '2026-11-19');
     expect(reponse.uicConseille).toBe('EX000023');
   });
+
+  it('ce jour-là, Dijon-Ville ne dessert pas Dole : la plus proche reste conseillée', async () => {
+    const reponse = await serviceGaresProches(parametresDe(47.343, 5.003), '2026-11-10');
+    expect(reponse.uicConseille).toBe('EX000023');
+  });
+
+  it('ce jour-là, Dijon-Ville dessert aussi Dole : elle est conseillée', async () => {
+    const reponse = await serviceGaresProches(parametresDe(47.343, 5.003), '2026-11-11');
+    expect(reponse.uicConseille).toBe('EX000001');
+  });
 });

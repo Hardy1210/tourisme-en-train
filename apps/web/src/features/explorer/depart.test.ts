@@ -13,7 +13,6 @@ const gareProche = (dansRegion: boolean): GareProche => ({
   dureeVeloMin: 5,
   dureeVoitureMin: 3,
   dansRegion,
-  nbTrainsJour: 10,
 });
 const entrees = (partiel: Partial<EntreesDepart>): EntreesDepart => ({
   uicChoisi: null,

@@ -632,11 +632,14 @@
 
 ---
 
-## D064 — Gare de départ par défaut : la mieux desservie à moins de 5 km
+## D064 — Gare de départ par défaut : mieux desservie à moins de 5 km, sans destination perdue
 - **Date :** 05/11/2026
-- **En clair :** quelqu'un qui habite à Dijon part par défaut de la gare de Dijon, même si la petite gare de Porte Neuve est un peu plus près de chez lui.
-- **Décision :** dans la région et à moins de `rayons.gareConseilleeM` (5 km), la gare proposée est celle qui a le plus de trains directs aujourd'hui ; à égalité, la plus proche. Sinon, ou sans aucun train ce jour-là, la plus proche. Même règle pour une ville choisie dans la recherche. « Changer de gare » reste libre, et un choix de l'utilisateur prime toujours.
-- **Raison :** constat de Hardy : Beaune et tout le sud absents. Depuis Dijon Porte Neuve (97 trains par jour, aucun vers Beaune dans les horaires), contre Dijon (1 035 trains) à 2,1 km. La gare strictement la plus proche contredisait la promesse de trouver une sortie en 30 secondes.
-- **Écarté :** garder la plus proche et afficher une suggestion (l'utilisateur tombe d'abord sur la liste pauvre) ; réunir les destinations de plusieurs gares (le départ deviendrait flou).
-- **Impact :** `config/parametres.json`, `05` § 3.2, `features/gares/conseil.ts`, `features/explorer/depart.ts`. La carte reste honnête : « Votre gare » affiche la vraie distance.
+- **En clair :** quelqu'un qui habite à Dijon part par défaut de la gare de Dijon, même si la petite gare de Porte Neuve est un peu plus près de chez lui. On ne change de gare que si aucune destination ne disparaît.
+- **Décision :** par défaut, la gare la plus proche. Elle n'est remplacée que par une gare de la région à moins de `rayons.gareConseilleeM` (5 km) qui, le même jour, a plus de trains **et** dessert au moins toutes ses destinations (la gare remplaçante elle-même mise à part) ; s'il y en a plusieurs, celle qui a le plus de trains, à égalité la plus proche. Si la plus proche est hors région, aucune destination n'y est affichée : il n'y a rien à préserver. Même règle pour une ville choisie dans la recherche. « Changer de gare » reste libre, et un choix de l'utilisateur prime toujours.
+- **Mesure des trains :** somme des `nb_trains` de chaque destination, utilisée seulement pour comparer des gares et jamais exposée par l'API : un train y est compté une fois par arrêt desservi. Le 05/11, Dijon : score 1 035 pour 148 départs réels ; Porte Neuve : score 97 pour 20 départs.
+- **Raison :** constat de Hardy : Beaune et tout le sud absents depuis Dijon Porte Neuve (aucun train vers Beaune dans les horaires), alors que Dijon est à 2,1 km. Mais « le plus de trains » seul recréait le même défaut ailleurs : depuis Belfort-Montbéliard TGV, la gare proposée était Méroux, et 26 destinations disparaissaient, dont Paris.
+- **Vérification (05/11) :** route appelée sur chaque gare de la région ayant des trains et 8 points autour (1 746 positions) : 0 destination perdue, 76 couples de gares où la gare change.
+- **Limite connue :** la comparaison se fait sur le jour même. Si l'utilisateur choisit ensuite une autre date, la gare proposée ne change pas : sur les couples du 05/11 et jusqu'au 31/12, seule Nevers Le Banlay perd alors des destinations (remplacée par Nevers ou Les Perrières).
+- **Écarté :** garder la plus proche et afficher une suggestion (l'utilisateur tombe d'abord sur la liste pauvre) ; réunir les destinations de plusieurs gares (le départ deviendrait flou) ; exiger aussi 1,5 fois plus de trains (non retenu par Hardy : un changement pour un train de plus reste possible).
+- **Impact :** `config/parametres.json`, `05` § 3.2, `features/gares/conseil.ts`, `features/gares/server/requetes.ts`, `features/explorer/depart.ts`. La carte reste honnête : « Votre gare » affiche la vraie distance.
 

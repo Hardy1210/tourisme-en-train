@@ -280,6 +280,21 @@ FROM (VALUES ('EX000001', 6), ('EX000002', 30), ('EX000005', 50)) AS l (arrivee_
 JOIN gare gd ON gd.uic = 'EX000023'
 JOIN gare ga ON ga.uic = l.arrivee_uic;
 
+-- Gare conseillée (D064) : Dijon-Porte-Neuve dessert Dole les deux jours, avec moins de trains que
+-- Dijon-Ville. Le 10/11, Dijon-Ville ne dessert pas Dole ; le 11/11, si.
+INSERT INTO liaison_directe (gare_depart_id, gare_arrivee_id, date_service, duree_min, nb_trains,
+  premier_depart_s, dernier_depart_s, premiere_arrivee_s, types_train, distance_km, faisable_journee)
+SELECT gd.id, ga.id, l.jour::date, 30, l.nb, 28800, 28800, 30600, '{TER}',
+       round((ST_Distance(gd.geom, ga.geom) / 1000 * 1.2)::numeric, 1), false
+FROM (VALUES
+  ('EX000023', 'EX000003', '2026-11-10', 1),
+  ('EX000001', 'EX000002', '2026-11-10', 5),
+  ('EX000023', 'EX000003', '2026-11-11', 1),
+  ('EX000001', 'EX000003', '2026-11-11', 5)
+) AS l (depart, arrivee_uic, jour, nb)
+JOIN gare gd ON gd.uic = l.depart
+JOIN gare ga ON ga.uic = l.arrivee_uic;
+
 -- Lieux placés loin de tout, rattachés à la main pour tester chaque règle.
 INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom)
 SELECT 'echantillon', l.id_source, l.nom, 'nature', 'belvédère', 'Donnée d''exemple.', '71076',

@@ -19,7 +19,7 @@ export async function garesProches(
     ...g,
     distanceM: g.distance_m,
     dansRegion: g.dans_region,
-    nbTrainsJour: g.nb_trains_jour,
+    trainsParDestination: g.trains_par_destination,
   }));
   const conseillee = gareConseillee(candidates, rayonM);
   return {
@@ -34,7 +34,6 @@ export async function garesProches(
       dureeVeloMin: dureeVeloMin(g.distance_m),
       dureeVoitureMin: dureeVoitureMin(g.distance_m),
       dansRegion: g.dans_region,
-      nbTrainsJour: g.nb_trains_jour,
     })),
   };
 }

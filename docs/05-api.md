@@ -71,10 +71,10 @@ Utilisée par la supervision (SR) et le déploiement.
 | `limite` | entier 1–10 | `parametres.limites.gares` |
 ```ts
 { gares: Array<{ uic: string; nom: string; commune: string | null; lat: number; lon: number; distanceM: number;
-                 dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean; nbTrainsJour: number }>,
+                 dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }>,
   uicConseille: string | null }
 ```
-`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : dans la région et à moins de `rayons.gareConseilleeM`, celle qui a le plus de trains aujourd'hui ; sinon, ou sans aucun train, la plus proche. Elle figure toujours dans `gares`. Cache : aucun (position).
+`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à moins de `rayons.gareConseilleeM` a plus de trains aujourd'hui **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
 `categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre.
@@ -319,4 +319,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |
 | 04/11/2026 | 1.13 | § 3.12 : `horaires`, bornes du calendrier de l'écran Explorer |
 | 04/11/2026 | 1.14 | § 3.2 : `lat`, `lon` des gares proches, pour la carte |
-| 05/11/2026 | 1.15 | § 3.2 : `nbTrainsJour`, `uicConseille` — D064 |
+| 05/11/2026 | 1.15 | § 3.2 : `uicConseille` — D064 |

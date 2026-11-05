@@ -30,8 +30,6 @@ export const schemaGareProche = z.object({
   dureeVeloMin: z.number().int(),
   dureeVoitureMin: z.number().int(),
   dansRegion: z.boolean(),
-  /** Trains directs au départ de cette gare aujourd'hui. */
-  nbTrainsJour: z.number().int(),
 });
 
 export const schemaReponseGaresProches = z.object({
