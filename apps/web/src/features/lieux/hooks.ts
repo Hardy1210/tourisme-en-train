@@ -2,6 +2,7 @@
 
 import type { Categorie } from '@tourisme/commun';
 import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { lireApi } from '@/lib/http/client';
 import { schemaFicheLieu, schemaReponseAutour, schemaReponseLieuxAccessibles } from './schemas';
 
@@ -20,8 +21,10 @@ export function useLieuxAutour({ point, rayon, categories }: Options) {
   });
   if (categories.length > 0) requete.set('categories', categories.join(','));
   const chemin = `/api/autour?${requete.toString()}`;
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['autour', chemin],
+    enabled: visible,
     queryFn: ({ signal }) => lireApi(chemin, schemaReponseAutour, signal),
   });
 }

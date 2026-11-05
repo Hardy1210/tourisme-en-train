@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { parametres } from '@/config/parametres';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { lireApi } from '@/lib/http/client';
 import { schemaReponseGeocodage, schemaReponseInverse } from './schemas';
 
@@ -10,9 +11,10 @@ const { delaiSaisieMs, longueurMinRecherche } = parametres.localisation;
 
 /** Nom de la commune où se trouve l'utilisateur, pour la puce « Autour de … ». */
 export function useCommune(position: { lat: number; lon: number } | null) {
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['commune', position?.lat, position?.lon],
-    enabled: position !== null,
+    enabled: visible && position !== null,
     queryFn: ({ signal }) =>
       lireApi(
         `/api/geocodage/inverse?lat=${position?.lat}&lon=${position?.lon}`,

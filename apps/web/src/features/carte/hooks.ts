@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSyncExternalStore } from 'react';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { chargerStyleCarte } from '@/lib/external/fond-carte';
 import { lireCouleursCarte } from './couleurs';
 import { colorierStyle } from './style';
@@ -13,8 +14,10 @@ type StyleBrut = {
 
 /** Style du fond de carte aux couleurs du design system ; `route` sert aux segments. */
 export function useStyleCarte() {
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['style-carte'],
+    enabled: visible,
     staleTime: Infinity,
     queryFn: async ({ signal }) => {
       const brut = (await chargerStyleCarte(signal)) as StyleBrut;

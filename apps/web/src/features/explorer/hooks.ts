@@ -1,12 +1,13 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { gareConseilleePour, useGare, useGaresProches } from '@/features/gares/hooks';
 import { usePosition } from '@/features/localisation/fournisseur-position';
 import { useCommune } from '@/features/localisation/hooks';
 import { schemaReponseSources } from '@/features/presentation/schemas';
+import { useEcranVisible, useUrlEcran } from '@/lib/ecran-visible';
 import { ErreurClient, lireApi } from '@/lib/http/client';
 import { calculerDepart } from './depart';
 import { ecrireFiltres, lireFiltres, type Filtres } from './filtres';
@@ -23,7 +24,7 @@ const statutDe = (erreur: unknown): number | null => {
 export function useDepart() {
   const routeur = useRouter();
   const chemin = usePathname();
-  const parametresUrl = useSearchParams();
+  const parametresUrl = useUrlEcran();
   const uicChoisi = parametresUrl.get('gare');
 
   const { position, essais, redemander } = usePosition(uicChoisi === null);
@@ -101,7 +102,7 @@ export function useChoixDepart() {
 export function useFiltres() {
   const routeur = useRouter();
   const chemin = usePathname();
-  const parametresUrl = useSearchParams();
+  const parametresUrl = useUrlEcran();
   const filtres = lireFiltres(parametresUrl);
 
   const changer = useCallback(
@@ -119,8 +120,10 @@ export function useFiltres() {
 
 /** Jusqu'où les horaires sont chargés, pour borner le calendrier. */
 export function useFenetreHoraires() {
+  const visible = useEcranVisible();
   return useQuery({
     queryKey: ['sources'],
+    enabled: visible,
     queryFn: ({ signal }) => lireApi('/api/sources', schemaReponseSources, signal),
     select: (reponse) => reponse.horaires,
   });
