@@ -12,7 +12,7 @@
 | **Produit et périmètre** (ce que l'application fait ou ne fait pas) | D001 trains directs · D003 sans compte · D008 région pilote · D010 CO₂ et prix calculés · D011 CO₂ honnête · D018 partage en P1 · D019 vélos en direct · D020 transport à la demande exclu · D022 nom de la commune de l'utilisateur · D047 destinations par ville · D048 CO₂ une seule source, prix calibré · D049 gare TGV, sa propre carte · D050 peu de lieux en fin de liste · D051 contrats de l'API complète · D052 identifiants publics stables · D056 onglet Lieux · D057 fiches de ville, piscines, aires de jeux, gares classées · D058 aucune position dans les liens · D059 balnéo hors de « enfants » · D060 catégorie secondaire · D061 corrections manuelles, « enfants » justifié |
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
-| **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code |
+| **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
 | **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D065 MapLibre 5 jusqu'au P0, risque accepté |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
@@ -661,10 +661,20 @@
 - **Écarté :** fusionner la PR #58 (plus de fond de carte) ; une 5.x corrigée (aucune n'est publiée) ; `update-types` dans `ignore` : la documentation de GitHub ne dit pas si ce filtre s'applique aux mises à jour de sécurité, alors qu'elle dit que `ignore` les couvre.
 - **Impact :** `.github/dependabot.yml`, `A-FAIRE` § 3, `CLAUDE.md` § 6. Annule D062 sur un point seulement si le passage en 6 aboutit.
 
+## D066 — `CLAUDE.md` raccourci : historique et arborescence détaillée déplacés
+- **Date :** 05/11/2026
+- **En clair :** le fichier lu à chaque session reste court ; l'historique et le plan détaillé des dossiers sont déplacés tels quels dans `docs/`, sans retirer de règle.
+- **Décision :** historique dans `docs/HISTORIQUE-CLAUDE.md` ; arborescence complète dans `01` § 3 bis, résumé gardé en `CLAUDE.md` § 6. Numéros de sections inchangés, car d'autres documents y renvoient.
+- **Raison :** demande de Hardy : `CLAUDE.md` dépassait 350 lignes (400 au 05/11).
+- **Écarté :** résumer les règles ou fusionner des sections (risque de perdre une règle ou de casser les renvois « `CLAUDE.md` § n »).
+- **Impact :** `CLAUDE.md` § 6 et historique, `01` § 3 bis, `HISTORIQUE-CLAUDE.md`.
+
 ## D067 — Écran Lieux : liste d'après la maquette mobile, sans favoris ni récompenses
 - **Date :** 05/11/2026
 - **En clair :** l'onglet Lieux suit la maquette mobile. La gare choisie et la date suivent quand on passe d'Explorer à Lieux. Les boutons favoris et récompenses de la maquette ne sont pas repris, car ils ne feraient rien.
 - **Décision :** liste seule pour le moment (carte à décider pour le P0, choix de Hardy) ; filtres réduits à ceux de `/api/lieux` (catégories, temps de train, date) ; `gare` et `date` gardées dans les liens Explorer et Lieux, les autres filtres restent à leur écran ; illustration de catégorie sur toutes les cartes, comme « À deux pas de vous » ; « Parcs · parc » affiché « Parcs ».
 - **Raison :** maquette `Explorer Mobile v3` (`design/maquettes/`), référence d'aspect et non de comportement. Photos : 126 lieux sur 12 242 ont une image en base (mesuré le 05/11), et le crédit de chaque photo n'est pas encore prévu à l'écran.
-- **Écarté :** boutons favoris et récompenses (message « bientôt » seulement, décision à prendre avec Mon espace) ; la limite de 40 cartes de la maquette (`limites.lieuxParPage` et « Voir plus », D056).
+- **Grand écran :** maquette `Explorer Desktop v3` : contrôles dans le panneau de gauche, titre et grille de cartes à droite, à la place de la carte. La colonne de gauche ne reprend pas la liste d'Explorer que la maquette y laisse.
+- **Choix confirmés par Hardy (05/11) :** favoris et récompenses gardés pour Mon espace ; photos après les objectifs principaux (`A-FAIRE` § 1) ; maquettes HTML hors du dépôt (2,5 Mo chacune, `.gitignore`).
+- **Écarté :** boutons favoris et récompenses (message « bientôt » seulement) ; la limite de 40 cartes de la maquette (`limites.lieuxParPage` et « Voir plus », D056).
 - **Impact :** `06`, `features/explorer/ui/ecran-lieux.tsx`, `controles-depart.tsx`, `features/lieux/ui/liste-lieux-accessibles.tsx`, `app/(app)/nav-basse.tsx`, `A-FAIRE`, fiche E11.

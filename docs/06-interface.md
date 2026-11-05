@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.5 · **Date** 04/11/2026
+> **Version** 1.6 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -56,7 +56,7 @@
    - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct ; « Changer de gare ».
    - **b. À deux pas de vous** : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »).
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
-5. **Écran Lieux** (mobile, maquette `Explorer Mobile v3`, D067) : même en-tête qu'Explorer sur fond de marque (date, gare, catégories, « Filtres » réduit au temps de train) ; titre « Lieux à visiter » et nombre de lieux ; cartes : illustration de catégorie, catégorie, nom, gare et temps de train, temps et distance à pied, badge Qualité Tourisme ; « Voir plus » (D056) ; états : chargement, sans position, hors région, aucun résultat (« Tout afficher »), date hors horaires, erreur. La gare choisie et la date suivent entre Explorer et Lieux. Grand écran : à faire d'après la maquette desktop.
+5. **Écran Lieux** (maquette `Explorer Mobile v3`, D067) : même en-tête qu'Explorer sur fond de marque (date, gare, catégories, « Filtres » réduit au temps de train) ; titre « Lieux à visiter » et nombre de lieux ; cartes : illustration de catégorie, catégorie, nom, gare et temps de train, temps et distance à pied, badge Qualité Tourisme ; « Voir plus » (D056) ; états : chargement, sans position, hors région, aucun résultat (« Tout afficher »), date hors horaires, erreur. La gare choisie et la date suivent entre Explorer et Lieux. Grand écran (`Explorer Desktop v3`) : contrôles dans le panneau de gauche, titre et grille de cartes à droite. Une colonne de cartes sur mobile, autant que la largeur en permet sur grand écran.
 6. **Navigation basse** : Explorer · Lieux · Mon espace · Menu (D054). Lieux : données réelles. Mon espace (favoris, récompenses) : **fictif, marqué « Aperçu · bientôt »**.
 
 ### Desktop
@@ -162,4 +162,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 09/10/2026 | 1.3 | Navigation basse alignée sur E10 (Explorer · Menu) ; message « hors région » tiré de `marque` et `parametres.region` |
 | 04/11/2026 | 1.4 | § 2 : composants écrits à la main sur Radix — D053 ; rôles `action` et `cat-*`, navigation à 4 onglets, rail sur grand écran, composants réels — D054 |
 | 04/11/2026 | 1.5 | § 4 : page plein écran, contenu de la liste des lieux — D063 |
-| 05/11/2026 | — | § Explorer : écran Lieux en mobile — D067 |
+| 05/11/2026 | 1.6 | § Explorer : écran Lieux, mobile et grand écran — D067 |

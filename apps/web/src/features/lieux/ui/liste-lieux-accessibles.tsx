@@ -19,6 +19,10 @@ import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
 
 type LieuAccessible = ReponseLieuxAccessibles['lieux'][number];
 
+/** Une colonne sur mobile ; sur grand écran, autant que la largeur en permet. */
+const GRILLE =
+  'flex flex-col gap-4 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] lg:items-start lg:gap-5';
+
 function CarteLieuAccessible({ lieu, trajet }: { lieu: LieuAccessible; trajet: ContexteTrajet }) {
   const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
@@ -89,8 +93,8 @@ export function ListeLieuxAccessibles({
   const dateHorsHoraires = requete.error instanceof ErreurClient && requete.error.statut === 400;
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="flex flex-col gap-0.5 px-4 pt-1 pb-5 text-hero-foreground">
+    <div className="flex flex-1 flex-col lg:h-full lg:overflow-y-auto">
+      <div className="flex flex-col gap-0.5 px-4 pt-1 pb-5 text-hero-foreground lg:gap-1 lg:px-8 lg:pt-8 lg:pb-6">
         <h1 className="font-display text-3xl leading-tight font-bold">Lieux à visiter</h1>
         <p aria-live="polite" className="text-md text-hero-muted">
           {total !== undefined && (
@@ -102,16 +106,20 @@ export function ListeLieuxAccessibles({
         </p>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 px-4 pb-7">
+      <div className="flex flex-1 flex-col gap-4 px-4 pb-7 lg:gap-5 lg:px-8 lg:pb-9">
         {requete.isPending && (
-          <div role="status" aria-label="Chargement des lieux" className="flex flex-col gap-4">
+          <div role="status" aria-label="Chargement des lieux" className={GRILLE}>
             <Squelette className="h-68 rounded-carte" />
             <Squelette className="h-68 rounded-carte" />
           </div>
         )}
 
         {requete.isError && !requete.isFetchNextPageError && (
-          <EtatVide titre="Ces lieux n'ont pas pu être chargés" texte={requete.error.message}>
+          <EtatVide
+            titre="Ces lieux n'ont pas pu être chargés"
+            texte={requete.error.message}
+            className="lg:max-w-130"
+          >
             {dateHorsHoraires ? (
               <Bouton variante="secondaire" onClick={surAujourdhui}>
                 Revenir à aujourd&apos;hui
@@ -128,6 +136,7 @@ export function ListeLieuxAccessibles({
           <EtatVide
             titre="Aucun lieu pour ces envies"
             texte="Essayez d'autres catégories ou élargissez la durée du trajet."
+            className="lg:max-w-130"
           >
             <Bouton variante="secondaire" onClick={surToutAfficher}>
               Tout afficher
@@ -138,10 +147,7 @@ export function ListeLieuxAccessibles({
         {lieux !== undefined && lieux.length > 0 && (
           <ul
             aria-busy={requete.isPlaceholderData}
-            className={cn(
-              'flex flex-col gap-4 transition-opacity',
-              requete.isPlaceholderData && 'opacity-60',
-            )}
+            className={cn(GRILLE, 'transition-opacity', requete.isPlaceholderData && 'opacity-60')}
           >
             {lieux.map((lieu) => (
               <CarteLieuAccessible key={lieu.cle} lieu={lieu} trajet={{ depuis: gare.uic, date }} />
@@ -156,6 +162,7 @@ export function ListeLieuxAccessibles({
         {requete.hasNextPage && (
           <Bouton
             variante="secondaire"
+            className="lg:self-center"
             disabled={requete.isFetchingNextPage}
             onClick={() => void requete.fetchNextPage()}
           >

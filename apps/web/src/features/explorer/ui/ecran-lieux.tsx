@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
+import { useGrandEcran } from '@/features/carte/hooks';
 import { ListeLieuxAccessibles } from '@/features/lieux/ui/liste-lieux-accessibles';
 import { FILTRES_PAR_DEFAUT, nombreFiltresLieux } from '../filtres';
 import { useChoixDepart, useFiltres } from '../hooks';
@@ -24,11 +25,13 @@ export function EcranLieux() {
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const { filtres, changer } = useFiltres();
   const pret = depart.etat === 'pret';
+  const grandEcran = useGrandEcran();
 
   return (
-    <div className="flex min-h-full flex-col bg-hero-bg">
+    <div className="flex min-h-full flex-col bg-hero-bg lg:grid lg:h-full lg:min-h-0 lg:grid-cols-[var(--panneau-largeur)_minmax(0,1fr)] lg:overflow-hidden">
       <EnTete
-        surHero
+        surHero={!grandEcran}
+        className="lg:h-full lg:overflow-y-auto lg:border-r"
         action={pret && <BoutonDate date={filtres.date} surClic={() => setFeuilleDate(true)} />}
       >
         <BoutonDepart choix={choix} />
@@ -58,7 +61,7 @@ export function EcranLieux() {
           }
         />
       ) : (
-        <div className="flex-1 bg-background">
+        <div className="flex-1 overflow-y-auto bg-background">
           <EtatsDepart choix={choix} />
         </div>
       )}

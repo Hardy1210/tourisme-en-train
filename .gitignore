@@ -29,3 +29,6 @@ playwright-report/
 # Éditeurs et système
 .DS_Store
 *.log
+
+# Maquettes HTML complètes (2,5 Mo chacune) : gardées en local, D067
+design/maquettes/*.html
