@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.14 · **Date** 05/11/2026
+> **Version** 1.15 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -319,4 +319,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 04/11/2026 | 1.12 | § 2 et § 3.6 bis : `GET /api/lieux` (onglet Lieux) — D056, D057 |
 | 04/11/2026 | 1.13 | § 3.12 : `horaires`, bornes du calendrier de l'écran Explorer |
 | 04/11/2026 | 1.14 | § 3.2 : `lat`, `lon` des gares proches, pour la carte |
-| 05/11/2026 | 1.14 | § 3.2 : `nbTrainsJour`, `uicConseille` — D064 |
+| 05/11/2026 | 1.15 | § 3.2 : `nbTrainsJour`, `uicConseille` — D064 |
