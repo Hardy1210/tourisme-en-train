@@ -106,55 +106,24 @@ Monorepo pnpm (app · traitement des données · code commun), un seul langage :
 
 ## 6. Structure des dossiers
 
+Détail complet, fichier par fichier : `docs/01-architecture.md` § 3 bis.
+
 ```
 tourisme-en-train/
-├─ CLAUDE.md · README.md · .env.example · docker-compose.yml · package.json · pnpm-workspace.yaml
-├─ .github/                     ← CODEOWNERS (Hardy relit tout) · modèle de pull request · dependabot.yml (D065)
-├─ design/                      ← globals.css source, prompt et captures Claude Design (référence, hors code)
-├─ config/
-│  ├─ parametres.json            ← seuils métier partagés app + traitement (rayons, vitesses, durées)
-│  └─ sources.json               ← adresses et licences des sources de données (dont fichier régional DATAtourisme, réseaux locaux)
-├─ docs/
-│  ├─ 00-vision.md               ← produit, utilisateurs, fonctionnalités, périmètre
-│  ├─ 01-architecture.md         ← composants, couches, flux, choix techniques
-│  ├─ 02-sources-donnees.md      ← chaque source : format, champs, licence, usage
-│  ├─ 03-base-de-donnees.md      ← tables, colonnes, index, rôles
-│  ├─ 04-traitement-donnees.md   ← pipeline ETL et ses algorithmes
-│  ├─ 05-api.md                  ← contrat de chaque route
-│  ├─ 06-interface.md            ← écrans, états, composants, design system, PWA
-│  ├─ 07-contrat-infra.md        ← interface avec les SR
-│  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
-│  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
-│  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
-│  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md · LECONS.md (leçons réutilisables, pour Hardy)
-│  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
-│  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
-├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
-├─ apps/web/src/
-│  ├─ app/                       ← pages et routes API, fines
-│  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
-│  │                                impact/ carte/ explorer/ presentation/ sante/
-│  │                                chacune : ui/ · server/ · schemas.ts · types.ts · hooks.ts
-│  ├─ components/ui/             ← composants génériques (shadcn/ui sur tokens)
-│  ├─ config/                    ← marque.ts · parametres.ts (réexporte @tourisme/commun)
-│  ├─ lib/db/                    ← connexion, schéma Drizzle, requêtes PostGIS partagées
-│  ├─ lib/external/              ← adaptateurs : adresse.ts · sncf.ts · gbfs.ts
-│  ├─ lib/http/                  ← erreurs, validation des paramètres, réponses, cache
-│  ├─ lib/geo/ · lib/dates/ · lib/impact/  ← calculs purs (distances, durées, heures, CO₂, prix) ; dateDuJour(), maintenantParis() : @tourisme/commun
-│  ├─ lib/env.ts                 ← variables d'environnement validées par Zod
-│  └─ styles/globals.css         ← design system
-├─ packages/commun/src/         ← @tourisme/commun : schémas Zod de parametres.json et sources.json · dateDuJour() et maintenantParis() à Paris · journal JSON · types partagés
-├─ etl/                          ← @tourisme/etl : traitement des données (TypeScript + SQL)
-│  ├─ src/run.ts                 ← pnpm etl <source|all> [--force] [--hors-ligne]
-│  ├─ src/                       ← config.ts · db.ts · sources/ · transformations/ (TS pur + .sql) · chargement/ · controles/ · regles/
-│  └─ tests/                     ← Vitest, GTFS miniature
-├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
-├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
-├─ data/brut/ · data/traite/     ← ignorés par Git
-└─ infra/                        ← production (SR) : CLAUDE.md propre · JOURNAL.md · compose prod, Caddy, sauvegardes
+├─ config/           ← parametres.json (seuils) · sources.json (adresses et licences)
+├─ docs/             ← voir § 7 · etapes/ · equipe/
+├─ design/           ← globals.css source, maquettes (référence, hors code)
+├─ .github/          ← CODEOWNERS · modèle de pull request · dependabot.yml (D065)
+├─ apps/web/src/     ← app/ · features/ · components/ui/ · config/ · lib/ · styles/globals.css
+├─ apps/web/scripts/ ← scripts de base (generer · migrer · reinitialiser · preparer-base-test)
+├─ packages/commun/  ← @tourisme/commun : schémas Zod, dates à Paris, journal
+├─ etl/              ← @tourisme/etl : traitement des données (TypeScript + SQL)
+├─ db/               ← migrations/ · echantillon/ (données d'exemple, base de test uniquement)
+├─ data/             ← brut/ · traite/ (ignorés par Git)
+└─ infra/            ← production (SR)
 ```
 
-Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jour cette section + `DECISIONS.md`.
+Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jour `01` § 3 bis, ce résumé et `DECISIONS.md`.
 
 ---
 
@@ -368,33 +337,4 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 
 ## Historique des modifications
 
-| Date | Version | Modification |
-|---|---|---|
-| 30/09/2026 | 1.0 | Création |
-| 30/09/2026 | 1.1 | Nom de code `tourisme-en-train`, marque Wagoo centralisée, règles de fuseau horaire, liste des interdits, protocole Git, règles de design, paramètres métier partagés, leçons reprises de Lexio |
-| 30/09/2026 | 1.2 | Glossaire, fonctionnalités complètes dans la structure, CO₂ calculé localement, route `/api/sante`, règle de découpage des documents |
-| 30/09/2026 | 1.3 | Dossier `design/`, adaptateur `gbfs.ts` (vélos disponibles) |
-| 02/10/2026 | 1.4 | Dossier `.github/` (CODEOWNERS, modèle de PR), guides d'équipe — D023 |
-| 05/10/2026 | 1.5 | Traitement des données en TypeScript + SQL au lieu de Python ; espace de travail pnpm avec `packages/commun` — D024 |
-| 05/10/2026 | 1.6 | Calendrier recalé sur la feuille de route (démarrage le 05/10, P0 le 22/11) — D025 |
-| 05/10/2026 | 1.7 | `infra/CLAUDE.md` pour les SR, exception `.github/workflows/deploiement*.yml` — D026 |
-| 05/10/2026 | 1.8 | Adresses des sources dans `config/sources.json` (préparation multi-région) — D027 |
-| 09/10/2026 | 1.9 | Next.js 16 et Zod 4 (D029) ; `marque.ts` sans URL, `maintenantParis()`, journal dans le code commun (D031) |
-| 09/10/2026 | 1.10 | E00 : § 8, § 9 et commandes réelles du § 16 |
-| 11/10/2026 | 1.11 | `BACKLOG.md` (§ 6, § 7) ; étape « backlog » dans le protocole « garde le contexte » (§ 14) — D032 |
-| 11/10/2026 | 1.12 | E01 : `apps/web/scripts/`, tests d'intégration, pilote `pg`, commandes de base (§ 4, § 6, § 16) — D033 |
-| 19/10/2026 | 1.13 | § 8 et § 9 : E01 terminée, E02 en cours |
-| 22/10/2026 | 1.14 | § 16 : commandes `pnpm etl gares` et `docker compose run --rm etl` ; § 8 et § 9 : E02 terminée |
-| 22/10/2026 | 1.15 | § 8, § 9 et § 16 : E03 terminée, `pnpm etl gtfs_sncf` |
-| 23/10/2026 | 1.16 | § 16 : `pnpm etl communes` — D038 |
-| 23/10/2026 | 1.17 | § 9 : sauvegarde de session (table `commune`, D039, E04 à lancer) |
-| 30/10/2026 | 1.18 | § 9 : sauvegarde de session (cartes de destination et jumelage en attente) |
-| 01/11/2026 | 1.19 | § 16 : `pnpm etl liaisons` ; § 8 : E04 terminée — D040 |
-| 01/11/2026 | 1.20 | § 9 : sauvegarde de session (E04 fusionnée, E05 à lancer) |
-| 01/11/2026 | 1.21 | § 6, § 7, § 14 : `LECONS.md`, sommaire et ligne « En clair » de `DECISIONS.md` |
-| 01/11/2026 | 1.22 | § 16 : `pnpm etl contours`, `regles`, `datatourisme`, `osm` — D041 |
-| 01/11/2026 | 1.23 | § 8 et § 9 : sauvegarde de session (E05 fusionnée, E06 à lancer) |
-| 02/11/2026 | 1.24 → 1.31 | § 16 : `pnpm etl rattachements`, `pnpm etl transport_local` ; § 8 : E06 et E07 terminées (PR #52, #53) ; § 9 : quatre sauvegardes de session — D042 → D046 (entrées regroupées le 03/11 : limite de 400 lignes) |
-| 03–04/11/2026 | 1.32 → 1.41 | § 4 : composants sur Radix (D053) ; § 6 : fonctionnalité `sante/` (D047) ; § 8 : E08, E09, E10 terminées, E11 en cours ; § 9 : sauvegardes de session (entrées regroupées : limite de 400 lignes) |
-| 04–05/11/2026 | 1.42 | § 16 : `pnpm test:e2e` ; § 8 et § 9 : E11 et E12 ⏸ — D063, D064 |
-| 05/11/2026 | 1.43 | § 6 : `.github/dependabot.yml` — D065 |
+Dans `docs/HISTORIQUE-CLAUDE.md` : toute modification de ce fichier s'y note, pas ici (D066).
