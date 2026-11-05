@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ecrireFiltres,
+  filtresDeLUrl,
   lienAvecDepart,
   nombreFiltresLieux,
   FILTRES_PAR_DEFAUT,
@@ -109,7 +110,24 @@ describe('lienAvecDepart', () => {
       '/lieux?gare=87713040&date=2026-11-18',
     );
   });
-  it('ne garde ni les filtres ni une position arrivée par un ancien lien', () => {
-    expect(lienAvecDepart('/lieux', url('categories=nature&lat=47.3&lon=5'))).toBe('/lieux');
+  it('rend à l’écran ses propres filtres', () => {
+    expect(lienAvecDepart('/', url('date=2026-11-18'), 'categories=nature&dureeMax=60')).toBe(
+      '/?date=2026-11-18&categories=nature&dureeMax=60',
+    );
+  });
+  it('ne donne pas à un écran les filtres de celui qu’on quitte', () => {
+    expect(lienAvecDepart('/lieux', url('categories=nature&rayon=5000'))).toBe('/lieux');
+  });
+  it('ne garde jamais une position arrivée par un ancien lien', () => {
+    expect(lienAvecDepart('/lieux', url('lat=47.3&lon=5'))).toBe('/lieux');
+  });
+});
+
+describe('filtresDeLUrl', () => {
+  it('garde les filtres', () => {
+    expect(filtresDeLUrl(url('categories=nature&faisable=1'))).toBe('categories=nature&faisable=1');
+  });
+  it('écarte la gare, la date et toute position', () => {
+    expect(filtresDeLUrl(url('gare=A&date=2026-11-18&lat=47.3&lon=5'))).toBe('');
   });
 });

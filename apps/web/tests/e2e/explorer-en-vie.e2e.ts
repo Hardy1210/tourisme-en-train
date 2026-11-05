@@ -119,16 +119,63 @@ test('retour avec une autre date : les trains de cette date sont demandés', asy
   await requete;
 });
 
-test('retour avec d’autres filtres : ils sont demandés', async ({ page }) => {
-  await page.goto(`${ECRAN}&categories=enfants`);
-  await expect(page.getByRole('heading', { name: /En train direct/ })).toBeVisible();
-  await allerSurLieux(page);
+test('un filtre choisi sur Explorer est encore là au retour, sans aucun appel', async ({
+  page,
+}) => {
+  await page.goto(ECRAN);
+  await expect(sorties(page).first()).toBeVisible();
+  const categories = page.getByRole('group', { name: 'Catégories' });
+  await categories.getByRole('button', { name: 'Enfants' }).click();
+  await expect(page).toHaveURL(/categories=enfants/);
+  await expect(sorties(page).first()).toBeVisible();
+  const appels = appelsExplorer(page);
 
-  // Les liens de navigation ne gardent que la gare et la date (`lienAvecDepart`).
-  const requete = page.waitForRequest(
-    (r) => r.url().includes('/api/destinations') && !r.url().includes('categories='),
-  );
+  await allerSurLieux(page);
+  await expect(page).not.toHaveURL(/categories=/);
   await onglet(page, 'Explorer').click();
+
+  await expect(page).toHaveURL(/categories=enfants/);
+  await expect(categories.getByRole('button', { name: 'Enfants' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  expect(appels).toEqual([]);
+});
+
+test('un filtre de Lieux est encore là au retour, sans toucher à ceux d’Explorer', async ({
+  page,
+}) => {
+  await page.goto(ECRAN);
+  await expect(sorties(page).first()).toBeVisible();
+  await allerSurLieux(page);
+  await page
+    .getByRole('group', { name: 'Catégories' })
+    .getByRole('button', { name: 'Nature' })
+    .click();
+  await expect(page).toHaveURL(/\/lieux\?.*categories=nature/);
+
+  await onglet(page, 'Explorer').click();
+  await expect(sorties(page).first()).toBeVisible();
+  await expect(page).not.toHaveURL(/categories=/);
+
+  await onglet(page, 'Lieux').click();
+  await expect(page).toHaveURL(/\/lieux\?.*categories=nature/);
+});
+
+test('un filtre changé au retour est bien demandé', async ({ page }) => {
+  await page.goto(ECRAN);
+  await expect(sorties(page).first()).toBeVisible();
+  await allerSurLieux(page);
+  await onglet(page, 'Explorer').click();
+  await expect(sorties(page).first()).toBeVisible();
+
+  const requete = page.waitForRequest(
+    (r) => r.url().includes('/api/destinations') && r.url().includes('categories=enfants'),
+  );
+  await page
+    .getByRole('group', { name: 'Catégories' })
+    .getByRole('button', { name: 'Enfants' })
+    .click();
   await requete;
 });
 

@@ -79,13 +79,29 @@ export function nombreFiltresLieux(filtres: Filtres): number {
   return filtres.categories.length + (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1);
 }
 
-/** Entre Explorer et Lieux, la gare choisie et la date restent ; les filtres restent à leur écran. */
-export function lienAvecDepart(chemin: string, url: URLSearchParams): string {
+const CLES_FILTRES = ['categories', 'rayon', 'dureeMax', 'faisable'] as const;
+
+/** Les filtres d'une adresse, et rien d'autre : jamais de position (D058). */
+export const filtresDeLUrl = (url: URLSearchParams): string => {
+  const filtres = new URLSearchParams();
+  for (const cle of CLES_FILTRES) {
+    const valeur = url.get(cle);
+    if (valeur !== null) filtres.set(cle, valeur);
+  }
+  return filtres.toString();
+};
+
+/**
+ * Lien d'un onglet : la gare choisie et la date suivent d'un écran à l'autre, et l'écran retrouve ses
+ * propres filtres (`filtresDeLEcran`), sans ceux de l'écran qu'on quitte (D070).
+ */
+export function lienAvecDepart(chemin: string, url: URLSearchParams, filtresDeLEcran = ''): string {
   const suite = new URLSearchParams();
   for (const cle of ['gare', 'date']) {
     const valeur = url.get(cle);
     if (valeur !== null) suite.set(cle, valeur);
   }
+  for (const [cle, valeur] of new URLSearchParams(filtresDeLEcran)) suite.set(cle, valeur);
   const texte = suite.toString();
   return texte ? `${chemin}?${texte}` : chemin;
 }
