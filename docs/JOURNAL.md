@@ -24,6 +24,30 @@
 
 ---
 
+## 05/11/2026 — Étape E11 — gare de départ par défaut et diagnostic de Beaune
+**Fait :**
+- PR #59 (E12) fusionnée par Hardy.
+- Diagnostic de « Beaune a disparu » : base et API saines. Depuis Dijon Porte Neuve, aucun trajet vers Beaune dans les horaires ; l'application partait de cette gare car elle était la plus proche.
+- Gare conseillée : la mieux desservie à moins de 5 km, sinon la plus proche ; même règle pour une ville recherchée. PR #60 ouverte.
+- Noté dans `A-FAIRE` : écran Lieux (prévu dans aucune fiche d'étape), recherche de destination, réaction des filtres, « Gare de Dijon » seulement à l'affichage.
+
+**Décisions :** D064. Hardy garde « Dijon » pour le moment, et la base ne change pas.
+
+**Problèmes rencontrés :**
+- Annonce à tort d'un filtre cassé sur ordinateur : mon test n'attendait que 2 s, le filtre répond en 1,5 à 2,4 s sans aucun signe. Corrigé dans ma réponse à Hardy, leçon L39.
+- Un test d'intégration a lu la vraie base (lecture seule) : import du service trop tôt, corrigé par un import différé.
+
+**À valider par Hardy :**
+- Fusion de la PR #60, puis Beaune visible chez lui ; vérifications de design et téléphone (`A-FAIRE` § 1).
+
+**Prochaine action :**
+- Fusion de la PR #60 si besoin, puis plan de l'écran Lieux.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (401) · intégration ✅ (156) · parcours ✅ (38, avant la dernière modification de documents)
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-gare-par-defaut`)
+
+---
+
 ## 04/11/2026 — Étapes E11 et E12 — parcours Playwright, fiche destination et fiche lieu
 **Fait :**
 - E11 fusionnée (PR #57) : carte découpée, parcours Playwright, mesures sur version de production.

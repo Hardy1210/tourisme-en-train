@@ -26,6 +26,7 @@
 
 
 | **Explorer et fiche destination, à vérifier point par point (E11 et E12 ⏸)** :<br>☐ comparer l'écran aux maquettes `Explorer Mobile v3` et `Explorer Desktop v3`, noter ce qui semble bizarre, puis retoucher<br>☐ étiquettes de carte coupées par les épingles (ex. « Beaune » en 390 px)<br>☐ essai au doigt sur téléphone en HTTPS, surtout la feuille (essayée seulement à la souris)<br>☐ chronomètre sur téléphone : ouverture → liste < 3 s (un essai à 3,4 s sur ordinateur)<br>☐ changement de gare → titre de la nouvelle gare : mesuré de 1,1 à 3,6 s sur ordinateur, à mesurer sur téléphone avant de corriger<br>☐ lisibilité de la carte avec beaucoup de destinations (101 depuis Dijon) et étiquette de la destination sélectionnée<br>☐ fiche destination et fiche lieu : comparer aux maquettes, surtout la hauteur du pied sur mobile et les épingles serrées de la mini-carte<br>☐ tout essayer sur téléphone : onglets, Comparer, Voir sur la carte, billetterie | Hardy préfère juger le design une fois la fiche destination en place : certaines retouches pourraient devenir inutiles. Détail : fiche E11 | Maintenant que E12 est en place ; au plus tard avant le jalon P0 du 22/11 |
+| **Beaune de nouveau visible** chez Hardy : ouvrir `http://localhost:3000` sans `?gare=`, « Votre gare » doit indiquer Dijon | Correction D064 testée avec une position simulée seulement | Après la fusion de la PR #60 |
 | **Autres jeux et escape games classés « enfants » à relire** (Megaloisirs Laser Game, Fug Game, Games Factory, Les Souterrains du Commando Games, La Clé du Bastion, 10 55…) | Règle de D061 : « enfants » seulement si une source le justifie ; la classe `LeisureComplex` seule ne le prouve pas | Avant E12, avec la même méthode de lignes validées |
 
 ## 2. Actions humaines de Hardy (comptes, clés, fichiers)
@@ -56,6 +57,7 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 
 | Quoi | Pourquoi reporté | Déclencheur |
 |---|---|---|
+| **« Gare de Dijon » à l'affichage** au lieu de « Dijon » : seulement sur le front, sans renommer la gare en base (le nom vient de la SNCF) | Hardy préfère laisser « Dijon » pour le moment (05/11) | Si Hardy le redemande, par exemple pendant sa passe de design |
 | **Recherche de destination dans Explorer** : taper « Beaune » la trouve dans les résultats, sans changer la gare de départ (la barre du haut choisit d'où l'on part) | Demandée par Hardy le 05/11, à faire plus tard | Après l'écran Lieux, avant le jalon P0 du 22/11 |
 | **Écran Lieux** : l'onglet affiche encore « Bientôt ici » ; `/api/lieux` est prête (D056) mais l'écran n'est prévu dans aucune fiche d'étape | Trouvé le 05/11 en cherchant les lieux touristiques | Prochain travail, plan à valider par Hardy |
 | **Filtres sans réaction immédiate** : le bouton met environ 2 s à changer (serveur de développement), et le rayon ne concerne que « À deux pas » | Trouvé le 05/11 | Avec l'écran Lieux |

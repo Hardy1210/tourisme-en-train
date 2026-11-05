@@ -216,11 +216,11 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
 - **Étape en cours :** écran Lieux à planifier ; E11 et E12 ⏸ : vérifications de design et téléphone dans `A-FAIRE` § 1
-- **Dernière session :** 05/11/2026 — E11 et E12 fusionnées ; gare de départ par défaut (D064)
-- **Fait :** données et API P0 ; Explorer, fiche destination, fiche lieu en mobile et desktop ; `pnpm verifier` 388 tests, `pnpm test:integration` 153, `pnpm test:e2e` 38
-- **À valider par Hardy :** PR de la gare par défaut ; liste de vérifications et reste de `A-FAIRE` § 1 (dont les photos des lieux)
+- **Dernière session :** 05/11/2026 — E11 et E12 fusionnées ; gare de départ par défaut (D064), PR #60 ouverte
+- **Fait :** données et API P0 ; Explorer, fiche destination, fiche lieu en mobile et desktop ; `pnpm verifier` 401 tests, `pnpm test:integration` 156, `pnpm test:e2e` 38
+- **À valider par Hardy :** fusion de la PR #60, puis Beaune visible chez lui sans `?gare=` ; reste de `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11
-- **Prochaine action précise :** proposer le plan de l'écran Lieux (`app/(app)/lieux/page.tsx`, page provisoire ; `A-FAIRE` § 3), puis E13
+- **Prochaine action précise :** après la fusion de la PR #60, proposer le plan de l'écran Lieux (`apps/web/src/app/(app)/lieux/page.tsx`, page provisoire ; `/api/lieux` prête, D056), à valider avant de coder
 ---
 
 ## 10. Réaliser une étape

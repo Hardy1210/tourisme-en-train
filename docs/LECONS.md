@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.7 · **Date** 03/11/2026
+> **Version** 1.8 · **Date** 05/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -259,6 +259,18 @@
 - **À retenir :** un nombre sans unité ni périmètre finit mal affiché ; quand deux valeurs voisines suivent des conventions différentes, les nommer chacune.
 - **Origine :** remarque de Hardy sur `/api/impact`, D051 (point 8 ter).
 
+### L38 — Tester depuis l'endroit idéal cache les défauts des vrais utilisateurs
+- **Problème :** tous les essais simulaient une position pile sur la gare de Dijon : 101 destinations. Chez Hardy, à quelques kilomètres, l'application partait d'une petite gare sans train vers le sud, et Beaune semblait avoir disparu.
+- **Solution :** demander une capture de l'écran réel, vérifier dans les horaires bruts, puis corriger la règle de choix de la gare.
+- **À retenir :** essayer aussi une position ordinaire, pas seulement le cas le plus favorable ; quand un utilisateur dit que ça manque, lire ce que son écran affiche avant de répondre que les données sont bonnes.
+- **Origine :** remarque de Hardy du 05/11, D064.
+
+### L39 — Une action sans réaction visible ressemble à une panne
+- **Problème :** un filtre mettait environ 2 s à répondre, sans aucun signe. Hardy l'a cru cassé, et un test qui n'attendait que 2 s a aussi conclu à tort que le clic ne marchait pas.
+- **Solution :** mesurer jusqu'à ce que l'état change avant de conclure, et prévoir une réaction dès le clic (à faire, `A-FAIRE` § 3).
+- **À retenir :** un bouton doit réagir tout de suite, même si le résultat arrive après ; et un « ça ne marche pas » tiré d'un délai trop court n'est pas un résultat.
+- **Origine :** diagnostic du 05/11.
+
 ---
 
 ## Historique
@@ -273,3 +285,4 @@
 | 03/11/2026 | 1.5 | L29 → L31 (journaux du framework, seuil mesuré avant d'être choisi, test qui doit pouvoir échouer) |
 | 03/11/2026 | 1.6 | L32 → L35 (identifiant public, API réelle appelée avant de coder, panne d'un service externe testée, un seul calcul pour deux écrans) |
 | 03/11/2026 | 1.7 | L36, L37 (liste pensée depuis le moment du voyageur, périmètre de chaque chiffre) |
+| 05/11/2026 | 1.8 | L38, L39 (tester depuis une position ordinaire, action sans réaction visible) |
