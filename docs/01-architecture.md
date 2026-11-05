@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.10 · **Date** 05/11/2026
+> **Version** 1.11 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -58,7 +58,8 @@ apps/web/src/
 │  ├─ (app)/a-propos/                   ← « L'âme du produit » + Sources
 │  ├─ api/…/route.ts                    ← routes API (contrats dans 05-api.md)
 │  ├─ layout.tsx · manifest.ts          ← manifest généré depuis config/marque.ts
-│  └─ sw.ts                             ← service worker (Serwist)
+│  ├─ sw.ts                             ← service worker (Serwist, D071)
+│  └─ serwist/[path]/route.ts           ← sert le service worker
 ├─ features/
 │  ├─ localisation/                     ← position du navigateur, recherche de ville
 │  ├─ gares/                            ← gares proches
@@ -130,6 +131,7 @@ tourisme-en-train/
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
 │  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
 ├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
+├─ apps/web/public/icones/      ← icônes de la PWA, provisoires (source : design/icone-provisoire.svg, D071)
 ├─ apps/web/src/
 │  ├─ app/                       ← pages et routes API, fines
 │  ├─ features/                  ← localisation/ gares/ lieux/ destinations/ trains/ mobilites/
@@ -274,3 +276,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 04/11/2026 | 1.8 | § 3 : composants sur Radix, sans l'installateur shadcn — D053 |
 | 05/11/2026 | 1.9 | § 3 bis : structure complète du dépôt, déplacée de `CLAUDE.md` § 6 — D066 |
 | 05/11/2026 | 1.10 | § 3 : Explorer dans la mise en page — D069 |
+| 05/11/2026 | 1.11 | § 3 et § 3 bis : service worker, icônes — D071 |

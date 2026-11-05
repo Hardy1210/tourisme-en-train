@@ -2,14 +2,16 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { gareConseilleePour, useGare, useGaresProches } from '@/features/gares/hooks';
 import { usePosition } from '@/features/localisation/fournisseur-position';
 import { useCommune } from '@/features/localisation/hooks';
 import { schemaReponseSources } from '@/features/presentation/schemas';
 import { useEcranVisible, useUrlEcran } from '@/lib/ecran-visible';
 import { ErreurClient, lireApi } from '@/lib/http/client';
+import { useEnLigne } from '@/lib/use-en-ligne';
 import { calculerDepart } from './depart';
+import { ecrireDerniereGare, lireDerniereGare } from './derniere-gare';
 import { ecrireFiltres, lireFiltres, type Filtres } from './filtres';
 
 const statutDe = (erreur: unknown): number | null => {
@@ -31,6 +33,8 @@ export function useDepart() {
   const point = position.etat === 'trouvee' ? { lat: position.lat, lon: position.lon } : null;
   const proches = useGaresProches(point);
   const gareChoisie = useGare(uicChoisi);
+  const enLigne = useEnLigne();
+  const [derniereGare] = useState(lireDerniereGare);
 
   const depart = calculerDepart({
     uicChoisi,
@@ -38,7 +42,13 @@ export function useDepart() {
     position,
     proches: { donnees: proches.data?.gares, statutErreur: statutDe(proches.error) },
     uicConseille: proches.data?.uicConseille ?? null,
+    // Pendant le rattrapage au retour du réseau, on garde la dernière gare : pas d'écran d'erreur.
+    gareHorsLigne: !enLigne || (proches.isError && proches.isFetching) ? derniereGare : null,
   });
+  const gareConnue = depart.etat === 'pret' ? depart.gare : null;
+  useEffect(() => {
+    if (gareConnue) ecrireDerniereGare(gareConnue);
+  }, [gareConnue?.uic]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const ecrireGare = useCallback(
     (uic: string | null) => {

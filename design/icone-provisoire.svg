@@ -1,0 +1,10 @@
+<!-- Icône PROVISOIRE de la PWA (D071), tirée du logo actuel. À remplacer quand Hardy aura le logo définitif,
+     en régénérant apps/web/public/icones/. Couleurs : --primary et --onglet-actif de globals.css. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#623362"/>
+  <g transform="translate(116 215) scale(8.235)">
+    <circle cx="5" cy="5" r="3.75" fill="none" stroke="#edb345" stroke-width="2.5"/>
+    <rect x="10" y="3.5" width="14" height="3" fill="#edb345"/>
+    <circle cx="29" cy="5" r="5" fill="#edb345"/>
+  </g>
+</svg>

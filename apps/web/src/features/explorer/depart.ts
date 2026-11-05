@@ -1,6 +1,7 @@
 // D'où part l'utilisateur : une décision pure, à partir de l'URL, de sa position et des gares trouvées.
 import type { GareProche } from '@/features/gares/schemas';
 import type { EtatPosition } from '@/features/localisation/position';
+import type { DerniereGare } from './derniere-gare';
 
 export type GareDepart = {
   uic: string;
@@ -44,6 +45,8 @@ export type EntreesDepart = {
   proches: Requete<GareProche[]>;
   /** Gare proposée par défaut (D064) ; sans elle, la plus proche. */
   uicConseille?: string | null;
+  /** Hors ligne : la dernière gare connue, faute de pouvoir chercher (D071). */
+  gareHorsLigne?: DerniereGare | null;
 };
 
 export function calculerDepart({
@@ -52,7 +55,22 @@ export function calculerDepart({
   position,
   proches,
   uicConseille = null,
+  gareHorsLigne = null,
 }: EntreesDepart): Depart {
+  if (
+    gareHorsLigne &&
+    (uicChoisi === null
+      ? !proches.donnees
+      : uicChoisi === gareHorsLigne.uic && !gareChoisie.donnees)
+  ) {
+    return {
+      etat: 'pret',
+      origine: 'choix',
+      point: { lat: gareHorsLigne.lat, lon: gareHorsLigne.lon },
+      gare: { ...gareHorsLigne, distanceM: null, dureeMarcheMin: null, dureeVeloMin: null },
+      proches: [],
+    };
+  }
   if (uicChoisi !== null) {
     // 400 : code mal formé dans un lien ; 404 : gare disparue. Dans les deux cas, on redemande.
     if (gareChoisie.statutErreur === 400 || gareChoisie.statutErreur === 404) {

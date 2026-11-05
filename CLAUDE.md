@@ -169,7 +169,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E11 | Écran Explorer (vérifications de design et téléphone : `A-FAIRE` § 1) | S6 | ⏸ |
 | E12 | Fiche destination et fiche lieu (vérifications de design et téléphone : `A-FAIRE` § 1) | S7 | ⏸ |
 | E13 | Page « L'âme du produit » + écran Sources | S7 | ⬜ |
-| E14 | PWA, hors ligne | S7 | ⬜ |
+| E14 | PWA, hors ligne | S7 | 🟡 |
 | E15 | Qualité : tests, accessibilité, performance, P1 restants | S8 | ⬜ |
 | E16 | Livraison soutenance : images de prod, lancement en une commande, données figées | S8 | ⬜ |
 | E17 | Mise en ligne v1 avec les SR (**optionnel**) | Fin | ⬜ |

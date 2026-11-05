@@ -56,6 +56,14 @@ export function FournisseurPosition({ children }: { children: ReactNode }) {
     setEssais((n) => n + 1);
   }, []);
 
+  // Position introuvable sans réseau : on la redemande quand il revient. Un refus, lui, reste un refus.
+  const introuvable = position.etat === 'indisponible';
+  useEffect(() => {
+    if (!introuvable) return;
+    window.addEventListener('online', redemander);
+    return () => window.removeEventListener('online', redemander);
+  }, [introuvable, redemander]);
+
   const valeur = useMemo(
     () => ({ position, essais, demander, redemander }),
     [position, essais, demander, redemander],

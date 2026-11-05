@@ -43,7 +43,7 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 | F09 | En tant que voyageur, je veux connaître les transports sur place (bus, tram, vélos) afin de me déplacer à l'arrivée. | Must (P0) | 5 | Arrêts et stations proches de la gare d'arrivée. | E07 · E09 · E12 | S7 | 🟡 |
 | F10 | En tant que voyageur, je veux voir le CO₂ économisé par rapport à la voiture afin de mesurer l'intérêt du train. | Must (P0) | 2 | Train / voiture seule / voiture partagée ; source ADEME affichée. | E09 · E12 | S7 | ✅ |
 | F11 | En tant que voyageur, je veux un prix estimé afin d'avoir un ordre d'idée du budget. | Must (P0) | 2 | Toujours libellé « estimation » ; lien vers la billetterie ; masqué s'il n'est pas calibré. | E09 · E12 | S7 | ✅ |
-| F12 | En tant que voyageur, je veux installer l'application sur mon téléphone et revoir mes dernières recherches hors ligne. | Must (P0) | 3 | Installable ; dernières recherches consultables sans connexion. | E14 | S7 | ⬜ |
+| F12 | En tant que voyageur, je veux installer l'application sur mon téléphone et revoir mes dernières recherches hors ligne. | Must (P0) | 3 | Installable ; dernières recherches consultables sans connexion. | E14 | S7 | 🟡 |
 | F13 | En tant que jury ou réutilisateur, je veux voir les sources et licences des données utilisées. | Must (P0) | 1 | Chaque source citée avec sa licence et son attribution. | E13 | S7 | ⬜ |
 | F14 | En tant que jury, je veux une page qui présente le sens du projet. | Must (P0) | 2 | Page narrative accessible depuis le menu. | E13 | S7 | ⬜ |
 | F15 | En tant que voyageur, je veux savoir si l'aller-retour est faisable dans la journée. | Should (P1) | 3 | Badge « Faisable dans la journée » ou mention « Retour tôt, plutôt sur 2 jours ». | E12 | S7 | ✅ |
@@ -186,6 +186,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
 | F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
 | F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
+| F12 | 🟡 | Fait et vérifié avec Chromium (D071) ; essai sur un vrai iPhone et un vrai Android à faire |
 | F20 | 🟡 | Couleurs sombres présentes ; bascule seulement sur la planche `/design`, pas dans l'application |
 | F15, F25 | ✅ | Dans le code et, pour F25, dans les tests unitaires ; aucun parcours dédié |
 | INF0 → INF9 | ⬜ | Non vérifiables d'ici : `infra/` ne contient que `CLAUDE.md` et `JOURNAL.md`, et toutes les tâches I01 → I22 y sont à ⬜ |
