@@ -24,6 +24,35 @@
 
 ---
 
+## 05/11/2026 — Étape E11 — gare par défaut corrigée, écran Lieux, navigation sans rechargement
+**Fait :**
+- PR #60 corrigée puis fusionnée : gare la plus proche, sauf gare à 3 km au plus, au moins 1,5 fois plus de trains et aucune destination perdue. Beaune validée par Hardy chez lui.
+- PR #61 (parcours de carte vide), #62 (MapLibre 5, Dependabot, risque accepté), #63 (`minimatch`), #64 (`CLAUDE.md` de 400 à 340 lignes), #65 (écran Lieux, mobile et desktop) fusionnées. PR #58 fermée.
+- PR #66 ouverte : position gardée, durée de cache par type de données, train parti jamais affiché. PR #67 ouverte : temps à pied et gare la plus proche sur « Votre gare ».
+- Audit du retour sur Explorer : carte recréée à chaque retour, chiffres dans `A-FAIRE` § 1 ; aucun code gardé.
+
+**Décisions :** D064 (révisée), D065, D066, D067, D068.
+
+**Problèmes rencontrés :**
+- Chiffres faux annoncés à Hardy : « 1 035 trains par jour » (somme par destination, 148 départs réels), « 225 trajets vers Beaune » (45 en base), « 0 % de fond manquant » (jamais mesuré). Règle de Hardy : aucun chiffre non mesuré.
+- La première règle de gare faisait perdre 26 destinations à Belfort-Montbéliard TGV : trouvé en la simulant sur toutes les gares.
+- Dit que la cause de la carte vide n'était pas cherchée, alors que D062 l'expliquait déjà.
+- Commande `@dependabot ignore` sans effet sur une PR groupée : seul `dependabot.yml` protège.
+- Ma protection masquait les trains d'une date passée demandée exprès : repéré par les parcours.
+- Une erreur d'hydratation vue une fois sur la navigation, jamais reproduite, cause non trouvée.
+- Mes essais ont touché le `next dev` de Hardy (même dossier, paramètres temporaires, changements de branche) : les mesures se font maintenant dans une copie à part.
+
+**À valider par Hardy :**
+- Fusion des PR #66 puis #67 ; essai sur téléphone ; garder Explorer en vie ou non.
+
+**Prochaine action :**
+- Après la #66, recaler la branche de la #67 sur `main` ; puis selon la décision de Hardy et ses essais, et plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (431) · intégration ✅ (158) · parcours ✅ (68), sur la branche de la PR #67
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-retouches-gare`)
+
+---
+
 ## 05/11/2026 — Étape E11 — gare de départ par défaut et diagnostic de Beaune
 **Fait :**
 - PR #59 (E12) fusionnée par Hardy.
