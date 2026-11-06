@@ -106,7 +106,7 @@ Les commandes réelles sont reportées dans `CLAUDE.md` § 16 dès qu'elles exis
 - **Pas de `Co-Authored-By`.**
 - **Branches** : une par étape ; fusion dans `main` par pull request en fin d'étape (description : ce qui est fait, comment le vérifier, captures si écran).
 - **Protocole de sécurité** : jamais `git checkout`, `restore`, `stash`, `clean -fd`, `reset --hard` sur du travail non commité ; pour casser un test volontairement : copier le fichier → modifier → tester → restaurer depuis la copie ; `git status` avant toute commande qui jette des changements.
-- **`infra/`** : modifié uniquement par pull request des SR, relue par Hardy.
+- **`infra/`** : modifié uniquement par pull request.
 
 ## 10. Définition de « terminé »
 

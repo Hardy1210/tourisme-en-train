@@ -58,7 +58,7 @@
 ## 3. Détail des routes
 
 ### 3.1 `GET /api/sante`
-Utilisée par la supervision (SR) et le déploiement.
+Utilisée par la supervision et le déploiement.
 ```ts
 // 200 si tout va bien, 503 si la base est inaccessible
 { statut: "ok" | "degrade", base: "ok" | "erreur", dateDonnees: "2026-10-12" | null, version: "0.1.0" }

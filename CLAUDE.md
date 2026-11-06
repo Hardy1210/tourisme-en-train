@@ -4,7 +4,7 @@
 > **Il dit ce qui est vrai AUJOURD'HUI.** Le pourquoi et l'historique vivent dans `docs/DECISIONS.md` et `docs/JOURNAL.md` : on n'y recopie rien ici, et on ne ramène jamais leur contenu ici.
 > Il reste **court** (400 lignes maximum) : cap, règles, état actuel, puis renvoi vers `docs/`.
 > Tout le projet est **en français** : documents, interface, commentaires, messages de commit.
-> **Travail d'infrastructure (membres SR, dossier `infra/`) : lire `infra/CLAUDE.md`, qui prime pour ce dossier.** Les sections 8, 9, 10 et 14 ci-dessous concernent uniquement le travail de Hardy.
+> **Travail d'infrastructure : section 15, `docs/07-contrat-infra.md` et `infra/README.md`.**
 
 ---
 
@@ -14,8 +14,8 @@ Application web installable (PWA), gratuite, sans inscription. Dès l'ouverture,
 
 - **Promesse :** trouver une sortie en 30 secondes, y aller en train.
 - **Cadre :** défi data.gouv.fr « Tourisme en train » (Fondation SNCF / Open Data University).
-- **Rendu :** jeudi 3 décembre 2026. Soutenance en local sous Docker (obligatoire) ; mise en ligne v1 si le temps le permet.
-- **Équipe :** Hardy (seul développeur, full-stack + design) · 2 Systèmes & Réseaux (dossier `infra/` uniquement).
+- **Rendu :** jeudi 3 décembre 2026. Soutenance en local sous Docker (filet de sécurité obligatoire) ; mise en ligne sur `wagoo.hardylino.com`, phase 1 anticipée (D076).
+- **Équipe :** Hardy (seul développeur, full-stack + design, responsable infrastructure, D076).
 - **Région pilote :** Bourgogne-Franche-Comté (code région INSEE 27). L'extension nationale n'est qu'un paramètre.
 - **Pays :** France métropolitaine, fuseau `Europe/Paris`.
 
@@ -45,7 +45,7 @@ Chaque règle dit **pourquoi** : elles sont écrites pour celui qui serait tent�
 8. **Chaque source de données est citée** dans l'écran « Sources ». *Obligation des licences Licence Ouverte et ODbL.*
 9. **L'interface n'appelle jamais la base ni une API externe.** Toujours : route → service → requête ou adaptateur. *Sinon une API qui change casse dix fichiers au lieu d'un.*
 10. **Le schéma n'évolue que par migration** dans `db/migrations/`. *Une base modifiée à la main n'est plus reproductible pour la soutenance.*
-11. **Le travail de Hardy ne dépend jamais des SR.** L'application complète tourne avec `docker compose up`.
+11. **L'application tourne en local sans le serveur.** L'application complète démarre avec `docker compose`. *La soutenance ne dépend pas du VPS.*
 12. **Pas de mention de co-auteur IA** (`Co-Authored-By`) dans les commits.
 
 ---
@@ -120,7 +120,7 @@ tourisme-en-train/
 ├─ etl/              ← @tourisme/etl : traitement des données (TypeScript + SQL)
 ├─ db/               ← migrations/ · echantillon/ (données d'exemple, base de test uniquement)
 ├─ data/             ← brut/ · traite/ (ignorés par Git)
-└─ infra/            ← production (SR)
+└─ infra/            ← production : README.md (exploitation) · compose.prod.yml
 ```
 
 Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jour `01` § 3 bis, ce résumé et `DECISIONS.md`.
@@ -168,11 +168,11 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E10 | Socle interface : design system, mise en page, composants | S6 | ✅ |
 | E11 | Écran Explorer (vérifications de design et téléphone : `A-FAIRE` § 1) | S6 | ⏸ |
 | E12 | Fiche destination et fiche lieu (vérifications de design et téléphone : `A-FAIRE` § 1) | S7 | ⏸ |
-| E13 | Page « L'âme du produit » + écran Sources | S7 | ⬜ |
+| E13 | Page « L'âme du produit », écran Sources, mentions légales (textes du pitch à finir à la fin du projet) | S7 | 🟡 |
 | E14 | PWA, hors ligne | S7 | 🟡 |
 | E15 | Qualité : tests, accessibilité, performance, P1 restants | S8 | ⬜ |
 | E16 | Livraison soutenance : images de prod, lancement en une commande, données figées | S8 | ⬜ |
-| E17 | Mise en ligne v1 avec les SR (**optionnel**) | Fin | ⬜ |
+| E17 | Mise en ligne : phase 1 anticipée, phase 2 après le P0 | S5, puis fin | 🟡 |
 | E18 | Publication de la réutilisation sur data.gouv.fr | Fin | ⬜ |
 
 Semaines : S1 = 05/10 → 11/10 · S2 = 12 → 18/10 · S3 = 19 → 25/10 · S4 = 26/10 → 01/11 · S5 = 02 → 08/11 · S6 = 09 → 15/11 · S7 = 16 → 22/11 · S8 = 23 → 29/11 · Fin = 30/11 → 02/12.
@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E14 🟡 : essai Android à faire ; retouches d'Explorer : PR #71, à fusionner par Hardy
-- **Dernière session :** 06/11/2026 — mention de la carte sur une ligne (D073), ligne du train à la sélection (D074), mini-fiche corrigée, retouches de design de Hardy
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches en mobile et desktop ; PWA : gel hors ligne validé sur iPhone ; sur la branche de la PR #71 : `pnpm verifier` 471 tests, `pnpm test:integration` 164, `pnpm test:e2e` 113 et 1 ignoré
-- **À valider par Hardy :** sur iPhone, reconstruire puis juger le délai de la ligne (D074) et les marges ; fusion de la #71 ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
+- **Étape en cours :** E17 phase 1 🟡 anticipée (D076) · E13 🟡 : écrans faits, textes du pitch à la fin du projet · E14 🟡 : essai Android à faire
+- **Dernière session :** 06/11/2026 — écran Sources, page À propos, licence des facteurs CO₂ (D075, PR #72 fusionnée) ; audit de la mise en ligne, décision D076
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos ; PWA : gel hors ligne validé sur iPhone
+- **À valider par Hardy :** fusion de la PR du lot 0 ; retirer Ethan des collaborateurs ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** si Hardy signale un défaut sur iPhone, le corriger ; après la fusion de la #71, mettre `main` à jour et proposer le plan de E13 (`docs/etapes/E13-ame-sources.md`), à valider avant de coder
+- **Prochaine action précise :** E17 lot 1 (`docs/etapes/E17-mise-en-ligne-v1.md`) : `apps/web/Dockerfile`, `infra/compose.prod.yml`, scripts d'export et de restauration, essai complet en local
 ---
 
 ## 10. Réaliser une étape
@@ -263,7 +263,7 @@ Détail complet : `docs/08-conventions-qualite.md`.
 ❌ Donnée d'exemple mélangée aux vraies données
 ❌ git checkout/restore/stash/clean/reset --hard sur du travail non commité
 ❌ Co-Authored-By dans les commits
-❌ Modification de infra/ sans pull request (dossier des SR)
+❌ Modification de infra/ sans pull request
 ```
 
 ---
@@ -301,15 +301,13 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 
 ---
 
-## 15. Travail avec les Systèmes & Réseaux
+## 15. Infrastructure
 
-- Ils travaillent **uniquement dans `infra/`** (exception : `.github/workflows/deploiement*.yml` pour le déploiement automatique), par pull request relue par Hardy.
-- **Leur fichier maître : `infra/CLAUDE.md`** (périmètre, règles, contrat résumé, état de leurs tâches I01 → I22, leur propre « garde le contexte » avec `infra/JOURNAL.md`). Hardy ne modifie pas ce fichier, sauf décision d'équipe.
-- Le lien app ↔ infrastructure est fixé par **`docs/07-contrat-infra.md`** (variables, `/api/sante`, Dockerfiles, migrations, journaux). Tant qu'il est respecté, **personne n'attend personne**.
-- Un retour des SR ne modifie que `07-contrat-infra.md` et les étapes E16–E17.
-- Leurs tâches : `docs/equipe/guide-SR.md` ; leur premier jour : `docs/equipe/demarrage-SR.md`.
-- Organisation de l'équipe (GitHub, protection de `main`, relecture, rythme) : `docs/equipe/travail-en-equipe.md`.
-- `main` est protégée : tout passe par une pull request ; `.github/CODEOWNERS` rend la relecture de Hardy obligatoire pour les PR des SR.
+- **Responsable infrastructure : Hardy** (D076). Le rôle peut être repris par un coéquipier.
+- **Production :** un VPS séparé géré par Coolify, en Docker Compose, sur `wagoo.hardylino.com`. Le domaine ne dépend que d'`URL_APP` et du réglage Coolify.
+- **Le lien app ↔ infrastructure est fixé par `docs/07-contrat-infra.md`** (variables, `/api/sante`, Dockerfiles, migrations, journaux). Exploitation : `infra/README.md`. Plan et mesures : `docs/etapes/E17-mise-en-ligne-v1.md`.
+- **La démo locale d'E16 reste le filet de sécurité de la soutenance.**
+- `main` est protégée : tout passe par une pull request. Organisation GitHub : `docs/equipe/travail-en-equipe.md`.
 
 ---
 

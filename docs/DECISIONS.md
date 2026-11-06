@@ -14,7 +14,7 @@
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
 | **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources, facteur CO₂ de la voiture |
-| **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
+| **Équipe, calendrier, livraison** | D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
 
@@ -789,3 +789,21 @@
   - Page Datagir de l'ADEME (« Licence Ouverte Etalab ») comme justification : elle ne nomme ni Impact CO2, ni version, ni date.
 - **Limites :** lecture de pages, pas un avis juridique. Écart entre 142 g et 256 g seulement en partie expliqué : diesel moyen d'un côté, moyenne du parc de l'autre ; la note de méthode d'Impact CO2 n'a pas pu être lue.
 - **Impact :** `config/sources.json` et son schéma, `00` § 2, `01` § 3, `02`, `05` § 3.12, `06` § 5, `equipe/pitch.md`, fiche E13, `A-FAIRE`, `LECONS`.
+
+---
+
+## D076 — L'infrastructure passe à Hardy, sur un VPS géré par Coolify ; mise en ligne anticipée
+- **Date :** 06/11/2026
+- **En clair :** Hardy porte seul l'application et l'infrastructure. Le site part sur un petit serveur géré par Coolify, à l'adresse `wagoo.hardylino.com`, avant la fin du P0. La démo locale reste le filet de sécurité de la soutenance.
+- **Décision :**
+  1. **Rôles :** l'infrastructure passe des SR à Hardy. `07` écrit des rôles (« responsable infrastructure : Hardy ») et non des noms, pour qu'un coéquipier puisse reprendre le rôle. Le contrat est gardé.
+  2. **Hébergement :** un VPS séparé du serveur Coolify des clients, en Docker Compose (`infra/compose.prod.yml`) : 2 cœurs, 4 Go, 40 Go. Mesures : fiche E17.
+  3. **Domaine :** `wagoo.hardylino.com`, sous-domaine du portfolio, enregistrement A chez Vercel. Il ne dépend que d'`URL_APP` et du réglage Coolify, pour en changer quand la marque sera validée à l'INPI. L'application n'est pas hébergée sur Vercel.
+  4. **Phase 1 anticipée, sans nouvelle étape :** E17 est découpée en phase 1 (en cours) et phase 2 (après le P0). **Pourquoi avancer :** une adresse HTTPS fixe pour tester sur téléphone et la PWA, sans réinstaller à chaque tunnel, et une adresse pour le jury.
+  5. **Dockerfile web fait pendant E17 phase 1**, réutilisé par E16.
+  6. **Premier chargement depuis un export** plutôt qu'un ETL complet : procédure essayée, `infra/README.md`.
+  7. **Ménage :** `guide-SR.md`, `demarrage-SR.md`, `infra/CLAUDE.md` et `infra/JOURNAL.md` supprimés (ils restent dans l'historique Git) ; `travail-en-equipe.md` réduit à GitHub ; tickets I01 à I22 fermés, remplacés par ceux des deux phases.
+- **Raison :** l'équipe est réduite à une personne ; Coolify couvre HTTPS, secrets, déploiement automatique et tâches planifiées.
+- **Écarté :** héberger l'application sur Vercel ; utiliser le serveur des clients ; un ETL complet pour le premier chargement ; une nouvelle étape dans le plan.
+- **Trouvé par l'audit :** la position pouvait entrer dans les journaux quand une requête échouait (règle 5), corrigé en phase 1 ; construction impossible sans variables ; `pg_restore --clean` seul qui plante ; journal d'accès du proxy à laisser coupé. Détail : fiche E17.
+- **Impact :** `CLAUDE.md` § 1, § 2, § 6, § 8, § 9, § 12, § 15 ; `01` ; `04` ; `05` ; `07` ; `08` ; `BACKLOG` § 3 et § 6 ; fiches E16, E17 ; `A-FAIRE` ; `infra/README.md` ; `.github/`.

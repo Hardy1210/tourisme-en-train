@@ -7,6 +7,7 @@ import {
   Compass,
   Database,
   Info,
+  Scale,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -40,6 +41,12 @@ const ENTREES_MENU: readonly {
     detail: 'Trains, lieux, transports',
     Icone: Database,
     href: '/sources',
+  },
+  {
+    libelle: 'Mentions légales',
+    detail: 'Éditeur, hébergeur, confidentialité',
+    Icone: Scale,
+    href: '/mentions-legales',
   },
 ];
 

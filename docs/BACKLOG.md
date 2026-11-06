@@ -1,7 +1,7 @@
 # Backlog produit
 
 > **Version** 1.3 · **Date** 05/11/2026
-> **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · `equipe/guide-SR.md` § 4 (tâches I01 → I22)
+> **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
 
@@ -9,18 +9,18 @@
 
 ## 1. Organisation
 
-Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisateur**, classé par priorité. Chaque fonctionnalité est reliée aux **tâches** qui la réalisent : étapes de développement **E00 → E18** (Hardy) et tâches d'infrastructure **I01 → I22** (SR). Ces 41 tâches sont des tickets GitHub suivis sur le tableau `tourisme-en-train`.
+Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisateur**, classé par priorité. Chaque fonctionnalité est reliée aux **tâches** qui la réalisent : étapes de développement **E00 → E18** et tâches d'infrastructure de la fiche E17. Ces tâches sont des tickets GitHub suivis sur le tableau `tourisme-en-train`.
 
 | Niveau | Contenu |
 |---|---|
-| 1. Fonctionnalités | 27 fonctionnalités produit (F01 → F27, § 2) et 10 fonctionnalités d'infrastructure (INF0 → INF9, § 3) |
+| 1. Fonctionnalités | 27 fonctionnalités produit (F01 → F27, § 2) et 7 fonctionnalités d'infrastructure (INF1 → INF10, § 3) |
 | 2. Éléments techniques | Le socle sans lequel aucune fonctionnalité n'existe (T1 → T9, § 4) |
-| 3. Tâches | Les tickets GitHub E00 → E18 et I01 → I22 ; une tâche = une branche = une pull request |
+| 3. Tâches | Les tickets GitHub E00 → E18 et ceux des deux phases d'E17 ; une tâche = une branche = une pull request |
 
 | Élément | Choix |
 |---|---|
 | Méthode | Scrum allégé : sprints d'une semaine (S1 = 05/10 … S8 = 29/11, puis « Fin » jusqu'au 02/12) ; point d'équipe chaque lundi (30 min : fait · prévu · bloqué), qui sert de revue et de planification |
-| Rôles | Product Owner et développeur : Hardy · Infrastructure : SR1 (ethan21000), SR2 à confirmer (sinon ses tâches reviennent à SR1) · Parties prenantes : tuteur, jury du défi |
+| Rôles | Product Owner et développeur : Hardy · Responsable infrastructure : Hardy (D076) · Parties prenantes : tuteur, jury du défi |
 | Priorité | MoSCoW : **Must** = P0 (indispensable pour la soutenance) · **Should** = P1 · **Could** = P2 (après la v1) |
 | Estimation | Points relatifs 1, 2, 3, 5, 8 ; 1 point ≈ une demi-journée. Estimation initiale, revue chaque lundi |
 | Définition de « terminé » | `08-conventions-qualite.md` § 10 |
@@ -64,22 +64,21 @@ Total : **78 points** (Must 47 · Should 18 · Could 13). Responsable : Hardy. �
 
 ---
 
-## 3. Fonctionnalités d'infrastructure (SR)
+## 3. Fonctionnalités d'infrastructure
 
-| ID | User story | Priorité | Pts | Critère d'acceptation | Tâches | Resp. | Sprint | État |
-|---|---|---|---|---|---|---|---|---|
-| INF0 | En tant que membre de l'équipe, je veux lancer le projet sur mon ordinateur en une commande. | Must (P0) | 1 | docker compose up fonctionne ; retours signalés au développeur. | I01 | SR1 + SR2 | S2 | ⬜ |
-| INF1 | En tant que voyageur, je veux accéder au site en ligne, en HTTPS, sur un nom de domaine. | Must (P0) | 8 | Serveur sécurisé, domaine, HTTPS automatique, redirection HTTP → HTTPS, proxy unique. | I02 · I03 · I04 · I05 · I06 | SR1 + SR2 | S3 | ⬜ |
-| INF2 | En tant que responsable du service, je veux un serveur et une base protégés. | Must (P0) | 8 | Seuls les ports 22, 80, 443 ouverts ; base non exposée ; secrets hors dépôt ; en-têtes de sécurité ; limitation d'appels. | I08 · I09 · I10 · I11 · I12 | SR1 + SR2 | S6 | ⬜ |
-| INF3 | En tant que responsable du service, je veux ne jamais perdre les données. | Must (P0) | 5 | Sauvegarde quotidienne copiée hors serveur ; restauration réelle chronométrée. | I13 · I14 | SR1 | S5 | ⬜ |
-| INF4 | En tant que voyageur, je veux des données toujours à jour. | Should (P1) | 2 | Mise à jour hebdomadaire planifiée ; alerte en cas d'échec. | I15 | SR1 | S7 | ⬜ |
-| INF5 | En tant que développeur, je veux que chaque fusion soit mise en ligne automatiquement. | Should (P1) | 3 | Déploiement sans intervention à chaque fusion sur main. | I16 | SR2 | S5 | ⬜ |
-| INF6 | En tant que responsable du service, je veux être alerté en cas de panne. | Should (P1) | 3 | Supervision du site, de /api/sante, du certificat et du disque ; page de statut (P2). | I17 · I18 | SR1 | S6 | ⬜ |
-| INF7 | En tant que voyageur, je veux un site rapide même avec du monde. | Could (P2) | 3 | Cache des fichiers statiques et des tuiles ; test de charge à 50 utilisateurs. | I07 · I19 | SR2 | Fin | ⬜ |
-| INF8 | En tant que voyageur, je veux que ma vie privée soit respectée côté serveur. | Should (P1) | 2 | Journaux sans IP complète, aucune position stockée, conservation limitée. | I20 | SR2 | S7 | ⬜ |
-| INF9 | En tant que futur exploitant, je veux une infrastructure documentée et transmissible. | Must (P0) | 3 | Schéma réseau ; dossier d'exploitation (déployer, restaurer, changer un secret, réagir à un incident). | I21 · I22 | SR1 + SR2 | S7 | ⬜ |
+Responsable : responsable infrastructure (Hardy, D076). Détail et ordre : fiche E17.
 
-Total : **38 points**. Les SR travaillent uniquement dans `infra/` ; le lien avec l'application est fixé par `07-contrat-infra.md`.
+| ID | User story | Priorité | Pts | Critère d'acceptation | Tâches | Phase | État |
+|---|---|---|---|---|---|---|---|
+| INF1 | En tant que voyageur, je veux accéder au site en ligne, en HTTPS, sur un nom de domaine. | Must (P0) | 5 | Serveur sécurisé, `wagoo.hardylino.com`, HTTPS automatique, redirection HTTP → HTTPS. | E17 lots 1 à 5 | 1 | 🟡 |
+| INF2 | En tant que responsable du service, je veux un serveur et une base protégés. | Must (P0) | 3 | Seuls les ports 22, 80, 443 ouverts ; base non exposée ; secrets hors dépôt. | E17 lots 1 à 5 | 1 | 🟡 |
+| INF8 | En tant que voyageur, je veux que ma vie privée soit respectée côté serveur. | Must (P0) | 2 | Aucune position enregistrée ; journal d'accès du proxy coupé ; mentions légales. | E17 lot 1, E13 | 1 | 🟡 |
+| INF9 | En tant que futur exploitant, je veux une infrastructure documentée et transmissible. | Must (P0) | 1 | `infra/README.md` : déployer, restaurer, changer un secret. | E17 | 1 | 🟡 |
+| INF10 | En tant que responsable du service, je veux une application protégée sans changer d'outil. | Should (P1) | 2 | En-têtes de sécurité ; limitation d'appels. | E17 phase 2 | 2 | ⬜ |
+| INF3 | En tant que responsable du service, je veux ne jamais perdre les données. | Should (P1) | 2 | Sauvegarde quotidienne ; restauration réelle chronométrée. | E17 phase 2 | 2 | ⬜ |
+| INF4 | En tant que voyageur, je veux des données toujours à jour. | Should (P1) | 2 | Mise à jour planifiée ; alerte en cas d'échec. | E17 phase 2 | 2 | ⬜ |
+
+Total : **17 points**. Reportés sans date (`A-FAIRE`) : supervision et page de statut, test de charge.
 
 ---
 
@@ -94,7 +93,7 @@ Total : **38 points**. Les SR travaillent uniquement dans `infra/` ; le lien ave
 | T5 | Socle de l'interface et design system | E10 | S6 | — | ✅ |
 | T6 | Qualité : tests, accessibilité, performance | E15 | S8 | Gel des fonctionnalités le 27/11 | ⬜ |
 | T7 | Livraison pour la soutenance (Docker, données figées) | E16 | S8 | Livraison le 30/11 | ⬜ |
-| T8 | Mise en ligne v1 avec les SR (optionnelle) | E17 | Fin | Décision le 25/11 | ⬜ |
+| T8 | Mise en ligne : phase 1 anticipée, phase 2 après le P0 | E17 | S5, puis fin | — | 🟡 |
 | T9 | Publication de la réutilisation sur data.gouv.fr | E18 | Fin | — | ⬜ |
 
 ---
@@ -122,46 +121,24 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 | E14 | F12 |
 | E15 | F19, T6 |
 | E16 | T7 |
-| E17 | T8 |
+| E17 | T8, INF1 → INF4, INF8 → INF10 |
 | E18 | T9 |
-| I01 | INF0 |
-| I02 | INF1 |
-| I03 | INF1 |
-| I04 | INF1 |
-| I05 | INF1 |
-| I06 | INF1 |
-| I07 | INF7 |
-| I08 | INF2 |
-| I09 | INF2 |
-| I10 | INF2 |
-| I11 | INF2 |
-| I12 | INF2 |
-| I13 | INF3 |
-| I14 | INF3 |
-| I15 | INF4 |
-| I16 | INF5 |
-| I17 | INF6 |
-| I18 | INF6 |
-| I19 | INF7 |
-| I20 | INF8 |
-| I21 | INF9 |
-| I22 | INF9 |
 
 ---
 
 ## 6. Planification par sprint
 
-| Sprint | Dates | Hardy | SR | Résultat visible / jalon |
+| Sprint | Dates | Application | Infrastructure | Résultat visible / jalon |
 |---|---|---|---|---|
-| S1 | 05 → 11/10 | E00 ✅ · E01 ✅ | I02 · I03 · I04 | Dépôt, outils, base locale |
-| S2 | 12 → 18/10 | E02 · E03 | I01 · I08 · I09 | Gares et horaires en base |
-| S3 | 19 → 25/10 | E04 · E05 | I05 · I06 · I10 | Trains directs, lieux ; site en HTTPS (INF1) |
-| S4 | 26/10 → 01/11 | E06 · E07 | I13 · I21 | **Jalon : données complètes (01/11)** |
-| S5 | 02 → 08/11 | E08 · E09 | I14 · I16 | **Jalon : API complète (08/11)** ; restauration testée |
-| S6 | 09 → 15/11 | E10 · E11 | I11 · I12 · I17 | Écran Explorer (F01 → F05, F08) |
-| S7 | 16 → 22/11 | E12 · E13 · E14 | I15 · I20 · I22 | **Jalon : P0 terminé (22/11)** |
-| S8 | 23 → 29/11 | E15 · E16 | Intégration, démonstration de restauration | Décision de mise en ligne (25/11) ; gel (27/11) |
-| Fin | 30/11 → 02/12 | E17 · E18 | I07 · I18 · I19 | Livraison (30/11) ; **soutenance (03/12)** |
+| S1 | 05 → 11/10 | E00 ✅ · E01 ✅ | — | Dépôt, outils, base locale |
+| S2 | 12 → 18/10 | E02 · E03 | — | Gares et horaires en base |
+| S3 | 19 → 25/10 | E04 · E05 | — | Trains directs, lieux |
+| S4 | 26/10 → 01/11 | E06 · E07 | — | **Jalon : données complètes (01/11)** |
+| S5 | 02 → 08/11 | E08 · E09 | E17 phase 1 (anticipée) | **Jalon : API complète (08/11)** |
+| S6 | 09 → 15/11 | E10 · E11 | E17 phase 1, si elle n'est pas finie | Écran Explorer (F01 → F05, F08) |
+| S7 | 16 → 22/11 | E12 · E13 · E14 | — | **Jalon : P0 terminé (22/11)** |
+| S8 | 23 → 29/11 | E15 · E16 | E17 phase 2, si le temps le permet | Gel (27/11) |
+| Fin | 30/11 → 02/12 | E17 · E18 | E17 phase 2, si le temps le permet | Livraison (30/11) ; **soutenance (03/12)** |
 
 **Requêtes testées au plus tôt** (réponse au risque « interroger la base ») : chaque requête de référence de `03-base-de-donnees.md` § 5 est exécutée sur les vraies données dès la fin de l'étape qui les charge, avec son temps mesuré : gares proches (E02), trains A → B (E03), destinations depuis une gare (E04, < 300 ms). La forme des données des cartes de destination est décidée avant E04 (`A-FAIRE.md`).
 
@@ -189,7 +166,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | F12 | 🟡 | Fait et vérifié avec Chromium (D071) ; essai sur un vrai iPhone et un vrai Android à faire |
 | F20 | 🟡 | Couleurs sombres présentes ; bascule seulement sur la planche `/design`, pas dans l'application |
 | F15, F25 | ✅ | Dans le code et, pour F25, dans les tests unitaires ; aucun parcours dédié |
-| INF0 → INF9 | ⬜ | Non vérifiables d'ici : `infra/` ne contient que `CLAUDE.md` et `JOURNAL.md`, et toutes les tâches I01 → I22 y sont à ⬜ |
+| INF1 → INF10 | 🟡 | Décrites au § 3 : phase 1 d'E17 en cours (D076) |
 
 ---
 

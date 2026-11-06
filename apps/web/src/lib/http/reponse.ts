@@ -18,6 +18,20 @@ export function repondre(donnees: unknown, cache: Cache, statut = 200): Response
   });
 }
 
+/**
+ * Détail d'une erreur pour le journal. Le message d'une requête en échec se termine par ses paramètres
+ * (« params: 5.02,47.32 ») : ils peuvent contenir une position, et sont retirés (règle 5).
+ */
+export function detailErreur(erreur: unknown): unknown {
+  if (!(erreur instanceof Error)) return 'Erreur sans détail';
+  const [message = ''] = erreur.message.split(/\n?params:/);
+  return {
+    nom: erreur.name,
+    message,
+    ...(erreur.cause instanceof Error ? { cause: erreur.cause.message } : {}),
+  };
+}
+
 export function repondreErreur(erreur: unknown, route: string): Response {
   if (erreur instanceof ErreurApi) {
     return repondre(
@@ -32,13 +46,8 @@ export function repondreErreur(erreur: unknown, route: string): Response {
       erreur.statut,
     );
   }
-  // Inattendue : le détail va dans les journaux (jamais les paramètres : ils peuvent contenir une
-  // position), l'utilisateur reçoit un message sans détail technique.
-  journal.erreur('Erreur inattendue dans une route', {
-    route,
-    erreur:
-      erreur instanceof Error ? { nom: erreur.name, message: erreur.message } : String(erreur),
-  });
+  // Inattendue : le détail va dans les journaux, l'utilisateur reçoit un message sans détail technique.
+  journal.erreur('Erreur inattendue dans une route', { route, erreur: detailErreur(erreur) });
   return repondre(
     {
       erreur: { code: 'ERREUR_INTERNE', message: 'Une erreur est survenue. Réessayez plus tard.' },

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Introuvable, ParametreInvalide, ServiceExterneIndisponible } from './erreurs';
-import { gererRoute, repondre } from './reponse';
+import { detailErreur, gererRoute, repondre } from './reponse';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -53,5 +53,25 @@ describe('gererRoute', () => {
         ok: true,
       },
     );
+  });
+});
+
+describe('detailErreur', () => {
+  it('retire les paramètres d’une requête en échec : ils peuvent contenir une position', () => {
+    const erreur = new Error('Failed query: SELECT 1 WHERE x = $1\nparams: 5.0272,47.3233', {
+      cause: new Error('relation « gare » absente'),
+    });
+    const detail = JSON.stringify(detailErreur(erreur));
+    expect(detail).not.toContain('47.3233');
+    expect(detail).not.toContain('5.0272');
+    expect(detail).toContain('Failed query: SELECT 1');
+    expect(detail).toContain('relation « gare » absente');
+  });
+
+  it('garde le message d’une erreur sans paramètres ; rien d’inconnu n’est écrit', () => {
+    expect(detailErreur(new Error('connexion refusée'))).toMatchObject({
+      message: 'connexion refusée',
+    });
+    expect(detailErreur('47.3233')).toBe('Erreur sans détail');
   });
 });

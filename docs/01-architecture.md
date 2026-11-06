@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.12 · **Date** 06/11/2026
+> **Version** 1.13 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -39,7 +39,7 @@
 
 | Décision | Choix | Pourquoi | Écarté |
 |---|---|---|---|
-| Dépôt | **Monorepo pnpm** : espace de travail `apps/web` · `etl` · `packages/commun` | Un seul endroit, dossiers = propriétaires (Hardy / SR) ; code partagé (schéma de `parametres.json`, date du jour) écrit une seule fois | Turborepo, Nx : inutiles à cette taille |
+| Dépôt | **Monorepo pnpm** : espace de travail `apps/web` · `etl` · `packages/commun` | Un seul endroit, un seul langage ; code partagé (schéma de `parametres.json`, date du jour) écrit une seule fois | Turborepo, Nx : inutiles à cette taille |
 | Langage | **TypeScript partout** (+ SQL dans PostgreSQL) | Un seul développeur : un seul langage, une seule validation (Zod), un seul outil de tests | Python pour le traitement des données (D024) |
 | Application | **Monolithe découpé par fonctionnalité** | Un seul développeur, 8 semaines, logique surtout en lecture | Microservices |
 | Couches | **3 couches légères** : route → service → requête/adaptateur | Lisible, testable, sans cérémonie | Hexagonale complète : trop de fichiers pour peu de bénéfice ici |
@@ -55,7 +55,7 @@ apps/web/src/
 ├─ app/
 │  ├─ (app)/layout.tsx                  ← écran Explorer, gardé en vie (D069) ; page.tsx est vide
 │  ├─ (app)/destinations/[gareId]/      ← fiche destination (page ou panneau)
-│  ├─ (app)/a-propos/ · (app)/sources/  ← « L'âme du produit » · écran Sources
+│  ├─ (app)/a-propos/ · sources/ · mentions-legales/ ← « L'âme du produit » · Sources · mentions
 │  ├─ api/…/route.ts                    ← routes API (contrats dans 05-api.md)
 │  ├─ layout.tsx · manifest.ts          ← manifest généré depuis config/marque.ts
 │  ├─ sw.ts                             ← service worker (Serwist, D071)
@@ -123,13 +123,13 @@ tourisme-en-train/
 │  ├─ 04-traitement-donnees.md   ← pipeline ETL et ses algorithmes
 │  ├─ 05-api.md                  ← contrat de chaque route
 │  ├─ 06-interface.md            ← écrans, états, composants, design system, PWA
-│  ├─ 07-contrat-infra.md        ← interface avec les SR
+│  ├─ 07-contrat-infra.md        ← lien entre l'application et l'infrastructure
 │  ├─ 08-conventions-qualite.md  ← règles de code détaillées, tests, définition de « terminé »
 │  ├─ GLOSSAIRE.md               ← un terme = un sens = un nom dans le code
 │  ├─ BACKLOG.md                 ← user stories, estimations, lien fonctionnalités ↔ tickets, sprints
 │  ├─ DECISIONS.md · A-FAIRE.md · JOURNAL.md · LECONS.md (leçons réutilisables, pour Hardy)
 │  ├─ etapes/                    ← _MODELE.md + une fiche par étape (E00 → E18)
-│  └─ equipe/                    ← travail-en-equipe.md · guide-SR.md · demarrage-SR.md · pitch.md (E13) · scenario-demo.md (E16)
+│  └─ equipe/                    ← travail-en-equipe.md · pitch.md (E13) · scenario-demo.md (E16)
 ├─ apps/web/scripts/            ← scripts de base lancés par node : generer · migrer · reinitialiser · preparer-base-test (D033)
 ├─ apps/web/public/icones/      ← icônes de la PWA, provisoires (source : design/icone-provisoire.svg, D071)
 ├─ apps/web/src/
@@ -153,7 +153,7 @@ tourisme-en-train/
 ├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
 ├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
 ├─ data/brut/ · data/traite/     ← ignorés par Git
-└─ infra/                        ← production (SR) : CLAUDE.md propre · JOURNAL.md · compose prod, Caddy, sauvegardes
+└─ infra/                        ← production : README.md (exploitation) · compose.prod.yml · scripts
 ```
 
 ## 4. Règles de dépendance (qui a le droit d'importer quoi)
@@ -226,7 +226,7 @@ Détail des étapes et algorithmes : `04-traitement-donnees.md`.
 |---|---|---|
 | **Développement (poste de Hardy)** | `db` + `adminer` dans Docker · `web` avec `pnpm dev` sur la machine · traitement des données avec `pnpm etl <source>` sur la machine (ou dans Docker) | Travail quotidien, rechargement rapide |
 | **Démo locale (soutenance)** | **Tout dans Docker** : `db`, `web` (image de production), données figées | `docker compose --profile demo up` — une seule commande |
-| **Pré-production / v1 en ligne (optionnel)** | Serveur des SR : mêmes images + proxy HTTPS | Voir `07-contrat-infra.md`, E17 |
+| **Mise en ligne** | VPS géré par Coolify : mêmes images + proxy HTTPS | Voir `07-contrat-infra.md`, E17, D076 |
 
 *Pourquoi `web` hors Docker en développement :* sous Windows, le rechargement à chaud de Next.js dans un conteneur est lent. La base, elle, est toujours dans Docker pour être identique partout.
 
@@ -278,3 +278,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 05/11/2026 | 1.10 | § 3 : Explorer dans la mise en page — D069 |
 | 05/11/2026 | 1.11 | § 3 et § 3 bis : service worker, icônes — D071 |
 | 06/11/2026 | 1.12 | § 3 : écran Sources à sa propre adresse — D075 |
+| 06/11/2026 | 1.13 | § 1, § 3 bis, § 7 : infrastructure confiée à Hardy, sur Coolify — D076 |
