@@ -1,6 +1,6 @@
 # 00 — Vision, utilisateurs et périmètre
 
-> **Version** 1.3 · **Date** 05/11/2026
+> **Version** 1.4 · **Date** 06/11/2026
 > **Dépend de :** `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents ; en particulier `05-api.md`, `06-interface.md`, fiches E08 → E13, `BACKLOG.md`
 > **Document de référence pour :** le produit, les fonctionnalités, les priorités, le périmètre.
@@ -19,10 +19,10 @@ Résultat : une à deux heures d'organisation, du stress, et souvent on reprend 
 |---|---|---|
 | Émissions du tourisme en France (2022) | 97 Mt CO₂e | ADEME |
 | Part des transports | 69 %, dont plus de la moitié due à la voiture | ADEME |
-| CO₂ pour 100 km, par personne | voiture thermique ≈ 14 kg · TER ≈ 2,8 kg · TGV ≈ 0,3 kg | ADEME — Impact CO2 |
+| CO₂ pour 100 km, par personne | voiture thermique moyenne (diesel), une personne à bord ≈ 14 kg · TER ≈ 2,8 kg · TGV ≈ 0,3 kg | ADEME — Impact CO2 |
 | Sécurité routière 2025 | 3 515 morts, près de 10 par jour | ONISR |
 
-Limite à connaître : pour 4 personnes dans une voiture, le CO₂ par personne de la voiture se rapproche de celui du TER. L'app montre donc aussi la voiture partagée (règle d'honnêteté, voir `04-traitement-donnees.md` § Impact).
+Limite à connaître : l'avantage du train dépend du remplissage de la voiture. Pour 100 km et par personne : 14,2 kg seul en voiture, 3,6 kg à quatre, 2,8 kg en TER. L'app montre donc aussi la voiture partagée (règle d'honnêteté, voir `04-traitement-donnees.md` § Impact, D075).
 
 ## 3. La promesse
 
@@ -135,3 +135,4 @@ Nom de code : `tourisme-en-train`. Marque : **Wagoo** (provisoire), définie uni
 | 30/09/2026 | 1.1 | Alignement sur la maquette Explorer : partage (P1), week-end (P1), vélos disponibles (P1), temps réel limité à aujourd'hui, transport à la demande exclu — D017 à D020 |
 | 11/10/2026 | 1.2 | Renvoi vers `BACKLOG.md` ; colonne « Étape » alignée sur les tâches du backlog — D032 |
 | 05/11/2026 | 1.3 | F03 : gare mieux desservie et à pied, sans destination perdue — D064 |
+| 06/11/2026 | 1.4 | § 2 : voiture précisée, règle d'honnêteté chiffrée — D075 |
