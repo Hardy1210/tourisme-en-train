@@ -23,4 +23,16 @@ describe('journal d’une requête en échec', () => {
     expect(ligne).not.toContain('47.3233');
     expect(ligne).not.toContain('5.0272');
   });
+
+  it('une connexion perdue donne une ligne JSON, sans erreur non gérée ni détail de connexion', async () => {
+    const { db } = await import('@/lib/db/client');
+    const sortie = vi.spyOn(process.stdout, 'write').mockReturnValue(true);
+
+    const perdue = Object.assign(new Error('terminating connection'), { code: '57P01' });
+    expect(() => db.$client.emit('error', perdue)).not.toThrow();
+
+    const ligne = JSON.parse(String(sortie.mock.calls[0]?.[0]));
+    expect(ligne).toMatchObject({ niveau: 'avertissement', contexte: { code: '57P01' } });
+    expect(JSON.stringify(ligne)).not.toContain('terminating');
+  });
 });
