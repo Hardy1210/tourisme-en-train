@@ -2,9 +2,6 @@
 // Chaque phrase sur la position décrit ce que fait le code : à revoir si ce parcours change.
 import { marque } from '@/config/marque';
 
-/** À renseigner quand Hardy aura choisi : affiché tel quel, sans rien inventer. */
-const A_COMPLETER = 'À compléter';
-
 export const TEXTES_MENTIONS = {
   titre: 'Mentions légales et confidentialité',
   sections: [
@@ -12,12 +9,15 @@ export const TEXTES_MENTIONS = {
       titre: 'Éditeur',
       paragraphes: [
         `${marque.nom} est édité par Hardy Lino, dans le cadre du défi data.gouv.fr « Tourisme en train » (Fondation SNCF / Open Data University).`,
-        `Contact\u00a0: ${A_COMPLETER}.`,
+        'Contact\u00a0: wagoo.train@gmail.com',
       ],
     },
     {
       titre: 'Hébergeur',
-      paragraphes: [`Fournisseur du serveur\u00a0: ${A_COMPLETER}.`],
+      paragraphes: [
+        // À remplacer par le fournisseur du VPS, une fois choisi (E17 lot 4).
+        'Fournisseur du serveur\u00a0: à compléter.',
+      ],
     },
     {
       titre: 'Votre position',
