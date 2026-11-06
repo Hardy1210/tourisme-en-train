@@ -518,9 +518,9 @@
       "mode": "local",
       "page": "https://impactco2.fr",
       "telechargement": null,
-      "licence": "Licence Ouverte 2.0",
-      "attribution": "ADEME — Impact CO2 (Licence Ouverte)",
-      "verifie": false,
+      "licence": "Réutilisation non commerciale",
+      "attribution": "ADEME — Impact CO2",
+      "verifie": true,
       "affichee": true
     },
     {

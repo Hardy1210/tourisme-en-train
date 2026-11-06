@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.12 · **Date** 05/11/2026
+> **Version** 1.13 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -29,7 +29,7 @@
 | `api_sncf` | API SNCF (Navitia) | SNCF | API (clé gratuite) | Direct | P1 | E09 |
 | `gbfs_direct` | Disponibilité des vélos (GBFS `station_status`) | Opérateurs de vélos | API JSON | Direct | P1 | E09 |
 | `fond_carte` | OpenFreeMap | OpenFreeMap / OSM | Tuiles vectorielles | Direct | P0 | E11 |
-| `facteurs_co2` | Facteurs d'émission Impact CO2 | ADEME | Valeurs publiées, recopiées dans `parametres.json` | Local | P0 | E09 |
+| `facteurs_co2` | Facteurs d'émission Impact CO2 | ADEME | Réutilisation non commerciale, ADEME citée (D075) ; valeurs recopiées dans `parametres.json` | Local | P0 | E09 |
 
 **Base** = téléchargé, traité et stocké par l'ETL. **Direct** = appelé par le serveur au moment de la demande, jamais stocké. **Local** = valeurs recopiées une fois, avec leur source et leur date.
 
@@ -251,3 +251,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 03/11/2026 | 1.10 | § 4.1 : facteurs Intercités et avion relevés ; § 4.2 : calibrage du prix sur les tarifs TGV — D048 |
 | 03/11/2026 | 1.11 | § 3.1 : API Adresse de la Géoplateforme, sans clé, recherche inverse sans filtre de type — D051 |
 | 05/11/2026 | 1.12 | § 3.4 : mention du fond de carte raccourcie, avec liens — D073 |
+| 06/11/2026 | 1.13 | `facteurs_co2` : licence relue, réutilisation non commerciale — D075 |

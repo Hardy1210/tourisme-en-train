@@ -4,7 +4,7 @@ import { marque } from '@/config/marque';
 
 export const TEXTES_SOURCES = {
   titre: 'Sources des données',
-  introduction: `${marque.nom} est construit uniquement avec des données publiques ouvertes. Merci à leurs producteurs.`,
+  introduction: `${marque.nom} est construit avec des données publiques. Merci à leurs producteurs.`,
   lien: 'Voir la source',
   /** Date du dernier chargement, relevé ou calibrage : pas forcément celle du producteur. */
   releve: 'Relevé le',

@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -765,3 +765,19 @@
 - **Écarté :** le train qui a le plus d'arrêts : la ligne ressemblait plus aux rails, mais pouvait montrer des arrêts que le train proposé ne fait pas. Vrais tracés : données absentes, reportés (`A-FAIRE`).
 - **Mesuré le 06/11 :** base locale, depuis Dijon : 121 destinations, dont 50 servies par des trains aux arrêts différents ; tous les arrêts intermédiaires sont déjà des destinations sur la carte.
 - **Impact :** `features/trains`, `features/carte`, `features/explorer`, `05` § 3.8 bis, `06`.
+
+---
+
+## D075 — Écran Sources : thèmes, licence des facteurs CO₂ corrigée, sans carte sur grand écran
+- **Date :** 06/11/2026
+- **En clair :** les 26 sources sont rangées en quatre thèmes. Les facteurs CO₂ de l'ADEME ne sont pas en Licence Ouverte comme on l'écrivait : leur réutilisation est permise sans usage commercial, en citant l'ADEME. L'écran le dit, et ne parle plus de données « ouvertes » pour toutes les sources.
+- **Décision :**
+  1. Champ `groupe` obligatoire dans `config/sources.json` (`trains`, `lieux`, `transports`, `carte_calculs`), renvoyé par `/api/sources` : choix de Hardy, 16 des 26 sources sont des réseaux de transport.
+  2. `facteurs_co2` : licence « Réutilisation non commerciale », attribution « ADEME — Impact CO2 », `verifie` à vrai. Lu le 06/11 dans les mentions légales d'impactco2.fr (mises à jour le 29/05/2024) : « réutilisation non commerciale et pédagogique », à condition de citer l'ADEME ; pour un usage commercial, « une licence de réutilisation ». C'est une lecture de cette page, pas un avis juridique. **Non trouvé :** la licence de la Base Empreinte elle-même.
+  3. Introduction : « construit avec des données publiques », au lieu de « uniquement avec des données publiques ouvertes » de la maquette, devenu faux à cause du point 2.
+  4. Date affichée « Relevé le », et non « Mis à jour le » de la maquette : c'est notre chargement ou relevé, pas la mise à jour du producteur.
+  5. L'attribution exigée est affichée sur chaque carte de source ; la maquette ne la prévoyait pas (D051).
+  6. Adresse `/sources`, séparée de `/a-propos`. Grand écran : à côté du rail, deux colonnes, **sans carte**, contrairement à la maquette (panneau gauche devant la carte) : rien à y montrer et un fond de carte à charger pour rien.
+  7. Critère de la fiche E13 aligné sur D051 : sources marquées `affichee`, et non toutes celles de `source_donnees`.
+- **Écarté :** lien « Sources » dans la mention de la carte (prompt 6) : alourdit la ligne validée en D073. Liste simple sans thèmes : longue à parcourir.
+- **Impact :** `config/sources.json` et son schéma, `01` § 3, `02`, `05` § 3.12, `06` § 5, fiche E13, `A-FAIRE`.
