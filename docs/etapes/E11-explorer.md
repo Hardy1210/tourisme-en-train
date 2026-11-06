@@ -79,3 +79,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : Explorer gardé en vie entre les écrans, sans appel quand il est caché (D069).
 - 05/11/2026 : chaque écran retrouve ses filtres au retour sur son onglet (D070).
 - 05/11/2026 : carte sous les filtres sur mobile, marges iPhone, poignée posée sur le menu (D072, PR #71) ; carte validée par Hardy sur iPhone, marges à revérifier.
+- 06/11/2026 : mini-fiche calée sur la feuille, cachée feuille en haut, refermée par une carte de la liste ; mention de la carte sur une ligne (D073) ; ligne du train à la sélection (D074) ; retouches de Hardy (PR #71).

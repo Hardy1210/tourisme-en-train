@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E14 🟡 : PR #70 fusionnée, essai Android à faire ; retouches mobiles d'Explorer : PR #71, recalée sur `main`, en attente du retour de Hardy sur les marges
-- **Dernière session :** 05/11/2026 — Explorer gardé en vie (D069), filtres gardés (D070), PWA (D071), carte sous les filtres et marges iPhone (D072)
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches en mobile et desktop ; PWA : gel hors ligne validé par Hardy sur iPhone ; sur la branche de la PR #71 : `pnpm verifier` 465 tests, `pnpm test:integration` 158, `pnpm test:e2e` 106
-- **À valider par Hardy :** sur iPhone : 5 px en bas, plus de bande blanche, bandeau hors ligne sous la caméra, puis fusion de la #71 ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
-- **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours et builds dans une copie (`git worktree`)
-- **Prochaine action précise :** corriger ce que Hardy signale sur les marges ; après la fusion de la #71, mettre `main` à jour et proposer le plan de E13 (`docs/etapes/E13-ame-sources.md`), à valider avant de coder
+- **Étape en cours :** E14 🟡 : essai Android à faire ; retouches d'Explorer : PR #71, à fusionner par Hardy
+- **Dernière session :** 06/11/2026 — mention de la carte sur une ligne (D073), ligne du train à la sélection (D074), mini-fiche corrigée, retouches de design de Hardy
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches en mobile et desktop ; PWA : gel hors ligne validé sur iPhone ; sur la branche de la PR #71 : `pnpm verifier` 471 tests, `pnpm test:integration` 164, `pnpm test:e2e` 113 et 1 ignoré
+- **À valider par Hardy :** sur iPhone, reconstruire puis juger le délai de la ligne (D074) et les marges ; fusion de la #71 ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
+- **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
+- **Prochaine action précise :** si Hardy signale un défaut sur iPhone, le corriger ; après la fusion de la #71, mettre `main` à jour et proposer le plan de E13 (`docs/etapes/E13-ame-sources.md`), à valider avant de coder
 ---
 
 ## 10. Réaliser une étape
@@ -331,6 +331,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
 | Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
+| Essayer sur le téléphone (tunnel Cloudflare, depuis la racine) | **Arrêter `pnpm dev` d'abord.** Puis `pnpm --filter @tourisme/web build` et `pnpm --filter @tourisme/web exec next start -p 3200` ; dans un autre terminal : `~/cloudflared tunnel --url http://localhost:3200`, dont l'adresse change à chaque lancement. `pnpm dev` peut être relancé une fois le build terminé |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---

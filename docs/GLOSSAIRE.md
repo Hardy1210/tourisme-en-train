@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.15 · **Date** 04/11/2026
+> **Version** 1.16 · **Date** 06/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -51,6 +51,7 @@
 | **Durée à pied** | Distance à pied ÷ vitesse de marche | `dureeMarcheMin` | `duree_marche_min` | — |
 | **Liaison directe** | Deux gares reliées par au moins un train sans correspondance à une date donnée | `LiaisonDirecte` | table `liaison_directe` | Itinéraire (hors périmètre) |
 | **Trajet** | Un train précis (un « trip » GTFS) | `Trajet`, `trajetId` | table `trajet`, `trajet_id` | Liaison directe |
+| **Parcours** | Sur la carte, la ligne qui relie les arrêts du prochain train direct vers la destination sélectionnée ; droite entre deux arrêts, ce n'est pas le tracé des rails | `parcours`, `arretsDuTrain` | — | D074 |
 | **Trains en jumelage** | Deux trajets (deux numéros) aux mêmes heures de départ et d'arrivée entre deux gares : rames attelées, **un seul train** pour le voyageur ; affiché avec ses deux numéros (« TGV 12177 / 5537 ») | `numeros` | — | Doublon |
 | **Passage** | L'arrêt d'un trajet dans une gare, avec ses heures | `Passage` | table `passage` | — |
 | **Type de train** | `TER`, `INTERCITES`, `TGV`, `AUTRE` (règle : `04` § 4.2) | `TypeTrain` | `type_train` | Mode GTFS (texte brut du `stop_id`) |
@@ -140,3 +141,4 @@
 | 03/11/2026 | 1.13 | Code UIC identifiant public, clé de lieu — D052 |
 | 04/11/2026 | 1.14 | Mon espace — D054 ; tranches de temps — D055 |
 | 04/11/2026 | 1.15 | Lieu accessible — D056 ; fiche de ville — D057 ; catégorie secondaire — D060 |
+| 06/11/2026 | 1.16 | Parcours — D074 |

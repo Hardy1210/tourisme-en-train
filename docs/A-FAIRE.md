@@ -17,6 +17,9 @@
 | Mettre les captures des maquettes dans `design/maquettes/` et les liens dans `design/README.md` | Trace hors MCP | Dès qu'une maquette est validée |
 | **Photos des lieux, après les objectifs principaux (choix de Hardy le 05/11)** : aujourd'hui, 126 lieux sur 12 242 ont une image en base (mesuré le 05/11, `image` et `wikimedia_commons` d'OpenStreetMap, D041), et les cartes montrent l'illustration de catégorie (D067). À étudier : (1) plus de photos Wikimedia par OpenStreetMap ; (2) DATAtourisme juste pour les images : l'API, écartée jusqu'ici (clé, fiche plus lente, rien hors ligne), ou le flux complet de la « plateforme diffuseur » (compte gratuit, adresse à garder secrète, JSON plus lourd). Dans tous les cas : **crédit et licence de chaque photo** à afficher | Le CSV régional n'a aucune photo ; Hardy juge les photos importantes | Objectifs principaux terminés |
 | Copie de la page « Audit des gares Wagoo » dans le dépôt (`docs/` ou `design/`) ou seulement dans les Téléchargements | Page explicative mise à jour hors dépôt (prompt donné le 23/10 : table `commune`, codes UIC, schéma des tables) | Quand la page est à jour |
+| Essai sur iPhone de la ligne du train (D074) : délai d'apparition, seulement mesuré dans Chromium sans carte graphique | Si elle gêne : chercher encore, ou l'enlever et garder les points seuls | Prochain essai sur téléphone |
+| Segments droits vers toutes les destinations : cachés à l'essai (`couches-carte.tsx`), à retirer ou à rétablir | Choix de Hardy le 06/11 : on verra plus tard | Quand Hardy tranche |
+| Feuille tout en haut : la mention de la carte reste coupée derrière les filtres ; filtre « Nature » coupé net par « Filtres » en 390 px (pas sur l'iPhone de Hardy) | Vu sur des captures, non corrigé | Quand on affine le design |
 | Licence du code (ex. MIT) | Dépôt public depuis le 07/10 sans licence (« tous droits réservés ») ; décision reportée volontairement | E18 |
 
 | **Badge de label sur la carte de destination** (Plus Beaux Villages, Petites cités de caractère, Art et histoire…) : chercher une liste officielle et vérifier Besançon, absente de DATAtourisme alors qu'elle aurait, de mémoire, le label Art et histoire | DATAtourisme ne couvre que quelques communes (mesure du 04/11, D057) ; laissé de côté par Hardy | Après le P0 (22/11) |
@@ -88,11 +91,13 @@ Relevés par l'audit du 09/10. Chacun entre dans `config/parametres.json` (et so
 | **Lieux culturels et festivals** (sources P1 `lieux_culturels`, `festivals`) | Retard sur le calendrier ; le P0 passe d'abord (D041) | P0 terminé |
 | Ligne « En clair » pour les décisions D001 → D040 (révision et soutenance) | Utile pour Hardy, sans effet sur le développement ; ≈ 1 h | Un moment calme, au plus tard avant E13 (pitch) |
 | Skills Claude Code (voir D016) | Garder une seule méthode au départ | Si un besoin précis apparaît (ex. tests navigateur en E15) |
+| **Vrais tracés de rails sur la carte, option A** : tout le réseau affiché en fond, en ligne continue, depuis le « Fichier de formes des lignes du Réseau Ferré National » (SNCF Réseau, ODbL, 1 638 tronçons, dernière mise à jour en mars 2022 ; tracés pas encore regardés). Montre aussi des lignes sans train direct depuis la gare choisie | Le projet n'a pas ces données (table `ligne_ferroviaire` absente, pas de `shapes.txt` dans le GTFS) ; le P0 passe d'abord (D051). Segments droits cachés en attendant, à l'essai (`couches-carte.tsx`) | Après le P0, quand Hardy décide de le faire avec ces données |
 
 ## 4. Idées d'évolution
 
 | Quoi | Pourquoi | Déclencheur |
 |---|---|---|
+| **Poignée de la feuille en chevron aplati, qui change selon la position** : `︿` feuille en bas, trait au milieu, `﹀` feuille en haut, même largeur que le trait actuel | Indiquerait où glisser ; Hardy garde le trait pour l'instant | Si des essais montrent que la poignée n'est pas comprise, ou quand Hardy le décide |
 | **Catégorie « bien-être / thermes »** (SPA Thermal Valvital, Luxeuil, Bourbon-Lancy, Salins…), utile pour tous les visiteurs | Aucune des 5 catégories ne convient : ces lieux restent écartés pour le P0 (D059) | Après le P0 |
 | **Mention « accessible à vélo ou en bus »** pour les lieux entre 1,5 et 3 km d'une gare, séparée des lieux à pied | 68 sorties pour enfants à moins de 3 km, contre 29 à pied (mesure du 04/11) | Après le P0 |
 

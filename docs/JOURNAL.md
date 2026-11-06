@@ -24,6 +24,32 @@
 
 ---
 
+## 06/11/2026 — Étape E11 — mention de la carte, ligne du train, retouches de design
+**Fait :**
+- Mini-fiche : reste juste au-dessus de la feuille dans toutes les positions, se cache quand la feuille est tout en haut, se referme quand on touche une carte de la liste.
+- Mention de la carte sur une ligne, trois liens sans couleur ni soulignement (D073).
+- Ligne du prochain train, d'arrêt en arrêt, à la sélection d'une carte ou d'un point ; segments droits cachés, à l'essai (D074).
+- Retouches de Hardy : `--espace-bas` à 16 px, 24 px sous « Acheter mon billet », 4 px au-dessus de l'en-tête d'Explorer, ligne des trains centrée, bouton de la carte aux couleurs du menu, icône `binoculars` pour Lieux, « Infos » et icône `info` au lieu de « Menu ».
+- Noté dans `A-FAIRE` : poignée en chevron, vrais tracés de rails (option A).
+
+**Décisions :** D073, D074 ; D072 modifiée après coup.
+
+**Problèmes rencontrés :**
+- La ligne était lente : toutes les couches de la carte étaient recalculées à chaque affichage. Corrigé (`useMemo`) ; mesuré dans Chromium sans carte graphique, premier toucher de 2 469 à 1 250 ms. Pas mesuré sur un vrai téléphone.
+- `pnpm dev` rechargeait la page en boucle. Le même code dans un `.next` neuf ne bouclait pas, et la boucle a disparu après le redémarrage de Hardy. Cause exacte non isolée, mais j'avais conseillé de reconstruire pendant que `pnpm dev` tournait et lancé `pnpm typecheck` dans le dépôt, qui écrit aussi dans `.next`.
+- Lu à tort que les conditions d'OpenFreeMap ne demandaient rien : elles demandent bien une mention. Sans effet, les trois sont gardées.
+
+**À valider par Hardy :**
+- Sur iPhone : délai de la ligne, marges. Fusion de la #71.
+
+**Prochaine action :**
+- Après la fusion : mettre `main` à jour, plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (471) · intégration ✅ (164) · parcours ✅ (113, 1 ignoré), sur une copie, avant les derniers commentaires et documents
+**Commit :** voir `docs(contexte): sauvegarde de session du 06/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
 ## 05/11/2026 — Étape E14 — PR #70 fusionnée, #71 recalée
 **Fait :**
 - PR #70 (PWA) fusionnée par Hardy ; PR #71 recalée sur `main`.
