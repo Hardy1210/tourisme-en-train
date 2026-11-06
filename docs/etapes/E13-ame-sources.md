@@ -1,7 +1,7 @@
 # E13 — Page « L'âme du produit » et écran Sources
 
 > **Semaine :** S7 (16/11 → 22/11) · **Priorité :** P0 · **Branche :** `etape/E13-ame-sources`
-> **Étapes préalables :** E10 (E09 pour `/api/sources`) · **État :** 🟡 en cours : écran Sources fait, pitch à valider
+> **Étapes préalables :** E10 (E09 pour `/api/sources`) · **État :** 🟡 en cours : écrans faits, textes du pitch à finir à la fin du projet
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -25,15 +25,15 @@ Page de présentation narrative + écran Sources complet.
 2. Proposer la structure de la page ; attendre la validation.
 
 ## Tâches
-- [ ] `features/presentation/` : textes issus de `pitch.md` (copiés dans un fichier de contenu typé, pas dispersés dans le JSX).
-- [ ] Sections : accroche, constat, 3 chiffres sourcés, solution en 3 étapes (captures), pour qui, ce que ça change, conclusion + « Ouvrir l'application ».
+- [x] `features/presentation/` : textes issus de `pitch.md` (copiés dans un fichier de contenu typé, pas dispersés dans le JSX).
+- [ ] Sections : accroche, constat, 3 chiffres sourcés, solution en 3 étapes (captures), pour qui, ce que ça change, conclusion + « Ouvrir l'application ». **Fait :** accroche, constat, chiffre vérifié, solution, conclusion. **À la fin du projet :** 97 Mt et 69 %, 3 étapes et captures, pour qui, ce que ça change.
 - [x] Écran Sources : `/api/sources` + attributions carte + mention du défi data.gouv.fr.
-- [ ] Le nom de la marque vient de `marque.ts` partout.
+- [x] Le nom de la marque vient de `marque.ts` partout.
 
 ## Critères d'acceptation
-- [ ] Chaque chiffre affiché a sa source visible.
+- [x] Chaque chiffre affiché a sa source visible.
 - [x] Toutes les sources marquées `affichee` dans `config/sources.json` apparaissent avec leur licence (D051, D075).
-- [ ] Lisible en 390 px et 1440 px ; aucun texte en dur hors du fichier de contenu.
+- [x] Lisible en 390 px et 1440 px ; aucun texte en dur hors du fichier de contenu.
 
 ## À ne pas toucher
 - Écrans Explorer et fiche destination.
@@ -44,3 +44,4 @@ Voir `_MODELE.md`.
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 06/11/2026 : critère des sources aligné sur D051 (26 affichées sur 33) ; écran Sources par thème, licence des facteurs CO₂ corrigée, brouillon de `docs/equipe/pitch.md` — D075.
+- 06/11/2026 : Hardy optimisera le pitch à la fin du projet : la page est construite sans les sections sans texte validé, et un chiffre non confirmé reste masqué (`confirme` dans `contenu-a-propos.ts`) — D075.

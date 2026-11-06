@@ -781,6 +781,7 @@
   7. Critère de la fiche E13 aligné sur D051 : sources marquées `affichee`, et non toutes celles de `source_donnees`.
   8. **Facteurs inchangés : Impact CO2 reste la source (choix de Hardy, 06/11).** Le 142 g/km est sa valeur par défaut : voiture thermique moyenne, diesel, usage et fabrication, une personne à bord, modèle 2025 (`Moyenne - Diesel` = 14,23 kg pour 100 km sur son API). À écrire ainsi partout.
   9. **Règle d'honnêteté** (`00` § 2) chiffrée : 14,2 kg seul, 3,6 kg à quatre, 2,8 kg en TER, pour 100 km et par personne.
+  10. **Page `/a-propos` construite avant la fin du pitch (Hardy optimisera les textes à la fin) :** seules les sections déjà écrites sont affichées. La comparaison voiture et TER est calculée depuis `parametres.json`. 97 Mt et 69 % restent masqués (`confirme: false`). « Une à deux heures d'organisation » est retiré, faute de source. Les liens des chiffres sont des citations, pas des sources de données de l'application : ils restent dans le fichier de contenu.
 - **Comparé le 06/11 :** même calcul partout où la méthode est publiée, distance × facteur moyen par personne. Voiture par personne : SNCF 119 g (TER, usage seul, 1,6 passager) et 108 g (longue distance, 2,2 passagers), Google 148 g, Trainline 116 g (Royaume-Uni). Détail et sources : `LECONS.md`, dossier CO₂.
 - **Écarté :**
   - Lien « Sources » dans la mention de la carte (prompt 6) : alourdit la ligne validée en D073. Liste simple sans thèmes : longue à parcourir.

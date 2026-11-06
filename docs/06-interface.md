@@ -103,7 +103,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 
 - Accessibles depuis le menu « Infos ».
 - Sections : accroche · le constat · pourquoi c'est important (3 chiffres sourcés) · la solution en 3 étapes (captures) · pour qui · ce que ça change · conclusion + bouton « Ouvrir l'application ».
-- Textes de référence : `docs/equipe/pitch.md` (à créer à l'E13 à partir du pitch validé).
+- Textes de référence : `docs/equipe/pitch.md`, repris dans `features/presentation/contenu-a-propos.ts`. Une section sans texte validé n'est pas affichée ; un chiffre non confirmé non plus (D075).
 - **Écran Sources** (`/sources`, D075) : liste issue de `/api/sources`, par thème (nom, producteur, licence, attribution, lien, date « Relevé le ») + attributions OpenFreeMap, OpenMapTiles, OpenStreetMap + mention du défi data.gouv.fr. Plein écran sur mobile ; sans carte sur grand écran, à côté du rail, sur deux colonnes.
 
 ---

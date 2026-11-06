@@ -1,25 +1,17 @@
 'use client';
 
 import type { GroupeSource } from '@tourisme/commun';
-import {
-  ArrowLeft,
-  Bus,
-  Landmark,
-  Layers,
-  ShieldCheck,
-  TrainFront,
-  type LucideIcon,
-} from 'lucide-react';
+import { Bus, Landmark, Layers, ShieldCheck, TrainFront, type LucideIcon } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { CadrePage } from '@/components/ui/cadre-page';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { AttributionFondCarte } from '@/features/carte/ui/attribution-fond-carte';
-import { useRetour } from '@/lib/utiliser-retour';
 import { LIBELLES_GROUPES, TEXTES_SOURCES } from '../contenu';
 import { useSources } from '../hooks';
 import { regrouperSources } from '../regrouper-sources';
 import { CarteSource } from './carte-source';
+import { RetourPage } from './retour-page';
 
 const ICONES_GROUPES: Record<GroupeSource, LucideIcon> = {
   trains: TrainFront,
@@ -30,17 +22,9 @@ const ICONES_GROUPES: Record<GroupeSource, LucideIcon> = {
 
 export function EcranSources() {
   const reponse = useSources();
-  const surRetour = useRetour();
 
   return (
-    <CadrePage
-      enTete={
-        <Bouton variante="fantome" className="-ml-2 px-2 font-semibold" onClick={surRetour}>
-          <ArrowLeft aria-hidden="true" className="size-5" />
-          Retour
-        </Bouton>
-      }
-    >
+    <CadrePage enTete={<RetourPage />}>
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl leading-tight font-bold">{TEXTES_SOURCES.titre}</h1>
         <p className="text-base text-pretty text-muted-foreground">{TEXTES_SOURCES.introduction}</p>

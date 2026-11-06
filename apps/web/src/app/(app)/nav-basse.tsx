@@ -12,7 +12,6 @@ import {
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useState, type ComponentProps, type ReactNode } from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Feuille } from '@/components/ui/feuille';
 import { marque } from '@/config/marque';
 import { filtresDeLUrl, lienAvecDepart } from '@/features/explorer/filtres';
@@ -24,14 +23,18 @@ const ENTREES = [
   { href: '/mon-espace', libelle: 'Mon espace', Icone: CircleUserRound },
 ] as const;
 
-// Sans adresse : « Bientôt », aucun lien vers une page absente.
 const ENTREES_MENU: readonly {
   libelle: string;
   detail: string;
   Icone: LucideIcon;
-  href?: string;
+  href: string;
 }[] = [
-  { libelle: 'À propos', detail: `${marque.nom}, gratuit et sans inscription`, Icone: Info },
+  {
+    libelle: 'À propos',
+    detail: `${marque.nom}, gratuit et sans inscription`,
+    Icone: Info,
+    href: '/a-propos',
+  },
   {
     libelle: 'Sources des données',
     detail: 'Trains, lieux, transports',
@@ -133,36 +136,22 @@ export function NavBasse() {
 
       <Feuille ouverte={menuOuvert} surChangement={setMenuOuvert} titre="Menu" ancreeAuRail>
         <ul className="flex flex-col">
-          {ENTREES_MENU.map(({ libelle, detail, Icone, href }) => {
-            const contenu = (
-              <>
+          {ENTREES_MENU.map(({ libelle, detail, Icone, href }) => (
+            <li key={libelle}>
+              <Link
+                href={href}
+                onClick={() => setMenuOuvert(false)}
+                className="flex min-h-14 items-center gap-3"
+              >
                 <Icone aria-hidden="true" className="size-5.5 flex-none text-primary" />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="text-base font-semibold">{libelle}</span>
                   <span className="text-sm text-muted-foreground">{detail}</span>
                 </span>
-              </>
-            );
-            return (
-              <li key={libelle}>
-                {href ? (
-                  <Link
-                    href={href}
-                    onClick={() => setMenuOuvert(false)}
-                    className="flex min-h-14 items-center gap-3"
-                  >
-                    {contenu}
-                    <ChevronRight aria-hidden="true" className="size-5 flex-none" />
-                  </Link>
-                ) : (
-                  <div className="flex min-h-14 items-center gap-3">
-                    {contenu}
-                    <Badge>Bientôt</Badge>
-                  </div>
-                )}
-              </li>
-            );
-          })}
+                <ChevronRight aria-hidden="true" className="size-5 flex-none" />
+              </Link>
+            </li>
+          ))}
         </ul>
       </Feuille>
     </nav>
