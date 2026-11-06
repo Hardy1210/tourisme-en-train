@@ -24,6 +24,100 @@
 
 ---
 
+## 06/11/2026 — Étape E11 — mention de la carte, ligne du train, retouches de design
+**Fait :**
+- Mini-fiche : reste juste au-dessus de la feuille dans toutes les positions, se cache quand la feuille est tout en haut, se referme quand on touche une carte de la liste.
+- Mention de la carte sur une ligne, trois liens sans couleur ni soulignement (D073).
+- Ligne du prochain train, d'arrêt en arrêt, à la sélection d'une carte ou d'un point ; segments droits cachés, à l'essai (D074).
+- Retouches de Hardy : `--espace-bas` à 16 px, 24 px sous « Acheter mon billet », 4 px au-dessus de l'en-tête d'Explorer, ligne des trains centrée, bouton de la carte aux couleurs du menu, icône `binoculars` pour Lieux, « Infos » et icône `info` au lieu de « Menu ».
+- Noté dans `A-FAIRE` : poignée en chevron, vrais tracés de rails (option A).
+
+**Décisions :** D073, D074 ; D072 modifiée après coup.
+
+**Problèmes rencontrés :**
+- La ligne était lente : toutes les couches de la carte étaient recalculées à chaque affichage. Corrigé (`useMemo`) ; mesuré dans Chromium sans carte graphique, premier toucher de 2 469 à 1 250 ms. Pas mesuré sur un vrai téléphone.
+- `pnpm dev` rechargeait la page en boucle. Le même code dans un `.next` neuf ne bouclait pas, et la boucle a disparu après le redémarrage de Hardy. Cause exacte non isolée, mais j'avais conseillé de reconstruire pendant que `pnpm dev` tournait et lancé `pnpm typecheck` dans le dépôt, qui écrit aussi dans `.next`.
+- Lu à tort que les conditions d'OpenFreeMap ne demandaient rien : elles demandent bien une mention. Sans effet, les trois sont gardées.
+
+**À valider par Hardy :**
+- Sur iPhone : délai de la ligne, marges. Fusion de la #71.
+
+**Prochaine action :**
+- Après la fusion : mettre `main` à jour, plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (471) · intégration ✅ (164) · parcours ✅ (113, 1 ignoré), sur une copie, avant les derniers commentaires et documents
+**Commit :** voir `docs(contexte): sauvegarde de session du 06/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
+## 05/11/2026 — Étape E14 — PR #70 fusionnée, #71 recalée
+**Fait :**
+- PR #70 (PWA) fusionnée par Hardy ; PR #71 recalée sur `main`.
+- Tunnel décroché après une coupure d'Internet : `cloudflared` tourne encore mais l'adresse n'existe plus (`/ready` à 503). Serveur local sain.
+
+**Décisions :** aucune.
+
+**À valider par Hardy :**
+- Marges sur iPhone, puis fusion de la #71.
+
+**Prochaine action :**
+- Corriger ce qu'il signale ; après la fusion, plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (465) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
+## 05/11/2026 — Étapes E11 et E14 — retour de Hardy sur iPhone : gel validé, marges corrigées
+**Fait :**
+- Gel hors ligne validé par Hardy sur iPhone : les pages parcourues restent lisibles, les autres non, ce qu'il juge correct.
+- Carte sous les filtres validée par Hardy.
+- Marges : 5 px en bas au lieu de toute la marge de l'iPhone ; hauteur corrigée dans l'application installée (`--hauteur-app`) pour supprimer la bande blanche ; bandeau hors ligne sous la caméra. PR #71.
+
+**Décisions :** D072 précisée : en bas, quelques pixels seulement (choix de Hardy).
+
+**Problèmes rencontrés :**
+- J'avais appliqué toute la marge de l'iPhone alors que Hardy demandait quelques pixels, ce qui a fait monter la barre de menu. Avec la bande blanche, le rendu était mauvais.
+- La cause de la bande blanche est déduite de la capture de Hardy et simulée dans Chromium, pas mesurée sur un iPhone.
+
+**À valider par Hardy :**
+- Fusion de la #70 ; marges sur iPhone (#71). Avec 5 px, le texte de la barre de menu peut approcher le trait de l'iPhone : une seule valeur à changer (`--espace-bas`).
+
+**Prochaine action :**
+- Recaler la #71 après la #70 ; plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (465) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
+## 05/11/2026 — Étapes E11 et E14 — Explorer gardé en vie, PWA, essais sur iPhone
+**Fait :**
+- PR #66 → #69 fusionnées : navigation sans rechargement, « Votre gare », Explorer gardé en vie (mémoire mesurée), filtres gardés entre les onglets. `BACKLOG.md` relu ligne par ligne.
+- PR #70 ouverte (E14) : manifest, service worker, liste explicite des routes gardées, dernière gare sur l'appareil, bandeau, page indisponible hors ligne, retour du réseau, message si les scripts manquent.
+- PR #71 ouverte : carte sous les filtres sur mobile, marges iPhone, dégradé, poignée posée sur le menu.
+- Hardy a installé la PWA sur son iPhone : plein écran et localisation fonctionnent, liste de retouches reçue.
+
+**Décisions :** D069, D070, D071, D072. Hardy : fonctionnalités, performance et bugs d'abord ; logo et icônes à la fin ; E14 avant E13 ; PWA pour Android **et** iPhone.
+
+**Problèmes rencontrés :**
+- Écran blanc sur l'iPhone de Hardy : mes parcours ont reconstruit le `.next` de son serveur (12 scripts sur 18 en erreur 500). Depuis, parcours et builds dans une copie.
+- Tunnel Cloudflare décroché : adresse disparue, serveur sain ; il a fallu un nouveau tunnel.
+- Localisation « bloquée » dans un navigateur iPhone autre que Safari : réglage du téléphone, marche dans la PWA. Meilleur message noté dans `A-FAIRE`.
+- Gel hors ligne constaté par Hardy : une fiche jamais ouverte menait à la page d'erreur du navigateur.
+- Trois bugs de ma part trouvés par les parcours : page hors ligne qui se rechargeait en boucle, bouton retour qui restait sur place, couche invisible sur la carte. Un commit fait avant de voir un test échouer, repris ensuite.
+
+**À valider par Hardy :**
+- Sur iPhone : gel et retour du réseau, marges, carte, poignée ; puis fusion de la #70 et de la #71. Android à trouver.
+
+**Prochaine action :**
+- Corriger ce qu'il signale ; recaler la #71 après la #70 ; plan de E13.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (462) · intégration ✅ (158) · parcours ✅ (106), sur la branche de la PR #71
+**Commit :** voir `docs(contexte): sauvegarde de session du 05/11` (branche `etape/E11-carte-plein-ecran`)
+
+---
+
 ## 05/11/2026 — Étape E11 — gare par défaut corrigée, écran Lieux, navigation sans rechargement
 **Fait :**
 - PR #60 corrigée puis fusionnée : gare la plus proche, sauf gare à 3 km au plus, au moins 1,5 fois plus de trains et aucune destination perdue. Beaune validée par Hardy chez lui.

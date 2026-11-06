@@ -7,9 +7,9 @@ import { gareParUic, verifierDateDansFenetre } from '@/lib/db/requetes-partagees
 import { heure } from '@/lib/dates/heures';
 import { Introuvable } from '@/lib/http/erreurs';
 
-import type { ParametresTrains, ReponseTrains, Train } from '../schemas';
+import type { ParametresTrains, ReponseArretsTrain, ReponseTrains, Train } from '../schemas';
 
-import { type TrainBrut, trainsDirects } from './requetes';
+import { arretsEntre, type TrainBrut, trainsDirects } from './requetes';
 
 const versTrain = (t: TrainBrut): Train => ({
   trajetIds: t.trajet_ids,
@@ -49,5 +49,36 @@ export async function trains(
     aller: allers.map(versTrain),
     retour: retours.slice(0, limite).map(versTrain),
     dernierRetour: dernier ? versTrain(dernier) : null,
+  };
+}
+
+/**
+ * Arrêts réels du train proposé sur la carte de destination, pour dessiner sa ligne (D074).
+ * Plus de train après `depuis` : le premier du jour, pour que la ligne ne disparaisse pas le soir.
+ */
+export async function arretsDuTrain(
+  { depart, arrivee, date, depuis }: ParametresTrains,
+  maintenant: Maintenant,
+): Promise<ReponseArretsTrain> {
+  const jour = date ?? maintenant.dateDuJour;
+  await verifierDateDansFenetre(jour);
+  const [gareDepart, gareArrivee] = await Promise.all([gareParUic(depart), gareParUic(arrivee)]);
+  if (gareDepart === null || gareArrivee === null)
+    throw new Introuvable('Cette gare est inconnue.');
+
+  const depuisS = depuis ?? (jour === maintenant.dateDuJour ? maintenant.heureActuelleS : 0);
+  const directs = await trainsDirects(gareDepart.id, gareArrivee.id, jour);
+  const train = directs.find((t) => t.depart_s >= depuisS) ?? directs[0];
+  const trajetId = train?.trajet_ids[0];
+  if (train === undefined || trajetId === undefined) return { date: jour, arrets: [] };
+  return {
+    date: jour,
+    arrets: await arretsEntre({
+      trajetId,
+      departId: gareDepart.id,
+      arriveeId: gareArrivee.id,
+      departS: train.depart_s,
+      arriveeS: train.arrivee_s,
+    }),
   };
 }

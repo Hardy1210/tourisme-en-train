@@ -26,7 +26,7 @@ export function FeuilleResultats({ ref, position, surPosition, children }: Propr
   return (
     <div
       ref={ref}
-      className="absolute inset-x-0 top-(--resultats-haut) bottom-0 z-sheet flex flex-col rounded-t-feuille bg-background shadow-sheet transition-[top] duration-300 ease-soft lg:static lg:z-auto lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:rounded-none lg:shadow-none lg:transition-none"
+      className="pointer-events-auto absolute inset-x-0 top-(--resultats-haut) bottom-0 z-sheet flex flex-col rounded-t-feuille bg-background shadow-sheet transition-[top] duration-300 ease-soft lg:static lg:z-auto lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:rounded-none lg:shadow-none lg:transition-none"
     >
       <button
         type="button"

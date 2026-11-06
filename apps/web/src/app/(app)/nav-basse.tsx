@@ -1,12 +1,11 @@
 'use client';
 
 import {
+  Binoculars,
   CircleUserRound,
   Compass,
   Database,
   Info,
-  Landmark,
-  Menu,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -20,7 +19,7 @@ import { cn } from '@/lib/classes';
 
 const ENTREES = [
   { href: '/', libelle: 'Explorer', Icone: Compass },
-  { href: '/lieux', libelle: 'Lieux', Icone: Landmark },
+  { href: '/lieux', libelle: 'Lieux', Icone: Binoculars },
   { href: '/mon-espace', libelle: 'Mon espace', Icone: CircleUserRound },
 ] as const;
 
@@ -115,8 +114,8 @@ export function NavBasse() {
           onClick={() => setMenuOuvert(true)}
           className={cn(CLASSES_ENTREE, 'lg:mt-auto', classesEtat(menuOuvert))}
         >
-          <ContenuEntree actif={menuOuvert} Icone={Menu}>
-            Menu
+          <ContenuEntree actif={menuOuvert} Icone={Info}>
+            Infos
           </ContenuEntree>
         </button>
       </div>

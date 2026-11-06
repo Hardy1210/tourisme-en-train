@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.18 · **Date** 05/11/2026
+> **Version** 1.19 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -42,6 +42,7 @@
 | GET | `/api/lieux` | Lieux accessibles en train direct depuis une gare (onglet Lieux) | P0 | E11 |
 | GET | `/api/lieux/[cle]` | Détail d'un lieu | P0 | E09 |
 | GET | `/api/trains` | Trains directs aller et retour | P0 | E09 |
+| GET | `/api/trains/arrets` | Arrêts du prochain train direct, pour la ligne sur la carte | P0 | E11 |
 | GET | `/api/mobilites/[uic]` | Transports sur place | P0 | E09 |
 | GET | `/api/impact` | CO₂ et prix estimé d'une liaison | P0 | E09 |
 | GET | `/api/geocodage` | Recherche de ville / adresse | P0 | E09 |
@@ -206,6 +207,13 @@ type Train = { trajetIds: string[]; depart: Heure; arrivee: Heure;   // Heure : 
 **Trains en jumelage** (D040) : les trajets aux mêmes heures de départ et d'arrivée forment **un seul** `Train`, avec tous leurs identifiants et numéros (affichés « TGV 12177 / 5537 ») ; `numeros` est vide si aucun n'est connu. La limite compte les trains, pas les trajets.
 `retour` = trains `arrivee → depart` le même jour. Limite : `parametres.limites.trains` — les **premiers** allers à partir de `depuis` ; les retours **qui partent après l'arrivée du premier aller de la liste** (les précédents sont inutiles : on n'est pas encore arrivé), les premiers d'entre eux ; aucun retour s'il n'y a plus d'aller ; `dernierRetour` est toujours le dernier train retour du jour (D051). **Limite connue** (D051) : les trains du jour de service précédent qui roulent après minuit (« 24:52 ») ne sont pas proposés pour la date suivante. Cache : `public, max-age=` `cache.horairesPrevusS` (D068).
 
+### 3.8 bis `GET /api/trains/arrets?depart&arrivee&date&depuis`
+Mêmes paramètres et mêmes valeurs par défaut que `/api/trains` (D074).
+```ts
+{ date: string, arrets: Array<{ uic: string; nom: string; lat: number; lon: number }> }
+```
+Les gares du **prochain train direct** après `depuis`, de la gare de départ à la gare d'arrivée, dans l'ordre ; le premier train du jour s'il n'en reste plus. Sans train direct : `arrets: []`. Gare inconnue : `404`. Jamais gardée hors ligne : sans réseau, la ligne n'apparaît simplement pas.
+
 ### 3.9 `GET /api/mobilites/[uic]`
 ```ts
 { mobilites: Array<{ type: TypeMobilite; nom: string; lignes: string[]; operateur: string | null;
@@ -323,3 +331,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/11/2026 | 1.16 | § 3.4 et § 3.8 : cache de `cache.horairesPrevusS` — D068 |
 | 05/11/2026 | 1.17 | § 3.2 : `dureeMarcheMin` — D064 |
 | 05/11/2026 | 1.18 | § 4 : routes gardées hors ligne — D071 |
+| 06/11/2026 | 1.19 | § 3.8 bis : `/api/trains/arrets` — D074 |

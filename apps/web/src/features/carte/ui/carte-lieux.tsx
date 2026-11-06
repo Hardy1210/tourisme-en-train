@@ -9,9 +9,9 @@ import Map, { type MapRef } from 'react-map-gl/maplibre';
 import { Bouton, BoutonFermer } from '@/components/ui/bouton';
 import { parametres } from '@/config/parametres';
 import type { LieuResume } from '@/features/lieux/schemas';
-import { attributionFondCarte } from '@/lib/external/fond-carte';
 import { empriseDe, type Point } from '../geometrie';
 import { useStyleCarte } from '../hooks';
+import { AttributionFondCarte } from './attribution-fond-carte';
 import { MarqueurGareDepart, MarqueursLieux } from './marqueurs-carte';
 
 export type ProprietesCarteLieux = {
@@ -74,7 +74,7 @@ export function CarteLieux({ gare, lieux, cleChoisie, surChoix, lienDe }: Propri
 
       {/* Attribution exigée par la licence, toujours visible (config/sources.json). */}
       <p className="absolute inset-x-0 bottom-0 bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground">
-        {attributionFondCarte}
+        <AttributionFondCarte />
       </p>
 
       {choisi && lienDe && (

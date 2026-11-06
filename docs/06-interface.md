@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.11 · **Date** 05/11/2026
+> **Version** 1.13 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -48,8 +48,8 @@
 ### Structure mobile, de haut en bas
 1. **En-tête collant** : logo (`marque.nom`), puce de localisation « 📍 Autour de <commune> ▾ » (→ Ma position / Une autre ville ; `<commune>` vient de `/api/geocodage/inverse`, voir `05` § 3.11 bis ; en attendant la réponse : « Autour de vous »), puce de date « Aujourd'hui ▾ » (Aujourd'hui · Demain · Ce week-end · Choisir). **« Ce week-end »** = samedi (ou aujourd'hui si on est déjà le week-end), voir `05` § A.3.
 2. **Rangée de filtres** (défilement horizontal) : « Tout » + 5 catégories (multi-sélection) ; bouton « Filtres » avec compteur → feuille : rayon (`autourDeMoiOptionsM`), durée de train max (`trainMaxOptionsMin`), « Faisable dans la journée » (P1).
-3. **Carte (~40 % de la hauteur)** : point pulsant de l'utilisateur, gare la plus proche, lieux proches (épingles par catégorie), gares de destination **colorées par tranche de temps** ; mini-fiche au toucher ; boutons « Recentrer » et « Plein écran ».
-   - **Liaisons :** en P0, **segments droits** de la gare de départ vers chaque destination ; en P1, vrais tracés (`/api/lignes`). *La maquette montre des lignes « bien rangées » : c'est un dessin, la vraie carte ne l'est pas.*
+3. **Carte (sur mobile : plein écran, sous l'en-tête sans fond, D072 ; ~40 % de la hauteur visible)** : point pulsant de l'utilisateur, gare la plus proche, lieux proches (épingles par catégorie), gares de destination **colorées par tranche de temps** ; mini-fiche au toucher ; boutons « Recentrer » et « Plein écran ».
+   - **Liaisons :** segments droits vers toutes les destinations cachés, à l'essai ; à la sélection d'une carte ou d'un point, **une ligne d'arrêt en arrêt** suit le prochain train (D074). Vrais tracés plus tard (`A-FAIRE`). *La maquette montre des lignes « bien rangées » : c'est un dessin, la vraie carte ne l'est pas.*
    - **Étiquettes « Beaune 22 min » :** affichées pour les 5 destinations avec le plus de trains (D062), au survol et pour la destination sélectionnée ; les autres gares restent des points. Collisions gérées par MapLibre.
    - **Survol croisé (desktop) :** survoler une carte de destination met la gare en évidence sur la carte, et inversement.
 4. **Feuille de résultats (glissante, par-dessus la carte)** :
@@ -114,7 +114,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 - Les **épingles et le point utilisateur sont des composants à nous** (couleurs `cat-*`, `map-user`, `map-station`).
 - **Isochrone simplifiée :** couleur des gares de destination selon `trancheTemps`, légende visible.
 - **Accessibilité :** la carte est toujours doublée d'une liste ; aucune information n'existe uniquement sur la carte.
-- **Attribution** visible en bas de la carte.
+- **Attribution** visible en bas de la carte, sur une ligne, avec des liens sans couleur ni soulignement (D073).
 - Hors ligne (option E16) : fichier PMTiles régional.
 
 ---
@@ -169,3 +169,5 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 05/11/2026 | 1.9 | § Explorer : écran gardé en vie — D069 |
 | 05/11/2026 | 1.10 | § Explorer : filtres gardés entre les onglets — D070 |
 | 05/11/2026 | 1.11 | § 7 : réseau d'abord, liste explicite, secours sans scripts — D071 |
+| 05/11/2026 | 1.12 | § Explorer : carte sous les filtres sur mobile, marges iPhone — D072 |
+| 06/11/2026 | 1.13 | § Carte : ligne d'arrêt en arrêt à la sélection — D074 |

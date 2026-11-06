@@ -19,12 +19,16 @@ function Cadre({
   children: ReactNode;
 }) {
   return (
-    <div className="absolute inset-x-3 top-[calc(var(--resultats-haut)-3rem)] flex -translate-y-full flex-col gap-1 rounded-lg bg-surface-raised px-3 py-2 shadow-float">
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="min-w-0 truncate text-lg font-bold">{titre}</h3>
-        <BoutonFermer className="-mr-2" onClick={surFermeture} />
+    // Sur mobile, la carte passe sous l'en-tête, pas la feuille : ce cadre part du même point qu'elle (D072).
+    // Feuille tout en haut : plus de carte à voir, la fiche se cache et revient quand la feuille redescend.
+    <div className="pointer-events-none absolute inset-x-3 top-(--en-tete-hauteur) bottom-0 lg:top-0 max-lg:in-data-[feuille=plein]:hidden">
+      <div className="pointer-events-auto absolute inset-x-0 top-[calc(var(--resultats-haut)-2rem)] flex -translate-y-full flex-col gap-1 rounded-lg bg-surface-raised px-3 py-2 shadow-float transition-[top] duration-300 ease-soft">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="min-w-0 truncate text-lg font-bold">{titre}</h3>
+          <BoutonFermer className="-mr-2" onClick={surFermeture} />
+        </div>
+        {children}
       </div>
-      {children}
     </div>
   );
 }

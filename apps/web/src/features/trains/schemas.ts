@@ -34,6 +34,13 @@ export const schemaReponseTrains = z.object({
   dernierRetour: schemaTrain.nullable(),
 });
 
+/** Arrêts du prochain train direct, du départ à l'arrivée : la ligne dessinée sur la carte (D074). */
+export const schemaReponseArretsTrain = z.object({
+  date: z.iso.date(),
+  arrets: z.array(z.object({ uic: schemaUic, nom: z.string(), lat: z.number(), lon: z.number() })),
+});
+
 export type ParametresTrains = z.infer<typeof schemaParametresTrains>;
 export type Train = z.infer<typeof schemaTrain>;
 export type ReponseTrains = z.infer<typeof schemaReponseTrains>;
+export type ReponseArretsTrain = z.infer<typeof schemaReponseArretsTrain>;

@@ -3,6 +3,7 @@
 import { SerwistProvider } from '@serwist/turbopack/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState, type ReactNode } from 'react';
+import { HauteurEcran } from '@/components/ui/hauteur-ecran';
 import { parametres } from '@/config/parametres';
 import { fautReessayer } from '@/lib/http/client';
 
@@ -37,6 +38,7 @@ export function Fournisseurs({ children }: { children: ReactNode }) {
       cacheOnNavigation
       reloadOnOnline={false}
     >
+      <HauteurEcran />
       <QueryClientProvider client={clientRequetes}>{children}</QueryClientProvider>
     </SerwistProvider>
   );

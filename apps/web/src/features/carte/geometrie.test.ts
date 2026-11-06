@@ -4,6 +4,7 @@ import {
   empriseDe,
   pointsCadrage,
   pointsEtiquettes,
+  ligneArrets,
   segmentsDepuis,
 } from './geometrie';
 
@@ -23,6 +24,25 @@ describe('empriseDe', () => {
 
   it('ne renvoie rien sans point', () => {
     expect(empriseDe([])).toBeNull();
+  });
+});
+
+describe('ligneArrets', () => {
+  it('relie les arrêts dans l’ordre, en longitude, latitude', () => {
+    const arrets = [
+      { lat: 47, lon: 5 },
+      { lat: 46.5, lon: 4.8 },
+      { lat: 46, lon: 4 },
+    ];
+    expect(ligneArrets(arrets).features[0]?.geometry.coordinates).toEqual([
+      [5, 47],
+      [4.8, 46.5],
+      [4, 46],
+    ]);
+  });
+
+  it('ne trace rien avec un seul arrêt', () => {
+    expect(ligneArrets([{ lat: 47, lon: 5 }]).features).toEqual([]);
   });
 });
 

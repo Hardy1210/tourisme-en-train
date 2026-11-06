@@ -100,6 +100,94 @@ test.describe('position acceptée', () => {
     await expect(page.getByRole('button', { name: 'Fermer' })).toHaveCount(0);
   });
 
+  test('la mini-fiche reste juste au-dessus de la feuille, baissée ou remontée', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La feuille n’existe que sur mobile.');
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+
+    const poignee = page.getByRole('button', { name: 'Déplacer le panneau des résultats' });
+    const fiche = page.getByRole('button', { name: 'Fermer' }).locator('xpath=../..');
+    // Espace entre le bas de la fiche et le haut de la feuille ; la fiche ne touche jamais les filtres.
+    const ecartAvecLaFeuille = async () => {
+      const cadre = await fiche.boundingBox();
+      const feuille = await poignee.boundingBox();
+      const filtres = await page.locator('header').first().boundingBox();
+      if (!cadre || !feuille || !filtres) return Number.NaN;
+      if (cadre.y < filtres.y + filtres.height) return Number.NaN;
+      return feuille.y - (cadre.y + cadre.height);
+    };
+    const attendreFicheCollee = async () => {
+      await expect.poll(ecartAvecLaFeuille).toBeGreaterThanOrEqual(24);
+      await expect.poll(ecartAvecLaFeuille).toBeLessThanOrEqual(44);
+    };
+
+    await page.getByRole('button', { name: 'Carte plein écran' }).click();
+    await marqueurs(page).filter({ visible: true }).first().click();
+    await attendreFicheCollee();
+
+    await page.getByRole('button', { name: 'Afficher la liste' }).click();
+    await attendreFicheCollee();
+
+    // Feuille tout en haut : la fiche se cache, et revient quand la feuille redescend.
+    await poignee.press('ArrowUp');
+    await expect(fiche).toBeHidden();
+    await poignee.press('ArrowDown');
+    await expect(fiche).toBeVisible();
+    await attendreFicheCollee();
+  });
+
+  test('toucher un point demande les arrêts de son train, et pas avant', async ({ page }) => {
+    const arrets: string[] = [];
+    page.on('request', (requete) => {
+      if (requete.url().includes('/api/trains/arrets')) arrets.push(requete.url());
+    });
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+    expect(arrets).toEqual([]);
+
+    const pleinEcran = page.getByRole('button', { name: 'Carte plein écran' });
+    if (await pleinEcran.isVisible()) await pleinEcran.click();
+    const reponse = page.waitForResponse((r) => r.url().includes('/api/trains/arrets'));
+    await marqueurs(page).filter({ visible: true }).first().click();
+    expect((await reponse).status()).toBe(200);
+  });
+
+  test('une carte de la liste referme la mini-fiche ouverte, pas le reste', async ({ page }) => {
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+    const pleinEcran = page.getByRole('button', { name: 'Carte plein écran' });
+    const mobile = await pleinEcran.isVisible();
+    if (mobile) await pleinEcran.click();
+
+    const fermer = page.getByRole('button', { name: 'Fermer' });
+    await marqueurs(page).filter({ visible: true }).first().click();
+    await expect(fermer).toBeVisible();
+    // La souris sur le point lui-même ne la referme pas.
+    await page.waitForTimeout(100);
+    await expect(fermer).toBeVisible();
+
+    if (mobile) await page.getByRole('button', { name: 'Afficher la liste' }).click();
+    await page.getByRole('heading', { name: 'Beaune' }).last().hover();
+    await expect(fermer).toHaveCount(0);
+  });
+
+  test('la mention de la carte tient sur une ligne, et ses liens répondent', async ({ page }) => {
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+
+    const lien = page.getByRole('link', { name: '© OpenStreetMap' }).filter({ visible: true });
+    await expect(lien).toHaveAttribute('href', 'https://www.openstreetmap.org/copyright');
+    // Le parent laisse passer le toucher vers la carte : le lien doit quand même le recevoir.
+    await lien.click({ trial: true });
+
+    const hauteur =
+      (await lien.locator('xpath=..').boundingBox())?.height ?? Number.POSITIVE_INFINITY;
+    expect(hauteur).toBeLessThan(28);
+  });
+
   test('une date hors des horaires propose de revenir à aujourd’hui', async ({ page }) => {
     await page.goto('/?date=2020-01-01');
     await expect(page.getByRole('button', { name: /aujourd/i }).last()).toBeVisible();

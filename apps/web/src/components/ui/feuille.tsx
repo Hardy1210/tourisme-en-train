@@ -26,12 +26,15 @@ export function Feuille({
     <Drawer.Root open={ouverte} onOpenChange={surChangement}>
       <Drawer.Portal>
         <Drawer.Overlay
-          className={cn('fixed inset-0 z-overlay bg-overlay', ancreeAuRail && 'lg:bg-transparent')}
+          className={cn(
+            'fixed inset-x-0 top-0 z-overlay h-(--hauteur-app) bg-overlay',
+            ancreeAuRail && 'lg:bg-transparent',
+          )}
         />
         <Drawer.Content
           aria-describedby={undefined}
           className={cn(
-            'fixed inset-x-0 bottom-0 z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
+            'fixed inset-x-0 bottom-(--decalage-bas) z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
             ancreeAuRail &&
               'lg:right-auto lg:bottom-4 lg:left-[calc(var(--rail-largeur)+0.5rem)] lg:w-80 lg:rounded-lg lg:border lg:px-3 lg:pt-1.5 lg:shadow-float lg:after:hidden',
           )}

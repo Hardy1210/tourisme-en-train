@@ -12,10 +12,11 @@ export const metadata: Metadata = {
   description: marque.description,
   // iPhone : Safari ne lit pas les icônes du manifest (D071).
   icons: { apple: '/icones/apple-touch-icon.png' },
-  appleWebApp: { capable: true, title: marque.nom, statusBarStyle: 'default' },
+  appleWebApp: { capable: true, title: marque.nom, statusBarStyle: 'black-translucent' },
 };
 
-export const viewport: Viewport = { themeColor: COULEUR_THEME };
+// `cover` : sans lui, iPhone laisse les marges de sécurité à zéro et le contenu touche les bords (D072).
+export const viewport: Viewport = { themeColor: COULEUR_THEME, viewportFit: 'cover' };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
