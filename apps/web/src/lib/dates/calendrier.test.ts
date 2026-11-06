@@ -6,6 +6,7 @@ import {
   libelleComplet,
   libelleCourt,
   libelleMois,
+  libelleDate,
 } from './calendrier';
 
 describe('decalerJours', () => {
@@ -61,5 +62,17 @@ describe('libellés', () => {
   it('écrit le mois et la date complète', () => {
     expect(libelleMois('2026-11-17')).toBe('Novembre 2026');
     expect(libelleComplet('2026-07-15')).toBe('mercredi 15 juillet 2026');
+  });
+});
+
+describe('libelleDate', () => {
+  it('écrit la date en toutes lettres, en été comme en hiver', () => {
+    expect(libelleDate('2026-07-15')).toBe('15 juillet 2026');
+    expect(libelleDate('2026-11-17')).toBe('17 novembre 2026');
+  });
+
+  it('écrit le premier du mois « 1er », et pas le 2', () => {
+    expect(libelleDate('2026-11-01')).toBe('1er novembre 2026');
+    expect(libelleDate('2026-11-02')).toBe('2 novembre 2026');
   });
 });

@@ -32,6 +32,7 @@ export async function sourcesAffichees(): Promise<ReponseSources> {
         code: s.code,
         nom: s.nom,
         producteur: s.producteur,
+        groupe: s.groupe,
         page: s.page,
         licence: s.licence,
         attribution: s.attribution,

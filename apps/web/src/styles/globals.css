@@ -49,6 +49,7 @@
 
   /* Écran Explorer : panneau sur grand écran, feuille à 3 positions sur mobile */
   --panneau-largeur: 27.5rem;
+  --page-lecture-largeur: 56rem; /* Sources, À propos sur grand écran */
   --resultats-haut-milieu: 18.125rem;
   /* La poignée seule, posée sur le menu : sa hauteur est celle d'une zone tactile. */
   --resultats-haut-carte: calc(100% - var(--spacing-touch));

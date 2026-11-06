@@ -3,10 +3,15 @@
 import { z } from 'zod';
 import sourcesBrutes from '../../../config/sources.json' with { type: 'json' };
 
+/** Thèmes de l'écran « Sources », dans leur ordre d'affichage. */
+export const GROUPES_SOURCE = ['trains', 'lieux', 'transports', 'carte_calculs'] as const;
+export type GroupeSource = (typeof GROUPES_SOURCE)[number];
+
 const schemaSource = z.strictObject({
   code: z.string().regex(/^[a-z][a-z0-9_]*$/, 'Code attendu en snake_case'),
   nom: z.string().min(1),
   producteur: z.string().min(1),
+  groupe: z.enum(GROUPES_SOURCE),
   /** base = téléchargé et stocké par l'ETL ; direct = appelé par le serveur ; local = valeurs recopiées. */
   mode: z.enum(['base', 'direct', 'local']),
   /** Page de présentation de la source (affichée dans l'écran « Sources »). */

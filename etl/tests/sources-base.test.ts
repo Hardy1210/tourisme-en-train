@@ -43,6 +43,7 @@ function source(telechargement: string | null): SourceDonnees {
     code: 'essai',
     nom: 'Essai',
     producteur: 'Test',
+    groupe: 'trains',
     mode: 'base',
     page: 'https://exemple.fr/',
     telechargement,
