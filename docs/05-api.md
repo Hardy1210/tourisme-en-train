@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.19 · **Date** 06/11/2026
+> **Version** 1.20 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -258,7 +258,8 @@ Passe par `lib/external/adresse.ts` (recherche inverse **sans filtre de type** :
 ### 3.12 `GET /api/sources`
 Sources affichées dans l'écran « Sources » (champ `affichee` de `config/sources.json`, D051) :
 ```ts
-{ sources: Array<{ code: string; nom: string; producteur: string; page: string; licence: string;
+{ sources: Array<{ code: string; nom: string; producteur: string; groupe: 'trains' | 'lieux' | 'transports' | 'carte_calculs';
+                   page: string; licence: string;
                    attribution: string; dateDonnees: string | null }>,   // dateDonnees : dernier chargement réussi (Paris)
   horaires: { debut: string; fin: string } | null }                       // dates couvertes par les horaires : bornes du calendrier
 ```
@@ -332,3 +333,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/11/2026 | 1.17 | § 3.2 : `dureeMarcheMin` — D064 |
 | 05/11/2026 | 1.18 | § 4 : routes gardées hors ligne — D071 |
 | 06/11/2026 | 1.19 | § 3.8 bis : `/api/trains/arrets` — D074 |
+| 06/11/2026 | 1.20 | § 3.12 : `groupe`, thème de la source — D075 |

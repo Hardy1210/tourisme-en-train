@@ -12,6 +12,14 @@ describe('schéma de config/sources.json', () => {
     expect(schemaSources.safeParse(sourcesBrutes).success).toBe(true);
   });
 
+  it('accepte une source avec un thème connu, refuse un thème inconnu', () => {
+    const s = copie();
+    s.sources[0]!.groupe = 'lieux';
+    expect(schemaSources.safeParse(s).success).toBe(true);
+    (s.sources[0] as { groupe: string }).groupe = 'inconnu';
+    expect(schemaSources.safeParse(s).success).toBe(false);
+  });
+
   it('accepte des liens qui redisent exactement l’attribution', () => {
     const s = copie();
     s.sources[0]!.attribution = 'A © B';

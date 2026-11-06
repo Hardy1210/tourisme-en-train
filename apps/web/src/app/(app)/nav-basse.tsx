@@ -2,6 +2,7 @@
 
 import {
   Binoculars,
+  ChevronRight,
   CircleUserRound,
   Compass,
   Database,
@@ -11,7 +12,6 @@ import {
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useState, type ComponentProps, type ReactNode } from 'react';
-import { Badge } from '@/components/ui/badge';
 import { Feuille } from '@/components/ui/feuille';
 import { marque } from '@/config/marque';
 import { filtresDeLUrl, lienAvecDepart } from '@/features/explorer/filtres';
@@ -23,10 +23,24 @@ const ENTREES = [
   { href: '/mon-espace', libelle: 'Mon espace', Icone: CircleUserRound },
 ] as const;
 
-// « Bientôt » tant que ces écrans n'existent pas (E13) : aucun lien vers une page absente.
-const ENTREES_MENU: readonly { libelle: string; detail: string; Icone: LucideIcon }[] = [
-  { libelle: 'À propos', detail: `${marque.nom}, gratuit et sans inscription`, Icone: Info },
-  { libelle: 'Sources des données', detail: 'Trains, lieux, transports', Icone: Database },
+const ENTREES_MENU: readonly {
+  libelle: string;
+  detail: string;
+  Icone: LucideIcon;
+  href: string;
+}[] = [
+  {
+    libelle: 'À propos',
+    detail: `${marque.nom}, gratuit et sans inscription`,
+    Icone: Info,
+    href: '/a-propos',
+  },
+  {
+    libelle: 'Sources des données',
+    detail: 'Trains, lieux, transports',
+    Icone: Database,
+    href: '/sources',
+  },
 ];
 
 const CLASSES_ENTREE =
@@ -122,14 +136,20 @@ export function NavBasse() {
 
       <Feuille ouverte={menuOuvert} surChangement={setMenuOuvert} titre="Menu" ancreeAuRail>
         <ul className="flex flex-col">
-          {ENTREES_MENU.map(({ libelle, detail, Icone }) => (
-            <li key={libelle} className="flex min-h-14 items-center gap-3">
-              <Icone aria-hidden="true" className="size-5.5 flex-none text-primary" />
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="text-base font-semibold">{libelle}</span>
-                <span className="text-sm text-muted-foreground">{detail}</span>
-              </span>
-              <Badge>Bientôt</Badge>
+          {ENTREES_MENU.map(({ libelle, detail, Icone, href }) => (
+            <li key={libelle}>
+              <Link
+                href={href}
+                onClick={() => setMenuOuvert(false)}
+                className="flex min-h-14 items-center gap-3"
+              >
+                <Icone aria-hidden="true" className="size-5.5 flex-none text-primary" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="text-base font-semibold">{libelle}</span>
+                  <span className="text-sm text-muted-foreground">{detail}</span>
+                </span>
+                <ChevronRight aria-hidden="true" className="size-5 flex-none" />
+              </Link>
             </li>
           ))}
         </ul>

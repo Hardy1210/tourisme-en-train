@@ -1,5 +1,6 @@
 // Routes /api/destinations/[uic]/lieux, /api/lieux/[cle], /api/sources, /api/geocodage(/inverse) sur
 // l'échantillon. L'API Adresse n'est jamais appelée : `fetch` est simulé (règle 4 des tests). D051, D052.
+import { sources as configSources } from '@tourisme/commun';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { schemaFicheLieu, schemaReponseAutour } from '@/features/lieux/schemas';
@@ -124,6 +125,16 @@ describe('/api/lieux/[cle]', () => {
 });
 
 describe('/api/sources', () => {
+  it('cite chaque source affichée avec son thème, et aucune source non utilisée', async () => {
+    const reponse = await appeler(sources, '/api/sources');
+    const citees = schemaReponseSources.parse(reponse.corps).sources;
+    expect(citees.map((s) => s.code)).toEqual(
+      configSources.sources.filter((s) => s.affichee).map((s) => s.code),
+    );
+    expect(citees.find((s) => s.code === 'gtfs_sncf')?.groupe).toBe('trains');
+    expect(citees.some((s) => s.code === 'api_sncf')).toBe(false);
+  });
+
   it('donne les dates couvertes par les horaires, de l’échantillon d’été à celui d’hiver', async () => {
     const reponse = await appeler(sources, '/api/sources');
     expect(schemaReponseSources.parse(reponse.corps).horaires).toEqual({

@@ -1,10 +1,13 @@
 // Contrat de GET /api/sources (docs/05-api.md § 3.12, règle 8, D051).
+import { GROUPES_SOURCE } from '@tourisme/commun';
 import { z } from 'zod';
 
 export const schemaSourceAffichee = z.object({
   code: z.string(),
   nom: z.string(),
   producteur: z.string(),
+  /** Thème de l'écran « Sources ». */
+  groupe: z.enum(GROUPES_SOURCE),
   page: z.string(),
   licence: z.string(),
   /** Texte exigé par la licence (ODbL : « © les contributeurs d'OpenStreetMap »). */

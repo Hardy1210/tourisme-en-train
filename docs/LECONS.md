@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.10 · **Date** 05/11/2026
+> **Version** 1.11 · **Date** 06/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -315,6 +315,81 @@
 - **À retenir :** lire ce que fait un réglage par défaut avant de l'adopter, surtout quand une règle de confidentialité est en jeu.
 - **Origine :** D071, règle 5.
 
+## Licences et chiffres à défendre
+
+### L47 — Une licence se lit chez le producteur, pas dans sa propre configuration
+- **Problème :** `sources.json` annonçait « Licence Ouverte 2.0 » pour Impact CO2, marquée « non vérifiée » ; l'écran allait l'afficher au jury.
+- **Cause :** une valeur saisie en début de projet finit par ressembler à un fait.
+- **Solution :** relire chaque licence sur la page ou l'API officielle ; 24 des 26 sources affichées ont pu être confirmées ainsi le 06/11, `facteurs_co2` a été corrigée et `contours` reste à confirmer.
+- **À retenir :** un champ « vérifié » à faux est un travail à faire avant d'afficher la valeur, pas un détail.
+- **Origine :** D075.
+
+### L48 — Deux pages d'un même organisme peuvent se contredire : noter ce que chacune couvre
+- **Problème :** l'ADEME écrit « réutilisation non commerciale et pédagogique » sur Impact CO2, et « Licence Ouverte Etalab » sur Datagir.
+- **Solution :** pour chaque page, noter ce qu'elle nomme réellement, sa version et sa date. Datagir ne nomme pas Impact CO2 : elle ne suffit pas à le justifier. Une fiche qui nomme le jeu de données, sa version et sa licence vaut mieux.
+- **À retenir :** « l'ADEME dit » ne suffit pas ; il faut pouvoir dire quelle page, sur quelles données, et à quelle date. Corriger trop vite dans un sens ou dans l'autre est aussi une erreur.
+- **Origine :** D075.
+
+### L49 — Un chiffre sans périmètre ne veut rien dire
+- **Problème :** pour la même voiture, l'ADEME et la SNCF publient 142, 160, 256, 119 ou 108 g/km.
+- **Cause :** motorisation, année, fabrication comptée ou non, et surtout nombre de personnes à bord. 256 g par véhicule ÷ 1,6 personne = 160 g par personne : diviser encore par le nombre d'occupants compterait deux fois le remplissage.
+- **Solution :** écrire le chiffre avec ce qu'il mesure : « voiture thermique moyenne (diesel), une personne à bord, usage et fabrication ».
+- **À retenir :** avant d'adopter ou de comparer un facteur, lire sa décomposition et son unité.
+- **Origine :** D075, L37, L41.
+
+### L50 — À la soutenance, le meilleur chiffre est celui que le jury peut vérifier
+- **Problème :** la Base Carbone avait une meilleure licence, mais donnait 25,6 kg dans le pitch contre 14,2 kg sur le site public de l'ADEME.
+- **Solution :** garder le chiffre vérifiable en une minute, le moins favorable à notre thèse, et noter ce qu'il faudra revoir si le cadre change.
+- **À retenir :** comparer les options sur trois points : ce qu'on peut vérifier, ce qu'on peut dire sans s'exposer, ce que ça coûte à construire. Le mieux en théorie peut être le plus fragile en pratique.
+- **Origine :** D075 (choix de Hardy).
+
+### L51 — Regarder ce que fait le marché avant de construire son propre calcul
+- **Problème :** on discutait de facteurs et de sélecteurs sans avoir regardé les vraies applications.
+- **Solution :** comparer les méthodes publiées et un trajet concret. Résultat : même calcul partout, et un sélecteur à quatre choix n'aurait rien apporté à la démo.
+- **À retenir :** cette recherche prend moins de temps qu'un calcul sur mesure, et elle fournit des arguments. Quand on se met à ajouter des options pour résoudre un doute, c'est le moment de s'arrêter et de comparer.
+- **Origine :** D075 (demande de Hardy).
+
+### L52 — Vérifier un conseil extérieur point par point, le sien comme le nôtre
+- **Problème :** un avis extérieur et mes propres réponses mêlaient des faits justes et des erreurs : une option présentée comme existante alors qu'elle n'existait pas, 105 g au lieu de 108 g, et de mon côté 108 g utilisé pour un TER au lieu de 119 g.
+- **Solution :** vérifier chaque affirmation à la source, séparément. Distinguer ce qui est lu directement de ce qui vient d'un extrait de moteur de recherche, et ne pas contourner un site qui refuse la lecture automatique : l'ouvrir soi-même.
+- **À retenir :** un texte sûr de lui n'est pas une preuve, et une conclusion peut être fausse même si tous ses calculs sont justes. Un avis contraire se vérifie aussi : il a révélé que le 142 était un diesel moyen.
+- **Origine :** D075.
+
+## Dossier CO₂ pour la soutenance (relevé du 06/11/2026)
+
+Lecture de pages, pas un avis juridique. À relire avant la soutenance : ces pages peuvent changer.
+
+### Ce qu'on affiche et pourquoi
+- **Calcul :** distance × facteur par personne, en estimation. Pour 100 km : **voiture thermique moyenne (diesel), une personne à bord 14,2 kg** ; TER 2,77 kg. [Impact CO2, transport](https://impactco2.fr/outils/transport) · [TER](https://impactco2.fr/outils/transport/ter).
+- **Honnêteté :** à quatre en voiture, 3,6 kg par personne, contre 2,8 kg en TER. L'application montre aussi la voiture partagée (D011).
+- **Licence :** « réutilisation non commerciale et pédagogique », en citant l'ADEME : [mentions légales](https://impactco2.fr/mentions-legales), mises à jour le 29/05/2024. Convient à un projet d'école gratuit ; à revoir pour un usage commercial (`A-FAIRE`).
+
+### Ce que font les autres
+| Application | Train | Voiture, par personne | Remplissage | Source |
+|---|---|---|---|---|
+| Wagoo (Impact CO2) | TER 27,7 · TGV 2,93 | 142 | 1 personne | ADEME |
+| [SNCF, méthode 2024](https://www.sncf-voyageurs.com/medias-publics/2025-01/sncf_voyageurs_methodologiegenerale-infoges_2024.pdf), parcours TER, usage seul | TER 19,4 | 119 | 1,6 personne | Base Empreinte 2018 |
+| Même document, longue distance, avec fabrication et maintenance | TER 24,4 · TGV 2,9 | 108 | 2,2 personnes | SNCF, Base Empreinte, Carbone 4 |
+| [SNCF Connect](https://www.sncf-connect.com/train/comparateurco2), page non datée | TER 30,4 · TGV 3,5 | 108 | 2,2 personnes | SNCF |
+| [Google](https://support.google.com/travel/answer/13571996?hl=fr) | 19 | 148 | non précisé | Agence internationale de l'énergie |
+| [Trainline](https://thetrainline.com/terms/sustainability-faqs) | 35,1 (Royaume-Uni) | 116 | 1,5 personne | Gouvernement britannique |
+
+Valeurs en g CO₂e/km.
+
+**Dijon → Beaune, aller simple, affiché par des sites :** [Mappy](https://fr.mappy.com/itineraire/21000-dijon/21200-beaune) : train 0 kg, voiture 5 kg ou 10 à 11 kg selon le tableau · [KelBillet](https://kelbillet.com/itineraire/dijon-beaune-v29955-31533.html) : voiture moyenne 8 à 9 kg · [Virail](https://www.virail.com/train-dijon-beaune) : train 2,38 kg, et 0 kg ailleurs sur la page. Wagoo : 1,2 kg en TER, 6,1 kg en voiture, sur 43,2 km.
+
+### Questions probables
+- **« Pourquoi pas la Base Carbone ? »** Étudiée (V23.6, [Licence Ouverte 2.0](https://www.data.gouv.fr/datasets/65bd0b310a81ca31f396a59a)). TER (43255, 27,7 g) et TGV (43256, 2,93 g) y sont identiques aux nôtres. Pour la voiture, elle donne 256 g par véhicule (43791) ou 160 g par passager à 1,6 personne (43809). On a gardé le calculateur public, vérifiable et moins favorable au train.
+- **« Pourquoi 142 et pas 256 ? »** Ce ne sont pas les mêmes voitures : diesel moyen dans un modèle de 2025 d'un côté, moyenne du parc de l'autre. **Ne pas aller plus loin :** l'écart n'est pas entièrement expliqué, la note de méthode d'Impact CO2 n'a pas pu être lue.
+- **« Pourquoi une personne seule, alors que la SNCF en compte 1,6 ou 2,2 ? »** C'est le cas par défaut d'Impact CO2, et l'application montre la voiture partagée. L'écart avec la SNCF vient surtout de là.
+- **« Même méthode que la SNCF ? »** Même principe, pas les mêmes facteurs.
+- **« Votre distance est-elle exacte ? »** C'est une estimation : vol d'oiseau × coefficient, soit 43,2 km pour Dijon → Beaune, contre 36 à 37 km en train selon Trainline et Rome2Rio, et 41,8 km par la route selon Rome2Rio. Le train y est un peu surestimé.
+
+### Encore à confirmer
+- **97 Mt et 69 % :** lus sur la [page du ministère](https://www.entreprises.gouv.fr/mobilites-tourisme-durable) ; le [communiqué de l'ADEME](https://www.ademe.fr/presse/communique-national/journee-mondiale-du-tourisme-bilan-des-emissions-de-ges-du-secteur-du-tourisme-en-france/) refuse la lecture automatique, à ouvrir par Hardy.
+- **Non vu :** les applications mobiles, et les pages Omio, Kombo, EcoPassenger, SNCF Voyageurs et le trajet sur SNCF Connect, inaccessibles. Aucune méthode trouvée pour Citymapper.
+- **Licence de `contours` (IGN) :** non confirmée. C'est pourquoi l'écran dit « données publiques », et pas « données ouvertes ».
+
 ---
 
 ## Historique
@@ -332,3 +407,4 @@
 | 05/11/2026 | 1.8 | L38, L39 (tester depuis une position ordinaire, action sans réaction visible) |
 | 05/11/2026 | 1.9 | L40 → L43 (règle simulée sur toutes les données, chiffre mesuré, écran vraiment dessiné, donnée liée à l'heure) |
 | 05/11/2026 | 1.10 | L44 → L46 (serveur en marche, sortie du hors-ligne, cache par défaut) |
+| 06/11/2026 | 1.11 | L47 → L52 et dossier CO₂ (licence lue à la source, portée d'une page, périmètre d'un chiffre, chiffre vérifiable, marché d'abord, conseil vérifié point par point) |

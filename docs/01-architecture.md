@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.11 · **Date** 05/11/2026
+> **Version** 1.12 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -55,7 +55,7 @@ apps/web/src/
 ├─ app/
 │  ├─ (app)/layout.tsx                  ← écran Explorer, gardé en vie (D069) ; page.tsx est vide
 │  ├─ (app)/destinations/[gareId]/      ← fiche destination (page ou panneau)
-│  ├─ (app)/a-propos/                   ← « L'âme du produit » + Sources
+│  ├─ (app)/a-propos/ · (app)/sources/  ← « L'âme du produit » · écran Sources
 │  ├─ api/…/route.ts                    ← routes API (contrats dans 05-api.md)
 │  ├─ layout.tsx · manifest.ts          ← manifest généré depuis config/marque.ts
 │  ├─ sw.ts                             ← service worker (Serwist, D071)
@@ -277,3 +277,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 05/11/2026 | 1.9 | § 3 bis : structure complète du dépôt, déplacée de `CLAUDE.md` § 6 — D066 |
 | 05/11/2026 | 1.10 | § 3 : Explorer dans la mise en page — D069 |
 | 05/11/2026 | 1.11 | § 3 et § 3 bis : service worker, icônes — D071 |
+| 06/11/2026 | 1.12 | § 3 : écran Sources à sa propre adresse — D075 |

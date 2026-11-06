@@ -46,6 +46,13 @@ export function libelleCourt(date: string): string {
 export const libelleMois = (date: string): string =>
   majuscule(format({ month: 'long', year: 'numeric' }).format(versDate(date)));
 
+/** « 17 novembre 2026 » ; le 1er du mois s'écrit « 1er ». */
+export function libelleDate(date: string): string {
+  const d = versDate(date);
+  const jour = d.getUTCDate() === 1 ? '1er' : String(d.getUTCDate());
+  return `${jour} ${format({ month: 'long', year: 'numeric' }).format(d)}`;
+}
+
 /** « mardi 17 novembre 2026 », pour les lecteurs d'écran. */
 export const libelleComplet = (date: string): string =>
   format({ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(
