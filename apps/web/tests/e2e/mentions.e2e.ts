@@ -12,6 +12,7 @@ test('le menu mène à la page, qui explique la position', async ({ page }) => {
   await page.getByRole('link', { name: /Mentions légales/ }).click();
   await expect(page).toHaveURL(/\/mentions-legales$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Mentions légales');
+  await expect(page.getByText('wagoo.train@gmail.com')).toBeVisible();
   await expect(page.getByText('jamais enregistrée')).toBeVisible();
   await expect(page.getByText(/API Adresse de l'IGN/)).toBeVisible();
   await expect(page.getByText(/OpenFreeMap/)).toBeVisible();

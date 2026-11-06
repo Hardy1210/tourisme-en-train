@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 2.0 · **Date** 06/11/2026
+> **Version** 2.1 · **Date** 06/11/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `infra/README.md` ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -13,13 +13,14 @@
 
 | Élément | Emplacement | Responsable |
 |---|---|---|
-| Image de l'application | `apps/web/Dockerfile` (Next.js `standalone`, utilisateur non-root, port 3000) | Responsable application |
+| Image de l'application | `apps/web/Dockerfile` (Next.js `standalone` avec `SORTIE_NEXT=standalone`, utilisateur non-root, port 3000) | Responsable application |
 | Image du traitement des données | `etl/Dockerfile` (Node 24, pnpm, TypeScript exécuté avec `tsx`, utilisateur `node`) ; `.dockerignore` à la racine (aucun `.env` dans le contexte de construction) | Responsable application |
-| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node scripts/migrer.ts`, exécuté par Node 24 sans `tsx`, D033) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Responsable application |
+| Migrations | `db/migrations/` + commande `pnpm db:migrer` (et équivalent dans l'image web : `node apps/web/scripts/migrer.ts`, exécuté par Node 24 sans `tsx`, D033) ; la commande crée d'abord les rôles avec leurs mots de passe, puis applique les migrations (D031) | Responsable application |
 | Route de santé | `GET /api/sante` (voir `05-api.md` § 3.1) | Responsable application |
 | Commande ETL | `pnpm etl <source|all> [--force] [--hors-ligne]` (dans Docker : `docker compose run --rm etl <source|all>`) ; code retour 0 = succès | Responsable application |
 | Journaux | Sortie standard, **une ligne JSON par événement** : `{ "niveau", "message", "horodatage", "contexte" }` ; jamais de position utilisateur | Responsable application |
 | Fichier d'exemple des variables | `.env.example` | Responsable application |
+| Compose de production | `infra/compose.prod.yml` (`db`, `migrer`, `web`) | Responsable infrastructure |
 | Environnement local complet | `docker-compose.yml` à la racine | Responsable application |
 
 ## 2. Ce que l'infrastructure fournit (production)
@@ -119,3 +120,4 @@ Le responsable infrastructure fournit, sur un VPS géré par Coolify :
 | 22/10/2026 | 1.7 | `etl/Dockerfile` créé (utilisateur `node`), `.dockerignore`, `DOSSIER_DONNEES` relatif — D035. Pour les SR : `docker compose run --rm etl <source|all>` fonctionne (sources disponibles : `sources`, `gares`) |
 | 01/11/2026 | 1.8 | § 5 : `osm` une fois par semaine au plus, jamais `all` chaque nuit — D041. Pour les SR : à respecter dans la planification (I15) |
 | 06/11/2026 | 2.0 | Rôles au lieu de noms ; § 2 et § 6 : Coolify et phases d'E17 ; journal d'accès coupé — D076 |
+| 06/11/2026 | 2.1 | § 1 : commande de migration dans l'image, compose de production — D076 |

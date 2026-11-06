@@ -1,4 +1,4 @@
-# Contexte de construction des images (etl/Dockerfile, puis apps/web/Dockerfile en E16).
+# Contexte de construction des images (etl/Dockerfile, apps/web/Dockerfile).
 # Les secrets ne quittent jamais le poste (CLAUDE.md § 2, règle 4) ; le reste allège la construction.
 .env
 .env.*

@@ -23,18 +23,20 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 | Étape la plus gourmande de l'ETL | `contours` : Node 355 Mo |
 | Application en `standalone` | 137 Mo après un essai léger ; 200 Mo au plus sur une version classique déjà utilisée ; 50 Mo sur disque |
 | Construction Next.js | Passe avec 2 Go et 2 cœurs ; tuée avec 1 Go et 2 cœurs |
-| Images Docker | PostGIS 853 Mo, ETL 889 Mo, `node:24-bookworm-slim` 333 Mo |
+| Images Docker | PostGIS 853 Mo, ETL 889 Mo, `node:24-bookworm-slim` 333 Mo, **web 430 Mo** (construite en 151 s sur le poste) |
+| Compose de production au repos, après un parcours | Web 95 à 115 Mo, PostgreSQL 30 à 83 Mo |
 
-**Pas mesuré :** Coolify lui-même (sa documentation demande au moins 2 cœurs et 2 Go, et une page d'aide 30 Go de disque au total) et la taille finale de l'image web.
+**Pas mesuré :** Coolify lui-même (sa documentation demande au moins 2 cœurs et 2 Go, et une page d'aide 30 Go de disque au total) et la construction de l'image sur un VPS.
 
 **VPS retenu : 2 cœurs, 4 Go de mémoire, 40 Go de disque.** La construction a besoin de plus de 1 Go, et 2 Go ont suffi seule : avec Coolify, PostgreSQL et l'application en plus, 2 Go ne laissent aucune marge. Les mesures ne départagent pas Hetzner et OVH.
 
 ## Risques relevés par l'audit
-- **Position dans les journaux :** une requête en échec écrivait ses paramètres, dont `lat` et `lon`, dans le journal (règle 5). Reproduit le 06/11 avec `/api/gares/proches`. Corrigé en phase 1.
+- **Position dans les journaux :** une requête en échec écrivait ses paramètres, dont `lat` et `lon`, dans le journal (règle 5). Reproduit le 06/11 avec `/api/gares/proches`. ✅ Corrigé (PR #81).
+- **Connexion à la base perdue :** aucun gestionnaire d'erreur, donc une erreur non gérée, imprimée en objet brut hors du format JSON, à chaque redémarrage de la base. Trouvé en coupant la base dans le compose de production. ✅ Corrigé au lot 1 : 453 lignes de journal avant, 10 après, sans position ni secret.
 - **Construction sans variables :** elle échoue dans Docker, car `lib/env.ts` est lu à la collecte des pages. Avec des valeurs factices à la construction seulement, elle passe, sans base et sans trace de ces valeurs dans le résultat ; les vraies valeurs arrivent au démarrage.
 - **`pg_restore --clean` seul :** il plante à cause des extensions de l'image PostGIS, après avoir supprimé les tables. Procédure qui a marché : `infra/README.md`.
 - **Journal d'accès du proxy :** d'après le code de Coolify lu le 06/11, le journal d'accès dépend de l'option de statistiques de trafic. `/api/autour` reçoit `lat` et `lon` dans l'adresse : ce journal pourrait enregistrer la position. Ne pas activer l'option, et vérifier sur le VPS qu'il est coupé.
-- **Image Docker jamais construite :** la répétition du 06/11 a été faite hors image, avec la sortie `standalone`. `/api/sante`, `/api/sources` et `/api/gares/proches` y répondaient ; `/api/destinations` n'y a pas été testée (mauvais paramètre), les parcours Playwright la couvrent sur la version de production.
+- **Image Docker :** ✅ construite et essayée au lot 1, avec le compose de production complet.
 
 ## Phase 1 (anticipée, en cours) : une adresse HTTPS qui marche
 **Pourquoi maintenant :** une adresse fixe pour tester sur téléphone et la PWA, et une adresse pour le jury (D076). Aucune tâche planifiée, aucune supervision.
@@ -50,12 +52,14 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 | 4. Mise en ligne | Commandes de chargement | Copier l'export sur le VPS, déployer, charger la base ; donner le nom de l'hébergeur pour les mentions légales |
 | 5. Contrôle | Liste des vérifications | HTTPS, `/api/sante` à 200, base fermée depuis l'extérieur, journal d'accès coupé, installation depuis Safari |
 
-Le suivi se fait dans les tickets « E17 phase 1 ».
+**Lot 0 ✅ · lot 1 ✅ essayé en local (PR à fusionner) · lots 2 à 5 ⬜.** Le suivi se fait dans les tickets « E17 phase 1 ».
+
+**Essai du lot 1, 06/11, sur le poste, hors VPS :** utilisateur `node`, base sans port publié, compose qui refuse de démarrer sans ses variables, migrations relancées sans effet, 12 242 lieux et 268 025 liaisons restaurés. Routes essayées à 200 : santé, sources, gares proches, destinations, autour, lieux, géocodage, pages, manifest, service worker. Navigateur : 101 sorties depuis Dijon, fiche ouverte, aucune erreur, aucun cookie. Base coupée : santé à 503, route à 500, reprise seule au retour de la base.
 
 ### Critères d'acceptation
 - [ ] HTTPS valide sur `wagoo.hardylino.com` ; `/api/sante` → 200.
 - [ ] Base inaccessible depuis Internet.
-- [ ] Image web sans droits d'administration.
+- [x] Image web sans droits d'administration (lot 1, en local).
 - [ ] Aucune position dans les journaux de l'application ni du proxy.
 - [ ] Wagoo s'installe sur iPhone depuis Safari et s'ouvre en plein écran.
 

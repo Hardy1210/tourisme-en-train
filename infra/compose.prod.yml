@@ -1,0 +1,64 @@
+# Production (docs/07-contrat-infra.md, fiche E17, D076). Variables : infra/.env.prod.example.
+# Depuis la racine du dépôt, comme Coolify : docker compose --project-directory . -f infra/compose.prod.yml …
+# La base n'expose aucun port ; le proxy de Coolify atteint `web` sur le réseau interne. Aucun TZ (CLAUDE.md § 3).
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?voir infra/.env.prod.example}
+      POSTGRES_USER: ${POSTGRES_USER:?voir infra/.env.prod.example}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?voir infra/.env.prod.example}
+    volumes:
+      - donnees_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # Crée les rôles et applique les migrations à chaque déploiement, puis s'arrête (D031, D033).
+  migrer:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    command: ['node', 'apps/web/scripts/migrer.ts']
+    environment:
+      BDD_URL_MIGRATIONS: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MDP_APP_LECTURE: ${MDP_APP_LECTURE:?voir infra/.env.prod.example}
+      MDP_ETL_ECRITURE: ${MDP_ETL_ECRITURE:?voir infra/.env.prod.example}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      BDD_URL_APP: postgres://app_lecture:${MDP_APP_LECTURE}@db:5432/${POSTGRES_DB}
+      URL_APP: ${URL_APP:?voir infra/.env.prod.example}
+      NODE_ENV: production
+      SNCF_CLE_API: ${SNCF_CLE_API:-}
+    expose:
+      - '3000'
+    depends_on:
+      migrer:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/sante').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  donnees_db:

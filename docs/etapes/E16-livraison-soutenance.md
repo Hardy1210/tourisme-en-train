@@ -26,9 +26,10 @@ La soutenance a lieu en local. L'application complète doit démarrer **en une s
 3. Proposer le plan ; attendre la validation.
 
 ## Tâches
-- [ ] `apps/web/Dockerfile` de production (standalone, non-root, migrations au démarrage ou service dédié).
+- [x] `apps/web/Dockerfile` de production (standalone, non-root, migrations par un service dédié) : fait pendant E17 lot 1.
+- [ ] Service `migrer` à ajouter au profil `demo` : le `web` du compose local n'en a pas encore.
 - [ ] Profil `demo` du compose : `db` + `web` (+ service de restauration des données).
-- [ ] **Données figées** : script `scripts/exporter-donnees` (pg_dump) → `data/export/tourisme-AAAA-MM-JJ.dump` ; script `scripts/restaurer-donnees`. L'export n'est **pas** dans Git : le README indique où le récupérer (ex. lien partagé de l'équipe) ; option `--hors-ligne` de l'ETL pour régénérer depuis `data/brut/`.
+- [ ] **Données figées** : réutiliser `infra/scripts/exporter-base.sh` et `restaurer-base.sh` (E17 lot 1) → `data/export/tourisme-AAAA-MM-JJ.dump`. L'export n'est **pas** dans Git : le README indique où le récupérer (ex. lien partagé de l'équipe) ; option `--hors-ligne` de l'ETL pour régénérer depuis `data/brut/`.
 - [ ] Choisir une **date de démo** couverte par les horaires chargés ; la documenter.
 - [ ] (Option) Fond de carte hors ligne : fichier PMTiles régional servi localement.
 - [ ] `README.md` : section « Lancer la démo » en 3 commandes maximum.

@@ -30,7 +30,7 @@ Page de présentation narrative + écran Sources complet.
 - [x] Écran Sources : `/api/sources` + attributions carte + mention du défi data.gouv.fr.
 - [x] Le nom de la marque vient de `marque.ts` partout.
 - [x] Page « Mentions légales et confidentialité » : éditeur, ce qui arrive à la position, pas de bandeau cookies.
-- [ ] Mentions légales : nom de l'hébergeur et contact de l'éditeur, quand Hardy les aura choisis (E17 lot 4).
+- [ ] Mentions légales : nom de l'hébergeur, quand Hardy l'aura choisi (E17 lot 4). Éditeur et contact : faits.
 
 ## Critères d'acceptation
 - [x] Chaque chiffre affiché a sa source visible.
