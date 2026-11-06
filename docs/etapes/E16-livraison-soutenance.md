@@ -16,7 +16,7 @@ La soutenance a lieu en local. L'application complète doit démarrer **en une s
 `docker compose --profile demo up -d` → application prête, données incluses, en moins de 5 minutes sur une machine propre.
 
 ## Actions de Hardy
-- [ ] Faire le test sur **un autre ordinateur** (celui d'un SR, idéalement) à partir du dépôt seul.
+- [ ] Faire le test sur **un autre ordinateur** à partir du dépôt seul.
 - [ ] Écrire le **scénario de démo** avec Claude (`docs/equipe/scenario-demo.md`) : 3 parcours (famille, touriste, week-end), 3 minutes.
 - [ ] Répétition générale avec l'équipe.
 
@@ -48,3 +48,4 @@ Voir `_MODELE.md`.
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 11/10/2026 : `node scripts/migrer.ts` doit tourner dans l'image web : la sortie `standalone` ne contient pas `apps/web/scripts/`, `db/migrations/`, `packages/commun/src/` ni `config/parametres.json`, à copier explicitement avec `drizzle-orm`, `pg` et `zod` (D033).
+- 06/11/2026 : `apps/web/Dockerfile` est fait en avance, pendant E17 phase 1 ; E16 le réutilise pour la démo locale, qui reste le filet de sécurité (D076).

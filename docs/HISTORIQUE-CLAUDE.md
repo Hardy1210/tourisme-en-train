@@ -44,3 +44,4 @@
 | 05/11/2026 | 1.48 | § 9 : sauvegarde de session (gel validé, marges à revérifier sur iPhone) |
 | 05/11/2026 | 1.49 | § 9 : sauvegarde de session (PR #70 fusionnée, #71 recalée) |
 | 06/11/2026 | 1.50 | § 9 : sauvegarde de session ; § 16 : commandes du téléphone (tunnel Cloudflare) |
+| 06/11/2026 | 1.51 | § 1, § 2 règle 11, § 6, § 8, § 9, § 12, § 15 : infrastructure confiée à Hardy, E13 et E17 en cours — D076 |

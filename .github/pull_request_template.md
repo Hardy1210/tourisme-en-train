@@ -13,7 +13,6 @@ Closes #
 <!-- Quelles protections existantes (validation, filtre, test) deviennent insuffisantes avec ce changement ? -->
 
 ## Vérifications
-- [ ] Je n'ai modifié que mon périmètre (`infra/` pour les SR ; `.github/workflows/deploiement*.yml` pour la tâche I16).
 - [ ] Aucun mot de passe, clé ou secret dans les fichiers.
 - [ ] Le contrat `docs/07-contrat-infra.md` est respecté (ou modifié avec l'accord de tous).
 - [ ] J'ai testé en local.

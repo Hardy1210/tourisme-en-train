@@ -1,4 +1,4 @@
-# Environnement local (docs/07-contrat-infra.md § 4). La production est dans infra/ (SR).
+# Environnement local (docs/07-contrat-infra.md § 4). La production est dans infra/.
 # Développement : `docker compose up -d` (base seule), puis `pnpm db:migrer` et `pnpm dev`.
 # Ports exposés uniquement sur 127.0.0.1. Aucun TZ : le fuseau se déclare dans le calcul (CLAUDE.md § 3).
 
@@ -49,7 +49,7 @@ services:
       db:
         condition: service_healthy
 
-  # Application complète (soutenance) : `docker compose --profile demo up -d`. Dockerfile créé en E16.
+  # Application complète (soutenance) : `docker compose --profile demo up -d`. Dockerfile créé en E17 phase 1.
   web:
     build:
       context: .

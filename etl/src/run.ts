@@ -49,7 +49,7 @@ async function executer(argv: readonly string[]): Promise<number> {
   for (const cible of commande.cibles) {
     const traitement = TRAITEMENTS[cible];
     if (!traitement) {
-      // Un traitement absent est un échec : un succès silencieux tromperait la planification des SR.
+      // Un traitement absent est un échec : un succès silencieux tromperait la planification.
       journal.erreur('Traitement pas encore disponible', { source: cible });
       return 1;
     }

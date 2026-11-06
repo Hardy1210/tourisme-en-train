@@ -1,46 +1,79 @@
-# E17 — Mise en ligne v1 avec les SR (optionnel)
+# E17 — Mise en ligne
 
-> **Semaine :** Fin (30/11 → 02/12) · **Priorité :** optionnelle · **Branche :** `etape/E17-mise-en-ligne`
-> **Étapes préalables :** E16 · **État :** ⬜ à faire
-> **Version de la fiche** 1.0 · **Date** 30/09/2026
+> **Priorité :** phase 1 anticipée, phase 2 après le P0 · **Branche :** `etape/E17-mise-en-ligne`
+> **Étapes préalables :** aucune pour la phase 1 ; la démo locale d'E16 reste le filet de sécurité · **État :** 🟡 phase 1 en cours
+> **Version de la fiche** 2.0 · **Date** 06/11/2026 (audit du 06/11, décision D076)
 
 ## Contexte minimal
-Si le temps le permet, l'application est mise en ligne sur le serveur préparé par les SR, pour que le jury puisse la tester sur son propre téléphone et pour recueillir des retours (valorisation du défi). **La soutenance ne dépend pas de cette étape.**
+L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application part sur un VPS séparé géré par Coolify, en Docker Compose, à l'adresse `wagoo.hardylino.com`. Cette pré-production deviendra le déploiement officiel. Le domaine ne dépend que d'`URL_APP` et du réglage Coolify, pour en changer quand la marque sera validée.
 
 ## Documents à lire
 - `CLAUDE.md` (§ 15)
-- `docs/07-contrat-infra.md` (en entier, notamment § 6)
-- `docs/equipe/guide-SR.md`
+- `docs/07-contrat-infra.md`
+- `infra/README.md`
 
-## Objectif
-Application accessible en HTTPS, surveillée, sauvegardée, déployée automatiquement.
+## Mesures du 06/11 (poste de Hardy)
+| Mesure | Résultat |
+|---|---|
+| Export `pg_dump -Fc` | 18 Mo, en 4 s |
+| Restauration dans une base neuve | 5 s |
+| Base | 134 Mo (dossier sur disque : 221 à 272 Mo) |
+| Dossier `data/` | 106 Mo |
+| ETL `gtfs_sncf`, données hors ligne, base de test | Node 141 Mo, PostgreSQL 83 Mo, 23 s |
+| Étape la plus gourmande de l'ETL | `contours` : Node 355 Mo |
+| Application en `standalone` | 137 Mo après un essai léger ; 200 Mo au plus sur une version classique déjà utilisée ; 50 Mo sur disque |
+| Construction Next.js | Passe avec 2 Go et 2 cœurs ; tuée avec 1 Go et 2 cœurs |
+| Images Docker | PostGIS 853 Mo, ETL 889 Mo, `node:24-bookworm-slim` 333 Mo |
 
-## Actions de Hardy
-- [ ] Décider **le 25/11 au plus tard** si l'étape est lancée (sinon : reportée, notée dans `A-FAIRE.md`).
-- [ ] Relire les pull requests des SR dans `infra/`.
-- [ ] Fournir aux SR les secrets nécessaires par un canal sûr (jamais dans Git).
+**Pas mesuré :** Coolify lui-même (sa documentation demande au moins 2 cœurs et 2 Go, et une page d'aide 30 Go de disque au total) et la taille finale de l'image web.
 
-## Phase d'audit
-1. Vérifier avec les SR que le contrat (`07`) est respecté des deux côtés.
-2. Lister ce qui manque côté serveur.
-3. Plan commun ; validation de Hardy.
+**VPS retenu : 2 cœurs, 4 Go de mémoire, 40 Go de disque.** La construction a besoin de plus de 1 Go, et 2 Go ont suffi seule : avec Coolify, PostgreSQL et l'application en plus, 2 Go ne laissent aucune marge. Les mesures ne départagent pas Hetzner et OVH.
 
-## Tâches (côté Hardy, avec Claude Code)
-- [ ] Vérifier que les images `web` et `etl` se construisent en intégration continue.
-- [ ] Adapter la configuration si les SR le demandent **via une modification de `07`**.
-- [ ] Vérifier en ligne : `/api/sante`, parcours complet, en-têtes de sécurité, installation PWA.
+## Risques relevés par l'audit
+- **Position dans les journaux :** une requête en échec écrivait ses paramètres, dont `lat` et `lon`, dans le journal (règle 5). Reproduit le 06/11 avec `/api/gares/proches`. Corrigé en phase 1.
+- **Construction sans variables :** elle échoue dans Docker, car `lib/env.ts` est lu à la collecte des pages. Avec des valeurs factices à la construction seulement, elle passe, sans base et sans trace de ces valeurs dans le résultat ; les vraies valeurs arrivent au démarrage.
+- **`pg_restore --clean` seul :** il plante à cause des extensions de l'image PostGIS, après avoir supprimé les tables. Procédure qui a marché : `infra/README.md`.
+- **Journal d'accès du proxy :** d'après le code de Coolify lu le 06/11, le journal d'accès dépend de l'option de statistiques de trafic. `/api/autour` reçoit `lat` et `lon` dans l'adresse : ce journal pourrait enregistrer la position. Ne pas activer l'option, et vérifier sur le VPS qu'il est coupé.
+- **Image Docker jamais construite :** la répétition du 06/11 a été faite hors image, avec la sortie `standalone`. `/api/sante`, `/api/sources` et `/api/gares/proches` y répondaient ; `/api/destinations` n'y a pas été testée (mauvais paramètre), les parcours Playwright la couvrent sur la version de production.
 
-## Tâches (côté SR, voir `guide-SR.md`)
-- Serveur, pare-feu, HTTPS, proxy, compose de production, secrets, sauvegardes + restauration testée, planification ETL, supervision, déploiement automatique, retour arrière.
+## Phase 1 (anticipée, en cours) : une adresse HTTPS qui marche
+**Pourquoi maintenant :** une adresse fixe pour tester sur téléphone et la PWA, et une adresse pour le jury (D076). Aucune tâche planifiée, aucune supervision.
 
-## Critères d'acceptation
-- [ ] HTTPS valide ; `/api/sante` → 200.
-- [ ] Base non accessible depuis Internet.
-- [ ] Une restauration de sauvegarde a été testée.
-- [ ] Aucune position dans les journaux du proxy ni de l'app.
+**Ce qui reste dès cette phase :** utilisateur non-root, base fermée, rôles séparés lecture et écriture, migrations, secrets hors de Git, HTTPS, `/api/sante`, redémarrage automatique.
 
-## Fin d'étape
-Voir `_MODELE.md`.
+| Lot | Claude Code | Hardy |
+|---|---|---|
+| 0. Ménage | D076, documents, tickets | Fusionner la PR, retirer Ethan des collaborateurs |
+| 1. Dépôt | Correctif du journal avec test, `apps/web/Dockerfile`, `infra/compose.prod.yml`, scripts d'export et de restauration, essai complet en local | Fusionner la PR |
+| 2. Serveur | Liste exacte des étapes | Créer le VPS, clé SSH, pare-feu 22, 80, 443 ; installer Coolify et protéger son panneau tout de suite |
+| 3. Connexion | Réglages à saisir | Relier GitHub, saisir les secrets et `URL_APP`, ajouter sur Vercel l'enregistrement A `wagoo` vers l'IP |
+| 4. Mise en ligne | Commandes de chargement | Copier l'export sur le VPS, déployer, charger la base ; donner le nom de l'hébergeur pour les mentions légales |
+| 5. Contrôle | Liste des vérifications | HTTPS, `/api/sante` à 200, base fermée depuis l'extérieur, journal d'accès coupé, installation depuis Safari |
+
+Le suivi se fait dans les tickets « E17 phase 1 ».
+
+### Critères d'acceptation
+- [ ] HTTPS valide sur `wagoo.hardylino.com` ; `/api/sante` → 200.
+- [ ] Base inaccessible depuis Internet.
+- [ ] Image web sans droits d'administration.
+- [ ] Aucune position dans les journaux de l'application ni du proxy.
+- [ ] Wagoo s'installe sur iPhone depuis Safari et s'ouvre en plein écran.
+
+## Phase 2 (après le P0, si le temps le permet)
+| Élément | Si on ne le fait pas avant la soutenance |
+|---|---|
+| ETL planifié + alerte | Les horaires couvrent jusqu'au 31/12 (mesuré le 06/11), donc la soutenance reste couverte. Mais tout changement d'horaire publié après le chargement n'apparaît pas. Parade : refaire l'export et le recharger à la main |
+| Sauvegardes + restauration testée | Si le VPS meurt, le site tombe, mais rien d'unique n'est perdu : la base ne contient que des données publiques et se recharge depuis l'export. La démo locale reste. Risque faible |
+| En-têtes de sécurité | L'application fonctionne, mais un scan du jury ou `07` § 6 montre qu'ils manquent. Risque d'image surtout, et travail faible : à faire en premier |
+| Limitation d'appels | Un robot pourrait surcharger le petit VPS ou saturer `/api/geocodage`. Risque faible pour un site aussi peu connu |
+| Anonymisation des journaux | Sans conséquence tant que le journal d'accès reste coupé, ce que vérifie la phase 1 |
+
+**Planification de l'ETL :** jamais `all` chaque nuit. Les sources une par une sans `osm`, et `osm` une fois par semaine au plus (D041), avec une alerte si le code retour n'est pas 0. **À vérifier dans Coolify :** alerte quand une tâche planifiée échoue, et sauvegarde d'une base déclarée dans un compose.
+
+## À ne pas toucher
+- `TZ` dans les conteneurs (`CLAUDE.md` § 3).
+- Aucun secret dans Git, aucune position enregistrée.
 
 ## Notes et modifications après coup
-- 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 05/10/2026 : semaine recalée sur la feuille de route — D025.
+- 06/11/2026 : fiche réécrite. L'infrastructure passe à Hardy, et la phase 1 est anticipée sans nouvelle étape — D076.

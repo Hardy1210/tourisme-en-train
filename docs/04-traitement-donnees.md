@@ -16,7 +16,7 @@
 5. **Chargement transactionnel :** données lues → tables temporaires → contrôles → **dans une seule transaction** : suppression des lignes de la source + insertion. En cas d'échec, rien n'est modifié.
 6. **Calculs géographiques et transformations lourdes en SQL (PostgreSQL + PostGIS).** Le code TypeScript télécharge, lit en flux, valide et charge (`COPY`) ; il ne fait pas de calcul ligne à ligne sur les gros volumes.
 7. **Chaque exécution est journalisée** dans `execution_etl` et produit un **rapport** dans `data/traite/rapports/AAAA-MM-JJ_<source>.md`.
-8. **Code retour :** 0 = succès ou ignoré ; différent de 0 = échec (utilisé par la planification des SR).
+8. **Code retour :** 0 = succès ou ignoré ; différent de 0 = échec (utilisé par la planification).
 9. **Validation de chaque ligne lue** : avec Zod pour les fichiers de taille modeste (gares, lieux) ; pour les horaires GTFS (plusieurs millions de lignes), chargement brut en table temporaire puis contrôles en SQL. Dans les deux cas, les lignes invalides sont comptées et listées dans le rapport, jamais chargées silencieusement.
 
 ---
