@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.14 · **Date** 06/11/2026
+> **Version** 1.15 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -104,6 +104,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 - Accessibles depuis le menu « Infos ».
 - Sections : accroche · le constat · pourquoi c'est important (3 chiffres sourcés) · la solution en 3 étapes (captures) · pour qui · ce que ça change · conclusion + bouton « Ouvrir l'application ».
 - Textes de référence : `docs/equipe/pitch.md`, repris dans `features/presentation/contenu-a-propos.ts`. Une section sans texte validé n'est pas affichée ; un chiffre non confirmé non plus (D075).
+- **Mentions légales et confidentialité** (`/mentions-legales`) : éditeur, hébergeur, ce qui arrive à la position, stockage sur l'appareil. Pas de bandeau cookies tant qu'on n'utilise ni mesure d'audience ni cookies non essentiels.
 - **Écran Sources** (`/sources`, D075) : liste issue de `/api/sources`, par thème (nom, producteur, licence, attribution, lien, date « Relevé le ») + attributions OpenFreeMap, OpenMapTiles, OpenStreetMap + mention du défi data.gouv.fr. Plein écran sur mobile ; sans carte sur grand écran, à côté du rail, sur deux colonnes.
 
 ---
@@ -172,3 +173,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 05/11/2026 | 1.12 | § Explorer : carte sous les filtres sur mobile, marges iPhone — D072 |
 | 06/11/2026 | 1.13 | § Carte : ligne d'arrêt en arrêt à la sélection — D074 |
 | 06/11/2026 | 1.14 | § 5 : écran Sources par thème, adresse `/sources` — D075 |
+| 06/11/2026 | 1.15 | § 5 : page Mentions légales et confidentialité (E13) |
