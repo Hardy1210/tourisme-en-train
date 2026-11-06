@@ -6,7 +6,7 @@ import { schemaReponseDestinations } from '@/features/destinations/schemas';
 import { schemaFicheDestination } from '@/features/destinations/schemas';
 import { schemaImpact } from '@/features/impact/schemas';
 import { schemaReponseMobilites } from '@/features/mobilites/schemas';
-import { schemaReponseTrains } from '@/features/trains/schemas';
+import { schemaReponseArretsTrain, schemaReponseTrains } from '@/features/trains/schemas';
 
 import { appeler, erreurDe, type Route } from './outils-api';
 
@@ -17,6 +17,7 @@ const HIVER = '2026-11-18';
 let fiche: Route;
 let destinations: Route;
 let trains: Route;
+let arretsTrain: Route;
 let impact: Route;
 let mobilites: Route;
 let serviceTrains: typeof import('@/features/trains/server/service');
@@ -25,6 +26,7 @@ beforeAll(async () => {
   fiche = await import('@/app/api/destinations/[uic]/route');
   destinations = await import('@/app/api/destinations/route');
   trains = await import('@/app/api/trains/route');
+  arretsTrain = await import('@/app/api/trains/arrets/route');
   impact = await import('@/app/api/impact/route');
   mobilites = await import('@/app/api/mobilites/[uic]/route');
   serviceTrains = await import('@/features/trains/server/service');
@@ -82,6 +84,47 @@ describe('/api/destinations/[uic]', () => {
     );
     const mal = await appeler(fiche, '/api/destinations/712', { uic: '712' });
     expect(erreurDe(mal.corps).message).toBe('Le code UIC de la gare doit compter 8 chiffres.');
+  });
+});
+
+describe('/api/trains/arrets', () => {
+  const LYON = 'EX000010';
+  const ETE = '2026-07-15';
+  const uics = async (arrivee: string, parametres: string) => {
+    const reponse = await appeler(
+      arretsTrain,
+      `/api/trains/arrets?depart=${DIJON}&arrivee=${arrivee}&${parametres}`,
+    );
+    expect(reponse.statut).toBe(200);
+    return schemaReponseArretsTrain.parse(reponse.corps).arrets.map((a) => a.uic);
+  };
+  const OMNIBUS = [DIJON, BEAUNE, 'EX000005', 'EX000006', LYON];
+
+  it.each([HIVER, ETE])('le train de 7 h : tous ses arrêts, dans l’ordre (%s)', async (date) => {
+    expect(await uics(LYON, `date=${date}&depuis=06:00`)).toEqual(OMNIBUS);
+  });
+
+  it('après son départ : le train suivant, qui s’arrête moins', async () => {
+    const arrets = await uics(LYON, `date=${HIVER}&depuis=07:01`);
+    expect(arrets.length).toBeLessThan(OMNIBUS.length);
+    expect(arrets[0]).toBe(DIJON);
+    expect(arrets.at(-1)).toBe(LYON);
+  });
+
+  it('plus aucun train ce soir : le premier du jour, la ligne reste', async () => {
+    expect(await uics(LYON, `date=${HIVER}&depuis=23:30`)).toEqual(OMNIBUS);
+  });
+
+  it('aucun train direct : aucun arrêt', async () => {
+    expect(await uics(DIJON, `date=${HIVER}`)).toEqual([]);
+  });
+
+  it('gare inconnue : 404', async () => {
+    const reponse = await appeler(
+      arretsTrain,
+      `/api/trains/arrets?depart=${DIJON}&arrivee=EX999999&date=${HIVER}`,
+    );
+    expect(reponse.statut).toBe(404);
   });
 });
 

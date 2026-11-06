@@ -17,6 +17,11 @@ const schemaSource = z.strictObject({
   api: z.url({ protocol: /^https$/ }).optional(),
   licence: z.string().min(1),
   attribution: z.string().min(1),
+  /** La même mention, morceau par morceau, quand la licence demande des liens (fond de carte, D073). */
+  attributionLiens: z
+    .array(z.strictObject({ texte: z.string().min(1), url: z.url({ protocol: /^https$/ }) }))
+    .min(1)
+    .optional(),
   /** false = adresse et licence pas encore vérifiées sur la vraie source (à faire à son étape). */
   verifie: z.boolean(),
   /** Citée dans l'écran « Sources » : vrai pour toute source utilisée en v1 (règle 8, D051). */
@@ -44,7 +49,16 @@ export const schemaSources = z
   .refine((s) => new Set(s.sources.map((source) => source.code)).size === s.sources.length, {
     message: 'Chaque code de source doit être unique.',
     path: ['sources'],
-  });
+  })
+  .refine(
+    (s) =>
+      s.sources.every(
+        (source) =>
+          !source.attributionLiens ||
+          source.attributionLiens.map((lien) => lien.texte).join(' ') === source.attribution,
+      ),
+    { message: 'Les liens doivent redire exactement l’attribution.', path: ['sources'] },
+  );
 
 export type SourceDonnees = z.infer<typeof schemaSource>;
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
-import { attributionFondCarte } from '@/lib/external/fond-carte';
+import { AttributionFondCarte } from '@/features/carte/ui/attribution-fond-carte';
 import { useDestinations } from '@/features/destinations/hooks';
 import {
   dureeElargie,
@@ -21,6 +21,8 @@ import { plusProcheDifferente, type Depart } from '../depart';
 import type { PositionFeuille } from '../position-feuille';
 import { FeuilleResultats } from './feuille-resultats';
 import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
+
+const AUCUNE_DESTINATION: readonly Destination[] = [];
 
 type Proprietes = {
   depart: Extract<Depart, { etat: 'pret' }>;
@@ -47,6 +49,7 @@ export function ResultatsExplorer({
 }: Proprietes) {
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
+  const [carteTouchee, setCarteTouchee] = useState(0);
   const { gare, point, origine } = depart;
   const plusProche = plusProcheDifferente(depart);
   const maintenant = useMaintenant();
@@ -60,15 +63,17 @@ export function ResultatsExplorer({
 
   // « Faisable dans la journée » s'applique ici, dans l'interface (docs/05-api.md § 3.4).
   const reponse = destinations.data;
-  const filtrees = filtres.faisable
-    ? reponse?.destinations.filter((d) => d.faisableJournee)
-    : reponse?.destinations;
   // Une autre date, choisie exprès, montre sa journée entière.
   const pourAujourdhui = filtres.date === null || filtres.date === maintenant.dateDuJour;
-  const liste =
-    filtrees && reponse && pourAujourdhui
+  // Gardée entre deux affichages : une nouvelle liste ferait recalculer toutes les couches de la carte.
+  const liste = useMemo(() => {
+    const filtrees = filtres.faisable
+      ? reponse?.destinations.filter((d) => d.faisableJournee)
+      : reponse?.destinations;
+    return filtrees && reponse && pourAujourdhui
       ? sansTrainsPartis(filtrees, reponse.date, maintenant)
       : filtrees;
+  }, [reponse, filtres.faisable, pourAujourdhui, maintenant]);
 
   const lienDe = (destination: Destination) => {
     const suite = new URLSearchParams({ depuis: gare.uic });
@@ -85,8 +90,10 @@ export function ResultatsExplorer({
         <CarteExplorerDifferee
           key={gare.uic}
           utilisateur={origine === 'position' ? point : null}
-          gareDepart={{ lat: gare.lat, lon: gare.lon, nom: gare.nom }}
-          destinations={liste ?? []}
+          gareDepart={{ uic: gare.uic, lat: gare.lat, lon: gare.lon, nom: gare.nom }}
+          date={filtres.date}
+          destinations={liste ?? AUCUNE_DESTINATION}
+          carteTouchee={carteTouchee}
           lieux={lieux.data?.lieux ?? []}
           lienDe={lienDe}
           masqueEnHaut={masqueEnHaut}
@@ -108,7 +115,7 @@ export function ResultatsExplorer({
       <div className="pointer-events-none relative h-full lg:contents">
         {/* Attribution exigée par la licence, posée sur la feuille (config/sources.json). */}
         <p className="absolute inset-x-0 top-(--resultats-haut) z-sheet -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:hidden">
-          {attributionFondCarte}
+          <AttributionFondCarte />
         </p>
         <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
           <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
@@ -142,7 +149,10 @@ export function ResultatsExplorer({
               erreur={destinations.isError ? destinations.error.message : null}
               lienDe={lienDe}
               survolee={survolee}
-              surSurvol={setSurvolee}
+              surSurvol={(uic) => {
+                setSurvolee(uic);
+                if (uic !== null) setCarteTouchee((nombre) => nombre + 1);
+              }}
               surReessai={() => void destinations.refetch()}
               surAujourdhui={
                 destinations.error instanceof ErreurClient && destinations.error.statut === 400

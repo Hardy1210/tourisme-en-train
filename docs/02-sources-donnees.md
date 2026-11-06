@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.11 · **Date** 03/11/2026
+> **Version** 1.12 · **Date** 05/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -186,7 +186,7 @@
 ### 3.4 `fond_carte` — OpenFreeMap (P0)
 - **Usage :** fond de carte vectoriel, style personnalisable.
 - **Hors ligne (option E16) :** fichier PMTiles de la région servi localement.
-- **Attribution :** © OpenStreetMap, OpenFreeMap.
+- **Attribution :** `OpenFreeMap © OpenMapTiles © OpenStreetMap`, chaque morceau étant un lien (`attributionLiens` de `config/sources.json`, D073).
 
 ---
 
@@ -250,3 +250,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 02/11/2026 | 1.9 | § 2.5 : réseaux retenus, licences, Mobigo, vélos ; § 2.9 et § 2.10 reportés après le P0 — D046 |
 | 03/11/2026 | 1.10 | § 4.1 : facteurs Intercités et avion relevés ; § 4.2 : calibrage du prix sur les tarifs TGV — D048 |
 | 03/11/2026 | 1.11 | § 3.1 : API Adresse de la Géoplateforme, sans clé, recherche inverse sans filtre de type — D051 |
+| 05/11/2026 | 1.12 | § 3.4 : mention du fond de carte raccourcie, avec liens — D073 |

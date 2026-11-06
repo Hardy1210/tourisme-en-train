@@ -12,6 +12,23 @@ describe('schéma de config/sources.json', () => {
     expect(schemaSources.safeParse(sourcesBrutes).success).toBe(true);
   });
 
+  it('accepte des liens qui redisent exactement l’attribution', () => {
+    const s = copie();
+    s.sources[0]!.attribution = 'A © B';
+    s.sources[0]!.attributionLiens = [
+      { texte: 'A', url: 'https://a.example' },
+      { texte: '© B', url: 'https://b.example' },
+    ];
+    expect(schemaSources.safeParse(s).success).toBe(true);
+  });
+
+  it('refuse des liens qui s’écartent de l’attribution', () => {
+    const s = copie();
+    s.sources[0]!.attribution = 'A © B';
+    s.sources[0]!.attributionLiens = [{ texte: 'A', url: 'https://a.example' }];
+    expect(schemaSources.safeParse(s).success).toBe(false);
+  });
+
   it('accepte une adresse de téléchargement à null (pas encore relevée)', () => {
     const s = copie();
     s.sources[0]!.telechargement = null;

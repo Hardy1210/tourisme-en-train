@@ -12,6 +12,26 @@ export function empriseDe(points: readonly Point[]): [[number, number], [number,
   ];
 }
 
+/** Une ligne d'arrêt en arrêt, dans l'ordre du train (D074) ; rien sous deux arrêts. */
+export function ligneArrets(arrets: readonly Point[]) {
+  return {
+    type: 'FeatureCollection' as const,
+    features:
+      arrets.length < 2
+        ? []
+        : [
+            {
+              type: 'Feature' as const,
+              properties: {},
+              geometry: {
+                type: 'LineString' as const,
+                coordinates: arrets.map((arret) => [arret.lon, arret.lat]),
+              },
+            },
+          ],
+  };
+}
+
 /** Segments droits de la gare de départ vers chaque destination (P0, `06` § 3). */
 export function segmentsDepuis(depart: Point, arrivees: readonly Point[]) {
   return {

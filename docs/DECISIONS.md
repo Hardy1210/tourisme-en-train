@@ -13,7 +13,7 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection |
 | **Équipe, calendrier, livraison** | D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
@@ -738,3 +738,30 @@
 - **Raison :** essai de Hardy sur iPhone. Réversible : retirer `flottant` et `masqueEnHaut` rétablit l'ancien affichage.
 - **Vérifié le 05/11 :** Chromium, marges d'iPhone simulées (haut 59 px, bas 34 px), 390 px ; grand écran comparé. **Non vérifié :** vrai iPhone, vrai Android.
 - **Impact :** `app/layout.tsx`, `globals.css`, `components/ui/en-tete.tsx`, `features/explorer`, `features/carte`, `06`.
+- **Modifié après coup, 06/11/2026 :** choix de Hardy après essai : `--espace-bas` passe de 5 à 16 px ; 24 px sous le pied de la fiche destination (`pb-6`, sans `safe-bottom`).
+
+## D073 — Mention du fond de carte : une ligne, trois liens discrets
+- **Date :** 05/11/2026
+- **En clair :** la mention de la carte passe sur une ligne, avec des liens qui ne se voient pas, et la mini-fiche se rapproche de la feuille.
+- **Décision :**
+  1. Texte : `OpenFreeMap © OpenMapTiles © OpenStreetMap`. Les trois restent : OpenFreeMap, OpenMapTiles et OpenStreetMap demandent chacun une mention.
+  2. Chaque morceau est un lien (`attributionLiens` de `config/sources.json`) : OpenMapTiles exige le sien, et celui d'OpenStreetMap signale la licence ODbL. Sans couleur ni soulignement, taille inchangée : choix de Hardy, pour ne pas alourdir la carte.
+  3. Le schéma refuse des liens qui ne redisent pas exactement `attribution` : deux copies ne peuvent pas diverger.
+  4. Mini-fiche à 2 rem de la feuille au lieu de 3 : la mention prend moins de place.
+- **Raison :** pages de licence relues le 05/11 (conditions d'OpenFreeMap, licence d'OpenMapTiles, règles d'attribution d'OpenStreetMap). C'est une lecture de ces pages, pas un avis juridique.
+- **Écarté :** mention derrière un bouton (i) : OpenMapTiles demande un crédit visible dans un coin de la carte.
+- **Impact :** `config/sources.json`, `packages/commun/src/sources.ts`, `features/carte`, `features/explorer`, `02`, `06`. L'écran Sources relit la base : `pnpm etl sources` y met le nouveau texte.
+
+## D074 — Ligne du train à la sélection d'une destination
+- **Date :** 06/11/2026
+- **En clair :** quand on touche une carte de la liste ou un point, une ligne relie les arrêts du prochain train jusqu'à la destination. Elle est droite entre deux arrêts : ce n'est pas le vrai tracé des rails.
+- **Décision :**
+  1. La ligne suit **le prochain train direct, celui de la carte** ; le premier du jour s'il n'en reste plus. Autant de segments que d'arrêts réels (demande de Hardy, pour ne pas faire croire à des arrêts qui n'existent pas).
+  2. Aucune donnée nouvelle : `passage` donne déjà les arrêts dans l'ordre. Route `/api/trains/arrets`.
+  3. Segments droits vers toutes les destinations cachés, à l'essai. Le comportement des points ne change pas.
+  4. La ligne peut passer sous la feuille ou la mini-fiche : accepté par Hardy, la carte ne se recentre pas.
+  5. Toucher une carte de la liste referme la mini-fiche ouverte : sinon elle montre une autre destination que la ligne (demande de Hardy).
+  6. Les couches de la carte ne sont recalculées que si leurs données changent (`useMemo`) : la ligne attendait les autres couches. Mesuré le 06/11, Chromium sans carte graphique, avant / après : premier toucher 2 469 / 1 250 ms, téléphone simulé 3 641 / 2 798 ms. **Non mesuré :** vrai téléphone.
+- **Écarté :** le train qui a le plus d'arrêts : la ligne ressemblait plus aux rails, mais pouvait montrer des arrêts que le train proposé ne fait pas. Vrais tracés : données absentes, reportés (`A-FAIRE`).
+- **Mesuré le 06/11 :** base locale, depuis Dijon : 121 destinations, dont 50 servies par des trains aux arrêts différents ; tous les arrêts intermédiaires sont déjà des destinations sur la carte.
+- **Impact :** `features/trains`, `features/carte`, `features/explorer`, `05` § 3.8 bis, `06`.

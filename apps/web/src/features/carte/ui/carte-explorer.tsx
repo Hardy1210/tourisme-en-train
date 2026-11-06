@@ -2,22 +2,24 @@
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { StyleSpecification } from 'maplibre-gl';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Map, { type MapRef } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
 import { formaterDuree } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
-import { attributionFondCarte } from '@/lib/external/fond-carte';
+import { useArretsTrain } from '@/features/trains/hooks';
 import {
   clesEtiquetees,
   empriseDe,
   pointsCadrage,
   pointsEtiquettes,
+  ligneArrets,
   segmentsDepuis,
   type Point,
 } from '../geometrie';
 import { useStyleCarte } from '../hooks';
+import { AttributionFondCarte } from './attribution-fond-carte';
 import { CommandesCarte } from './commandes-carte';
 import { CouchesCarte } from './couches-carte';
 import {
@@ -33,7 +35,9 @@ type Selection = { type: 'destination'; uic: string } | { type: 'lieu'; cle: str
 export type ProprietesCarte = {
   /** Position de l'utilisateur ; null s'il a choisi une gare. */
   utilisateur: Point | null;
-  gareDepart: Point & { nom: string };
+  gareDepart: Point & { nom: string; uic: string };
+  /** Date choisie ; null pour aujourd'hui. */
+  date: string | null;
   destinations: readonly Destination[];
   lieux: readonly LieuResume[];
   lienDe: (destination: Destination) => string;
@@ -43,6 +47,8 @@ export type ProprietesCarte = {
   masqueEnHaut: () => number;
   /** Carte plein écran sur mobile. */
   pleinEcran: { actif: boolean; bascule: () => void };
+  /** Augmente à chaque carte touchée dans la liste : la mini-fiche ouverte se referme (D074). */
+  carteTouchee: number;
   /** Survol croisé sur grand écran : la destination survolée ici ou dans la liste. */
   survolee: string | null;
   surSurvol: (uic: string | null) => void;
@@ -54,12 +60,14 @@ const MARGE_PX = 48;
 export function CarteExplorer({
   utilisateur,
   gareDepart,
+  date,
   destinations,
   lieux,
   lienDe,
   masqueEnBas,
   masqueEnHaut,
   pleinEcran,
+  carteTouchee,
   survolee,
   surSurvol,
 }: ProprietesCarte) {
@@ -68,7 +76,12 @@ export function CarteExplorer({
   const [zoom, setZoom] = useState(0);
   const style = useStyleCarte();
 
-  const arrivees = destinations.map((d) => ({ lat: d.gare.lat, lon: d.gare.lon }));
+  const [derniereCarteTouchee, setDerniereCarteTouchee] = useState(carteTouchee);
+  if (carteTouchee !== derniereCarteTouchee) {
+    setDerniereCarteTouchee(carteTouchee);
+    setSelection(null);
+  }
+
   const emprise = empriseDe([
     ...pointsCadrage(
       gareDepart,
@@ -78,12 +91,8 @@ export function CarteExplorer({
     ...(utilisateur ? [utilisateur] : []),
   ]);
   const uicChoisi = selection?.type === 'destination' ? selection.uic : null;
-  const etiquetees = clesEtiquetees(
-    destinations.map((d) => ({ uic: d.gare.uic, nbTrains: d.nbTrains, dureeMin: d.dureeMin })),
-    uicChoisi,
-    parametres.carte.etiquettesMax,
-  );
-  if (survolee !== null) etiquetees.add(survolee);
+  // La carte touchée dans la liste, ou le point touché sur la carte : la ligne de son train (D074).
+  const arrets = useArretsTrain(gareDepart.uic, survolee ?? uicChoisi, date);
   const marge = () => ({
     padding: {
       top: MARGE_PX + masqueEnHaut(),
@@ -94,16 +103,35 @@ export function CarteExplorer({
     maxZoom: 12,
     duration: 0,
   });
-  const etiquettes = pointsEtiquettes(
-    destinations.map((d) => ({
-      uic: d.gare.uic,
-      lat: d.gare.lat,
-      lon: d.gare.lon,
-      etiquette: `${d.titre} ${formaterDuree(d.dureeMin)}`,
-    })),
-    etiquetees,
-    uicChoisi,
+  // Une couche n'est recalculée que si ses données changent : sinon la ligne du train attend les autres.
+  const { lat: departLat, lon: departLon } = gareDepart;
+  const segments = useMemo(
+    () =>
+      segmentsDepuis(
+        { lat: departLat, lon: departLon },
+        destinations.map((d) => ({ lat: d.gare.lat, lon: d.gare.lon })),
+      ),
+    [departLat, departLon, destinations],
   );
+  const parcours = useMemo(() => ligneArrets(arrets.data?.arrets ?? []), [arrets.data]);
+  const etiquettes = useMemo(() => {
+    const cles = clesEtiquetees(
+      destinations.map((d) => ({ uic: d.gare.uic, nbTrains: d.nbTrains, dureeMin: d.dureeMin })),
+      uicChoisi,
+      parametres.carte.etiquettesMax,
+    );
+    if (survolee !== null) cles.add(survolee);
+    return pointsEtiquettes(
+      destinations.map((d) => ({
+        uic: d.gare.uic,
+        lat: d.gare.lat,
+        lon: d.gare.lon,
+        etiquette: `${d.titre} ${formaterDuree(d.dureeMin)}`,
+      })),
+      cles,
+      uicChoisi,
+    );
+  }, [destinations, uicChoisi, survolee]);
   const destinationChoisie = destinations.find((d) => d.gare.uic === uicChoisi);
   const lieuChoisi =
     selection?.type === 'lieu' ? lieux.find((l) => l.cle === selection.cle) : undefined;
@@ -144,7 +172,8 @@ export function CarteExplorer({
           onZoomEnd={(evenement) => setZoom(evenement.target.getZoom())}
         >
           <CouchesCarte
-            segments={segmentsDepuis(gareDepart, arrivees)}
+            segments={segments}
+            parcours={parcours}
             etiquettes={etiquettes}
             couleurs={style.data.couleurs}
           />
@@ -165,7 +194,7 @@ export function CarteExplorer({
 
       {/* Attribution exigée par la licence, toujours visible (config/sources.json). */}
       <p className="absolute inset-x-0 top-(--resultats-haut) hidden -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:block lg:pb-1">
-        {attributionFondCarte}
+        <AttributionFondCarte />
       </p>
 
       <CommandesCarte

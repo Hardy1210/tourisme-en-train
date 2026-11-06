@@ -140,9 +140,7 @@ describe('/api/sources', () => {
       licence: 'ODbL',
       attribution: "© les contributeurs d'OpenStreetMap (ODbL)",
     });
-    expect(liste.find((s) => s.code === 'fond_carte')?.attribution).toContain(
-      "les contributeurs d'OpenStreetMap",
-    );
+    expect(liste.find((s) => s.code === 'fond_carte')?.attribution).toContain('© OpenStreetMap');
     const codes = liste.map((s) => s.code);
     expect(codes).toEqual(expect.arrayContaining(['gtfs_sncf', 'datatourisme', 'tarifs_tgv']));
     expect(codes).not.toContain('cyclable');

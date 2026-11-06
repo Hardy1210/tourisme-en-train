@@ -15,6 +15,35 @@ const schemaLigne = z.object({
 
 export type TrainBrut = z.infer<typeof schemaLigne>;
 
+const schemaArret = z.object({
+  uic: z.string(),
+  nom: z.string(),
+  lat: z.number(),
+  lon: z.number(),
+});
+
+/** Les gares d'un train, de son passage à la gare de départ à son passage à la gare d'arrivée, dans l'ordre. */
+export async function arretsEntre(options: {
+  trajetId: string;
+  departId: number;
+  arriveeId: number;
+  departS: number;
+  arriveeS: number;
+}): Promise<z.infer<typeof schemaArret>[]> {
+  const { trajetId, departId, arriveeId, departS, arriveeS } = options;
+  const { rows } = await db.execute(sql`
+    SELECT g.uic, g.nom, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon
+    FROM passage a
+    JOIN passage b ON b.trajet_id = a.trajet_id AND b.sequence > a.sequence
+    JOIN passage p ON p.trajet_id = a.trajet_id AND p.sequence BETWEEN a.sequence AND b.sequence
+    JOIN gare g ON g.id = p.gare_id
+    WHERE a.trajet_id = ${trajetId}
+      AND a.gare_id = ${departId} AND a.depart_s = ${departS}
+      AND b.gare_id = ${arriveeId} AND b.arrivee_s = ${arriveeS}
+    ORDER BY p.sequence`);
+  return z.array(schemaArret).parse(rows);
+}
+
 /**
  * Tous les trains directs `departId → arriveeId` à `date`, dans l'ordre des départs (docs/03 § 5).
  * Trajets aux mêmes heures de départ et d'arrivée réunis (jumelage, D040) ; montée et descente
