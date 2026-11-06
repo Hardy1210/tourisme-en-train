@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.13 · **Date** 06/11/2026
+> **Version** 1.14 · **Date** 06/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -153,7 +153,7 @@ tourisme-en-train/
 ├─ db/migrations/ · db/echantillon/  ← migrations SQL · données d'exemple (base de test uniquement)
 ├─ vitest.integration.config.ts ← tests d'intégration sur la base de test (`pnpm test:integration`)
 ├─ data/brut/ · data/traite/     ← ignorés par Git
-└─ infra/                        ← production : README.md (exploitation) · compose.prod.yml · scripts
+└─ infra/                        ← production : README.md (exploitation) · compose.prod.yml · .env.prod.example · scripts/
 ```
 
 ## 4. Règles de dépendance (qui a le droit d'importer quoi)
@@ -279,3 +279,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 05/11/2026 | 1.11 | § 3 et § 3 bis : service worker, icônes — D071 |
 | 06/11/2026 | 1.12 | § 3 : écran Sources à sa propre adresse — D075 |
 | 06/11/2026 | 1.13 | § 1, § 3 bis, § 7 : infrastructure confiée à Hardy, sur Coolify — D076 |
+| 06/11/2026 | 1.14 | § 3 bis : contenu d'`infra/` — D076 |

@@ -800,7 +800,7 @@
   2. **Hébergement :** un VPS séparé du serveur Coolify des clients, en Docker Compose (`infra/compose.prod.yml`) : 2 cœurs, 4 Go, 40 Go. Mesures : fiche E17.
   3. **Domaine :** `wagoo.hardylino.com`, sous-domaine du portfolio, enregistrement A chez Vercel. Il ne dépend que d'`URL_APP` et du réglage Coolify, pour en changer quand la marque sera validée à l'INPI. L'application n'est pas hébergée sur Vercel.
   4. **Phase 1 anticipée, sans nouvelle étape :** E17 est découpée en phase 1 (en cours) et phase 2 (après le P0). **Pourquoi avancer :** une adresse HTTPS fixe pour tester sur téléphone et la PWA, sans réinstaller à chaque tunnel, et une adresse pour le jury.
-  5. **Dockerfile web fait pendant E17 phase 1**, réutilisé par E16.
+  5. **Dockerfile web fait pendant E17 phase 1**, réutilisé par E16. La sortie `standalone` n'est activée que dans l'image (`SORTIE_NEXT`), et `outputFileTracingIncludes` y ajoute ce que lit `migrer.ts` : pas d'étape de copie à maintenir, et `next start` reste utilisable ailleurs.
   6. **Premier chargement depuis un export** plutôt qu'un ETL complet : procédure essayée, `infra/README.md`.
   7. **Ménage :** `guide-SR.md`, `demarrage-SR.md`, `infra/CLAUDE.md` et `infra/JOURNAL.md` supprimés (ils restent dans l'historique Git) ; `travail-en-equipe.md` réduit à GitHub ; tickets I01 à I22 fermés, remplacés par ceux des deux phases.
 - **Raison :** l'équipe est réduite à une personne ; Coolify couvre HTTPS, secrets, déploiement automatique et tâches planifiées.

@@ -185,11 +185,11 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
 - **Étape en cours :** E17 phase 1 🟡 anticipée (D076) · E13 🟡 : écrans faits, textes du pitch à la fin du projet · E14 🟡 : essai Android à faire
-- **Dernière session :** 06/11/2026 — écran Sources, page À propos, licence des facteurs CO₂ (D075, PR #72 fusionnée) ; audit de la mise en ligne, décision D076
+- **Dernière session :** 06/11/2026 — écran Sources, À propos, Mentions légales (D075) ; audit de la mise en ligne (D076, PR #81 fusionnée) ; image Docker et compose de production essayés en local
 - **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos ; PWA : gel hors ligne validé sur iPhone
-- **À valider par Hardy :** fusion de la PR du lot 0 ; retirer Ethan des collaborateurs ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
+- **À valider par Hardy :** fusion de la PR du lot 1 ; lots 2 et 3 (VPS, Coolify, DNS, secrets) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** E17 lot 1 (`docs/etapes/E17-mise-en-ligne-v1.md`) : `apps/web/Dockerfile`, `infra/compose.prod.yml`, scripts d'export et de restauration, essai complet en local
+- **Prochaine action précise :** E17 lots 2 et 3 (`docs/etapes/E17-mise-en-ligne-v1.md`, `infra/README.md`) : Hardy crée le VPS ; Claude Code l'accompagne, puis fournit les commandes du lot 4
 ---
 
 ## 10. Réaliser une étape
@@ -330,6 +330,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Formater | `pnpm format` |
 | Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
 | Essayer sur le téléphone (tunnel Cloudflare, depuis la racine) | **Arrêter `pnpm dev` d'abord.** Puis `pnpm --filter @tourisme/web build` et `pnpm --filter @tourisme/web exec next start -p 3200` ; dans un autre terminal : `~/cloudflared tunnel --url http://localhost:3200`, dont l'adresse change à chaque lancement. `pnpm dev` peut être relancé une fois le build terminé |
+| Essayer la production en local (depuis la racine) | `docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml up -d --build` ; export et restauration : `infra/README.md` |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---
