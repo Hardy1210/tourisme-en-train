@@ -24,6 +24,34 @@
 
 ---
 
+## 06/11/2026 — Étapes E13 et E17 — écrans d'information, CO₂ défendu, mise en ligne préparée
+**Fait :**
+- E13 : écran Sources par thème, page À propos, Mentions légales et confidentialité (PR #72, #81 et #82 fusionnées).
+- CO₂ : licence d'Impact CO2 relue, Base Carbone et applications du marché comparées, 14 kg contre 2,8 kg gardé. Dossier pour la soutenance dans `LECONS`.
+- E17 : audit, Hardy devient responsable infrastructure, plan en deux phases. Tickets I01 à I22 fermés, #73 à #80 créés ; guides SR supprimés ; Ethan retiré des collaborateurs par Hardy.
+- E17 lot 1 : `apps/web/Dockerfile` (430 Mo), `infra/compose.prod.yml`, scripts d'export et de restauration, essayés en local avec le compose complet.
+
+**Décisions :** D075, D076.
+
+**Problèmes rencontrés :**
+- **Position dans le journal** quand une requête échouait (règle 5). Corrigé, et testé sur une vraie requête en échec.
+- **Connexion à la base perdue** sans gestionnaire d'erreur : objets bruts dans le journal à chaque redémarrage de la base. Corrigé : 453 lignes avant, 10 après.
+- La construction échoue sans variables : valeurs factices limitées à la construction.
+- `pg_restore --clean` seul plante après avoir supprimé les tables, à cause des extensions de l'image : le script retire les lignes `EXTENSION`.
+- Licence d'Impact CO2 annoncée sans vérification : corrigée (réutilisation non commerciale). J'ai d'abord recommandé 25,6 kg avant de me rétracter : le jury aurait lu 14,2 kg sur le site de l'ADEME.
+
+**À valider par Hardy :**
+- Lots 2 à 5 : VPS, Coolify, DNS, secrets (fiche E17).
+- Communiqué de l'ADEME à ouvrir pour 97 Mt et 69 %, encore masqués ; textes du pitch à finir à la fin du projet.
+
+**Prochaine action :**
+- Hardy suit le pas-à-pas de la fiche E17. VPS prêt : commandes du lot 4 et hébergeur dans les mentions.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (482) · intégration ✅ (167) · parcours ✅ (133, 1 ignoré), sur la branche de la PR #82. **Pas essayé :** VPS, Coolify, HTTPS, vrai téléphone sur cette image.
+**Commit :** voir `docs(contexte): sauvegarde de session du 06/11` (branche `etape/E17-contexte`)
+
+---
+
 ## 06/11/2026 — Étape E11 — mention de la carte, ligne du train, retouches de design
 **Fait :**
 - Mini-fiche : reste juste au-dessus de la feuille dans toutes les positions, se cache quand la feuille est tout en haut, se referme quand on touche une carte de la liste.
