@@ -61,7 +61,7 @@ export function EcranExplorer() {
       <EnTete
         ref={enTete}
         flottant={pret}
-        className={cn('flex-none', pret && 'lg:col-start-1 lg:row-start-1 lg:border-b')}
+        className={cn('mt-1 flex-none', pret && 'lg:col-start-1 lg:row-start-1 lg:border-b')}
         action={pret && <BoutonDate date={filtres.date} surClic={() => setFeuilleDate(true)} />}
       >
         <BoutonDepart choix={choix} />

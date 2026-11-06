@@ -12,7 +12,7 @@ type Proprietes = {
 /** Toujours visible : le CO₂ économisé, le prix estimé s'il est calibré, et la billetterie officielle. */
 export function PiedDestination({ co2EconomiseKg, prixEstime, surComparer }: Proprietes) {
   return (
-    <footer className="flex flex-none flex-col gap-2 border-t bg-surface px-4 pt-2.5 pb-3 safe-bottom">
+    <footer className="flex flex-none flex-col gap-2 border-t bg-surface px-4 pt-2.5 pb-6">
       {co2EconomiseKg !== null && (
         <div className="flex items-center gap-2 rounded-lg bg-eco-soft py-1 pr-1 pl-3 text-sm">
           <Leaf aria-hidden="true" className="size-4.5 flex-none text-eco" />

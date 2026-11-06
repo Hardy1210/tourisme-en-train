@@ -94,7 +94,7 @@ export function SectionDestinations({
         <div className="relative flex flex-col gap-3.5 pl-7">
           <span
             aria-hidden="true"
-            className="absolute top-2.5 bottom-10 left-2 w-0.75 rounded-pill bg-primary"
+            className="absolute top-2.5 bottom-10 left-1.75 w-0.75 rounded-pill bg-primary"
           />
           <p className="relative flex h-5.5 items-center text-sm font-semibold text-primary">
             <span

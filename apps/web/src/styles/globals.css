@@ -54,7 +54,7 @@
   --resultats-haut-carte: calc(100% - var(--spacing-touch));
   /* Écart minimal avec le bord de l'écran, quand le téléphone n'impose pas plus (D072). */
   --espace-bord: 0.5rem;
-  --espace-bas: 0.3125rem;
+  --espace-bas: 1rem;
   /* Hauteur de l'application ; `HauteurEcran` la remplace là où `100dvh` est faux. */
   --hauteur-app: 100dvh;
   /* Les éléments fixés en bas suivent la vraie hauteur. */
@@ -583,7 +583,7 @@
 @utility safe-top {
   padding-top: max(env(safe-area-inset-top), var(--espace-bord));
 }
-/* En bas : quelques pixels seulement, partout (choix de Hardy) ; pas toute la marge de l'iPhone. */
+/* En bas : `--espace-bas`, partout (choix de Hardy, D072) ; pas toute la marge de l'iPhone. */
 @utility safe-bottom {
   padding-bottom: var(--espace-bas);
 }

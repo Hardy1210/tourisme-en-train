@@ -22,10 +22,10 @@ export function CommandesCarte({ surRecentrer, pleinEcran }: Proprietes) {
         <LocateFixed aria-hidden="true" className="size-5 text-primary" />
       </Bouton>
       <Bouton
-        variante="secondaire"
+        variante="principal"
         forme="icone"
         aria-label={pleinEcran.actif ? 'Afficher la liste' : 'Carte plein écran'}
-        className="border-0 shadow-carte lg:hidden"
+        className="border-0 bg-nav-bg text-nav-foreground hover:bg-nav-bg shadow-carte lg:hidden"
         onClick={pleinEcran.bascule}
       >
         {pleinEcran.actif ? (
