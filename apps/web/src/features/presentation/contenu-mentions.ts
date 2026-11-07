@@ -14,7 +14,10 @@ export const TEXTES_MENTIONS = {
     },
     {
       titre: 'Hébergeur',
-      paragraphes: ['OVH SAS, 2 rue Kellermann, 59100 Roubaix, France.'],
+      paragraphes: [
+        'OVH SAS, SAS au capital de 50\u00a0000\u00a0000\u00a0€, 2 rue Kellermann, 59100 Roubaix, France.',
+        'Téléphone\u00a0: +33\u00a09\u00a072\u00a010\u00a010\u00a007.',
+      ],
     },
     {
       titre: 'Votre position',
