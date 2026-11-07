@@ -46,7 +46,6 @@
 | Vérification manuelle E07 : comparer les arrêts listés autour de Dijon-Ville (`mobilite_locale`, 22 arrêts au 02/11) avec le plan du réseau Divia | E07 | Quand Hardy a le plan sous la main (avant E12, fiche destination) |
 | Relancer `pnpm etl osm` (extraction Overpass, ≈ 17 min si le serveur est saturé) **une fois par semaine au plus** ; la prochaine ajoutera les cascades (`waterway=waterfall`, règle corrigée le 01/11) et les nouvelles règles du 02/11 (grottes, sommets, sources, canaux, barrages, lavoirs, D042) : **compter les éléments reçus par règle**, surtout les canaux (un canal = plusieurs tronçons dans OSM, traitement prévu dans l'audit E06) | E05 → E16 | Au plus tôt le 08/11 ; dernière extraction avant le gel des données (E16) |
 | **E17 lots 2 à 5 : VPS 2 cœurs, 4 Go, 40 Go, Coolify, DNS sur Vercel, secrets, chargement de la base, contrôles** : pas-à-pas dans la fiche E17 ; tickets #74 et #75 | Le dépôt est prêt (lot 1, PR #82 fusionnée) ; seul Hardy peut créer le serveur et saisir les secrets | Maintenant |
-| Mentions légales : nom de l'hébergeur | Affiché « à compléter » tant que le VPS n'est pas choisi | Choix du fournisseur (E17 lot 2) |
 | Demander une clé API SNCF (gratuite) | E09 (P1) | Si le temps réel est lancé |
 | Vérifier la marque « Wagoo » (INPI, nom de domaine) | Avant publication | Avant E17/E18 |
 
