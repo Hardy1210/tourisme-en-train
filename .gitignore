@@ -4,6 +4,9 @@
 # Fichiers d'exemple versionnés (ex. .env.example, infra/.env.prod.example)
 !*.example
 
+# Exports de la base (infra/README.md)
+*.dump
+
 # Données téléchargées et produites par le traitement (seuls les dossiers sont versionnés)
 data/*
 !data/brut/
