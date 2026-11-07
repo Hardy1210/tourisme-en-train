@@ -392,7 +392,7 @@ Valeurs en g CO₂e/km.
 - **« Votre distance est-elle exacte ? »** C'est une estimation : vol d'oiseau × coefficient, soit 43,2 km pour Dijon → Beaune, contre 36 à 37 km en train selon Trainline et Rome2Rio, et 41,8 km par la route selon Rome2Rio. Le train y est un peu surestimé.
 
 ### Encore à confirmer
-- **97 Mt et 69 % :** lus sur la [page du ministère](https://www.entreprises.gouv.fr/mobilites-tourisme-durable) ; le [communiqué de l'ADEME](https://www.ademe.fr/presse/communique-national/journee-mondiale-du-tourisme-bilan-des-emissions-de-ges-du-secteur-du-tourisme-en-france/) refuse la lecture automatique, à ouvrir par Hardy.
+- **97 Mt et 69 % :** affichés le 07/11, lus dans le communiqué de l'ADEME, dont Hardy a copié le texte : ce site refuse la lecture automatique. **Question probable :** la page du ministère écrit « soit 11 % » juste après les 97 Mt. Le communiqué rapporte ces 11 % aux 46 Mt émises sur le territoire (`equipe/pitch.md`). Nous n'affichons pas ces 11 %.
 - **Non vu :** les applications mobiles, et les pages Omio, Kombo, EcoPassenger, SNCF Voyageurs et le trajet sur SNCF Connect, inaccessibles. Aucune méthode trouvée pour Citymapper.
 - **Licence de `contours` (IGN) :** non confirmée. C'est pourquoi l'écran dit « données publiques », et pas « données ouvertes ».
 

@@ -176,7 +176,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E18 | Publication de la réutilisation sur data.gouv.fr | Fin | ⬜ |
 
 Semaines : S1 = 05/10 → 11/10 · S2 = 12 → 18/10 · S3 = 19 → 25/10 · S4 = 26/10 → 01/11 · S5 = 02 → 08/11 · S6 = 09 → 15/11 · S7 = 16 → 22/11 · S8 = 23 → 29/11 · Fin = 30/11 → 02/12.
-Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé le 22/11** · **décision de mise en ligne le 25/11** · **gel des fonctionnalités le 27/11** · **livraison le 30/11** · **soutenance le 03/12**.
+Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé au plus tard le 22/11** · **gel des nouvelles fonctionnalités au plus tard le 27/11** · **livraison le 30/11** · **soutenance le 03/12**. Après le gel : corrections, retouches de design et déploiements jusqu'à la soutenance. De l'avance ? Elle va aux P1 (D078).
 
 ---
 
@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E11 et E12 ⏸ : vérifications de design et téléphone · E13 🟡 : textes du pitch · E14 🟡 : Android · E17 🟡 : phase 1 terminée et en ligne, phase 2 après le P0
-- **Dernière session :** 07/11/2026 — mise en ligne complète sur `wagoo.hardylino.com` (OVH, Coolify), base chargée, panneau protégé, contrôles faits ; procédure de mise en ligne écrite (D077)
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; production en ligne : HTTPS, base fermée, seuls 22, 80 et 443 ouverts, aucune position dans les journaux, installation iPhone validée ; `pnpm verifier` 482 tests le 07/11
-- **À valider par Hardy :** Auto deploy sur *Manual deployments only* et mises à jour automatiques de Coolify (`A-FAIRE` § 2) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; `A-FAIRE` § 1 ; retouches de design notées par Hardy
+- **Étape en cours :** E11 et E12 ⏸ : vérifications de design et téléphone · E13 🟡 : 3 textes du pitch · E14 🟡 : Android · E17 🟡 : phase 1 en ligne, phase 2 après le P0
+- **Dernière session :** 07/11/2026 — mise en ligne complète (OVH, Coolify), procédure de mise en ligne (D077), dates du P0 et du gel, 97 Mt et 69 % confirmés (D078)
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; production en ligne : HTTPS, base fermée, seuls 22, 80 et 443 ouverts, aucune position dans les journaux, installation iPhone validée, déploiement manuel confirmé, mises à jour automatiques de Coolify coupées
+- **À valider par Hardy :** Android à trouver ; textes du pitch (3 étapes, « pour qui », « ce que ça change ») ; `A-FAIRE` § 1 ; retouches de design et changements de structure à venir
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** session de retouches de Hardy, puis les cases d'E11 et E12 (`A-FAIRE` § 1). Reste avant le P0 et estimations : `BACKLOG` § 8. Chaque mise à jour part en ligne avec « mets en ligne » (§ 15)
+- **Prochaine action précise :** dans l'ordre : (1) après la fusion de la PR de sauvegarde : mettre `main` à jour, retirer `../tourisme-e13-chiffres`, puis Hardy clique sur Redeploy pour publier les chiffres, et Claude Code contrôle (§ 15) ; (2) Hardy envoie sa liste de changements (design, structure, présentation) : la classer, proposer un ordre et un plan court, réévaluer `BACKLOG` § 8, ne rien coder avant son accord ; (3) cases d'E11 et E12 (`A-FAIRE` § 1) ; (4) 3 textes du pitch au plus tard le 22/11
 ---
 
 ## 10. Réaliser une étape
@@ -312,7 +312,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 ### Protocole « mets en ligne »
 Quand Hardy écrit **« mets en ligne »**, suivre **`infra/README.md`, section « Mettre en ligne une mise à jour »**, dans l'ordre, une étape à la fois. Cette phrase vaut accord pour la branche, le commit, le push et la pull request. Claude Code ne fusionne pas et ne clique pas dans Coolify : il donne à Hardy le geste exact.
 
-1. **Classer** le changement : le tableau dit quoi vérifier et s'il faut un Redeploy (documents seuls : non).
+1. **Classer** le changement : le tableau dit quoi vérifier et s'il faut un Redeploy (documents seuls : non). **Changement de structure ou de présentation : plan court validé par Hardy d'abord, et essai sur téléphone avant la fusion.**
 2. **Vérifier dans une copie** : `pnpm verifier`, `pnpm test:integration`, `pnpm test:e2e` ; essai de l'image si le tableau le demande.
 3. **Publier** : commit, push, pull request qui dit ce que Hardy devra faire.
 4. **Hardy** saisit les variables éventuelles dans Coolify, fusionne (bypass, *Squash and merge*, *Confirm*), sauvegarde la base si migration, clique sur **Redeploy**.

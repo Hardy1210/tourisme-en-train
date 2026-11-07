@@ -16,15 +16,18 @@ test('le menu mène à la page, et « Retour » revient', async ({ page }) => {
   await expect(page).toHaveURL(/\/mon-espace$/);
 });
 
-test('un chiffre affiché a sa source, un chiffre non confirmé n’apparaît pas', async ({ page }) => {
+test('chaque chiffre affiché a sa source', async ({ page }) => {
   await page.goto('/a-propos');
   await expect(page.getByText('14 kg contre 2,8 kg')).toBeVisible();
   await expect(page.getByRole('link', { name: /Impact CO2 \(TER\)/ })).toHaveAttribute(
     'href',
     'https://impactco2.fr/outils/transport/ter',
   );
-  await expect(page.getByText('97 Mt')).toHaveCount(0);
-  await expect(page.getByText('69 %')).toHaveCount(0);
+  await expect(page.getByText('97 Mt CO₂e')).toBeVisible();
+  await expect(page.getByText('69 %')).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Source : ADEME (nouvel onglet)' }).first(),
+  ).toHaveAttribute('href', /ademe\.fr\/presse\/communique-national/);
 });
 
 test('« Ouvrir l’application » mène à Explorer', async ({ page }) => {

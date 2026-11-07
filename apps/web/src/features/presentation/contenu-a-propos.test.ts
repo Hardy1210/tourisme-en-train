@@ -33,7 +33,9 @@ describe('chiffres de la page', () => {
     }
   });
 
-  it('n’affiche pas les chiffres du bilan tant qu’ils ne sont pas confirmés', () => {
-    expect(chiffresAffiches().map((c) => c.valeur)).toEqual(['14 kg contre 2,8 kg']);
+  it('affiche le bilan confirmé, sans les 11 % d’un autre périmètre', () => {
+    const valeurs = chiffresAffiches().map((c) => c.valeur);
+    expect(valeurs).toEqual(['97 Mt CO₂e', '69 %', '14 kg contre 2,8 kg']);
+    expect(valeurs.join(' ')).not.toContain('11 %');
   });
 });

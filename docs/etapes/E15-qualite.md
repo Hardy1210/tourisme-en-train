@@ -39,7 +39,7 @@ Une application fiable, accessible et rapide, prête pour la livraison.
 - [ ] `pnpm verifier`, `pnpm test:integration`, `pnpm test:e2e` passent.
 - [ ] Lighthouse mobile ≥ 90 sur Explorer et fiche destination.
 - [ ] Aucun problème d'accessibilité « critique » ou « sérieux » restant.
-- [ ] **Gel des fonctionnalités le 27/11** : après cette date, seulement des corrections.
+- [ ] **Gel des nouvelles fonctionnalités au plus tard le 27/11** : ensuite, corrections, retouches de design et déploiements jusqu'à la soutenance (D078).
 
 ## À ne pas toucher
 - Aucune nouvelle fonctionnalité après le 27/11.
@@ -49,4 +49,5 @@ Voir `_MODELE.md`.
 
 ## Notes et modifications après coup
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
+- 07/11/2026 : après le gel, le design et les déploiements continuent — D078.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.

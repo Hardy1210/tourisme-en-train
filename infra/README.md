@@ -1,6 +1,6 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.4 · **Date** 07/11/2026
+> **Version** 1.5 · **Date** 07/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
 > **Document de référence pour :** comment exploiter la production. Comment mettre en ligne chaque mise à jour : section dédiée ci-dessous.
@@ -42,6 +42,7 @@
 |---|---|---|
 | Documents seuls (`*.md`, `docs/`) | Rien | **Pas de Redeploy** |
 | Code, textes, `config/*.json`, dépendances | `verifier`, intégration, parcours (+ essai de l'image si dépendances) | Redeploy |
+| Structure : dossiers, écrans, adresses des pages, parcours de l'utilisateur | **Plan court validé par Hardy d'abord (`CLAUDE.md` § 10).** Tout + essai sur téléphone avant la fusion. Adresse changée : renvoi depuis l'ancienne, car l'application installée et les liens partagés la gardent | Redeploy, puis le § 2 étape 10 sur la nouvelle et l'ancienne adresse |
 | Migration dans `db/migrations/` | Tout + essai de l'image | Sauvegarde (§ 5), puis Redeploy |
 | `Dockerfile`, `compose.prod.yml`, `next.config.ts` | Tout + essai de l'image | Redeploy, en regardant le journal de déploiement |
 | Nouvelle variable | Tout + essai de l'image ; `infra/.env.prod.example` à jour | **Saisir la variable dans Coolify avant le Redeploy** (*Not available during build*, *Available in the container*) : un `:?` vide bloque le déploiement |
@@ -49,7 +50,7 @@
 | Données (ETL) | Lignes comptées et échantillonnées en local | § 4, après le code dont elles dépendent |
 
 ### 2. Parcours normal
-Essayé sur les PR #84 et #85. Le serveur de développement de Hardy n'est jamais touché : tout se passe dans une copie.
+Essayé sur les PR #84 et #85, sans l'essai sur téléphone avant fusion. Le serveur de développement de Hardy n'est jamais touché : tout se passe dans une copie.
 
 1. **Claude Code, créer la copie :**
    ```bash
@@ -59,6 +60,7 @@ Essayé sur les PR #84 et #85. Le serveur de développement de Hardy n'est jamai
    ```
 2. **Claude Code, vérifier, depuis cette copie :** `pnpm verifier`, puis `pnpm test:integration`, puis `pnpm test:e2e`. Un échec arrête tout.
 3. **Claude Code, essayer l'image si le tableau le demande :** § 3.
+   **Hardy, regarder avant de fusionner tout changement visible :** dans le navigateur, et sur téléphone par le tunnel (`CLAUDE.md` § 16). Plusieurs petits changements validés peuvent partir ensemble dans la même PR. **Rien ne se fusionne ni ne se déploie avant cet accord.**
 4. **Claude Code, publier :** commit en français, `git push -u origin etape/<sujet>`, pull request. Son texte dit le classement du § 1 et tout ce que Hardy devra faire.
 5. **Hardy, variables éventuelles :** les saisir dans Coolify.
 6. **Hardy, fusionner sur GitHub :** cocher *Merge without waiting for requirements to be met (bypass rules)*, puis *Squash and merge*, puis *Confirm*.
@@ -67,7 +69,7 @@ Essayé sur les PR #84 et #85. Le serveur de développement de Hardy n'est jamai
    git switch main && git pull --ff-only --prune
    git worktree remove ../tourisme-<sujet> && git branch -D etape/<sujet>
    ```
-8. **Hardy, déployer :** Coolify → ressource de Wagoo → **Redeploy**. Attendre *Finished* (environ 3 min, mesuré le 07/11) et comparer le commit affiché à celui de la fusion. Réglage attendu : Advanced → Auto deploy → *Manual deployments only*, pour qu'une fusion seule ne change rien en ligne.
+8. **Hardy, déployer :** Coolify → ressource de Wagoo → **Redeploy**. Attendre *Finished* (environ 3 min, mesuré le 07/11) et comparer le commit affiché à celui de la fusion. Advanced → Auto deploy est sur *Manual deployments only* (confirmé le 07/11) : une fusion seule ne change rien en ligne.
 9. **Claude Code, contrôler :**
    ```bash
    infra/scripts/controler-production.sh https://wagoo.hardylino.com
@@ -135,8 +137,8 @@ Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. 
 - Ne pas cliquer sur *Reset* dans la configuration du proxy (il remet le 8080), ni activer *Traffic analytics* (position dans le journal d'accès), ni activer *Preview deployments*.
 - Ne pas supprimer la ressource avec ses volumes, ni ajouter un `ports:` à `db` ou `web`.
 - Ne pas lancer `docker compose … config` sans `-q` : il imprime les secrets.
-- Ne pas déployer le jour d'une démonstration sans raison, et plus de fonctionnalité après le gel du 27/11.
-- Après toute mise à jour de Coolify : relancer le contrôle du § 2 étape 9.
+- Ne pas déployer le jour d'une démonstration sans raison. Aucune nouvelle fonctionnalité après le gel du 27/11 ; les corrections, les retouches de design et leurs déploiements continuent jusqu'à la soutenance (D078).
+- Mises à jour automatiques de Coolify coupées le 07/11, jusqu'à la soutenance. Après toute mise à jour à la main : relancer le contrôle du § 2 étape 9.
 
 ## Premier chargement : export et restauration
 **Essayé le 06/11/2026 avec le compose de production complet et l'image réelle :** export de 18 Mo, 12 242 lieux et 268 025 liaisons retrouvés, `/api/sante` à 200 ; les migrations relancées ne changent rien.
@@ -186,3 +188,4 @@ Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. 
 | 07/11/2026 | 1.2 | `NODE_ENV` à ne pas saisir, variables sans construction, forme du domaine, état de `migrer`, santé d'une base vide, choix du conteneur `db` — D076 |
 | 07/11/2026 | 1.3 | Panneau Coolify en HTTPS, ports limités à `localhost`, 8080 retiré, contrôles du journal d'accès — D076 |
 | 07/11/2026 | 1.4 | Procédure complète de mise en ligne, script de contrôle, comptage des lignes — D077 |
+| 07/11/2026 | 1.5 | Changements de structure, essai avant fusion, réglages Coolify confirmés — D078 |
