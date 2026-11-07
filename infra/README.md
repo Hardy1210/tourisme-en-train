@@ -1,6 +1,6 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.2 · **Date** 07/11/2026
+> **Version** 1.3 · **Date** 07/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
 > **Document de référence pour :** comment exploiter la production. Complété à chaque lot d'E17.
@@ -50,7 +50,24 @@
 
 ## Vie privée
 - **Ne pas activer les statistiques de trafic du proxy Coolify** : d'après son code, elles activent un journal d'accès, et `/api/autour` reçoit la position dans l'adresse (règle 5).
-- **Contrôle sur le VPS :** `docker inspect coolify-proxy | grep -i accesslog` ne doit rien renvoyer. Le nom du conteneur et ce comportement sont à confirmer sur la version installée.
+- **Contrôle sur le VPS :** `docker inspect --format '{{json .Config.Cmd}}' coolify-proxy | grep -ci accesslog` doit répondre `0`, et `docker exec coolify-proxy ls /traefik/access.log` ne doit trouver aucun fichier (fait le 07/11, Coolify 4.6.0).
+
+## Panneau Coolify
+- **Adresse :** `https://coolify.hardylino.com` (A `coolify` chez Vercel, Settings → General → URL). Le panneau, le temps réel et le terminal passent par le proxy.
+- **Ports 8000, 6001 et 6002 limités à `localhost`** par `/data/coolify/source/docker-compose.custom.yml`, sur le VPS, hors de Git. Coolify le recharge seul et ses mises à jour ne le remplacent pas :
+  ```yaml
+  services:
+    coolify:
+      ports: !override
+        - "127.0.0.1:${APP_PORT:-8000}:8080"
+        - "127.0.0.1:${REVERB_PORT:-${SOKETI_PORT:-6001}}:6001"
+        - "127.0.0.1:6002:6002"
+  ```
+- **Appliquer ou annuler :** `curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash -s 4.6.0`, après avoir modifié ou supprimé ce fichier. Sans `-s 4.6.0`, le script installe la dernière version.
+- ⚠️ **Valider sans afficher les secrets :** `docker compose … config -q`. `config` seul imprime les secrets de Coolify.
+- **Port 8080 retiré** de la configuration du proxy (Serveur → Proxy). C'est le tableau de bord Traefik, sans rien à l'écoute en production. **Réinitialiser cette configuration le remet.**
+- **Secours :** `ssh -L 8000:localhost:8000 -L 6001:localhost:6001 -L 6002:localhost:6002 <utilisateur>@<ip>`, puis `http://localhost:8000`.
+- **Contrôle du 07/11, depuis l'extérieur :** 22, 80 et 443 ouverts ; 3000, 5432, 6001, 6002, 8000 et 8080 refusent la connexion. Le résultat vient de ces réglages de ports : aucun pare-feu de l'hébergeur n'a été vérifié.
 
 ## Historique
 | Date | Version | Modification |
@@ -58,3 +75,4 @@
 | 06/11/2026 | 1.0 | Création : variables, procédure de restauration essayée, vie privée — D076 |
 | 06/11/2026 | 1.1 | Compose de production, réglages Coolify, scripts, procédure essayée sur l'image réelle — D076 |
 | 07/11/2026 | 1.2 | `NODE_ENV` à ne pas saisir, variables sans construction, forme du domaine, état de `migrer`, santé d'une base vide, choix du conteneur `db` — D076 |
+| 07/11/2026 | 1.3 | Panneau Coolify en HTTPS, ports limités à `localhost`, 8080 retiré, contrôles du journal d'accès — D076 |
