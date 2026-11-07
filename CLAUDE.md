@@ -186,10 +186,10 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 - **Étape en cours :** E17 phase 1 🟡 anticipée (D076) · E13 🟡 : écrans faits, textes du pitch à la fin du projet · E14 🟡 : essai Android à faire
 - **Dernière session :** 06/11/2026 — écran Sources, À propos, Mentions légales (D075) ; audit de la mise en ligne (D076, PR #81 fusionnée) ; image Docker et compose de production essayés en local
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos ; PWA : gel hors ligne validé sur iPhone
-- **À valider par Hardy :** fusion de la PR du lot 1 ; lots 2 et 3 (VPS, Coolify, DNS, secrets) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; PWA : gel hors ligne validé sur iPhone ; E17 lots 0 et 1 : image web, compose de production, export et restauration essayés en local ; `pnpm verifier` 482 tests, `pnpm test:integration` 167, `pnpm test:e2e` 133 et 1 ignoré, sur la branche de la PR #82, fusionnée
+- **À valider par Hardy :** fusion de la PR de sauvegarde de session ; lots 2 à 5 (pas-à-pas : fiche E17, tickets #74 et #75) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** E17 lots 2 et 3 (`docs/etapes/E17-mise-en-ligne-v1.md`, `infra/README.md`) : Hardy crée le VPS ; Claude Code l'accompagne, puis fournit les commandes du lot 4
+- **Prochaine action précise :** Hardy suit le pas-à-pas de la fiche E17 (`docs/etapes/E17-mise-en-ligne-v1.md`) : VPS, Coolify, DNS, secrets. Dès que le VPS est prêt : Claude Code fournit les commandes du lot 4 (`infra/README.md`) et complète l'hébergeur dans `features/presentation/contenu-mentions.ts`. Après la fusion de la PR de sauvegarde : mettre `main` à jour, retirer `../tourisme-e17`
 ---
 
 ## 10. Réaliser une étape

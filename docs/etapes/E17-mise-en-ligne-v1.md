@@ -52,9 +52,19 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 | 4. Mise en ligne | Commandes de chargement | Copier l'export sur le VPS, déployer, charger la base ; donner le nom de l'hébergeur pour les mentions légales |
 | 5. Contrôle | Liste des vérifications | HTTPS, `/api/sante` à 200, base fermée depuis l'extérieur, journal d'accès coupé, installation depuis Safari |
 
-**Lot 0 ✅ · lot 1 ✅ essayé en local (PR à fusionner) · lots 2 à 5 ⬜.** Le suivi se fait dans les tickets « E17 phase 1 ».
+**Lots 0 et 1 ✅ (lot 1 essayé en local, PR #82 fusionnée) · lots 2 à 5 ⬜.** Le suivi se fait dans les tickets « E17 phase 1 ».
 
 **Essai du lot 1, 06/11, sur le poste, hors VPS :** utilisateur `node`, base sans port publié, compose qui refuse de démarrer sans ses variables, migrations relancées sans effet, 12 242 lieux et 268 025 liaisons restaurés. Routes essayées à 200 : santé, sources, gares proches, destinations, autour, lieux, géocodage, pages, manifest, service worker. Navigateur : 101 sorties depuis Dijon, fiche ouverte, aucune erreur, aucun cookie. Base coupée : santé à 503, route à 500, reprise seule au retour de la base.
+
+### Pas-à-pas des lots 2 à 5 (Hardy, tickets #74 et #75)
+1. ✅ PR #82 fusionnée.
+2. Créer le VPS : Hetzner ou OVH, Ubuntu LTS, 2 cœurs, 4 Go, 40 Go, avec une clé SSH. Le système est une proposition : suivre la documentation de Coolify si elle demande autre chose.
+3. Installer Coolify avec le script officiel (https://coolify.io/docs/start-with-self-hosted) et créer le compte administrateur **tout de suite**. Coolify utilise des ports en plus de 80 et 443 pour son panneau : les vérifier avec Claude Code avant de fermer le pare-feu.
+4. Sur Vercel : enregistrement A `wagoo` vers l'IP du VPS.
+5. Dans Coolify : relier le dépôt ; type Docker Compose ; dossier de base `/` ; fichier `/infra/compose.prod.yml` ; domaine `https://wagoo.hardylino.com` sur le service `web`, port 3000.
+6. Saisir les variables de `infra/.env.prod.example`, avec de nouveaux mots de passe (`openssl rand -hex 24`). **Ne pas activer Traffic Analytics.** **Ne jamais coller un mot de passe dans une conversation.**
+7. Prévenir Claude Code : commandes du lot 4 pour charger la base (`infra/README.md`). Lui donner le fournisseur choisi, pour l'hébergeur des mentions légales.
+8. Lot 5 : contrôler chaque critère ci-dessous, et installer sur iPhone **depuis Safari**, « Ouvrir comme app web » activé.
 
 ### Critères d'acceptation
 - [ ] HTTPS valide sur `wagoo.hardylino.com` ; `/api/sante` → 200.
