@@ -14,10 +14,7 @@ export const TEXTES_MENTIONS = {
     },
     {
       titre: 'Hébergeur',
-      paragraphes: [
-        // À remplacer par le fournisseur du VPS, une fois choisi (E17 lot 4).
-        'Fournisseur du serveur\u00a0: à compléter.',
-      ],
+      paragraphes: ['OVH SAS, 2 rue Kellermann, 59100 Roubaix, France.'],
     },
     {
       titre: 'Votre position',
