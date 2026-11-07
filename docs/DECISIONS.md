@@ -14,7 +14,7 @@
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
 | **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources, facteur CO₂ de la voiture |
-| **Équipe, calendrier, livraison** | D078 dates du P0 et du gel, essai avant fusion · D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
+| **Équipe, calendrier, livraison** | D079 étapes prévues avant le design et la structure · D078 dates du P0 et du gel, essai avant fusion · D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
 
@@ -838,3 +838,13 @@
 - **Source :** communiqué de l'ADEME, texte copié par Hardy (`equipe/pitch.md`) ; `ademe.fr` refuse la lecture automatique. La page du ministère n'est pas citée sur le site : elle rapproche à tort les 11 % des 97 Mt.
 - **Remplace en partie :** la « décision de mise en ligne le 25/11 » de `CLAUDE.md` § 8, devenue sans objet (D076).
 - **Impact :** `CLAUDE.md` § 8, § 9, § 15 ; `infra/README.md` ; `BACKLOG` § 8 ; fiches E13, E15, E16 ; `equipe/pitch.md` ; `LECONS` ; `A-FAIRE`.
+
+---
+
+## D079 — Finir les étapes prévues avant le design et la structure UI/UX
+- **Date :** 07/11/2026
+- **En clair :** on termine d'abord tout ce qui est déjà au plan. Hardy enverra ensuite ses changements de design et de structure, pour ne rien abîmer et ne pas refaire une fonctionnalité peut-être déjà prévue.
+- **Décision :** ordre : partie fonctionnelle d'E11 et E12, E13, E14, puis E15, E16, E18. Les retouches de design et les changements de structure UI/UX viennent après, à la demande de Hardy. Aucune nouvelle liste ne lui est réclamée d'ici là.
+- **Raison :** une nouveauté ajoutée trop tôt risque de casser l'existant ou de doubler ce qui est déjà prévu.
+- **À surveiller :** les dates de D078 restent valables. Un gros changement de structure après E15 et E16 obligerait à refaire les contrôles de qualité, l'image et l'export de la démo. Hardy choisira le moment.
+- **Impact :** `CLAUDE.md` § 9 ; `BACKLOG` § 8 ; `A-FAIRE` § 1.

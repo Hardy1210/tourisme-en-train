@@ -24,6 +24,27 @@
 
 ---
 
+## 07/11/2026 — Étape E13 — chiffres en ligne, ordre du travail fixé
+**Fait :**
+- #88 fusionnée et déployée (`d1f0206`). Contrôle de la production : tout est bon. `/a-propos` affiche 97 Mt, 69 % et 14 kg contre 2,8 kg, sans erreur ni débordement en 390 px dans Chromium.
+- Ordre fixé par Hardy : les étapes prévues d'abord, le design et la structure UI/UX ensuite.
+
+**Décisions :** D079.
+
+**Problèmes rencontrés :**
+- Copie locale et branche retirées alors que la #88 était encore ouverte : ma commande n'attendait pas le résultat de la vérification. Rien de perdu (aucun changement non commité, branche sur GitHub). Vérifier l'état de la PR avant tout nettoyage.
+
+**À valider par Hardy :**
+- À propos sur l'iPhone.
+
+**Prochaine action :**
+- Voir `CLAUDE.md` § 9.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (482), sur une copie. Documents seuls depuis la #88.
+**Commit :** voir `docs(contexte): sauvegarde de session du 07/11, ordre du travail` (branche `etape/contexte-0711-ordre`)
+
+---
+
 ## 07/11/2026 — Étapes E13 et E17 — chiffres de l'ADEME, dates, changements de structure
 **Fait :**
 - 97 Mt et 69 % affichés sur À propos, source ADEME, sans les 11 %. Texte du communiqué copié par Hardy et noté dans `equipe/pitch.md`.

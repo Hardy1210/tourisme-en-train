@@ -50,3 +50,4 @@
 | 07/11/2026 | 1.54 | § 8, § 9 : sauvegarde de session, phase 1 d'E17 terminée ; § 10, § 15, § 16 : protocole « mets en ligne » — D077 |
 | 07/11/2026 | 1.55 | § 8 : dates de Hardy ; § 9 : réglages Coolify confirmés ; § 15 : changements de structure — D078 |
 | 07/11/2026 | 1.56 | § 9 : sauvegarde de session, tâches à reprendre dans l'ordre |
+| 07/11/2026 | 1.57 | § 9 : sauvegarde de session, étapes prévues d'abord — D079 |

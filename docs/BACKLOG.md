@@ -173,11 +173,11 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 
 ## 8. Reste à faire et estimation (relevé du 07/11/2026)
 
-**Estimations de Claude Code, pas des mesures,** pour Hardy accompagné de Claude Code. À revoir chaque lundi. 1 jour = 2 points. Hors P1, qui passent après le P0 (D051). Dates de Hardy (D078) : P0 au plus tard le 22/11, gel des nouvelles fonctionnalités au plus tard le 27/11, puis corrections, design et déploiements jusqu'à la soutenance ; l'avance va aux P1. **De gros changements de structure et de présentation sont annoncés et pas encore comptés ici.**
+**Estimations de Claude Code, pas des mesures,** pour Hardy accompagné de Claude Code. À revoir chaque lundi. 1 jour = 2 points. Hors P1, qui passent après le P0 (D051). Dates de Hardy (D078) : P0 au plus tard le 22/11, gel des nouvelles fonctionnalités au plus tard le 27/11, puis corrections, design et déploiements jusqu'à la soutenance ; l'avance va aux P1. **Ordre (D079) : les étapes ci-dessous d'abord ; le design et la structure UI/UX ensuite, à la demande de Hardy, et pas encore comptés ici.**
 
 | Étape | Pour quand | Fait | Reste | Estimation |
 |---|---|---|---|---|
-| E11, E12 | P0, 22/11 | Écrans, API, parcours | Cases d'`A-FAIRE` § 1 ; maquettes ; retouches de Hardy ; filtres sans parcours (F05) ; carte à 101 destinations (F08) ; chronomètre et essais sur téléphone ; plan Divia (F09) ; recherche de destination et guidage si la position est refusée | 3 j |
+| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord :** filtres sans parcours (F05), recherche de destination, guidage si la position est refusée, chronomètre et essais sur téléphone, plan Divia (F09). **Design ensuite (D079) :** maquettes, retouches, carte à 101 destinations (F08) | 3 j |
 | E13 | P0, 22/11 | Sources, À propos, Mentions, en ligne | 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
 | E14 | P0, 22/11 | Installation, hors ligne, iPhone en production | Un vrai Android (30 min, personne à trouver). Invitation à installer : facultative, 0,5 j | 0,5 j |
 | E15 | S8, après le P0 | 482 tests unitaires, 167 d'intégration, 133 de parcours (06/11) ; aucun `TODO` | Pas d'outil de couverture, ni axe, ni Lighthouse dans le dépôt (nouvelle dépendance : `DECISIONS`) ; accessibilité, performance, 2 ou 3 testeurs extérieurs | 3 j |
