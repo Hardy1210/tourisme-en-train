@@ -355,6 +355,12 @@
 - **À retenir :** un texte sûr de lui n'est pas une preuve, et une conclusion peut être fausse même si tous ses calculs sont justes. Un avis contraire se vérifie aussi : il a révélé que le 142 était un diesel moyen.
 - **Origine :** D075.
 
+### L53 — Un contrôle à zéro ne prouve rien sans témoin
+- **Problème :** deux compteurs de position à 0 sur les journaux semblaient prouver l'absence de fuite, mais le déploiement venait de remplacer le conteneur, et avec lui le journal qui contenait les requêtes de test.
+- **Solution :** envoyer le témoin sur le conteneur en place, vérifier qu'il a démarré avant le témoin, puis compter.
+- **À retenir :** avant de croire un résultat vide, se demander ce qu'on aurait vu si le problème existait. Et dire ce que le test ne couvre pas : ici, une vraie panne serveur reste couverte par un test automatique, pas par ce contrôle.
+- **Origine :** D077.
+
 ## Dossier CO₂ pour la soutenance (relevé du 06/11/2026)
 
 Lecture de pages, pas un avis juridique. À relire avant la soutenance : ces pages peuvent changer.
@@ -408,3 +414,4 @@ Valeurs en g CO₂e/km.
 | 05/11/2026 | 1.9 | L40 → L43 (règle simulée sur toutes les données, chiffre mesuré, écran vraiment dessiné, donnée liée à l'heure) |
 | 05/11/2026 | 1.10 | L44 → L46 (serveur en marche, sortie du hors-ligne, cache par défaut) |
 | 06/11/2026 | 1.11 | L47 → L52 et dossier CO₂ (licence lue à la source, portée d'une page, périmètre d'un chiffre, chiffre vérifiable, marché d'abord, conseil vérifié point par point) |
+| 07/11/2026 | 1.12 | L53 (contrôle à zéro et témoin) |

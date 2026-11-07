@@ -172,7 +172,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E14 | PWA, hors ligne | S7 | 🟡 |
 | E15 | Qualité : tests, accessibilité, performance, P1 restants | S8 | ⬜ |
 | E16 | Livraison soutenance : images de prod, lancement en une commande, données figées | S8 | ⬜ |
-| E17 | Mise en ligne : phase 1 anticipée, phase 2 après le P0 | S5, puis fin | 🟡 |
+| E17 | Mise en ligne : phase 1 ✅ le 07/11, phase 2 après le P0 | S5, puis fin | 🟡 |
 | E18 | Publication de la réutilisation sur data.gouv.fr | Fin | ⬜ |
 
 Semaines : S1 = 05/10 → 11/10 · S2 = 12 → 18/10 · S3 = 19 → 25/10 · S4 = 26/10 → 01/11 · S5 = 02 → 08/11 · S6 = 09 → 15/11 · S7 = 16 → 22/11 · S8 = 23 → 29/11 · Fin = 30/11 → 02/12.
@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** E17 phase 1 🟡 anticipée (D076) · E13 🟡 : écrans faits, textes du pitch à la fin du projet · E14 🟡 : essai Android à faire
-- **Dernière session :** 06/11/2026 — écran Sources, À propos, Mentions légales (D075) ; audit de la mise en ligne (D076, PR #81 fusionnée) ; image Docker et compose de production essayés en local
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; PWA : gel hors ligne validé sur iPhone ; E17 lots 0 et 1 : image web, compose de production, export et restauration essayés en local ; `pnpm verifier` 482 tests, `pnpm test:integration` 167, `pnpm test:e2e` 133 et 1 ignoré, sur la branche de la PR #82, fusionnée
-- **À valider par Hardy :** fusion de la PR de sauvegarde de session ; lots 2 à 5 (pas-à-pas : fiche E17, tickets #74 et #75) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; lignes 🟡 de `BACKLOG` ; `A-FAIRE` § 1
+- **Étape en cours :** E11 et E12 ⏸ : vérifications de design et téléphone · E13 🟡 : textes du pitch · E14 🟡 : Android · E17 🟡 : phase 1 terminée et en ligne, phase 2 après le P0
+- **Dernière session :** 07/11/2026 — mise en ligne complète sur `wagoo.hardylino.com` (OVH, Coolify), base chargée, panneau protégé, contrôles faits ; procédure de mise en ligne écrite (D077)
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; production en ligne : HTTPS, base fermée, seuls 22, 80 et 443 ouverts, aucune position dans les journaux, installation iPhone validée ; `pnpm verifier` 482 tests le 07/11
+- **À valider par Hardy :** Auto deploy sur *Manual deployments only* et mises à jour automatiques de Coolify (`A-FAIRE` § 2) ; ouvrir le communiqué de l'ADEME (97 Mt, 69 %) ; Android à trouver ; `A-FAIRE` § 1 ; retouches de design notées par Hardy
 - **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** Hardy suit le pas-à-pas de la fiche E17 (`docs/etapes/E17-mise-en-ligne-v1.md`) : VPS, Coolify, DNS, secrets. Dès que le VPS est prêt : Claude Code fournit les commandes du lot 4 (`infra/README.md`) et complète l'hébergeur dans `features/presentation/contenu-mentions.ts`. Après la fusion de la PR de sauvegarde : mettre `main` à jour, retirer `../tourisme-e17`
+- **Prochaine action précise :** session de retouches de Hardy, puis les cases d'E11 et E12 (`A-FAIRE` § 1). Reste avant le P0 et estimations : `BACKLOG` § 8. Chaque mise à jour part en ligne avec « mets en ligne » (§ 15)
 ---
 
 ## 10. Réaliser une étape
@@ -203,6 +203,7 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 7. **Vérifier les critères d'acceptation** un par un.
 8. **Mettre à jour la documentation** touchée (section 13) et l'état de l'étape (section 8).
 9. **Commit** en français, puis push.
+10. **Mettre en ligne** quand Hardy le demande : § 15.
 
 Fiche incomplète ou contradictoire → **s'arrêter, signaler, proposer la correction**. Ne pas improviser.
 
@@ -307,6 +308,18 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 - **Production :** un VPS séparé géré par Coolify, en Docker Compose, sur `wagoo.hardylino.com`. Le domaine ne dépend que d'`URL_APP` et du réglage Coolify.
 - **Le lien app ↔ infrastructure est fixé par `docs/07-contrat-infra.md`** (variables, `/api/sante`, Dockerfiles, migrations, journaux). Exploitation : `infra/README.md`. Plan et mesures : `docs/etapes/E17-mise-en-ligne-v1.md`.
 - **La démo locale d'E16 reste le filet de sécurité de la soutenance.**
+
+### Protocole « mets en ligne »
+Quand Hardy écrit **« mets en ligne »**, suivre **`infra/README.md`, section « Mettre en ligne une mise à jour »**, dans l'ordre, une étape à la fois. Cette phrase vaut accord pour la branche, le commit, le push et la pull request. Claude Code ne fusionne pas et ne clique pas dans Coolify : il donne à Hardy le geste exact.
+
+1. **Classer** le changement : le tableau dit quoi vérifier et s'il faut un Redeploy (documents seuls : non).
+2. **Vérifier dans une copie** : `pnpm verifier`, `pnpm test:integration`, `pnpm test:e2e` ; essai de l'image si le tableau le demande.
+3. **Publier** : commit, push, pull request qui dit ce que Hardy devra faire.
+4. **Hardy** saisit les variables éventuelles dans Coolify, fusionne (bypass, *Squash and merge*, *Confirm*), sauvegarde la base si migration, clique sur **Redeploy**.
+5. **Contrôler** : `infra/scripts/controler-production.sh https://wagoo.hardylino.com` (code retour 0), puis la nouveauté dans un navigateur.
+6. **Hardy** essaie sur l'iPhone. **Noter** dans les documents touchés.
+
+Données, panne, retour en arrière : mêmes sections d'`infra/README.md`. **Jamais de mot de passe dans une conversation.**
 - `main` est protégée : tout passe par une pull request. Organisation GitHub : `docs/equipe/travail-en-equipe.md`.
 
 ---
@@ -331,6 +344,7 @@ Quand Hardy écrit **« garde le contexte »**, exécuter dans l'ordre :
 | Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
 | Essayer sur le téléphone (tunnel Cloudflare, depuis la racine) | **Arrêter `pnpm dev` d'abord.** Puis `pnpm --filter @tourisme/web build` et `pnpm --filter @tourisme/web exec next start -p 3200` ; dans un autre terminal : `~/cloudflared tunnel --url http://localhost:3200`, dont l'adresse change à chaque lancement. `pnpm dev` peut être relancé une fois le build terminé |
 | Essayer la production en local (depuis la racine) | `docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml up -d --build` ; export et restauration : `infra/README.md` |
+| Contrôler la production depuis l'extérieur | `infra/scripts/controler-production.sh https://wagoo.hardylino.com` (lecture seule, code retour 0 si tout est bon) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
 
 ---

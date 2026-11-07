@@ -17,7 +17,7 @@ PWA installable, fonctionnement hors ligne partiel, conforme aux stratégies de 
 
 ## Actions de Hardy
 - [ ] Fournir l'icône / le logo provisoire (ou valider une icône générée simple).
-- [ ] Tester l'installation sur Android et, si possible, iPhone.
+- [ ] Tester l'installation sur Android. iPhone : ✅ le 07/11.
 
 ## Phase d'audit
 1. Vérifier la compatibilité de Serwist avec la version de Next.js utilisée.
@@ -47,3 +47,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : fait : voir D071. Vérifié avec Chromium ; reste l'essai sur un vrai iPhone et un vrai Android. Invitation à installer reportée (`A-FAIRE`).
 - 05/11/2026 : essai sur iPhone : plein écran et localisation fonctionnent ; gel hors ligne constaté, corrigé dans la PR #70, à revérifier sur iPhone.
 - 05/11/2026 : gel hors ligne revérifié et validé par Hardy sur iPhone.
+- 07/11/2026 : installation sur l'iPhone de Hardy depuis l'adresse de production : plein écran, sorties affichées, dernière vue lisible hors ligne. Reste un vrai Android.

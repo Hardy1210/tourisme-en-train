@@ -1,9 +1,9 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.3 · **Date** 07/11/2026
+> **Version** 1.4 · **Date** 07/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
-> **Document de référence pour :** comment exploiter la production. Complété à chaque lot d'E17.
+> **Document de référence pour :** comment exploiter la production. Comment mettre en ligne chaque mise à jour : section dédiée ci-dessous.
 
 **Responsable infrastructure : Hardy.** Le rôle peut être repris par un coéquipier : tout ce qu'il faut savoir est ici et dans `docs/07-contrat-infra.md`.
 
@@ -28,6 +28,115 @@
 **Domaine, sur le service `web` uniquement :** protocole `https`, hôte `wagoo.hardylino.com`, port `3000`, soit `https://wagoo.hardylino.com:3000` dans Coolify. Ce port est celui du conteneur : le public passe par le 443, et `URL_APP` s'écrit sans port.
 
 **`migrer` à l'état `Exited (0)` est normal :** `restart: 'no'` l'exclut déjà du calcul de santé de Coolify. Ne pas ajouter `exclude_from_hc`, que `docker compose` refuse en local.
+
+## Mettre en ligne une mise à jour
+**Déclencheur :** Hardy écrit **« mets en ligne »**. Claude Code déroule cette procédure dans l'ordre, une étape à la fois, et donne à Hardy la commande ou le clic exact au moment voulu. Cette phrase vaut accord pour la branche, le commit, le push et la pull request. **Jamais de mot de passe dans une conversation.**
+
+| Qui | Fait quoi |
+|---|---|
+| **Claude Code** | Branche, vérifications, commit, push, pull request, contrôles depuis l'extérieur, documents |
+| **Hardy** | Fusion sur GitHub, clics dans Coolify, secrets, commandes SSH sur le VPS, essai sur iPhone |
+
+### 1. Classer le changement
+| Ce qui change | Vérifier | Après la fusion |
+|---|---|---|
+| Documents seuls (`*.md`, `docs/`) | Rien | **Pas de Redeploy** |
+| Code, textes, `config/*.json`, dépendances | `verifier`, intégration, parcours (+ essai de l'image si dépendances) | Redeploy |
+| Migration dans `db/migrations/` | Tout + essai de l'image | Sauvegarde (§ 5), puis Redeploy |
+| `Dockerfile`, `compose.prod.yml`, `next.config.ts` | Tout + essai de l'image | Redeploy, en regardant le journal de déploiement |
+| Nouvelle variable | Tout + essai de l'image ; `infra/.env.prod.example` à jour | **Saisir la variable dans Coolify avant le Redeploy** (*Not available during build*, *Available in the container*) : un `:?` vide bloque le déploiement |
+| Valeur d'une variable, sans code | Rien | Modifier dans Coolify, puis Redeploy. **Ne pas changer `POSTGRES_PASSWORD` :** PostgreSQL ne le lit qu'à la création du volume |
+| Données (ETL) | Lignes comptées et échantillonnées en local | § 4, après le code dont elles dépendent |
+
+### 2. Parcours normal
+Essayé sur les PR #84 et #85. Le serveur de développement de Hardy n'est jamais touché : tout se passe dans une copie.
+
+1. **Claude Code, créer la copie :**
+   ```bash
+   git fetch origin
+   git worktree add -b etape/<sujet> ../tourisme-<sujet> origin/main
+   cd ../tourisme-<sujet> && pnpm install --frozen-lockfile
+   ```
+2. **Claude Code, vérifier, depuis cette copie :** `pnpm verifier`, puis `pnpm test:integration`, puis `pnpm test:e2e`. Un échec arrête tout.
+3. **Claude Code, essayer l'image si le tableau le demande :** § 3.
+4. **Claude Code, publier :** commit en français, `git push -u origin etape/<sujet>`, pull request. Son texte dit le classement du § 1 et tout ce que Hardy devra faire.
+5. **Hardy, variables éventuelles :** les saisir dans Coolify.
+6. **Hardy, fusionner sur GitHub :** cocher *Merge without waiting for requirements to be met (bypass rules)*, puis *Squash and merge*, puis *Confirm*.
+7. **Claude Code, mettre le poste à jour :**
+   ```bash
+   git switch main && git pull --ff-only --prune
+   git worktree remove ../tourisme-<sujet> && git branch -D etape/<sujet>
+   ```
+8. **Hardy, déployer :** Coolify → ressource de Wagoo → **Redeploy**. Attendre *Finished* (environ 3 min, mesuré le 07/11) et comparer le commit affiché à celui de la fusion. Réglage attendu : Advanced → Auto deploy → *Manual deployments only*, pour qu'une fusion seule ne change rien en ligne.
+9. **Claude Code, contrôler :**
+   ```bash
+   infra/scripts/controler-production.sh https://wagoo.hardylino.com
+   ```
+   Le code retour doit être 0. Puis regarder la nouveauté elle-même dans un navigateur.
+10. **Hardy, essayer sur l'iPhone :** fermer l'application installée, la rouvrir, regarder la nouveauté. Le service worker se met à jour seul : si l'ancienne version apparaît, fermer et rouvrir une fois de plus.
+11. **Claude Code, noter :** les documents touchés, puis le journal au prochain « garde le contexte ».
+
+### 3. Essayer l'image en local
+Depuis la copie, avec un fichier de variables hors de Git, construit à partir de `infra/.env.prod.example`. Le projet `essai-prod` a son propre volume et ne touche pas à la base de développement.
+```bash
+docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml up -d --build
+docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml ps -a
+docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml down -v
+```
+Avant le `down -v`, il faut `db` et `web` en `healthy`, et `migrer` en `Exited (0)`. `down -v` supprime uniquement le volume d'essai.
+
+### 4. Mettre à jour les données
+Essayé le 07/11 pour le premier chargement. **Le code et les migrations dont dépendent ces données doivent déjà être en ligne.** Une extraction `osm` reste limitée à une fois par semaine (D041).
+
+**Sur le poste, depuis la racine du dépôt :**
+1. Lancer le traitement (`pnpm etl <source>`), compter et échantillonner les lignes.
+2. Exporter, relever l'empreinte, compter, copier :
+   ```bash
+   infra/scripts/exporter-base.sh ~/tourisme.dump
+   sha256sum ~/tourisme.dump
+   docker exec -i tourisme-en-train-db-1 sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -x' < infra/scripts/compter-lignes.sql
+   scp ~/tourisme.dump infra/scripts/restaurer-base.sh infra/scripts/compter-lignes.sql <utilisateur>@<serveur>:
+   ```
+
+**Sur le VPS (`ssh <utilisateur>@<serveur>`) :** `sudo` devant `docker` et `sh` si Docker répond `permission denied`.
+
+3. Désigner la base, vérifier l'empreinte, sauvegarder (§ 5).
+4. Restaurer, compter : les chiffres doivent être ceux du poste. La base est remplacée pendant quelques secondes (5 s mesurées le 06/11).
+   ```bash
+   sh restaurer-base.sh "$DB" tourisme.dump --oui
+   docker exec -i "$DB" sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -x' < compter-lignes.sql
+   ```
+5. **Hardy, Coolify :** Redeploy, qui relance les migrations sans rien changer.
+6. **Claude Code :** contrôle du § 2 étape 9. `dateDonnees` donne la date du dernier chargement des horaires.
+7. Une fois tout bon, sur le VPS : `rm tourisme.dump restaurer-base.sh compter-lignes.sql avant.dump`.
+
+### 5. Sauvegarder avant une migration ou des données
+Sur le VPS. Le premier `echo` doit afficher **un seul nom** : le filtre désigne la base de l'application, pas celle de Coolify.
+```bash
+DB=$(docker ps --filter ancestor=postgis/postgis:16-3.4 --format '{{.Names}}'); echo "$DB"
+docker exec "$DB" sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > avant.dump
+ls -la avant.dump
+```
+
+### 6. Si quelque chose ne va pas
+**Pas encore essayé en production : à dérouler calmement, une ligne à la fois, avec Claude Code.**
+
+| Situation | Que faire |
+|---|---|
+| Déploiement en échec dans Coolify | Ne pas relancer à l'aveugle. Copier le journal de déploiement, sans secret, pour Claude Code |
+| `migrer` n'est pas à `Exited (0)` | `docker ps -a --format 'table {{.Names}}\t{{.Status}}'`, puis `docker logs <conteneur-migrer>` |
+| Code en ligne cassé, sans migration | Sur GitHub, bouton **Revert** de la PR, fusion de la PR créée, Redeploy, contrôle. Jamais de `push --force` sur `main` |
+| Code en ligne cassé, avec migration | Fusionner le Revert, **puis** `sh restaurer-base.sh "$DB" avant.dump --oui`, **puis** Redeploy, contrôle. Un Revert seul ne défait pas une migration |
+| Données fausses | `sh restaurer-base.sh "$DB" avant.dump --oui`, puis Redeploy |
+
+Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. **Le filet de la soutenance reste la démo locale (E16).**
+
+### 7. À ne jamais faire
+- Ne pas cliquer sur *Reset* dans la configuration du proxy (il remet le 8080), ni activer *Traffic analytics* (position dans le journal d'accès), ni activer *Preview deployments*.
+- Ne pas supprimer la ressource avec ses volumes, ni ajouter un `ports:` à `db` ou `web`.
+- Ne pas lancer `docker compose … config` sans `-q` : il imprime les secrets.
+- Ne pas déployer le jour d'une démonstration sans raison, et plus de fonctionnalité après le gel du 27/11.
+- Après toute mise à jour de Coolify : relancer le contrôle du § 2 étape 9.
 
 ## Premier chargement : export et restauration
 **Essayé le 06/11/2026 avec le compose de production complet et l'image réelle :** export de 18 Mo, 12 242 lieux et 268 025 liaisons retrouvés, `/api/sante` à 200 ; les migrations relancées ne changent rien.
@@ -76,3 +185,4 @@
 | 06/11/2026 | 1.1 | Compose de production, réglages Coolify, scripts, procédure essayée sur l'image réelle — D076 |
 | 07/11/2026 | 1.2 | `NODE_ENV` à ne pas saisir, variables sans construction, forme du domaine, état de `migrer`, santé d'une base vide, choix du conteneur `db` — D076 |
 | 07/11/2026 | 1.3 | Panneau Coolify en HTTPS, ports limités à `localhost`, 8080 retiré, contrôles du journal d'accès — D076 |
+| 07/11/2026 | 1.4 | Procédure complète de mise en ligne, script de contrôle, comptage des lignes — D077 |

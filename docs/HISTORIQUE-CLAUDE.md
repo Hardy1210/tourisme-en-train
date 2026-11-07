@@ -47,3 +47,4 @@
 | 06/11/2026 | 1.51 | § 1, § 2 règle 11, § 6, § 8, § 9, § 12, § 15 : infrastructure confiée à Hardy, E13 et E17 en cours — D076 |
 | 06/11/2026 | 1.52 | § 9 : E17 lot 1 ; § 16 : essayer la production en local — D076 |
 | 06/11/2026 | 1.53 | § 9 : sauvegarde de session (E17 lot 1 fait, lots 2 à 5 à la main) |
+| 07/11/2026 | 1.54 | § 8, § 9 : sauvegarde de session, phase 1 d'E17 terminée ; § 10, § 15, § 16 : protocole « mets en ligne » — D077 |
