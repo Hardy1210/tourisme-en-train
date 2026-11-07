@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 2.1 · **Date** 06/11/2026
+> **Version** 2.2 · **Date** 07/11/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `infra/README.md` ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -99,6 +99,10 @@ Le responsable infrastructure fournit, sur un VPS géré par Coolify :
 - Limitation d'appels sur `/api/geocodage`, et sur `/api/trains/temps-reel` quand il existera.
 - Répartition en phases et conséquences : fiche E17.
 
+## 6 bis. Mettre en ligne une mise à jour
+
+Procédure complète : `infra/README.md`, section dédiée (D077).
+
 ## 7. Ce qui peut changer sans casser le contrat
 
 - Côté infrastructure : hébergeur, proxy, méthode de sauvegarde, outil de supervision.
@@ -121,3 +125,4 @@ Le responsable infrastructure fournit, sur un VPS géré par Coolify :
 | 01/11/2026 | 1.8 | § 5 : `osm` une fois par semaine au plus, jamais `all` chaque nuit — D041. Pour les SR : à respecter dans la planification (I15) |
 | 06/11/2026 | 2.0 | Rôles au lieu de noms ; § 2 et § 6 : Coolify et phases d'E17 ; journal d'accès coupé — D076 |
 | 06/11/2026 | 2.1 | § 1 : commande de migration dans l'image, compose de production — D076 |
+| 07/11/2026 | 2.2 | § 6 bis : renvoi vers la procédure de mise en ligne — D077 |

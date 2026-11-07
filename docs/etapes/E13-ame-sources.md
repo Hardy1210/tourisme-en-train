@@ -30,7 +30,7 @@ Page de présentation narrative + écran Sources complet.
 - [x] Écran Sources : `/api/sources` + attributions carte + mention du défi data.gouv.fr.
 - [x] Le nom de la marque vient de `marque.ts` partout.
 - [x] Page « Mentions légales et confidentialité » : éditeur, ce qui arrive à la position, pas de bandeau cookies.
-- [ ] Mentions légales : nom de l'hébergeur, quand Hardy l'aura choisi (E17 lot 4). Éditeur et contact : faits.
+- [x] Mentions légales : hébergeur OVH, éditeur et contact (07/11).
 
 ## Critères d'acceptation
 - [x] Chaque chiffre affiché a sa source visible.
@@ -47,4 +47,5 @@ Voir `_MODELE.md`.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 06/11/2026 : critère des sources aligné sur D051 (26 affichées sur 33) ; écran Sources par thème, licence des facteurs CO₂ corrigée, brouillon de `docs/equipe/pitch.md` — D075.
 - 06/11/2026 : Hardy optimisera le pitch à la fin du projet : la page est construite sans les sections sans texte validé, et un chiffre non confirmé reste masqué (`confirme` dans `contenu-a-propos.ts`) — D075.
+- 07/11/2026 : hébergeur complété et vérifié en ligne (PR #84 et #85) — D076.
 - 06/11/2026 : page « Mentions légales et confidentialité » ajoutée à l'étape, à la demande de Hardy, avant la mise en ligne (E17, D076).

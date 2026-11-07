@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.3 · **Date** 05/11/2026
+> **Version** 1.4 · **Date** 07/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -44,8 +44,8 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 | F10 | En tant que voyageur, je veux voir le CO₂ économisé par rapport à la voiture afin de mesurer l'intérêt du train. | Must (P0) | 2 | Train / voiture seule / voiture partagée ; source ADEME affichée. | E09 · E12 | S7 | ✅ |
 | F11 | En tant que voyageur, je veux un prix estimé afin d'avoir un ordre d'idée du budget. | Must (P0) | 2 | Toujours libellé « estimation » ; lien vers la billetterie ; masqué s'il n'est pas calibré. | E09 · E12 | S7 | ✅ |
 | F12 | En tant que voyageur, je veux installer l'application sur mon téléphone et revoir mes dernières recherches hors ligne. | Must (P0) | 3 | Installable ; dernières recherches consultables sans connexion. | E14 | S7 | 🟡 |
-| F13 | En tant que jury ou réutilisateur, je veux voir les sources et licences des données utilisées. | Must (P0) | 1 | Chaque source citée avec sa licence et son attribution. | E13 | S7 | ⬜ |
-| F14 | En tant que jury, je veux une page qui présente le sens du projet. | Must (P0) | 2 | Page narrative accessible depuis le menu. | E13 | S7 | ⬜ |
+| F13 | En tant que jury ou réutilisateur, je veux voir les sources et licences des données utilisées. | Must (P0) | 1 | Chaque source citée avec sa licence et son attribution. | E13 | S7 | ✅ |
+| F14 | En tant que jury, je veux une page qui présente le sens du projet. | Must (P0) | 2 | Page narrative accessible depuis le menu. | E13 | S7 | 🟡 |
 | F15 | En tant que voyageur, je veux savoir si l'aller-retour est faisable dans la journée. | Should (P1) | 3 | Badge « Faisable dans la journée » ou mention « Retour tôt, plutôt sur 2 jours ». | E12 | S7 | ✅ |
 | F16 | En tant que voyageur, je veux voir les lignes ferroviaires sur la carte. | Should (P1) | 2 | Tracés affichés sans ralentir la carte. | E07 · E11 | S6 | ⬜ |
 | F17 | En tant que cycliste, je veux voir les voies vertes et pistes près de la gare d'arrivée. | Should (P1) | 2 | Aménagements affichés autour de la gare. | E07 · E12 | S7 | ⬜ |
@@ -70,10 +70,10 @@ Responsable : responsable infrastructure (Hardy, D076). Détail et ordre : fiche
 
 | ID | User story | Priorité | Pts | Critère d'acceptation | Tâches | Phase | État |
 |---|---|---|---|---|---|---|---|
-| INF1 | En tant que voyageur, je veux accéder au site en ligne, en HTTPS, sur un nom de domaine. | Must (P0) | 5 | Serveur sécurisé, `wagoo.hardylino.com`, HTTPS automatique, redirection HTTP → HTTPS. | E17 lots 1 à 5 | 1 | 🟡 |
-| INF2 | En tant que responsable du service, je veux un serveur et une base protégés. | Must (P0) | 3 | Seuls les ports 22, 80, 443 ouverts ; base non exposée ; secrets hors dépôt. | E17 lots 1 à 5 | 1 | 🟡 |
-| INF8 | En tant que voyageur, je veux que ma vie privée soit respectée côté serveur. | Must (P0) | 2 | Aucune position enregistrée ; journal d'accès du proxy coupé ; mentions légales. | E17 lot 1, E13 | 1 | 🟡 |
-| INF9 | En tant que futur exploitant, je veux une infrastructure documentée et transmissible. | Must (P0) | 1 | `infra/README.md` : déployer, restaurer, changer un secret. | E17 | 1 | 🟡 |
+| INF1 | En tant que voyageur, je veux accéder au site en ligne, en HTTPS, sur un nom de domaine. | Must (P0) | 5 | Serveur sécurisé, `wagoo.hardylino.com`, HTTPS automatique, redirection HTTP → HTTPS. | E17 lots 1 à 5 | 1 | ✅ |
+| INF2 | En tant que responsable du service, je veux un serveur et une base protégés. | Must (P0) | 3 | Seuls les ports 22, 80, 443 ouverts ; base non exposée ; secrets hors dépôt. | E17 lots 1 à 5 | 1 | ✅ |
+| INF8 | En tant que voyageur, je veux que ma vie privée soit respectée côté serveur. | Must (P0) | 2 | Aucune position enregistrée ; journal d'accès du proxy coupé ; mentions légales. | E17 lot 1, E13 | 1 | ✅ |
+| INF9 | En tant que futur exploitant, je veux une infrastructure documentée et transmissible. | Must (P0) | 1 | `infra/README.md` : déployer, restaurer, changer un secret. | E17 | 1 | ✅ |
 | INF10 | En tant que responsable du service, je veux une application protégée sans changer d'outil. | Should (P1) | 2 | En-têtes de sécurité ; limitation d'appels. | E17 phase 2 | 2 | ⬜ |
 | INF3 | En tant que responsable du service, je veux ne jamais perdre les données. | Should (P1) | 2 | Sauvegarde quotidienne ; restauration réelle chronométrée. | E17 phase 2 | 2 | ⬜ |
 | INF4 | En tant que voyageur, je veux des données toujours à jour. | Should (P1) | 2 | Mise à jour planifiée ; alerte en cas d'échec. | E17 phase 2 | 2 | ⬜ |
@@ -163,10 +163,28 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
 | F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
 | F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
-| F12 | 🟡 | Fait et vérifié avec Chromium (D071) ; essai sur un vrai iPhone et un vrai Android à faire |
+| F12 | 🟡 | iPhone validé en production le 07/11 ; un vrai Android à trouver |
+| F14 | 🟡 | Page en ligne ; 97 Mt, 69 %, 3 étapes, « pour qui », « ce que ça change » restent à écrire ou confirmer (E13) |
 | F20 | 🟡 | Couleurs sombres présentes ; bascule seulement sur la planche `/design`, pas dans l'application |
 | F15, F25 | ✅ | Dans le code et, pour F25, dans les tests unitaires ; aucun parcours dédié |
-| INF1 → INF10 | 🟡 | Décrites au § 3 : phase 1 d'E17 en cours (D076) |
+| INF1, INF2, INF8, INF9 | ✅ | Phase 1 d'E17 terminée le 07/11 ; pare-feu de l'hébergeur en plus, en phase 2 |
+
+---
+
+## 8. Reste à faire et estimation (relevé du 07/11/2026)
+
+**Estimations de Claude Code, pas des mesures,** pour Hardy accompagné de Claude Code. À revoir chaque lundi. 1 jour = 2 points. Hors P1, qui passent après le P0 (D051). Seule date ferme : tout fini le 30/11.
+
+| Étape | Pour quand | Fait | Reste | Estimation |
+|---|---|---|---|---|
+| E11, E12 | P0, 22/11 | Écrans, API, parcours | Cases d'`A-FAIRE` § 1 ; maquettes ; retouches de Hardy ; filtres sans parcours (F05) ; carte à 101 destinations (F08) ; chronomètre et essais sur téléphone ; plan Divia (F09) ; recherche de destination et guidage si la position est refusée | 3 j |
+| E13 | P0, 22/11 (Hardy visait la fin du projet, avant le gel) | Sources, À propos, Mentions, en ligne | 97 Mt et 69 % : Hardy ouvre le communiqué, puis `confirme: true` (10 min). 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
+| E14 | P0, 22/11 | Installation, hors ligne, iPhone en production | Un vrai Android (30 min, personne à trouver). Invitation à installer : facultative, 0,5 j | 0,5 j |
+| E15 | S8, après le P0 | 482 tests unitaires, 167 d'intégration, 133 de parcours (06/11) ; aucun `TODO` | Pas d'outil de couverture, ni axe, ni Lighthouse dans le dépôt (nouvelle dépendance : `DECISIONS`) ; accessibilité, performance, 2 ou 3 testeurs extérieurs | 3 j |
+| E16 | S8, après le P0 | Image web, compose de production, scripts d'export et de restauration | Profil `demo` sans `migrer` ni restauration ; export figé et date de démo ; `README.md` ; scénario de démo ; essai sur un autre ordinateur et réseau coupé ; répétition | 3 j |
+| E18 | Fin | Rien | Marque, `README.md` public, captures, publication | 1 j |
+
+**Avant le P0 : environ 4,5 jours de travail, pour 15 jours de calendrier. Jusqu'au 30/11 : environ 11,5 jours, pour 23 jours de calendrier.** Hors P1 et hors phase 2 d'E17.
 
 ---
 
@@ -178,3 +196,4 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | 11/10/2026 | 1.1 | Intégré au dépôt (D032) ; T2 en cours (E01 réalisée, PR à fusionner) |
 | 19/10/2026 | 1.2 | T2 terminé (E01 fusionnée) |
 | 05/11/2026 | 1.3 | États relus dans le code et les tests : F01, F02, F03, F04, F07, F10, F11, F15, F25, T3 terminés ; F05, F06, F08, F09, F20 en cours |
+| 07/11/2026 | 1.4 | INF1, INF2, INF8, INF9 et F13 terminés ; F14 en cours ; § 8 : reste à faire et estimations — D077 |

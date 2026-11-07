@@ -91,5 +91,6 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route — D025.
 - 06/11/2026 : fiche réécrite. L'infrastructure passe à Hardy, et la phase 1 est anticipée sans nouvelle étape — D076.
+- 07/11/2026 : les mises à jour suivent la procédure d'`infra/README.md` (« mets en ligne ») — D077.
 - 07/11/2026 : phase 1 terminée, panneau Coolify en HTTPS et ports limités à `localhost` (`infra/README.md`) — D076.
 - 07/11/2026 : mise en ligne sur OVH, 12 242 lieux et 268 025 liaisons retrouvés sur le VPS ; avancement et critères mis à jour — D076.

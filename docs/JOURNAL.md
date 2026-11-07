@@ -24,6 +24,33 @@
 
 ---
 
+## 07/11/2026 — Étape E17 — mise en ligne complète, procédure pour chaque mise à jour
+**Fait :**
+- Lots 2 à 5 : VPS OVH, Coolify 4.6.0, `wagoo.hardylino.com` en HTTPS, base chargée (12 242 lieux, 268 025 liaisons, chiffres identiques au poste). Tickets #74 et #75 fermés.
+- Panneau passé en HTTPS sur `coolify.hardylino.com`, mot de passe changé, ports 8000, 6001 et 6002 limités à `localhost`, 8080 retiré. Mesuré de l'extérieur : seuls 22, 80 et 443 ouverts.
+- Mentions légales complétées : OVH SAS, capital, adresse, téléphone, tels que donnés par Hardy.
+- Procédure de mise en ligne dans `infra/README.md`, protocole « mets en ligne » dans `CLAUDE.md` § 15, scripts `controler-production.sh` (essayé sur le site, et sur une adresse fausse : échec attendu) et `compter-lignes.sql`.
+- Point du reste à faire avant le P0 : `BACKLOG` § 8.
+
+**Décisions :** D077.
+
+**Problèmes rencontrés :**
+- `infra/README.md` demandait à tort de saisir `NODE_ENV` et écrivait les exports à la racine, sans protection de Git. Corrigé (#84).
+- Premier contrôle des positions sans valeur : le Redeploy avait remplacé le conteneur et son journal. Relevé par Hardy ; refait sur le conteneur en place, 0 et 0.
+- Panneau d'abord accessible en HTTP simple, compte créé ainsi : mot de passe changé depuis le HTTPS.
+
+**À valider par Hardy :**
+- Auto deploy sur *Manual deployments only* et mises à jour automatiques de Coolify (`A-FAIRE` § 2).
+- Retouches de design notées sur iPhone.
+
+**Prochaine action :**
+- Session de retouches, puis les cases d'E11 et E12.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (482), sur une copie. Intégration et parcours non relancés : seuls un texte et des documents ont changé depuis la PR #82. **Pas essayé :** les retours en arrière de la procédure, et une mise à jour avec migration. **Limite :** aucun pare-feu de l'hébergeur (`A-FAIRE`, phase 2).
+**Commit :** voir `docs(contexte): sauvegarde de session du 07/11` (branche `etape/contexte-0711`)
+
+---
+
 ## 06/11/2026 — Étapes E13 et E17 — écrans d'information, CO₂ défendu, mise en ligne préparée
 **Fait :**
 - E13 : écran Sources par thème, page À propos, Mentions légales et confidentialité (PR #72, #81 et #82 fusionnées).

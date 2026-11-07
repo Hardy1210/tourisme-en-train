@@ -42,6 +42,7 @@
 - Définition de « terminé » : `08-conventions-qualite.md` § 10.
 - Mettre à jour : documents de référence touchés, `CLAUDE.md` § 8, § 9 et § 16, `DECISIONS.md`, `A-FAIRE.md`.
 - Pull request `etape/Exx-…` → `main`.
+- Mise en ligne quand Hardy écrit « mets en ligne » : `infra/README.md`.
 
 ## Notes et modifications après coup
 *Ajoutées ici avec date et lien vers la décision, jamais en réécrivant le reste.*
