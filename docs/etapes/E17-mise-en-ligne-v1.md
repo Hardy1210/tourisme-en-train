@@ -1,8 +1,8 @@
 # E17 — Mise en ligne
 
 > **Priorité :** phase 1 anticipée, phase 2 après le P0 · **Branche :** `etape/E17-mise-en-ligne`
-> **Étapes préalables :** aucune pour la phase 1 ; la démo locale d'E16 reste le filet de sécurité · **État :** 🟡 phase 1 en cours
-> **Version de la fiche** 2.1 · **Date** 07/11/2026 (audit du 06/11, décision D076)
+> **Étapes préalables :** aucune pour la phase 1 ; la démo locale d'E16 reste le filet de sécurité · **État :** ✅ phase 1 · ⬜ phase 2
+> **Version de la fiche** 2.2 · **Date** 07/11/2026 (audit du 06/11, décision D076)
 
 ## Contexte minimal
 L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application part sur un VPS séparé géré par Coolify, en Docker Compose, à l'adresse `wagoo.hardylino.com`. Cette pré-production deviendra le déploiement officiel. Le domaine ne dépend que d'`URL_APP` et du réglage Coolify, pour en changer quand la marque sera validée.
@@ -26,7 +26,7 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 | Images Docker | PostGIS 853 Mo, ETL 889 Mo, `node:24-bookworm-slim` 333 Mo, **web 430 Mo** (construite en 151 s sur le poste) |
 | Compose de production au repos, après un parcours | Web 95 à 115 Mo, PostgreSQL 30 à 83 Mo |
 
-**Pas mesuré :** Coolify lui-même (sa documentation demande au moins 2 cœurs et 2 Go, et une page d'aide 30 Go de disque au total) et la construction de l'image sur un VPS.
+**Pas mesuré :** Coolify lui-même (sa documentation demande au moins 2 cœurs et 2 Go, et une page d'aide 30 Go de disque au total). Construction et déploiement mesurés depuis sur le VPS OVH : environ 3 min (07/11).
 
 **VPS retenu : 2 cœurs, 4 Go de mémoire, 40 Go de disque.** La construction a besoin de plus de 1 Go, et 2 Go ont suffi seule : avec Coolify, PostgreSQL et l'application en plus, 2 Go ne laissent aucune marge. Les mesures ne départagent pas Hetzner et OVH.
 
@@ -38,7 +38,7 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 - **Journal d'accès du proxy :** d'après le code de Coolify lu le 06/11, le journal d'accès dépend de l'option de statistiques de trafic. `/api/autour` reçoit `lat` et `lon` dans l'adresse : ce journal pourrait enregistrer la position. Ne pas activer l'option, et vérifier sur le VPS qu'il est coupé.
 - **Image Docker :** ✅ construite et essayée au lot 1, avec le compose de production complet.
 
-## Phase 1 (anticipée, en cours) : une adresse HTTPS qui marche
+## Phase 1 (anticipée, terminée le 07/11) : une adresse HTTPS qui marche
 **Pourquoi maintenant :** une adresse fixe pour tester sur téléphone et la PWA, et une adresse pour le jury (D076). Aucune tâche planifiée, aucune supervision.
 
 **Ce qui reste dès cette phase :** utilisateur non-root, base fermée, rôles séparés lecture et écriture, migrations, secrets hors de Git, HTTPS, `/api/sante`, redémarrage automatique.
@@ -52,7 +52,7 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 | 4. Mise en ligne | Commandes de chargement | Copier l'export sur le VPS, déployer, charger la base ; donner le nom de l'hébergeur pour les mentions légales |
 | 5. Contrôle | Liste des vérifications | HTTPS, `/api/sante` à 200, base fermée depuis l'extérieur, journal d'accès coupé, installation depuis Safari |
 
-**Lots 0 à 4 ✅ · lot 5 🟡 : preuve sur les journaux et fermeture du panneau restantes.** Le suivi se fait dans les tickets « E17 phase 1 ».
+**Lots 0 à 5 ✅.** Le suivi se fait dans les tickets « E17 phase 1 ».
 
 **Essai du lot 1, 06/11, sur le poste, hors VPS :** utilisateur `node`, base sans port publié, compose qui refuse de démarrer sans ses variables, migrations relancées sans effet, 12 242 lieux et 268 025 liaisons restaurés. Routes essayées à 200 : santé, sources, gares proches, destinations, autour, lieux, géocodage, pages, manifest, service worker. Navigateur : 101 sorties depuis Dijon, fiche ouverte, aucune erreur, aucun cookie. Base coupée : santé à 503, route à 500, reprise seule au retour de la base.
 
@@ -70,7 +70,7 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 - [x] HTTPS valide sur `wagoo.hardylino.com` ; `/api/sante` → 200 (07/11).
 - [x] Base inaccessible depuis Internet (07/11 : port 5432 fermé vu de l'extérieur, aucun port publié sur le VPS).
 - [x] Image web sans droits d'administration (lot 1, en local).
-- [ ] Aucune position dans les journaux de l'application ni du proxy.
+- [x] Aucune position dans les journaux de l'application ni du proxy (07/11 : 0 et 0 après des requêtes de test réussies et refusées, journal d'accès coupé ; une panne serveur reste couverte par le test automatique de la PR #81).
 - [x] Wagoo s'installe sur iPhone depuis Safari et s'ouvre en plein écran (07/11, essai de Hardy : sorties affichées, dernière vue lisible hors ligne).
 
 ## Phase 2 (après le P0, si le temps le permet)
@@ -91,4 +91,5 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route — D025.
 - 06/11/2026 : fiche réécrite. L'infrastructure passe à Hardy, et la phase 1 est anticipée sans nouvelle étape — D076.
+- 07/11/2026 : phase 1 terminée, panneau Coolify en HTTPS et ports limités à `localhost` (`infra/README.md`) — D076.
 - 07/11/2026 : mise en ligne sur OVH, 12 242 lieux et 268 025 liaisons retrouvés sur le VPS ; avancement et critères mis à jour — D076.
