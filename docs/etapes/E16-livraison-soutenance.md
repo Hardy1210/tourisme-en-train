@@ -49,4 +49,5 @@ Voir `_MODELE.md`.
 ## Notes et modifications après coup
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
 - 11/10/2026 : `node scripts/migrer.ts` doit tourner dans l'image web : la sortie `standalone` ne contient pas `apps/web/scripts/`, `db/migrations/`, `packages/commun/src/` ni `config/parametres.json`, à copier explicitement avec `drizzle-orm`, `pg` et `zod` (D033).
+- 07/11/2026 : corrections et design continuent après le gel : refaire l'image et l'export de la démo sur la dernière version retenue avant la soutenance — D078.
 - 06/11/2026 : `apps/web/Dockerfile` est fait en avance, pendant E17 phase 1 ; E16 le réutilise pour la démo locale, qui reste le filet de sécurité (D076).

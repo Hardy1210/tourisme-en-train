@@ -24,6 +24,31 @@
 
 ---
 
+## 07/11/2026 — Étapes E13 et E17 — chiffres de l'ADEME, dates, changements de structure
+**Fait :**
+- 97 Mt et 69 % affichés sur À propos, source ADEME, sans les 11 %. Texte du communiqué copié par Hardy et noté dans `equipe/pitch.md`.
+- Dates de Hardy notées : P0 au plus tard le 22/11, gel des nouveautés au plus tard le 27/11, puis corrections, design et déploiements jusqu'à la soutenance.
+- Procédure : plan validé et essai sur téléphone avant la fusion pour tout changement de structure ou de présentation.
+- Réglages Coolify confirmés par Hardy : déploiement manuel, mises à jour automatiques coupées (elles tournaient chaque nuit à 0 h 24 UTC).
+
+**Décisions :** D078.
+
+**Problèmes rencontrés :**
+- `ademe.fr` répond 403 à la lecture automatique, encore essayé le 07/11. Résolu par le texte copié par Hardy.
+- La page du ministère rapproche à tort les 11 % des 97 Mt, et donne d'autres chiffres pour l'avion : elle n'est pas citée sur le site.
+
+**À valider par Hardy :**
+- Fusion de la PR de sauvegarde, puis Redeploy pour publier les chiffres.
+- Liste de changements à envoyer.
+
+**Prochaine action :**
+- Voir `CLAUDE.md` § 9.
+
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ · intégration ✅ (167) · parcours ✅ (133, 1 ignoré), avant le retrait du lien du ministère ; ensuite `pnpm verifier` (482) et le parcours À propos relancés, tous bons.
+**Commit :** voir `docs(contexte): sauvegarde de session du 07/11, chiffres de l'ADEME et dates` (branche `etape/E13-chiffres-ademe`)
+
+---
+
 ## 07/11/2026 — Étape E17 — mise en ligne complète, procédure pour chaque mise à jour
 **Fait :**
 - Lots 2 à 5 : VPS OVH, Coolify 4.6.0, `wagoo.hardylino.com` en HTTPS, base chargée (12 242 lieux, 268 025 liaisons, chiffres identiques au poste). Tickets #74 et #75 fermés.

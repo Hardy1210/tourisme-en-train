@@ -14,7 +14,7 @@
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
 | **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources, facteur CO₂ de la voiture |
-| **Équipe, calendrier, livraison** | D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
+| **Équipe, calendrier, livraison** | D078 dates du P0 et du gel, essai avant fusion · D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
 
@@ -815,10 +815,26 @@
 - **En clair :** l'application est en ligne et le développement continue. Quand Hardy écrit « mets en ligne », Claude Code suit une procédure écrite : il vérifie, publie et contrôle ; Hardy fusionne, clique sur Redeploy et essaie sur l'iPhone.
 - **Décision :**
   1. **Référence unique :** `infra/README.md`, section « Mettre en ligne une mise à jour » ; `CLAUDE.md` § 15 n'en garde que l'ordre.
-  2. **Déploiement manuel :** une fusion ne change rien en ligne tant que Hardy n'a pas cliqué sur Redeploy (réglage à confirmer dans Coolify). Les documents seuls ne demandent aucun Redeploy.
+  2. **Déploiement manuel :** une fusion ne change rien en ligne tant que Hardy n'a pas cliqué sur Redeploy (réglage confirmé le 07/11). Les documents seuls ne demandent aucun Redeploy.
   3. **Contrôle scripté :** `infra/scripts/controler-production.sh`, en lecture seule, depuis l'extérieur.
   4. **Retour en arrière :** Revert sur GitHub puis Redeploy ; sauvegarde sur le VPS avant toute migration ou tout chargement de données, car un Revert ne défait pas une migration.
 - **Raison :** une personne seule, un site réel, et plusieurs oublis possibles entre GitHub, Coolify et le VPS (D076).
 - **Écarté :** déploiement à chaque fusion (une construction sur le VPS même pour un document, et aucune pause avant la mise en ligne) ; bouton *Rollback* de Coolify, jamais essayé sur ce compose ; intégration continue, absente du dépôt, à revoir si le temps le permet.
 - **Limites :** retours en arrière et mise à jour avec migration pas encore essayés en production.
 - **Impact :** `CLAUDE.md` § 10, § 15, § 16 ; `infra/README.md` ; `07` ; `BACKLOG` ; fiches E13, E14, E17 ; `_MODELE` ; `A-FAIRE`.
+
+---
+
+## D078 — P0 et gel aux dates fixées par Hardy ; essai avant fusion pour tout changement visible
+- **Date :** 07/11/2026
+- **En clair :** le P0 est fini au plus tard le 22/11 et plus aucune nouvelle fonctionnalité n'entre après le 27/11. Les corrections, le design et les déploiements continuent jusqu'à la soutenance. De gros changements restent à venir, y compris de structure : Hardy les valide avant toute fusion.
+- **Décision :**
+  1. **Dates :** P0 au plus tard le 22/11, gel des nouvelles fonctionnalités au plus tard le 27/11. Une avance éventuelle va aux P1.
+  2. **Après le gel :** corrections, retouches de design et déploiements jusqu'à la soutenance. La démo locale d'E16 doit suivre la dernière version retenue.
+  3. **Changement de structure ou de présentation :** plan court validé d'abord, essai sur téléphone avant la fusion, renvoi depuis toute adresse de page changée.
+  4. **Réglages Coolify :** déploiement manuel, mises à jour automatiques coupées (elles tournaient chaque nuit à 0 h 24 UTC) jusqu'à la soutenance.
+  5. **97 Mt et 69 % affichés**, séparés des 11 %. Formulation : « en 2022 », pas « par an », car le bilan porte sur une seule année.
+- **Raison :** le site est réel et Hardy veut garder la main sur chaque mise en ligne ; une mise à jour de Coolify la nuit pourrait casser une démonstration.
+- **Source :** communiqué de l'ADEME, texte copié par Hardy (`equipe/pitch.md`) ; `ademe.fr` refuse la lecture automatique. La page du ministère n'est pas citée sur le site : elle rapproche à tort les 11 % des 97 Mt.
+- **Remplace en partie :** la « décision de mise en ligne le 25/11 » de `CLAUDE.md` § 8, devenue sans objet (D076).
+- **Impact :** `CLAUDE.md` § 8, § 9, § 15 ; `infra/README.md` ; `BACKLOG` § 8 ; fiches E13, E15, E16 ; `equipe/pitch.md` ; `LECONS` ; `A-FAIRE`.

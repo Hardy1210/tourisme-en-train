@@ -48,3 +48,5 @@
 | 06/11/2026 | 1.52 | § 9 : E17 lot 1 ; § 16 : essayer la production en local — D076 |
 | 06/11/2026 | 1.53 | § 9 : sauvegarde de session (E17 lot 1 fait, lots 2 à 5 à la main) |
 | 07/11/2026 | 1.54 | § 8, § 9 : sauvegarde de session, phase 1 d'E17 terminée ; § 10, § 15, § 16 : protocole « mets en ligne » — D077 |
+| 07/11/2026 | 1.55 | § 8 : dates de Hardy ; § 9 : réglages Coolify confirmés ; § 15 : changements de structure — D078 |
+| 07/11/2026 | 1.56 | § 9 : sauvegarde de session, tâches à reprendre dans l'ordre |

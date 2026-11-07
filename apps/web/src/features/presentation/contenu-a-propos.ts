@@ -14,19 +14,20 @@ export type ChiffreSource = {
 const COMMUNIQUE_ADEME =
   'https://www.ademe.fr/presse/communique-national/journee-mondiale-du-tourisme-bilan-des-emissions-de-ges-du-secteur-du-tourisme-en-france/';
 
-// Lus sur la page du ministère de l'Économie ; communiqué de l'ADEME à ouvrir (pitch.md).
+// Communiqué de l'ADEME (pitch.md). Ne jamais y joindre les 11 % : ils portent sur les 46 Mt émises
+// sur le territoire, un autre périmètre que ces 97 Mt.
 const CHIFFRES_DU_BILAN: readonly ChiffreSource[] = [
   {
     valeur: '97 Mt CO₂e',
-    texte: 'Émissions du tourisme en France en 2022.',
+    texte: 'Empreinte carbone du tourisme en France en 2022.',
     sources: [{ libelle: 'ADEME', url: COMMUNIQUE_ADEME }],
-    confirme: false,
+    confirme: true,
   },
   {
     valeur: '69 %',
-    texte: 'de ces émissions sont dues au transport.',
+    texte: 'de cette empreinte vient du transport.',
     sources: [{ libelle: 'ADEME', url: COMMUNIQUE_ADEME }],
-    confirme: false,
+    confirme: true,
   },
 ];
 
