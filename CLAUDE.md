@@ -221,6 +221,7 @@ Détail complet : `docs/08-conventions-qualite.md`.
 - **Erreurs :** format unique `{ erreur: { code, message } }` ; aucun détail technique affiché à l'utilisateur.
 - **Taille :** un fichier dépasse rarement 200 lignes.
 - **Interdits :** `any`, code mort, `console.log` oublié.
+- **Un bug commence par un test** qui le reproduit, puis la correction (D080). *Sinon rien n'empêche le bug de revenir.*
 - **Tests en paires :** le cas **et** sa limite (« un lieu à 1,4 km apparaît » **et** « un lieu à 1,6 km n'apparaît pas »). *Sans la limite, une fonction qui répond toujours « oui » passe.*
 - **Données d'exemple** toujours signalées comme telles (commentaire + dossier `db/echantillon/`), jamais mélangées aux vraies.
 - **Construire du nouveau = se demander quelles protections existantes deviennent insuffisantes** (validation, filtre, test). Chercher les « portes sœurs » avant d'en fermer une.
@@ -314,7 +315,7 @@ Quand Hardy écrit **« mets en ligne »**, suivre **`infra/README.md`, section 
 
 1. **Classer** le changement : le tableau dit quoi vérifier et s'il faut un Redeploy (documents seuls : non). **Changement de structure ou de présentation : plan court validé par Hardy d'abord, et essai sur téléphone avant la fusion.**
 2. **Vérifier dans une copie** : `pnpm verifier`, `pnpm test:integration`, `pnpm test:e2e` ; essai de l'image si le tableau le demande.
-3. **Publier** : commit, push, pull request qui dit ce que Hardy devra faire.
+3. **Publier** : commit, push, pull request qui dit ce que Hardy devra faire. Chaque PR visible ajoute sa ligne à `CHANGELOG.md` ; avant le Redeploy, Hardy relit « Non publié » et choisit le numéro de version (D080).
 4. **Hardy** saisit les variables éventuelles dans Coolify, fusionne (bypass, *Squash and merge*, *Confirm*), sauvegarde la base si migration, clique sur **Redeploy**.
 5. **Contrôler** : `infra/scripts/controler-production.sh https://wagoo.hardylino.com` (code retour 0), puis la nouveauté dans un navigateur.
 6. **Hardy** essaie sur l'iPhone. **Noter** dans les documents touchés.

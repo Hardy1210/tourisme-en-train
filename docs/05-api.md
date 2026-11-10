@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.20 · **Date** 06/11/2026
+> **Version** 1.21 · **Date** 10/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -243,7 +243,7 @@ Tri par type puis distance (à pied, `mobilite_locale.distance_m`) ; limite `par
                      type: "commune" | "adresse" | "gare" }>,
   horsLigne: boolean }
 ```
-Passe par `lib/external/adresse.ts` (API Adresse de la Géoplateforme, adresse dans `config/sources.json`). **Gares de la base d'abord** (nom ou commune contenant le texte, sans accents ni majuscules, celles de la région en tête), puis communes et adresses de l'API ; `parametres.limites.geocodage` résultats au plus. En cas d'échec ou sans réseau : gares seules, `horsLigne: true` (réponse jamais mise en cache). Cache : `public, max-age=86400`.
+Passe par `lib/external/adresse.ts` (API Adresse de la Géoplateforme, adresse dans `config/sources.json`). **Gares de la base d'abord** (nom ou commune contenant le texte, sans accents ni majuscules, celles de la région en tête), puis **communes seules** de l'API (`type=municipality`, D081 : sans ce filtre, « beaune » remontait des rues et lieux-dits homonymes d'autres départements ; aucun filtre par région) ; `parametres.limites.geocodage` résultats au plus. En cas d'échec ou sans réseau : gares seules, `horsLigne: true` (réponse jamais mise en cache). Cache : `public, max-age=86400`.
 
 ### 3.11 bis `GET /api/geocodage/inverse?lat&lon`
 Donne le nom de la commune où se trouve l'utilisateur, pour la puce « Autour de <commune> ».
@@ -334,3 +334,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 05/11/2026 | 1.18 | § 4 : routes gardées hors ligne — D071 |
 | 06/11/2026 | 1.19 | § 3.8 bis : `/api/trains/arrets` — D074 |
 | 06/11/2026 | 1.20 | § 3.12 : `groupe`, thème de la source — D075 |
+| 10/11/2026 | 1.21 | § 3.11 : communes seules, plus de rues ni de lieux-dits (`type: "adresse"` n'est plus renvoyé) — D081 |

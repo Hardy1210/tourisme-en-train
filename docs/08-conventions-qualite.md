@@ -1,6 +1,6 @@
 # 08 — Conventions de code et qualité
 
-> **Version** 1.4 · **Date** 04/11/2026
+> **Version** 1.5 · **Date** 10/11/2026
 > **Dépend de :** `01-architecture.md`, `GLOSSAIRE.md`
 > **Utilisé par :** toutes les fiches d'étape
 > **Document de référence pour :** style de code, nommage détaillé, gestion des erreurs, journaux, tests, Git, définition de « terminé ».
@@ -79,7 +79,8 @@ Règles de `CLAUDE.md` § 3. En pratique :
 3. **Un test doit pouvoir échouer** : lors de sa création, le casser volontairement une fois pour vérifier qu'il échoue (en copiant le fichier avant, voir § 9).
 4. **Pas de test dépendant du réseau** ou de l'heure réelle.
 5. **Pas de test intermittent** : un test qui échoue « parfois » est corrigé ou supprimé immédiatement.
-6. Couverture visée : **fonctions pures ≥ 90 %**, le reste selon l'utilité, sans course au chiffre.
+6. **Un bug commence par un test** qui le reproduit et échoue ; la correction vient ensuite, et le test reste (D080).
+7. Couverture visée : **fonctions pures ≥ 90 %**, le reste selon l'utilité, sans course au chiffre.
 
 ## 8. Scripts
 
@@ -147,3 +148,4 @@ Une tâche est terminée quand **tout** est vrai :
 | 09/10/2026 | 1.2 | Exceptions `export default` et `server-only`, journal dans le code commun, `maintenantParis()` — D031 |
 | 11/10/2026 | 1.3 | § 8 : scripts de base et tests d'intégration réels (E01) |
 | 04/11/2026 | 1.4 | § 8 : tests de parcours réels (E11) |
+| 10/11/2026 | 1.5 | § 7 : un bug commence par un test — D080 |

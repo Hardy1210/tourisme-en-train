@@ -1,6 +1,6 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.5 · **Date** 07/11/2026
+> **Version** 1.6 · **Date** 10/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
 > **Document de référence pour :** comment exploiter la production. Comment mettre en ligne chaque mise à jour : section dédiée ci-dessous.
@@ -69,6 +69,7 @@ Essayé sur les PR #84 et #85, sans l'essai sur téléphone avant fusion. Le ser
    git switch main && git pull --ff-only --prune
    git worktree remove ../tourisme-<sujet> && git branch -D etape/<sujet>
    ```
+7 bis. **Hardy, décider de la version :** relire la rubrique « Non publié » de `CHANGELOG.md`. Si on met en ligne, Claude Code propose le numéro (D080) et, dans une petite PR de documents, renomme la rubrique en `[0.x.0] — JJ/MM/AAAA`.
 8. **Hardy, déployer :** Coolify → ressource de Wagoo → **Redeploy**. Attendre *Finished* (environ 3 min, mesuré le 07/11) et comparer le commit affiché à celui de la fusion. Advanced → Auto deploy est sur *Manual deployments only* (confirmé le 07/11) : une fusion seule ne change rien en ligne.
 9. **Claude Code, contrôler :**
    ```bash
@@ -76,6 +77,7 @@ Essayé sur les PR #84 et #85, sans l'essai sur téléphone avant fusion. Le ser
    ```
    Le code retour doit être 0. Puis regarder la nouveauté elle-même dans un navigateur.
 10. **Hardy, essayer sur l'iPhone :** fermer l'application installée, la rouvrir, regarder la nouveauté. Le service worker se met à jour seul : si l'ancienne version apparaît, fermer et rouvrir une fois de plus.
+10 bis. **Claude Code, marquer la version :** `git tag -a v0.x.0 <commit déployé> -m "Version 0.x.0"` puis `git push origin v0.x.0`.
 11. **Claude Code, noter :** les documents touchés, puis le journal au prochain « garde le contexte ».
 
 ### 3. Essayer l'image en local
@@ -189,3 +191,4 @@ Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. 
 | 07/11/2026 | 1.3 | Panneau Coolify en HTTPS, ports limités à `localhost`, 8080 retiré, contrôles du journal d'accès — D076 |
 | 07/11/2026 | 1.4 | Procédure complète de mise en ligne, script de contrôle, comptage des lignes — D077 |
 | 07/11/2026 | 1.5 | Changements de structure, essai avant fusion, réglages Coolify confirmés — D078 |
+| 10/11/2026 | 1.6 | § 2 : relecture du CHANGELOG, numéro et étiquette de version — D080 |

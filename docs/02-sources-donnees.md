@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.14 · **Date** 06/11/2026
+> **Version** 1.15 · **Date** 10/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -163,7 +163,7 @@
 
 ### 3.1 `api_adresse` — Recherche de ville (P0)
 - **Usage :** « autre ville » et repli si la localisation est refusée ; **nom de la commune de l'utilisateur** (puce « Autour de <commune> »).
-- **Appels :** recherche par texte, résultats limités aux communes et adresses ; **recherche inverse** (position → commune).
+- **Appels :** recherche par texte, **communes seules** (`type=municipality`, D081) ; **recherche inverse** (position → commune).
 - **Repli sans Internet :** recherche parmi les communes des gares en base (utile pour la démo hors ligne) ; pour la recherche inverse, commune de la gare la plus proche.
 - **Écarté : Nominatim** (serveur public OpenStreetMap) : limité à 1 requête par seconde et saisie semi-automatique interdite ; l'API Adresse couvre la France avec les adresses officielles (D022).
 - **Adresse :** API de la Géoplateforme `https://data.geopf.fr/geocodage` (`/search`, `/reverse`), dans `config/sources.json` (champ `api`) ; l'ancien domaine `api-adresse.data.gouv.fr` est obsolète (D051). Recherche inverse **sans** filtre `type=municipality` (qui ne renvoie rien).
@@ -253,3 +253,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 05/11/2026 | 1.12 | § 3.4 : mention du fond de carte raccourcie, avec liens — D073 |
 | 06/11/2026 | 1.13 | `facteurs_co2` : licence relue, réutilisation non commerciale — D075 |
 | 06/11/2026 | 1.14 | § 4.1 : ce que recouvre le facteur voiture — D075 |
+| 10/11/2026 | 1.15 | § 3.1 : recherche par texte limitée aux communes — D081 |

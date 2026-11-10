@@ -13,8 +13,8 @@
 | **Architecture et outils** | D002 données en base, API pour le temps réel · D004 stack · D005 monorepo · D009 PostGIS `geography` · D024 TypeScript au lieu de Python · D028 Node 24 · D029 versions fixées · D030 port de la base · D033 mise en place de la base |
 | **Données et traitement** (sources, gares, horaires, liaisons, lieux) | D013 sources retenues · D027 multi-région préparé · D034 gares · D035 socle du traitement · D036 horaires GTFS · D037 chargement GTFS · D038 table `commune` · D039 codes UIC · D040 liaisons directes · D041 lieux · D042 règles de catégories relues · D043 rattachements (doublons, sites, lieux en longueur) · D044 décisions manuelles sur les doublons, lieux fermés au public · D045 noms exclus, parc d'un château · D046 transports sur place (réseaux, cars, arrêt-gare) |
 | **Règles et conventions** | D006 nom de code et marque · D007 tout en français · D012 paramètres partagés · D031 conventions avant le code · D066 `CLAUDE.md` raccourci |
-| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources, facteur CO₂ de la voiture |
-| **Équipe, calendrier, livraison** | D079 étapes prévues avant le design et la structure · D078 dates du P0 et du gel, essai avant fusion · D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
+| **Interface** | D017 maquette de référence · D021 carte et temps réel · D053 dépendances de l'interface · D054 design system centralisé et maquette mobile v3 · D062 carte : MapLibre 5, cadrage · D055 légende des temps de trajet · D063 fiche destination et billetterie · D064 gare de départ par défaut · D067 écran Lieux · D068 position gardée, durées de cache, train parti jamais affiché · D069 Explorer gardé en vie · D070 filtres gardés entre les onglets · D071 PWA : réseau d'abord, aucune position gardée · D072 carte sous les filtres, marges iPhone · D065 MapLibre 5 jusqu'au P0, risque accepté · D073 mention du fond de carte · D074 ligne du train à la sélection · D075 écran Sources, facteur CO₂ de la voiture · D081 recherche de ville : communes seules |
+| **Équipe, calendrier, livraison** | D080 versions, CHANGELOG, intégration continue, test avant correction, design du 23 au 25/11 · D079 étapes prévues avant le design et la structure · D078 dates du P0 et du gel, essai avant fusion · D077 procédure de mise en ligne · D076 infrastructure confiée à Hardy, mise en ligne anticipée · D014 démo sous Docker · D015 indépendance vis-à-vis des SR · D016 pas de skills · D023 GitHub · D025 calendrier · D026 fichier maître des SR · D032 backlog |
 
 ---
 
@@ -848,3 +848,32 @@
 - **Raison :** une nouveauté ajoutée trop tôt risque de casser l'existant ou de doubler ce qui est déjà prévu.
 - **À surveiller :** les dates de D078 restent valables. Un gros changement de structure après E15 et E16 obligerait à refaire les contrôles de qualité, l'image et l'export de la démo. Hardy choisira le moment.
 - **Impact :** `CLAUDE.md` § 9 ; `BACKLOG` § 8 ; `A-FAIRE` § 1.
+
+---
+
+## D080 — Travailler comme sur un produit : versions, CHANGELOG, intégration continue, test avant correction
+- **Date :** 10/11/2026
+- **En clair :** Wagoo pourrait être financé par la Région ou repris ; on garde donc la trace de chaque nouveauté, on numérote les mises en ligne, et les tests tourneront tout seuls sur GitHub avant chaque fusion.
+- **Décision :**
+  1. **Branches :** `main` + une branche par ticket + pull request. Pas de branche `production` : Coolify ne déploie que sur un clic de Hardy (D077, D078).
+  2. **`CHANGELOG.md`** à la racine : chaque pull request visible y ajoute une ligne sous « Non publié ». Avant chaque mise en ligne, Hardy relit cette rubrique et décide.
+  3. **Versions** MAJEUR.MINEUR.CORRECTIF. **0.1.0** = la mise en ligne du 07/11 (`d1f0206`), marquée après coup par l'étiquette Git `v0.1.0`. Chaque mise en ligne avec nouveautés : mineur suivant. **1.0.0 = le jour du premier client** (Région ou autre), pas la soutenance.
+  4. **Avant le P0 du 22/11 :** intégration continue GitHub Actions sur chaque pull request (`pnpm verifier`, tests d'intégration avec un service PostgreSQL + PostGIS, parcours Playwright si possible), fusion bloquée si un test échoue ; règle ESLint qui interdit les imports entre couches. Choix des actions et de la règle : nouvelle décision avant l'installation.
+  5. **Règle permanente :** tout bug commence par un test qui le reproduit (et échoue), puis la correction.
+  6. **Retouches de design du 23 au 25/11**, après le P0 et avant E15 : l'accessibilité, la performance et les captures du pitch portent ainsi sur l'interface finale. Précise D079.
+- **Raison :** Hardy maintient seul l'application ; les tests doivent tourner sans dépendre de Claude Code, et la liste des nouveautés doit pouvoir être montrée à un financeur.
+- **Écarté :** branche `production` ou `develop` (une étape de plus à chaque mise en ligne pour une seule personne ; à revoir si une équipe arrive) ; pull requests laissées ouvertes jusqu'au déploiement (conflits entre elles, relecture difficile) ; 1.0.0 à la soutenance.
+- **À surveiller :** Hardy fusionne aujourd'hui avec *bypass rules* ; une fois l'intégration continue en place, le contournement sauterait aussi le blocage. À régler avec elle.
+- **Impact :** `CHANGELOG.md` ; `CLAUDE.md` § 11, § 15 ; `infra/README.md` § 2 ; `08` § 7 ; `BACKLOG` § 8 ; `A-FAIRE` § 3, § 4.
+
+---
+
+## D081 — Recherche de ville : communes seules
+- **Date :** 10/11/2026
+- **En clair :** taper « Beaune » ne propose plus que des communes, et plus des rues ou des hameaux du même nom à l'autre bout de la France.
+- **Décision :** `/api/geocodage` interroge l'API Adresse avec `type=municipality`, et garde seulement les communes de la réponse. Les gares viennent toujours de la base, en tête. Aucun filtre par région : on peut partir de Paris. La recherche inverse reste sans filtre (D051).
+- **Mesure (API réelle, 10/11) :** sur les 10 premiers résultats de « beaune », seuls 2 sont des communes : 6 sont des **rues** homonymes (« Beaune 19290 Sornac ») et 2 des lieux-dits. Retirer les lieux-dits seuls, comme prévu dans `A-FAIRE`, n'aurait donc presque rien changé. Avec le filtre : Beaune, Beaune-la-Rolande, Beaune-d'Allier, Beaune-sur-Arzon, Bligny-lès-Beaune.
+- **Écarté :** lieux-dits seuls (rues homonymes conservées) ; communes d'abord, puis le reste (les rues homonymes restaient visibles).
+- **Limite acceptée :** on ne peut plus chercher une adresse précise ; la position du téléphone reste précise, et la gare la plus proche de la commune est proposée.
+- **Impact :** `lib/external/adresse.ts` et ses tests ; `02` § 3.1 ; `05` § 3.11 ; `A-FAIRE` ; `CHANGELOG.md`.
+
