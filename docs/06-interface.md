@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.15 · **Date** 06/11/2026
+> **Version** 1.16 · **Date** 10/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -66,7 +66,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 | État | Affichage |
 |---|---|
 | Chargement | Squelettes + « On cherche ce qu'il y a autour de vous… » |
-| Localisation refusée ou impossible | Grand champ « Dans quelle ville êtes-vous ? » + suggestions de villes de la région |
+| Localisation refusée ou impossible | Grand champ « Dans quelle ville êtes-vous ? » + suggestions de villes de la région ; sous « Autoriser la localisation », lien repliable « Comment autoriser la localisation ? » avec les étapes de l'appareil (iPhone Safari ou installée, iPhone Chrome, Android Chrome ou installée, autre navigateur de téléphone, ordinateur, inconnu : texte générique), ouvert tout seul si une nouvelle demande est encore refusée. Textes : `features/localisation/contenu-guidage.ts` (D083) |
 | Hors région pilote | Message clair : « Pour l'instant, <marque> couvre <région> » (`marque.nom` et `parametres.region.nom`, jamais écrits en dur) + choix d'une ville de la région |
 | Aucun résultat | Message utile + action (« Élargir à 1 h de train ») |
 | Hors ligne | Bandeau discret + dernières recherches |
@@ -174,3 +174,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 06/11/2026 | 1.13 | § Carte : ligne d'arrêt en arrêt à la sélection — D074 |
 | 06/11/2026 | 1.14 | § 5 : écran Sources par thème, adresse `/sources` — D075 |
 | 06/11/2026 | 1.15 | § 5 : page Mentions légales et confidentialité (E13) |
+| 10/11/2026 | 1.16 | § 3 : guidage de la localisation selon l'appareil — D083 |

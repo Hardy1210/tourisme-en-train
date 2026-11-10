@@ -82,3 +82,4 @@ Voir `_MODELE.md`.
 - 06/11/2026 : mini-fiche calée sur la feuille, cachée feuille en haut, refermée par une carte de la liste ; mention de la carte sur une ligne (D073) ; ligne du train à la sélection (D074) ; retouches de Hardy (PR #71).
 - 10/11/2026 : recherche de ville limitée aux communes (D081) : la plupart des homonymes étaient des rues, pas des lieux-dits. Les états d'Explorer (chargement, position refusée, hors région, aucun résultat, erreur, hors ligne) sont tous dans le code, relus le 10/11.
 - 10/11/2026 : « TER Mobigo » selon les deux terminus du train, nom dans `region.nomTer` (D082).
+- 10/11/2026 : guidage de la localisation refusée selon l'appareil, textes dans `contenu-guidage.ts` (D083).
