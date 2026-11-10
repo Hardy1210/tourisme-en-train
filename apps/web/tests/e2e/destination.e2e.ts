@@ -58,6 +58,18 @@ for (const date of [DATE_HIVER, DATE_ETE]) {
   });
 }
 
+test('onglet Trains : « TER Mobigo » si les deux terminus sont en région, sinon « TER » (D082)', async ({
+  page,
+}) => {
+  await page.goto(lien(BEAUNE));
+  await onglet(page, 'Trains').click();
+  const aller = page.getByRole('region', { name: 'Aller' });
+  // ECH_T4 Dijon → Beaune : entièrement dans la région.
+  await expect(aller.getByText(/TER Mobigo 891003/)).toBeVisible();
+  // ECH_T1 (Dijon → Lyon) jumelé avec ECH_T26 : un trajet sort de la région.
+  await expect(aller.getByText(/· TER 891001 \/ 891099/)).toBeVisible();
+});
+
 test('une gare avec des transports les liste par type, avec les lignes', async ({ page }) => {
   await page.goto(`/destinations/${DIJON_VILLE}?onglet=sur-place`);
   await expect(page.getByText(/Autour de la gare de/)).toBeVisible();

@@ -4,6 +4,7 @@
   "region": {
     "codeInsee": "27",
     "nom": "Bourgogne-Franche-Comté",
+    "nomTer": "TER Mobigo",
     "departements": ["21", "25", "39", "58", "70", "71", "89", "90"],
     "emprise": { "latMin": 46.1, "latMax": 48.45, "lonMin": 2.8, "lonMax": 7.2 },
     "garesPrincipales": [

@@ -29,6 +29,8 @@ export const schemaParametres = z
     region: z.strictObject({
       codeInsee: z.string().regex(/^\d{2}$/),
       nom: z.string().min(1),
+      /** Nom commercial des TER de la région, affiché seulement si les deux terminus y sont (D082). */
+      nomTer: z.string().min(1),
       departements: z.array(z.string().regex(/^(\d{2,3}|2A|2B)$/)).min(1),
       /** Rectangle qui contient la région : contrôle « aucune gare de la région hors de son emprise ». */
       emprise: schemaEmprise,

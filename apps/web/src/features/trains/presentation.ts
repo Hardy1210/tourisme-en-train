@@ -1,4 +1,5 @@
 // Mise en forme des trains : calculs purs, sans lecture de l'horloge.
+import { parametres } from '@/config/parametres';
 import { trainParti } from '@/lib/dates/heures';
 import type { ReponseTrains, Train } from './schemas';
 
@@ -7,9 +8,21 @@ export function formaterHeure(heure: { texte: string; lendemain: boolean }): str
   return heure.lendemain ? `${heure.texte} (+1)` : heure.texte;
 }
 
-/** « TER 17818 », « TGV 12177 / 5537 » (trains en jumelage, D040), « TER » sans numéro connu. */
-export function libelleTrain(train: Pick<Train, 'typeTrain' | 'numeros'>): string {
-  const type = train.typeTrain === 'INTERCITES' ? 'Intercités' : train.typeTrain;
+/**
+ * « TER Mobigo 17818 », « TGV 12177 / 5537 » (trains en jumelage, D040), « TER » sans numéro connu.
+ * Nom régional (`region.nomTer`) seulement si les deux terminus du train sont dans la région : afficher
+ * « TER » n'est jamais faux, le nom d'une autre région l'est (D082).
+ */
+export function libelleTrain(
+  train: Pick<Train, 'typeTrain' | 'numeros' | 'terminusEnRegion'>,
+  nomTer: string = parametres.region.nomTer,
+): string {
+  const type =
+    train.typeTrain === 'INTERCITES'
+      ? 'Intercités'
+      : train.typeTrain === 'TER' && train.terminusEnRegion
+        ? nomTer
+        : train.typeTrain;
   return train.numeros.length > 0 ? `${type} ${train.numeros.join(' / ')}` : type;
 }
 
