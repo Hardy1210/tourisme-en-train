@@ -1,10 +1,10 @@
 'use client';
 
 import { LocateFixed, MapPinOff, TrainFront } from 'lucide-react';
-import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
 import { Puce } from '@/components/ui/puce';
 import { parametres } from '@/config/parametres';
+import { GuidageLocalisation } from './guidage-localisation';
 import { RechercheVille } from './recherche-ville';
 
 const MESSAGES = {
@@ -57,15 +57,11 @@ export function EcranSansPosition({
           ))}
         </div>
       </div>
-      {bloquee && (
-        <Bandeau variante="info">
-          La localisation est bloquée : autorisez-la dans les réglages de votre navigateur.
-        </Bandeau>
-      )}
       <Bouton variante="fantome" className="text-primary" onClick={surRedemande}>
         <LocateFixed aria-hidden="true" className="size-4.5" />
         Autoriser la localisation
       </Bouton>
+      <GuidageLocalisation bloquee={bloquee} />
     </div>
   );
 }

@@ -222,6 +222,49 @@ test.describe('position acceptée', () => {
 test.describe('position refusée', () => {
   test.use({ permissions: [] });
 
+  const refuserLaPosition = (page: Page) =>
+    page.addInitScript(() => {
+      navigator.geolocation.getCurrentPosition = (_succes, echec) =>
+        echec?.({
+          code: 1,
+          message: 'refusée',
+          PERMISSION_DENIED: 1,
+          POSITION_UNAVAILABLE: 2,
+          TIMEOUT: 3,
+        });
+    });
+  const lienGuidage = (page: Page) =>
+    page.locator('summary', { hasText: 'Comment autoriser la localisation ?' });
+
+  test('guidage replié, adapté à l’appareil, ouvert d’un toucher (D083)', async ({
+    page,
+    isMobile,
+  }) => {
+    await refuserLaPosition(page);
+    await page.goto(ECRAN);
+    await expect(lienGuidage(page)).toBeVisible();
+    // Pixel 7 (Chrome Android) en mobile, Chrome sur ordinateur en desktop.
+    const titre = isMobile ? 'Sur Android, avec Chrome' : 'Sur ordinateur';
+    await expect(page.getByText(titre, { exact: true })).toBeHidden();
+    await expect(page.getByText('La localisation est toujours bloquée')).toHaveCount(0);
+
+    await lienGuidage(page).click();
+    await expect(page.getByText(titre, { exact: true })).toBeVisible();
+  });
+
+  test('nouvelle demande encore refusée : le guidage s’ouvre tout seul (D083)', async ({
+    page,
+    isMobile,
+  }) => {
+    await refuserLaPosition(page);
+    await page.goto(ECRAN);
+    await page.getByRole('button', { name: 'Autoriser la localisation' }).click();
+    await expect(page.getByText(/La localisation est toujours bloquée/)).toBeVisible();
+    // Dernière étape : revenir sur téléphone, recharger sur ordinateur.
+    const derniere = isMobile ? /Revenez ici et touchez/ : 'Rechargez la page.';
+    await expect(page.getByText(derniere)).toBeVisible();
+  });
+
   test('la recherche de ville mène aux mêmes résultats', async ({ page }) => {
     await page.addInitScript(() => {
       navigator.geolocation.getCurrentPosition = (_succes, echec) =>
