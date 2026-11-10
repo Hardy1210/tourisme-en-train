@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { formaterHeure, libelleTrain, lignesRetour, trainsAVenir } from './presentation';
 import type { Train } from './schemas';
+import { parametres } from '@/config/parametres';
 
 const train = (id: string): Train => ({
   trajetIds: [id],
@@ -9,6 +10,7 @@ const train = (id: string): Train => ({
   dureeMin: 16,
   typeTrain: 'TER',
   numeros: [],
+  terminusEnRegion: true,
 });
 
 describe('formaterHeure', () => {
@@ -21,11 +23,34 @@ describe('formaterHeure', () => {
 });
 
 describe('libelleTrain', () => {
+  const horsRegion = { terminusEnRegion: false };
   it('assemble les numéros des trains en jumelage', () => {
-    expect(libelleTrain({ typeTrain: 'TGV', numeros: ['12177', '5537'] })).toBe('TGV 12177 / 5537');
+    expect(libelleTrain({ typeTrain: 'TGV', numeros: ['12177', '5537'], ...horsRegion })).toBe(
+      'TGV 12177 / 5537',
+    );
   });
   it('se limite au type sans numéro connu', () => {
-    expect(libelleTrain({ typeTrain: 'INTERCITES', numeros: [] })).toBe('Intercités');
+    expect(libelleTrain({ typeTrain: 'INTERCITES', numeros: [], ...horsRegion })).toBe(
+      'Intercités',
+    );
+  });
+});
+
+describe('libelleTrain : nom régional des TER (D082)', () => {
+  it('TER dont les deux terminus sont dans la région → nom de la configuration', () => {
+    expect(libelleTrain({ typeTrain: 'TER', numeros: ['17818'], terminusEnRegion: true })).toBe(
+      `${parametres.region.nomTer} 17818`,
+    );
+  });
+  it('TER dont un terminus est hors région → « TER »', () => {
+    expect(libelleTrain({ typeTrain: 'TER', numeros: ['17810'], terminusEnRegion: false })).toBe(
+      'TER 17810',
+    );
+  });
+  it('TGV entièrement dans la région → reste « TGV »', () => {
+    expect(libelleTrain({ typeTrain: 'TGV', numeros: ['6701'], terminusEnRegion: true })).toBe(
+      'TGV 6701',
+    );
   });
 });
 

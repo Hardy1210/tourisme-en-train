@@ -18,6 +18,7 @@ const versTrain = (t: TrainBrut): Train => ({
   dureeMin: Math.round((t.arrivee_s - t.depart_s) / 60),
   typeTrain: t.type_train,
   numeros: t.numeros,
+  terminusEnRegion: t.terminus_en_region,
 });
 
 /** `maintenant` vient de `maintenantParis()` (route) : le service ne lit jamais l'horloge. */

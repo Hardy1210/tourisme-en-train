@@ -12,6 +12,7 @@ import { appeler, erreurDe, type Route } from './outils-api';
 
 const DIJON = 'EX000001';
 const BEAUNE = 'EX000002';
+const CHALON = 'EX000005';
 const HIVER = '2026-11-18';
 
 let fiche: Route;
@@ -188,6 +189,40 @@ describe('/api/trains', () => {
   it('heure mal écrite → 400 au message clair', async () => {
     const mal = await appeler(trains, `/api/trains?depart=${DIJON}&arrivee=${BEAUNE}&depuis=8h`);
     expect(erreurDe(mal.corps).message).toBe('L’heure doit être au format HH:MM.');
+  });
+});
+
+describe('/api/trains : terminus dans la région (TER Mobigo, D082)', () => {
+  const lire = async (depart: string, arrivee: string) => {
+    const reponse = await appeler(
+      trains,
+      `/api/trains?depart=${depart}&arrivee=${arrivee}&date=${HIVER}`,
+    );
+    expect(reponse.statut).toBe(200);
+    return schemaReponseTrains.parse(reponse.corps);
+  };
+
+  it('train entièrement dans la région (Dijon → Beaune, ECH_T4) → true', async () => {
+    const dernier = (await lire(DIJON, BEAUNE)).aller.at(-1);
+    expect(dernier).toMatchObject({ trajetIds: ['ECH_T4'], terminusEnRegion: true });
+  });
+
+  it('train qui sort de la région (Dijon → Lyon, pris jusqu’à Chalon) → false', async () => {
+    const [premier] = (await lire(DIJON, CHALON)).aller;
+    expect(premier).toMatchObject({ trajetIds: ['ECH_T1'], terminusEnRegion: false });
+  });
+
+  it('train qui entre dans la région (Lyon → Dijon, pris depuis Chalon) → false', async () => {
+    const [premier] = (await lire(DIJON, CHALON)).retour;
+    expect(premier).toMatchObject({ trajetIds: ['ECH_T2'], terminusEnRegion: false });
+  });
+
+  it('jumelage : un des trajets sort de la région → false pour le train réuni', async () => {
+    const [premier] = (await lire(DIJON, BEAUNE)).aller;
+    expect(premier).toMatchObject({
+      trajetIds: ['ECH_T1', 'ECH_T26'],
+      terminusEnRegion: false,
+    });
   });
 });
 

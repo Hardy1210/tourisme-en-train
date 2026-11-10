@@ -25,6 +25,11 @@ export const schemaTrain = z.object({
   dureeMin: z.number().int(),
   typeTrain: schemaTypeTrain,
   numeros: z.array(z.string()),
+  /**
+   * Premier **et** dernier arrêt du train (pas du trajet demandé) dans la région ; `false` si un
+   * seul des trajets jumelés en sort. Sert au nom régional des TER (`region.nomTer`, D082).
+   */
+  terminusEnRegion: z.boolean(),
 });
 
 export const schemaReponseTrains = z.object({
