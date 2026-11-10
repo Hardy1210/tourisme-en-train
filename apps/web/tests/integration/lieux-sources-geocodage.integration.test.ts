@@ -184,6 +184,26 @@ describe('/api/geocodage', () => {
     ]);
   });
 
+  it('communes seules : l’API est interrogée avec type=municipality (D081)', async () => {
+    apiAdresse([{ label: 'Beaune', type: 'municipality', city: 'Beaune', citycode: '21054' }]);
+    await lire('Beaune');
+    const url = new URL(String(vi.mocked(fetch).mock.calls[0]?.[0]));
+    expect(url.searchParams.get('type')).toBe('municipality');
+  });
+
+  it('rue ou lieu-dit homonyme (« Beaune 19290 Sornac ») → écarté, la commune reste', async () => {
+    apiAdresse([
+      { label: 'Beaune', type: 'municipality', city: 'Beaune', citycode: '21054' },
+      { label: 'Beaune 19290 Sornac', type: 'street', city: 'Sornac', citycode: '19261' },
+      { label: 'Beaune 87120 Eymoutiers', type: 'locality', city: 'Eymoutiers', citycode: '87064' },
+    ]);
+    const reponse = await lire('Beaune');
+    expect(reponse.resultats.map((r) => [r.libelle, r.type])).toEqual([
+      ['Beaune', 'gare'],
+      ['Beaune', 'commune'],
+    ]);
+  });
+
   it('API en panne : repli sur les gares, sans accents (« besancon »), horsLigne', async () => {
     apiEnPanne();
     const reponse = await lire('besancon');

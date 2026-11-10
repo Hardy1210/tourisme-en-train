@@ -65,9 +65,19 @@ async function appeler(
   }));
 }
 
-/** Recherche par texte (saisie semi-automatique). */
-export function rechercherAdresses(texte: string, limite: number): Promise<AdresseTrouvee[]> {
-  return appeler('search', { q: texte, limit: String(limite), autocomplete: '1' });
+/**
+ * Recherche par texte (saisie semi-automatique), **communes seules** (D081) : sans ce filtre, « beaune »
+ * remonte des rues et lieux-dits homonymes d'autres départements (« Beaune 19290 Sornac »). Pas de
+ * filtre par région : on peut partir de Paris. Le tri après l'appel protège d'une réponse inattendue.
+ */
+export async function rechercherAdresses(texte: string, limite: number): Promise<AdresseTrouvee[]> {
+  const trouvees = await appeler('search', {
+    q: texte,
+    limit: String(limite),
+    autocomplete: '1',
+    type: 'municipality',
+  });
+  return trouvees.filter((adresse) => adresse.type === 'commune');
 }
 
 /**

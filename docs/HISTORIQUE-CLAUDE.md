@@ -51,3 +51,4 @@
 | 07/11/2026 | 1.55 | § 8 : dates de Hardy ; § 9 : réglages Coolify confirmés ; § 15 : changements de structure — D078 |
 | 07/11/2026 | 1.56 | § 9 : sauvegarde de session, tâches à reprendre dans l'ordre |
 | 07/11/2026 | 1.57 | § 9 : sauvegarde de session, étapes prévues d'abord — D079 |
+| 10/11/2026 | 1.58 | § 11 : un bug commence par un test ; § 15 : CHANGELOG et numéro de version — D080 |

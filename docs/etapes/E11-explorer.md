@@ -34,7 +34,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [ ] (P1) Bouton **Partager** (partage natif, sinon copie du lien + « Lien copié »).
 - [x] Feuille de résultats : « Votre gare », « À deux pas de vous », « En train direct depuis… » (cartes de destination : « Faisable dans la journée » **ou** « Retour tôt, plutôt sur 2 jours » ; prix **seulement s'il est calibré**, sans espace vide sinon).
 - [x] Desktop : panneau gauche 440 px + carte.
-- [ ] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne, erreur.
+- [x] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne (bandeau commun, E14), erreur.
 - [x] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
 
 ## Critères d'acceptation
@@ -80,3 +80,4 @@ Voir `_MODELE.md`.
 - 05/11/2026 : chaque écran retrouve ses filtres au retour sur son onglet (D070).
 - 05/11/2026 : carte sous les filtres sur mobile, marges iPhone, poignée posée sur le menu (D072, PR #71) ; carte validée par Hardy sur iPhone, marges à revérifier.
 - 06/11/2026 : mini-fiche calée sur la feuille, cachée feuille en haut, refermée par une carte de la liste ; mention de la carte sur une ligne (D073) ; ligne du train à la sélection (D074) ; retouches de Hardy (PR #71).
+- 10/11/2026 : recherche de ville limitée aux communes (D081) : la plupart des homonymes étaient des rues, pas des lieux-dits. Les états d'Explorer (chargement, position refusée, hors région, aucun résultat, erreur, hors ligne) sont tous dans le code, relus le 10/11.
