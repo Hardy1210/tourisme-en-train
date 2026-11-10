@@ -43,7 +43,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [x] Changer une catégorie met à jour carte **et** liste.
 - [ ] Toute information de la carte existe aussi dans la liste.
 - [ ] Avec ~20 destinations, la carte reste lisible (étiquettes limitées) **et** la destination sélectionnée a toujours son étiquette.
-- [ ] Prix non calibré → aucune ligne de prix dans les cartes.
+- [x] Prix non calibré → aucune ligne de prix dans les cartes (parcours en paire, 10/11).
 - [x] Vérifié dans le navigateur en 390 px et 1440 px.
 
 ## Vérifications manuelles

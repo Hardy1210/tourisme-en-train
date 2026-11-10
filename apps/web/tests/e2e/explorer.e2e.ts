@@ -188,6 +188,30 @@ test.describe('position acceptée', () => {
     expect(hauteur).toBeLessThan(28);
   });
 
+  // Prix calibré : chaque carte de destination le montre, avec la mention « estimation » (règle 7).
+  test('prix calibré : les cartes de destination affichent le prix estimé', async ({ page }) => {
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+    await expect(page.getByLabel(/^Prix estimé pour un aller/).first()).toBeVisible();
+    await expect(page.getByText(/l.aller \(estimation\)/).first()).toBeVisible();
+  });
+
+  // Prix non calibré (`prixEstime: null`) : aucune ligne de prix, les cartes restent complètes.
+  test('prix non calibré : aucune ligne de prix dans les cartes de destination', async ({
+    page,
+  }) => {
+    await page.route('**/api/destinations?*', async (requete) => {
+      const reponse = await requete.fetch();
+      const corps = await reponse.json();
+      for (const destination of corps.destinations) destination.prixEstime = null;
+      await requete.fulfill({ response: reponse, json: corps });
+    });
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+    await expect(page.getByLabel(/^Prix estimé pour un aller/)).toHaveCount(0);
+    await expect(page.getByText(/estimation|€/)).toHaveCount(0);
+  });
+
   test('une date hors des horaires propose de revenir à aujourd’hui', async ({ page }) => {
     await page.goto('/?date=2020-01-01');
     await expect(page.getByRole('button', { name: /aujourd/i }).last()).toBeVisible();
