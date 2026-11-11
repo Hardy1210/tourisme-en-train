@@ -41,6 +41,7 @@
 - « Bligny-lès-Beaune » de la maquette n'existe pas : donnée inventée de mes tests, recopiée dans le prompt (L54).
 - Parcours « les résultats arrivent, puis une destination s'ouvre » **instable sur `main`** : 3 échecs sur 20 (la fiche ne s'ouvre pas en 5 s). À corriger dans une PR à part (`A-FAIRE` § 1, L55).
 - Hardy a noté des « comportements bizarres » dans la #94, sans les détailler : à reprendre avec lui.
+- Demande mal comprise : « que la feuille monte comme celle d'Autour de Dijon » a été lue comme « même hauteur d'ouverture » (`0cf7202`). Hardy a demandé de revenir en arrière : `7789d45` annule ce commit, la #94 est identique à `f3ee6d8`, la version qu'il avait essayée. Avant de recoder, lui faire décrire le geste attendu, avec un exemple à l'écran.
 
 **À valider par Hardy :**
 - La #94 sur téléphone, puis la fusion. Textes Android du guidage pendant E14.
