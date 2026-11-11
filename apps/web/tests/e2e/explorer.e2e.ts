@@ -268,54 +268,24 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  // Feuilles du trajet : hauteur fixe, haut de la feuille à `--feuille-trajet-haut` du haut de l'écran,
-  // quel que soit le contenu ; le clavier passe par-dessus sans la déplacer.
-  const hautDeFeuille = async (page: Page, nom: string) => {
-    const feuille = page.getByRole('dialog', { name: nom });
-    await expect(feuille).toBeVisible();
-    await page.waitForTimeout(700); // fin de la montée
-    const reglage = await page.evaluate(() =>
-      parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--feuille-trajet-haut'),
-      ),
-    );
-    return { haut: (await feuille.boundingBox())?.y ?? 0, reglage };
-  };
-
-  test('« Où allez-vous ? » s’ouvre à la hauteur réglée, même vide', async ({ page }) => {
+  test('la feuille s’ouvre à la hauteur de son contenu, comme « D’où partez-vous ? »', async ({
+    page,
+  }) => {
     await page.goto(ECRAN);
-    await ouvrirDestination(page);
-    const { haut, reglage } = await hautDeFeuille(page, 'Où allez-vous ?');
-    expect(reglage).toBeGreaterThan(0);
-    expect(Math.abs(haut - reglage)).toBeLessThan(4);
-  });
-
-  test('« D’où partez-vous ? » s’ouvre à la même hauteur', async ({ page }) => {
-    await page.goto(ECRAN);
-    await barre(page)
-      .getByRole('button', { name: /^Départ :/ })
-      .click();
-    const { haut, reglage } = await hautDeFeuille(page, "D'où partez-vous ?");
-    expect(Math.abs(haut - reglage)).toBeLessThan(4);
-  });
-
-  test('toucher le champ et taper ne déplacent pas la feuille', async ({ page }) => {
-    await page.goto(ECRAN_ETE);
     const feuille = await ouvrirDestination(page);
-    const { haut } = await hautDeFeuille(page, 'Où allez-vous ?');
+    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
+    await page.waitForTimeout(700); // fin de la montée
     const hauteur = (await feuille.boundingBox())?.height ?? 0;
-    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('b');
-    await expect(feuille.getByText(/^\d+ destinations? sur \d+$/).first()).toBeVisible();
-    const apres = await feuille.boundingBox();
-    expect(Math.abs((apres?.y ?? 0) - haut)).toBeLessThan(2);
-    expect(Math.abs((apres?.height ?? 0) - hauteur)).toBeLessThan(2);
+    const ecran = page.viewportSize()?.height ?? 0;
+    // Titre + champ seulement : une grande feuille vide monterait en haut de l'écran avec le clavier.
+    expect(hauteur).toBeLessThan(ecran / 3);
   });
 
   test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
     page,
   }) => {
-    // Écran court : la feuille, à hauteur fixe, ne montre pas les 4 destinations.
-    await page.setViewportSize({ width: 390, height: 600 });
+    // Écran raccourci comme par le clavier du téléphone.
+    await page.setViewportSize({ width: 390, height: 480 });
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
     const feuille = await ouvrirDestination(page);
