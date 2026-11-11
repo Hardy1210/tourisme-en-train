@@ -3,6 +3,7 @@
 import { type ReactNode, useRef } from 'react';
 import { Drawer } from 'vaul';
 import { cn } from '@/lib/classes';
+import { useHauteurClavier } from '@/lib/use-hauteur-clavier';
 import { BoutonFermer } from './bouton';
 import { IndicateurDefilement } from './indicateur-defilement';
 
@@ -17,6 +18,11 @@ type Proprietes = {
    * et la carte) bloque le téléphone : la feuille disparaîtrait d'un coup au lieu de glisser.
    */
   apresFermeture?: () => void;
+  /**
+   * Hauteur fixe (`--feuille-trajet-haut`) : le clavier passe par-dessus le bas de la feuille, qui ne
+   * bouge pas ; seule la zone qui défile s'arrête au-dessus du clavier.
+   */
+  hauteurFixe?: boolean;
   children: ReactNode;
 };
 
@@ -27,12 +33,15 @@ export function Feuille({
   titre,
   ancreeAuRail = false,
   apresFermeture,
+  hauteurFixe = false,
   children,
 }: Proprietes) {
   const zone = useRef<HTMLDivElement>(null);
   const contenu = useRef<HTMLDivElement>(null);
+  const clavier = useHauteurClavier(hauteurFixe && ouverte);
   return (
-    <Drawer.Root open={ouverte} onOpenChange={surChangement}>
+    // Par défaut, vaul remonte la feuille au-dessus du clavier : la feuille à hauteur fixe reste en place.
+    <Drawer.Root open={ouverte} onOpenChange={surChangement} repositionInputs={!hauteurFixe}>
       <Drawer.Portal>
         <Drawer.Overlay
           className={cn(
@@ -48,6 +57,8 @@ export function Feuille({
           }}
           className={cn(
             'fixed inset-x-0 bottom-(--decalage-bas) z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
+            hauteurFixe &&
+              'max-h-none h-[calc(var(--hauteur-app)-env(safe-area-inset-top,0px)-var(--feuille-trajet-haut))]',
             ancreeAuRail &&
               'lg:right-auto lg:bottom-4 lg:left-[calc(var(--rail-largeur)+0.5rem)] lg:w-80 lg:rounded-lg lg:border lg:px-3 lg:pt-1.5 lg:shadow-float lg:after:hidden',
           )}
@@ -73,7 +84,11 @@ export function Feuille({
             </Drawer.Close>
           </div>
           {/* Barre du navigateur masquée : l'indicateur la remplace, visible même sans geste. */}
-          <div className="relative flex min-h-0 flex-1 flex-col">
+          {/* Clavier ouvert : les derniers résultats restent atteignables au-dessus de lui. */}
+          <div
+            className="relative flex min-h-0 flex-1 flex-col"
+            style={clavier > 0 ? { marginBottom: clavier } : undefined}
+          >
             <div
               ref={zone}
               className={cn(

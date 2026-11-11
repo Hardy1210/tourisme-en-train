@@ -72,7 +72,7 @@ export function ChoixDepart({
 /** Feuille « D'où partez-vous ? » (écrans Explorer et Lieux). */
 export function FeuilleDepart({ ouverte, surChangement, ...choix }: Proprietes) {
   return (
-    <Feuille ouverte={ouverte} surChangement={surChangement} titre="D'où partez-vous ?">
+    <Feuille hauteurFixe ouverte={ouverte} surChangement={surChangement} titre="D'où partez-vous ?">
       <ChoixDepart {...choix} />
     </Feuille>
   );

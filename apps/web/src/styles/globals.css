@@ -306,6 +306,10 @@
   --feuille-radius: calc(var(--radius-base) * 1.4);
   --feuille-poignee: var(--border-strong);
   --feuille-hauteur-max: 86dvh;
+  /* Feuilles du trajet (« D'où partez-vous ? », « Où allez-vous ? ») : distance entre le haut de l'écran
+     (sous la barre d'état de l'iPhone) et le haut de la feuille ouverte. 116px = haut des filtres de
+     catégories. Plus grand = feuille plus basse. Hauteur fixe : le clavier passe par-dessus. */
+  --feuille-trajet-haut: 116px;
 
   /* Indicateur de défilement des feuilles : trait de la marque, rail presque invisible, même largeur */
   --indicateur-defilement: var(--primary);
