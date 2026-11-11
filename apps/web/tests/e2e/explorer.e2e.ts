@@ -268,24 +268,17 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  test('« Où allez-vous ? » a la hauteur de « D’où partez-vous ? », même vide', async ({
+  test('la feuille s’ouvre à la hauteur de son contenu, comme « D’où partez-vous ? »', async ({
     page,
   }) => {
     await page.goto(ECRAN);
-    await barre(page)
-      .getByRole('button', { name: /^Départ :/ })
-      .click();
-    const depart = page.getByRole('dialog', { name: "D'où partez-vous ?" });
-    await expect(depart).toBeVisible();
-    await page.waitForTimeout(700); // fin de la montée
-    const hauteurDepart = (await depart.boundingBox())?.height ?? 0;
-    await page.keyboard.press('Escape');
-    await expect(depart).toHaveCount(0);
-
     const feuille = await ouvrirDestination(page);
-    await page.waitForTimeout(700);
+    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
+    await page.waitForTimeout(700); // fin de la montée
     const hauteur = (await feuille.boundingBox())?.height ?? 0;
-    expect(Math.abs(hauteur - hauteurDepart)).toBeLessThan(4);
+    const ecran = page.viewportSize()?.height ?? 0;
+    // Titre + champ seulement : une grande feuille vide monterait en haut de l'écran avec le clavier.
+    expect(hauteur).toBeLessThan(ecran / 3);
   });
 
   test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
