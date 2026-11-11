@@ -7,6 +7,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { type ReactNode, type RefObject, useEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
+import { bloquerGeste, positionListe } from '@/lib/blocage-geste';
 import { cn } from '@/lib/classes';
 import { useZoneVisible } from '@/lib/use-zone-visible';
 
@@ -24,6 +25,9 @@ type Proprietes = {
 };
 
 const sansAbonnement = () => () => {};
+
+/** Zone qui défile dans la page : le seul endroit où le doigt peut faire défiler quelque chose. */
+export const ATTRIBUT_DEFILEMENT = 'data-defilement';
 
 /** À appeler dans le gestionnaire du toucher, avant tout changement d'état : le clavier s'ouvre. */
 export function ouvrirPage(page: HTMLElement | null, champ: HTMLElement | null): void {
@@ -66,6 +70,46 @@ export function PagePleinEcran({
     const filet = window.setTimeout(() => terminerRef.current(), 400);
     return () => window.clearTimeout(filet);
   }, [ouverte]);
+
+  // Ouverte : la page reste fixe. Un geste qui n'a rien à faire défiler ne passe pas à la page derrière
+  // (iPhone), et le fond ne défile plus ni ne rebondit.
+  useEffect(() => {
+    const element = page.current;
+    if (!ouverte || !element) return;
+    let dernierY = 0;
+    const debut = (evenement: TouchEvent) => {
+      dernierY = evenement.touches[0]?.clientY ?? 0;
+    };
+    const deplacement = (evenement: TouchEvent) => {
+      const y = evenement.touches[0]?.clientY ?? dernierY;
+      const deplacementY = y - dernierY;
+      dernierY = y;
+      const cible = evenement.target instanceof Element ? evenement.target : null;
+      const liste = cible?.closest<HTMLElement>(`[${ATTRIBUT_DEFILEMENT}]`) ?? null;
+      const position = liste
+        ? positionListe({
+            defilement: liste.scrollTop,
+            hauteurVisible: liste.clientHeight,
+            hauteurContenu: liste.scrollHeight,
+          })
+        : { defilable: false, enHaut: true, enBas: true };
+      if (bloquerGeste({ dansListe: liste !== null, ...position, deplacementY }))
+        evenement.preventDefault();
+    };
+    // Sans `passive: false`, Safari ignore `preventDefault`.
+    element.addEventListener('touchstart', debut, { passive: true });
+    element.addEventListener('touchmove', deplacement, { passive: false });
+    const racine = document.documentElement.style;
+    const avant = { overflow: racine.overflow, rebond: racine.overscrollBehavior };
+    racine.overflow = 'hidden';
+    racine.overscrollBehavior = 'none';
+    return () => {
+      element.removeEventListener('touchstart', debut);
+      element.removeEventListener('touchmove', deplacement);
+      racine.overflow = avant.overflow;
+      racine.overscrollBehavior = avant.rebond;
+    };
+  }, [ouverte, page]);
 
   if (!monte) return null;
   return createPortal(

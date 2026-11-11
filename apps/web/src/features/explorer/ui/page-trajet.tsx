@@ -5,7 +5,7 @@
 // montée (même quand le départ se recharge) ; ouverte dans le toucher par `usePageTrajet().ouvrir`.
 import { useCallback, useRef, useState } from 'react';
 
-import { PagePleinEcran } from '@/components/ui/page-plein-ecran';
+import { ATTRIBUT_DEFILEMENT, PagePleinEcran } from '@/components/ui/page-plein-ecran';
 import type { Destination } from '@/features/destinations/schemas';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
@@ -136,7 +136,10 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
           }}
         />
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6">
+      <div
+        {...{ [ATTRIBUT_DEFILEMENT]: '' }}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6"
+      >
         {trajet.champActif === 'depart' ? (
           <ZoneDepart
             texte={texteDepart}
