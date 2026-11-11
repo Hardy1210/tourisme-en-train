@@ -278,6 +278,26 @@ test.describe('position acceptée', () => {
     expect(hauteur).toBeLessThan(ecran / 2);
   });
 
+  test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
+    page,
+  }) => {
+    // Écran raccourci comme par le clavier du téléphone.
+    await page.setViewportSize({ width: 390, height: 600 });
+    await page.goto(ECRAN_ETE);
+    await expect(sorties(page).first()).toBeVisible();
+    const feuille = await ouvrirDestination(page);
+    const champ = feuille.getByRole('searchbox', { name: 'Nom de la destination' });
+    const indicateur = feuille.locator('[data-indicateur-defilement]');
+
+    // 4 destinations : la dernière passe sous le bord.
+    await champ.fill('b');
+    await expect(feuille.getByText(/^4 destinations sur \d+$/).first()).toBeVisible();
+    await expect(indicateur).toBeVisible();
+    await champ.fill('besancon');
+    await expect(feuille.getByText(/^2 destinations sur \d+$/).first()).toBeVisible();
+    await expect(indicateur).toHaveCount(0);
+  });
+
   test('choisir une destination referme la feuille en glissant, comme « D’où partez-vous ? »', async ({
     page,
   }) => {

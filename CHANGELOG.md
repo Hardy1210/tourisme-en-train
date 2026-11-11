@@ -9,6 +9,7 @@
 
 ### Ajouté
 - Recherche de destination : en haut d'Explorer, « Autour de Dijon → Où aller ? » : touchez « Où aller ? » pour chercher. Tapez « beau » ou « besancon », et la liste comme la carte ne montrent plus que ces destinations, sans changer la gare de départ.
+- Dans les feuilles de recherche, un trait fin sur le côté signale qu'il reste des résultats plus bas, cachés par le clavier.
 - Position refusée : un guide « Comment autoriser la localisation ? » donne les étapes exactes pour iPhone, Android ou ordinateur. Il s'ouvre tout seul si la position est encore bloquée.
 
 ### Modifié

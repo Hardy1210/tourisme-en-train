@@ -1,9 +1,10 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { Drawer } from 'vaul';
 import { cn } from '@/lib/classes';
 import { BoutonFermer } from './bouton';
+import { IndicateurDefilement } from './indicateur-defilement';
 
 type Proprietes = {
   ouverte: boolean;
@@ -31,6 +32,8 @@ export function Feuille({
   apresFermeture,
   children,
 }: Proprietes) {
+  const zone = useRef<HTMLDivElement>(null);
+  const contenu = useRef<HTMLDivElement>(null);
   return (
     <Drawer.Root open={ouverte} onOpenChange={surChangement}>
       <Drawer.Portal>
@@ -72,8 +75,18 @@ export function Feuille({
               <BoutonFermer className={cn('-mr-2.5', ancreeAuRail && 'lg:hidden')} />
             </Drawer.Close>
           </div>
-          <div className={cn('min-h-0 flex-1 overflow-y-auto pb-6', ancreeAuRail && 'lg:pb-1.5')}>
-            {children}
+          {/* Barre du navigateur masquée : l'indicateur la remplace, visible même sans geste. */}
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <div
+              ref={zone}
+              className={cn(
+                'min-h-0 flex-1 overflow-y-auto pb-6 scrollbar-none',
+                ancreeAuRail && 'lg:pb-1.5',
+              )}
+            >
+              <div ref={contenu}>{children}</div>
+            </div>
+            <IndicateurDefilement zone={zone} contenu={contenu} />
           </div>
           {pied && <div className="flex-none pb-4">{pied}</div>}
         </Drawer.Content>
