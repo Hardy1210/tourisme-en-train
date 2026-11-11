@@ -306,6 +306,8 @@
   --feuille-radius: calc(var(--radius-base) * 1.4);
   --feuille-poignee: var(--border-strong);
   --feuille-hauteur-max: 86dvh;
+  /* Feuilles du trajet (départ, destination) : toujours ouvertes jusqu'à cette marge du haut de l'écran. */
+  --feuille-marge-haut: 250px;
 
   /* Indicateur de défilement des feuilles : trait de la marque, rail presque invisible, même largeur */
   --indicateur-defilement: var(--primary);

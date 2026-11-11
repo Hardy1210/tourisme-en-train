@@ -17,6 +17,8 @@ type Proprietes = {
    * et la carte) bloque le téléphone : la feuille disparaîtrait d'un coup au lieu de glisser.
    */
   apresFermeture?: () => void;
+  /** Toujours ouverte jusqu'à `--feuille-marge-haut` du haut de l'écran, quel que soit le contenu. */
+  hauteurFixe?: boolean;
   children: ReactNode;
 };
 
@@ -27,6 +29,7 @@ export function Feuille({
   titre,
   ancreeAuRail = false,
   apresFermeture,
+  hauteurFixe = false,
   children,
 }: Proprietes) {
   const zone = useRef<HTMLDivElement>(null);
@@ -48,6 +51,7 @@ export function Feuille({
           }}
           className={cn(
             'fixed inset-x-0 bottom-(--decalage-bas) z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
+            hauteurFixe && 'h-[calc(var(--hauteur-app)-var(--feuille-marge-haut))]',
             ancreeAuRail &&
               'lg:right-auto lg:bottom-4 lg:left-[calc(var(--rail-largeur)+0.5rem)] lg:w-80 lg:rounded-lg lg:border lg:px-3 lg:pt-1.5 lg:shadow-float lg:after:hidden',
           )}

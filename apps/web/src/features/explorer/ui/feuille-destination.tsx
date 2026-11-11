@@ -58,6 +58,7 @@ export function FeuilleDestination({
 
   return (
     <Feuille
+      hauteurFixe
       ouverte={ouverte}
       surChangement={surChangement}
       apresFermeture={apresFermeture}
