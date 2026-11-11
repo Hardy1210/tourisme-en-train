@@ -23,4 +23,21 @@ export const TEXTES_TRAJET = {
     'Vérifiez l’orthographe, ou effacez les filtres pour chercher dans toutes les destinations.',
   effacerFiltres: 'Effacer les filtres',
   chargement: 'Les destinations arrivent…',
+  // Page « Trajet » du téléphone (D085).
+  titrePage: 'Trajet',
+  retour: 'Retour',
+  champDepart: 'Départ',
+  champDestination: 'Destination',
+  indicationDestination: 'Où allez-vous ?',
+  indicationDepart: 'Ville ou gare de départ',
+  effacerChamp: 'Effacer le texte',
+  depuis: 'En train direct depuis',
+  voirToutes: 'Voir toutes les destinations',
+  plusProches: 'Les plus proches en train',
+  aucunTrain: 'Aucune destination en train direct avec ces filtres.',
+  maPosition: 'Ma position',
+  garesProches: 'Gares proches de vous',
+  autreVille: 'Une autre ville',
+  impossible: (depart: string, destination: string) =>
+    `Pas de train direct de ${depart} à ${destination} : choisissez une autre destination.`,
 } as const;

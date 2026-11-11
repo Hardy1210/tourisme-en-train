@@ -6,6 +6,7 @@ import { useGrandEcran } from '@/features/carte/hooks';
 import { cn } from '@/lib/classes';
 import { nombreFiltres } from '../filtres';
 import { useChoixDepart, useFiltres } from '../hooks';
+import { usePageTrajet } from '../use-page-trajet';
 import type { PositionFeuille } from '../position-feuille';
 import {
   BoutonDate,
@@ -16,6 +17,7 @@ import {
 } from './controles-depart';
 import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
+import { PageTrajet } from './page-trajet';
 import { RangeeFiltres } from './rangee-filtres';
 import { ResultatsExplorer } from './resultats-explorer';
 import { TrajetExplorer } from './trajet-explorer';
@@ -31,6 +33,11 @@ export function EcranExplorer() {
 
   const pret = depart.etat === 'pret';
   const grandEcran = useGrandEcran();
+  const trajet = usePageTrajet();
+  const montrerResultats = () => {
+    setPositionFeuille('plein');
+    setDemandeDefilement((n) => n + 1);
+  };
 
   // Sur mobile, la carte passe sous l'en-tête : ses boutons et son cadrage doivent le contourner (D072).
   const enTete = useRef<HTMLElement>(null);
@@ -72,10 +79,8 @@ export function EcranExplorer() {
             depart={depart}
             filtres={filtres}
             surModification={changer}
-            surResultats={() => {
-              setPositionFeuille('plein');
-              setDemandeDefilement((n) => n + 1);
-            }}
+            surResultats={montrerResultats}
+            ouvrirPage={grandEcran ? null : trajet.ouvrir}
           />
         ) : (
           <BoutonDepart choix={choix} />
@@ -98,7 +103,9 @@ export function EcranExplorer() {
           depart={depart}
           filtres={filtres}
           surModification={changer}
-          surChangementGare={() => choix.setFeuilleOuverte(true)}
+          surChangementGare={() =>
+            grandEcran ? choix.setFeuilleOuverte(true) : trajet.ouvrir('depart')
+          }
           surChoixGare={choix.choisirGareEtFermer}
           position={positionFeuille}
           surPosition={setPositionFeuille}
@@ -120,6 +127,13 @@ export function EcranExplorer() {
         surModification={changer}
       />
       <FeuilleChoixDepart choix={choix} />
+      <PageTrajet
+        trajet={trajet}
+        choix={choix}
+        filtres={filtres}
+        surModification={changer}
+        surResultats={montrerResultats}
+      />
     </div>
   );
 }

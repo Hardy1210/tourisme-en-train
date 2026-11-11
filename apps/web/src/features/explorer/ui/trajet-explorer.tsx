@@ -18,6 +18,8 @@ type Proprietes = {
   surModification: (modifications: Partial<Filtres>) => void;
   /** Après une recherche : la feuille de résultats monte au plus haut et montre la destination. */
   surResultats: () => void;
+  /** Téléphone : la page « Trajet » (D085), ouverte dans le toucher ; null sur grand écran. */
+  ouvrirPage: ((champ: 'depart' | 'destination') => void) | null;
 };
 
 export function TrajetExplorer({
@@ -26,6 +28,7 @@ export function TrajetExplorer({
   filtres,
   surModification,
   surResultats,
+  ouvrirPage,
 }: Proprietes) {
   const [destinationOuverte, setDestinationOuverte] = useState(false);
   const { avantRecherche, liste } = useListeDestinations(depart.gare.uic, filtres);
@@ -41,8 +44,10 @@ export function TrajetExplorer({
         depart={choix.libelle}
         destination={libelleDestination(filtres, liste?.length ?? 0)}
         // Le départ se choisit dans la feuille « D'où partez-vous ? » d'avant.
-        surDepart={() => choix.setFeuilleOuverte(true)}
-        surDestination={() => setDestinationOuverte(true)}
+        surDepart={() => (ouvrirPage ? ouvrirPage('depart') : choix.setFeuilleOuverte(true))}
+        surDestination={() =>
+          ouvrirPage ? ouvrirPage('destination') : setDestinationOuverte(true)
+        }
         surEffacer={() => surModification({ recherche: '', destination: null })}
       />
       <FeuilleDestination
