@@ -212,7 +212,7 @@ test.describe('position acceptée', () => {
     await expect(page.getByText(/estimation|€/)).toHaveCount(0);
   });
 
-  // Recherche de destination (D084) : barre du trajet + feuille « Votre trajet ».
+  // Recherche de destination (D084) : barre du trajet + feuille « Où allez-vous ? ».
   const barre = (page: Page) => page.getByRole('group', { name: /^Trajet :/ });
   // Été : les deux Besançon (Viotte et TGV) ont un train direct depuis Dijon dans l'échantillon.
   const ECRAN_ETE = '/?date=2026-07-15';
@@ -220,7 +220,7 @@ test.describe('position acceptée', () => {
     await barre(page)
       .getByRole('button', { name: /^Destination :/ })
       .click();
-    return page.getByRole('dialog', { name: 'Votre trajet' });
+    return page.getByRole('dialog', { name: 'Où allez-vous ?' });
   };
 
   test('barre du trajet : départ et « Où aller ? » sur une seule ligne', async ({ page }) => {
@@ -242,6 +242,8 @@ test.describe('position acceptée', () => {
     await feuille.getByRole('button', { name: 'Afficher les 2 destinations' }).click();
 
     await expect(page).toHaveURL(/recherche=besancon/);
+    // La première destination trouvée est la première chose vue, sans défiler.
+    await expect(page.locator('[data-destination]').first()).toBeInViewport();
     await expect(titreDestinations(page)).toBeVisible();
     await expect(sorties(page)).toHaveCount(2);
     await expect(marqueurs(page)).toHaveCount(2);
@@ -264,6 +266,26 @@ test.describe('position acceptée', () => {
     await barre(page).getByRole('button', { name: 'Effacer la recherche' }).click();
     await expect(sorties(page)).toHaveCount(avant);
     await expect(barre(page)).toContainText('Où aller ?');
+  });
+
+  test('la feuille s’ouvre sans le clavier : il ne vient qu’au toucher du champ', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    const feuille = await ouvrirDestination(page);
+    const champ = feuille.getByRole('searchbox', { name: 'Nom de la destination' });
+    await expect(champ).toBeVisible();
+    await expect(champ).not.toBeFocused();
+    await champ.click();
+    await expect(champ).toBeFocused();
+  });
+
+  test('« Autour de Dijon » ouvre toujours « D’où partez-vous ? »', async ({ page }) => {
+    await page.goto(ECRAN);
+    await barre(page)
+      .getByRole('button', { name: /^Départ :/ })
+      .click();
+    await expect(page.getByRole('dialog', { name: "D'où partez-vous ?" })).toBeVisible();
   });
 
   test('« xyz » : message dans la feuille ; par un lien, état vide et ses deux boutons', async ({

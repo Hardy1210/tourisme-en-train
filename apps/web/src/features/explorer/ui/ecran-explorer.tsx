@@ -26,6 +26,7 @@ export function EcranExplorer() {
   const [positionFeuille, setPositionFeuille] = useState<PositionFeuille>('milieu');
   const [feuilleDate, setFeuilleDate] = useState(false);
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
+  const [demandeDefilement, setDemandeDefilement] = useState(0);
   const { filtres, changer } = useFiltres();
 
   const pret = depart.etat === 'pret';
@@ -71,7 +72,10 @@ export function EcranExplorer() {
             depart={depart}
             filtres={filtres}
             surModification={changer}
-            surResultats={() => setPositionFeuille('plein')}
+            surResultats={() => {
+              setPositionFeuille('plein');
+              setDemandeDefilement((n) => n + 1);
+            }}
           />
         ) : (
           <BoutonDepart choix={choix} />
@@ -99,6 +103,7 @@ export function EcranExplorer() {
           position={positionFeuille}
           surPosition={setPositionFeuille}
           masqueEnHaut={() => (grandEcran ? 0 : hauteurEnTete)}
+          demandeDefilement={demandeDefilement}
         />
       )}
 
@@ -114,8 +119,7 @@ export function EcranExplorer() {
         filtres={filtres}
         surModification={changer}
       />
-      {/* Gare prête : le départ se choisit dans la feuille « Votre trajet » (D084). */}
-      {depart.etat !== 'pret' && <FeuilleChoixDepart choix={choix} />}
+      <FeuilleChoixDepart choix={choix} />
     </div>
   );
 }

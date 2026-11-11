@@ -16,6 +16,7 @@ import type { PositionFeuille } from '../position-feuille';
 import { FeuilleResultats } from './feuille-resultats';
 import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
 import { TEXTES_TRAJET } from '../contenu-trajet';
+import { useDefilementVersDestination } from '../defilement-destination';
 import { useListeDestinations } from '../liste-destinations';
 
 const AUCUNE_DESTINATION: readonly Destination[] = [];
@@ -30,6 +31,8 @@ type Proprietes = {
   surPosition: (position: PositionFeuille) => void;
   /** Hauteur de l'en-tête posé sur la carte, pour ne rien cadrer dessous. */
   masqueEnHaut: () => number;
+  /** Augmente à chaque recherche appliquée : la feuille défile jusqu'à la première destination (D084). */
+  demandeDefilement: number;
 };
 
 /** « Votre gare », « À deux pas de vous », « En train direct » : tout suit les filtres de l'URL. */
@@ -42,6 +45,7 @@ export function ResultatsExplorer({
   position,
   surPosition,
   masqueEnHaut,
+  demandeDefilement,
 }: Proprietes) {
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
@@ -49,9 +53,10 @@ export function ResultatsExplorer({
   const { gare, point, origine } = depart;
   const plusProche = plusProcheDifferente(depart);
   const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
-  // Liste partagée avec la feuille « Votre trajet » ; `liste` suit aussi la recherche (D084).
+  // Liste partagée avec la feuille « Où allez-vous ? » ; `liste` suit aussi la recherche (D084).
   const { requete: destinations, avantRecherche, liste } = useListeDestinations(gare.uic, filtres);
   const rechercheActive = filtres.recherche !== '';
+  useDefilementVersDestination(feuille, demandeDefilement, rechercheActive, liste);
 
   const lienDe = (destination: Destination) => {
     const suite = new URLSearchParams({ depuis: gare.uic });

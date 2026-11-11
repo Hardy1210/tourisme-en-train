@@ -1,4 +1,4 @@
-// Textes de la barre du trajet et de la feuille « Votre trajet » (D084). Seul fichier à modifier pour
+// Textes de la barre du trajet et de la feuille « Où allez-vous ? » (D084). Seul fichier à modifier pour
 // corriger un texte : la logique (`recherche-destination.ts`) et l'écran n'en contiennent aucun.
 
 export const TEXTES_TRAJET = {
@@ -9,10 +9,7 @@ export const TEXTES_TRAJET = {
   modifierDepart: (depart: string) => `Départ : ${depart}, modifier`,
   modifierDestination: (destination: string) => `Destination : ${destination}, modifier`,
   effacer: 'Effacer la recherche',
-  titreFeuille: 'Votre trajet',
-  de: 'De',
-  a: 'À',
-  changerDepart: 'Changer',
+  titreFeuille: 'Où allez-vous ?',
   champ: 'Nom de la destination',
   /** « 2 destinations sur 101 » sous le champ. */
   compte: (trouvees: number, total: number) =>

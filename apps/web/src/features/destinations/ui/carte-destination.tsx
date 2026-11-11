@@ -26,6 +26,8 @@ type Proprietes = {
 export function CarteDestination({ destination: d, lien, survolee, surSurvol }: Proprietes) {
   return (
     <Carte
+      // Repère pour faire défiler la feuille jusqu'à la première destination trouvée (D084).
+      data-destination={d.gare.uic}
       className={cn('relative', survolee && 'ring-2 ring-primary')}
       onMouseEnter={() => surSurvol(d.gare.uic)}
       onMouseLeave={() => surSurvol(null)}

@@ -1,6 +1,6 @@
 'use client';
 
-// Barre du trajet + feuille « Votre trajet » d'Explorer, une fois la gare de départ prête (D084).
+// Barre du trajet + feuille « Où allez-vous ? » d'Explorer, une fois la gare de départ prête (D084).
 import { useState } from 'react';
 
 import type { Depart } from '../depart';
@@ -9,14 +9,14 @@ import type { useChoixDepart } from '../hooks';
 import { useListeDestinations } from '../liste-destinations';
 import { libelleDestination, type Recherche } from '../recherche-destination';
 import { BarreTrajet } from './barre-trajet';
-import { FeuilleTrajet, type ModeTrajet } from './feuille-trajet';
+import { FeuilleDestination } from './feuille-destination';
 
 type Proprietes = {
   choix: ReturnType<typeof useChoixDepart>;
   depart: Extract<Depart, { etat: 'pret' }>;
   filtres: Filtres;
   surModification: (modifications: Partial<Filtres>) => void;
-  /** Après une recherche : la feuille de résultats monte au plus haut, sous les catégories. */
+  /** Après une recherche : la feuille de résultats monte au plus haut et montre la destination. */
   surResultats: () => void;
 };
 
@@ -27,17 +27,11 @@ export function TrajetExplorer({
   surModification,
   surResultats,
 }: Proprietes) {
-  const [mode, setMode] = useState<ModeTrajet | null>(null);
+  const [destinationOuverte, setDestinationOuverte] = useState(false);
   const { avantRecherche, liste } = useListeDestinations(depart.gare.uic, filtres);
-  // « Changer de gare » (carte « Votre gare », hors région) ouvre la même feuille, sur le départ.
-  const ouverte = mode !== null || choix.feuilleOuverte;
-  const fermer = () => {
-    setMode(null);
-    choix.setFeuilleOuverte(false);
-  };
   const appliquer = (recherche: Recherche) => {
     surModification(recherche);
-    fermer();
+    setDestinationOuverte(false);
     surResultats();
   };
 
@@ -46,32 +40,14 @@ export function TrajetExplorer({
       <BarreTrajet
         depart={choix.libelle}
         destination={libelleDestination(filtres, liste?.length ?? 0)}
-        surDepart={() => setMode('depart')}
-        surDestination={() => setMode('destination')}
+        // Le départ se choisit dans la feuille « D'où partez-vous ? » d'avant.
+        surDepart={() => choix.setFeuilleOuverte(true)}
+        surDestination={() => setDestinationOuverte(true)}
         surEffacer={() => surModification({ recherche: '', destination: null })}
       />
-      <FeuilleTrajet
-        ouverte={ouverte}
-        surChangement={(etat) => {
-          if (!etat) fermer();
-        }}
-        mode={mode ?? 'depart'}
-        libelleDepart={choix.libelle}
-        choixDepart={{
-          proches: depart.proches,
-          uicActuel: depart.gare.uic,
-          surMaPosition: () => {
-            fermer();
-            choix.revenirAMaPosition();
-          },
-          surChoixGare: (uic) => {
-            fermer();
-            choix.choisirGareEtFermer(uic);
-          },
-          surChoixPoint: (point) => {
-            void choix.choisirPoint(point).then(() => setMode(null));
-          },
-        }}
+      <FeuilleDestination
+        ouverte={destinationOuverte}
+        surChangement={setDestinationOuverte}
         destinations={avantRecherche}
         rechercheActuelle={filtres.recherche}
         surAppliquer={appliquer}

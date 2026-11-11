@@ -1,6 +1,6 @@
 'use client';
 
-// Liste des destinations d'Explorer, partagée par la feuille de résultats et la feuille « Votre trajet »
+// Liste des destinations d'Explorer, partagée par la feuille de résultats et la feuille « Où allez-vous ? »
 // (D084) : même requête (cache TanStack Query), mêmes filtres d'interface, aucun appel en double.
 import { useMemo } from 'react';
 
