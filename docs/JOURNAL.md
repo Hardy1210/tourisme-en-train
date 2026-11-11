@@ -24,6 +24,25 @@
 
 ---
 
+## 11/11/2026 (après-midi) — Étape E11 — #94 : feuille « Où allez-vous ? » et indicateur de défilement
+**Fait :**
+- #94, retours de Hardy sur téléphone : « Où allez-vous ? » ne s'ouvre plus à sa hauteur maximale ; elle prend la hauteur de son contenu, comme « D'où partez-vous ? » (une hauteur fixe, essayée entre-temps, faisait monter la feuille vide en haut de l'écran avec le clavier)
+- Fermeture au choix d'une destination : la feuille disparaissait d'un coup. Cause mesurée : filtrer la liste et la carte bloquait le navigateur ~0,7 s (9 tâches longues) pendant la glissade. Le choix s'applique désormais une fois la feuille sortie (`Feuille.apresFermeture`). Test qui reproduisait le défaut (3 échecs sur 3), puis correction
+- Indicateur de défilement dans toutes les feuilles (trait de la marque, rail presque invisible, même largeur), visible tant que du contenu est caché : Safari sur iPhone n'affiche sa barre que pendant le geste et ignore son style. Calcul pur testé (`lib/defilement.ts`), jetons `--indicateur-defilement-*`
+- Bouton « Afficher les x destinations » dans la liste, plus collé en bas (il écrasait la liste)
+- `A-FAIRE` : « Où allez-vous ? » deviendra probablement une page
+**Décisions :** D084 modifiée (sur la branche de la #94)
+**Problèmes rencontrés :**
+- Première hypothèse fausse (montée de la feuille de résultats) : trouvée par expériences, mais trop de builds et d'erreurs évitables ; Hardy a relevé le coût (45 000 tokens)
+- Parcours instable connu : 1 échec sur 40 relances, même erreur qu'avant
+**À valider par Hardy :**
+- #94 sur iPhone (`767d36f`) : « Où allez-vous ? » posée sur le clavier, glissade à la fermeture, indicateur
+- Vu sans y toucher : choisir une gare proche dans « D'où partez-vous ? » semble aussi faire disparaître la feuille d'un coup ; en tapant « b », Paris (1 h 36) passe avant Besançon Franche-Comté TGV (26 min)
+**Prochaine action :**
+- Retour de Hardy sur la #94 ; puis parcours instable (PR à part), puis en-tête repliable
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (523) · parcours 160/161, l'échec = parcours instable connu
+**Commit :** `767d36f` (branche `etape/E11-recherche-destination`)
+
 ## 10–11/11/2026 — Étape E11 — recherche de ville, TER Mobigo, guidage, recherche de destination ; travail « comme un produit »
 **Fait :**
 - Nouvelle façon de travailler (D080) : `main` + CHANGELOG, versions (0.1.0 = mise en ligne du 07/11, étiquette `v0.1.0` posée ; 1.0.0 = premier client), une PR = un sujet, un bug commence par un test, règles de travail dans une PR à part.
