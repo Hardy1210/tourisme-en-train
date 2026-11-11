@@ -268,42 +268,24 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  // Les deux feuilles du trajet s'ouvrent toujours à la même hauteur, quel que soit leur contenu :
-  // jusqu'à `--feuille-marge-haut` du haut de l'écran (choix de Hardy, 11/11).
-  const hautDeFeuille = async (page: Page, nom: string) => {
-    const feuille = page.getByRole('dialog', { name: nom });
-    await expect(feuille).toBeVisible();
+  test('la feuille s’ouvre à la hauteur de son contenu, comme « D’où partez-vous ? »', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    const feuille = await ouvrirDestination(page);
+    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
     await page.waitForTimeout(700); // fin de la montée
-    const marge = await page.evaluate(() =>
-      parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--feuille-marge-haut'),
-      ),
-    );
-    return { haut: (await feuille.boundingBox())?.y ?? 0, marge };
-  };
-
-  test('« Où allez-vous ? » s’ouvre jusqu’à la marge du haut, même vide', async ({ page }) => {
-    await page.goto(ECRAN);
-    await ouvrirDestination(page);
-    const { haut, marge } = await hautDeFeuille(page, 'Où allez-vous ?');
-    expect(marge).toBeGreaterThan(0);
-    expect(Math.abs(haut - marge)).toBeLessThan(4);
-  });
-
-  test('« D’où partez-vous ? » s’ouvre à la même hauteur', async ({ page }) => {
-    await page.goto(ECRAN);
-    await barre(page)
-      .getByRole('button', { name: /^Départ :/ })
-      .click();
-    const { haut, marge } = await hautDeFeuille(page, "D'où partez-vous ?");
-    expect(Math.abs(haut - marge)).toBeLessThan(4);
+    const hauteur = (await feuille.boundingBox())?.height ?? 0;
+    const ecran = page.viewportSize()?.height ?? 0;
+    // Titre + champ seulement : une grande feuille vide monterait en haut de l'écran avec le clavier.
+    expect(hauteur).toBeLessThan(ecran / 3);
   });
 
   test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
     page,
   }) => {
-    // Écran court : la feuille (hauteur fixe sous la marge du haut) ne montre pas 4 destinations.
-    await page.setViewportSize({ width: 390, height: 600 });
+    // Écran raccourci comme par le clavier du téléphone.
+    await page.setViewportSize({ width: 390, height: 480 });
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
     const feuille = await ouvrirDestination(page);
