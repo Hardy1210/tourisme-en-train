@@ -7,7 +7,6 @@ import { gareConseilleePour, useGare, useGaresProches } from '@/features/gares/h
 import { usePosition } from '@/features/localisation/fournisseur-position';
 import { useCommune } from '@/features/localisation/hooks';
 import { schemaReponseSources } from '@/features/presentation/schemas';
-import { amorcerClavier } from '@/lib/amorce-clavier';
 import { useEcranVisible, useUrlEcran } from '@/lib/ecran-visible';
 import { ErreurClient, lireApi } from '@/lib/http/client';
 import { useEnLigne } from '@/lib/use-en-ligne';
@@ -102,11 +101,7 @@ export function useChoixDepart() {
     libelle,
     erreurChoix,
     feuilleOuverte,
-    // Appelé dans le toucher qui ouvre « D'où partez-vous ? » : le clavier vient avec la page.
-    setFeuilleOuverte: (ouverte: boolean) => {
-      if (ouverte) amorcerClavier();
-      setFeuilleOuverte(ouverte);
-    },
+    setFeuilleOuverte,
     choisirGareEtFermer,
     choisirPoint,
     revenirAMaPosition,

@@ -58,7 +58,6 @@ export function FeuilleDestination({
 
   return (
     <Feuille
-      pleinEcran
       ouverte={ouverte}
       surChangement={surChangement}
       apresFermeture={apresFermeture}

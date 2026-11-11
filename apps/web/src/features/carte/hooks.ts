@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSyncExternalStore } from 'react';
-import { GRAND_ECRAN } from '@/lib/ecran';
 import { useEcranVisible } from '@/lib/ecran-visible';
 import { chargerStyleCarte } from '@/lib/external/fond-carte';
 import { lireCouleursCarte } from './couleurs';
@@ -27,6 +26,8 @@ export function useStyleCarte() {
     },
   });
 }
+
+const GRAND_ECRAN = '(min-width: 64rem)';
 
 /** Vrai à partir de `lg` : une seule carte est créée, dans le panneau de droite ou dans la liste. */
 export function useGrandEcran(): boolean {
