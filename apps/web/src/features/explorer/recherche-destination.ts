@@ -41,7 +41,7 @@ function correspond(noms: readonly string[], mots: readonly string[]): boolean {
 
 /**
  * Destination touchée : elle seule. Texte tapé : les destinations dont un nom commence par chacun des
- * mots, dans l'ordre de la liste (temps de trajet). Rien de cherché : toute la liste, inchangée.
+ * mots, triées par temps de trajet. Rien de cherché : toute la liste, inchangée.
  */
 export function filtrerDestinations<T extends Destination>(
   liste: readonly T[],
@@ -51,7 +51,8 @@ export function filtrerDestinations<T extends Destination>(
   const cherche = normaliser(recherche);
   if (cherche === '') return liste;
   const mots = cherche.split(' ');
-  return liste.filter((d) => correspond(nomsDe(d), mots));
+  // L'ordre de l'API n'est pas celui du temps de trajet : les résultats sont triés ici.
+  return liste.filter((d) => correspond(nomsDe(d), mots)).sort((a, b) => a.dureeMin - b.dureeMin);
 }
 
 /** Partie destination de la barre du trajet : « Où aller ? », « Beaune » ou « « beau » · 2 ». */

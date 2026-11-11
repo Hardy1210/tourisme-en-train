@@ -75,6 +75,38 @@ describe('filtrerDestinations', () => {
   });
 });
 
+describe('filtrerDestinations : ordre des résultats', () => {
+  // Défaut vu sur téléphone le 11/11 : en tapant « b », Paris (1 h 36) passait avant Besançon TGV (26 min).
+  const avecDuree = (titre: string, dureeMin: number) =>
+    ({ ...destination({ titre, gare: titre }), dureeMin }) as unknown as Destination;
+  const DANS_L_ORDRE_DE_L_API = [
+    avecDuree('Beaune', 22),
+    avecDuree('Besançon', 60),
+    avecDuree('Paris', 96),
+    avecDuree('Besançon Franche-Comté TGV', 26),
+  ];
+
+  it('texte tapé : résultats triés par temps de trajet', () => {
+    const trouvees = filtrerDestinations(DANS_L_ORDRE_DE_L_API, {
+      recherche: 'b',
+      destination: null,
+    });
+    expect(trouvees.map((d) => d.titre)).toEqual([
+      'Beaune',
+      'Besançon Franche-Comté TGV',
+      'Besançon',
+    ]);
+    const p = filtrerDestinations(DANS_L_ORDRE_DE_L_API, { recherche: 'p', destination: null });
+    expect(p.map((d) => d.titre)).toEqual(['Paris']);
+  });
+
+  it('rien de cherché : la liste reste dans son ordre (celle d’Explorer)', () => {
+    expect(filtrerDestinations(DANS_L_ORDRE_DE_L_API, { recherche: '', destination: null })).toBe(
+      DANS_L_ORDRE_DE_L_API,
+    );
+  });
+});
+
 describe('libelleDestination (barre du trajet)', () => {
   const sans = { recherche: '', destination: null };
   it('sans recherche → l’invitation', () => {
