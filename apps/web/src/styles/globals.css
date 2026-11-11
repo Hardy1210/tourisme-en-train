@@ -306,6 +306,7 @@
   --feuille-radius: calc(var(--radius-base) * 1.4);
   --feuille-poignee: var(--border-strong);
   --feuille-hauteur-max: 86dvh;
+  --feuille-recherche-hauteur: 30.75rem; /* « Où allez-vous ? » : hauteur de « D'où partez-vous ? » (3 gares proches) */
 
   /* Indicateur de défilement des feuilles : trait de la marque, rail presque invisible, même largeur */
   --indicateur-defilement: var(--primary);

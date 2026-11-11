@@ -1,8 +1,8 @@
 'use client';
 
 // Feuille « Où allez-vous ? » (D084) : recherche d'une destination dans la liste déjà chargée, triée par
-// temps de trajet. Même comportement que « D'où partez-vous ? » : hauteur de son contenu, poussée par
-// le clavier ; le bouton reste collé en bas. Le clavier ne vient qu'au toucher du champ.
+// temps de trajet. Même hauteur que « D'où partez-vous ? », même vide ; le bouton « Afficher » suit la
+// liste. Le clavier ne vient qu'au toucher du champ.
 // Textes : `contenu-trajet.ts`.
 import { useRef, useState } from 'react';
 
@@ -62,14 +62,7 @@ export function FeuilleDestination({
       surChangement={surChangement}
       apresFermeture={apresFermeture}
       titre={TEXTES_TRAJET.titreFeuille}
-      pied={
-        tape &&
-        trouvees.length > 0 && (
-          <Bouton className="w-full" onClick={appliquerTexte}>
-            {TEXTES_TRAJET.afficher(trouvees.length)}
-          </Bouton>
-        )
-      }
+      hauteurRecherche
     >
       <div className="flex flex-col gap-3">
         <ChampRecherche
@@ -135,6 +128,9 @@ export function FeuilleDestination({
                 </li>
               ))}
             </ul>
+            <Bouton className="w-full" onClick={appliquerTexte}>
+              {TEXTES_TRAJET.afficher(trouvees.length)}
+            </Bouton>
           </>
         )}
       </div>

@@ -268,21 +268,31 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  test('la feuille s’ouvre à la hauteur de son contenu, pas au maximum', async ({ page }) => {
+  test('« Où allez-vous ? » a la hauteur de « D’où partez-vous ? », même vide', async ({
+    page,
+  }) => {
     await page.goto(ECRAN);
+    await barre(page)
+      .getByRole('button', { name: /^Départ :/ })
+      .click();
+    const depart = page.getByRole('dialog', { name: "D'où partez-vous ?" });
+    await expect(depart).toBeVisible();
+    await page.waitForTimeout(700); // fin de la montée
+    const hauteurDepart = (await depart.boundingBox())?.height ?? 0;
+    await page.keyboard.press('Escape');
+    await expect(depart).toHaveCount(0);
+
     const feuille = await ouvrirDestination(page);
-    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
+    await page.waitForTimeout(700);
     const hauteur = (await feuille.boundingBox())?.height ?? 0;
-    const ecran = page.viewportSize()?.height ?? 0;
-    // Titre + champ seulement : bien moins que la moitié de l'écran.
-    expect(hauteur).toBeLessThan(ecran / 2);
+    expect(Math.abs(hauteur - hauteurDepart)).toBeLessThan(4);
   });
 
   test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
     page,
   }) => {
     // Écran raccourci comme par le clavier du téléphone.
-    await page.setViewportSize({ width: 390, height: 600 });
+    await page.setViewportSize({ width: 390, height: 480 });
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
     const feuille = await ouvrirDestination(page);
@@ -293,8 +303,8 @@ test.describe('position acceptée', () => {
     await champ.fill('b');
     await expect(feuille.getByText(/^4 destinations sur \d+$/).first()).toBeVisible();
     await expect(indicateur).toBeVisible();
-    await champ.fill('besancon');
-    await expect(feuille.getByText(/^2 destinations sur \d+$/).first()).toBeVisible();
+    await champ.fill('beaune');
+    await expect(feuille.getByText(/^1 destination sur \d+$/).first()).toBeVisible();
     await expect(indicateur).toHaveCount(0);
   });
 
