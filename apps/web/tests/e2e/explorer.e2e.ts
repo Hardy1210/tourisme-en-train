@@ -47,7 +47,7 @@ test.describe('position acceptée', () => {
     }) => {
       await page.goto(`/?date=${date}`);
       await expect(titreDestinations(page)).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Autour de Dijon' })).toBeVisible();
+      await expect(page.getByRole('group', { name: /Trajet : Autour de Dijon/ })).toBeVisible();
       await expect(sorties(page).first()).toBeVisible();
 
       await sorties(page).first().click();
@@ -210,6 +210,76 @@ test.describe('position acceptée', () => {
     await expect(sorties(page).first()).toBeVisible();
     await expect(page.getByLabel(/^Prix estimé pour un aller/)).toHaveCount(0);
     await expect(page.getByText(/estimation|€/)).toHaveCount(0);
+  });
+
+  // Recherche de destination (D084) : barre du trajet + feuille « Votre trajet ».
+  const barre = (page: Page) => page.getByRole('group', { name: /^Trajet :/ });
+  // Été : les deux Besançon (Viotte et TGV) ont un train direct depuis Dijon dans l'échantillon.
+  const ECRAN_ETE = '/?date=2026-07-15';
+  const ouvrirDestination = async (page: Page) => {
+    await barre(page)
+      .getByRole('button', { name: /^Destination :/ })
+      .click();
+    return page.getByRole('dialog', { name: 'Votre trajet' });
+  };
+
+  test('barre du trajet : départ et « Où aller ? » sur une seule ligne', async ({ page }) => {
+    await page.goto(ECRAN);
+    await expect(barre(page)).toContainText('Autour de Dijon');
+    await expect(barre(page)).toContainText('Où aller ?');
+    const hauteur = (await barre(page).boundingBox())?.height ?? 0;
+    expect(hauteur).toBeLessThan(60);
+  });
+
+  test('« besancon » : 2 trouvées, triées par temps ; « Afficher » filtre liste et carte, départ inchangé', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN_ETE);
+    await expect(sorties(page).first()).toBeVisible();
+    const feuille = await ouvrirDestination(page);
+    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
+    await expect(feuille.getByText(/^2 destinations sur \d+$/).first()).toBeVisible();
+    await feuille.getByRole('button', { name: 'Afficher les 2 destinations' }).click();
+
+    await expect(page).toHaveURL(/recherche=besancon/);
+    await expect(titreDestinations(page)).toBeVisible();
+    await expect(sorties(page)).toHaveCount(2);
+    await expect(marqueurs(page)).toHaveCount(2);
+    await expect(barre(page)).toContainText('« besancon » · 2');
+  });
+
+  test('une destination touchée dans la liste : elle seule ; ✕ rétablit toute la liste', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN_ETE);
+    await expect(sorties(page).first()).toBeVisible();
+    const avant = await sorties(page).count();
+    const feuille = await ouvrirDestination(page);
+    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
+    await feuille.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+
+    await expect(page).toHaveURL(/destination=/);
+    await expect(sorties(page)).toHaveCount(1);
+    await expect(barre(page)).toContainText('Besançon Franche-Comté TGV');
+    await barre(page).getByRole('button', { name: 'Effacer la recherche' }).click();
+    await expect(sorties(page)).toHaveCount(avant);
+    await expect(barre(page)).toContainText('Où aller ?');
+  });
+
+  test('« xyz » : message dans la feuille ; par un lien, état vide et ses deux boutons', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    const feuille = await ouvrirDestination(page);
+    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('xyz');
+    await expect(feuille.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
+    await expect(feuille.getByRole('button', { name: /^Afficher/ })).toHaveCount(0);
+
+    await page.goto(`${ECRAN}&recherche=xyz`);
+    await expect(page.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Effacer les filtres' })).toBeVisible();
+    await page.getByRole('button', { name: 'Effacer la recherche' }).last().click();
+    await expect(sorties(page).first()).toBeVisible();
   });
 
   test('une date hors des horaires propose de revenir à aujourd’hui', async ({ page }) => {

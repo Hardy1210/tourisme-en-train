@@ -25,7 +25,28 @@ describe('lireFiltres', () => {
       rayon: 5000,
       dureeMax: 60,
       faisable: true,
+      recherche: '',
+      destination: null,
     });
+  });
+
+  it('lit la recherche de destination : texte tapé, ou destination touchée (D084)', () => {
+    expect(lireFiltres(url('recherche=%20beau%20'))).toMatchObject({
+      recherche: 'beau',
+      destination: null,
+    });
+    expect(lireFiltres(url('recherche=Beaune&destination=87713545'))).toMatchObject({
+      recherche: 'Beaune',
+      destination: '87713545',
+    });
+  });
+
+  it('destination au code abîmé, ou sans son nom → ignorée', () => {
+    expect(lireFiltres(url('recherche=Beaune&destination=8771'))).toMatchObject({
+      recherche: 'Beaune',
+      destination: null,
+    });
+    expect(lireFiltres(url('destination=87713545'))).toMatchObject({ destination: null });
   });
 
   it('sans paramètre, donne les valeurs par défaut', () => {
@@ -59,6 +80,16 @@ describe('ecrireFiltres', () => {
     expect(suite.toString()).toBe('gare=87713040');
   });
 
+  it('écrit la recherche, et l’efface quand elle est vide (D084)', () => {
+    const avec = { ...FILTRES_PAR_DEFAUT, recherche: 'Beaune', destination: '87713545' };
+    expect(ecrireFiltres(url('gare=87713040'), avec).toString()).toBe(
+      'gare=87713040&recherche=Beaune&destination=87713545',
+    );
+    expect(
+      ecrireFiltres(url('recherche=beau&destination=87713545'), FILTRES_PAR_DEFAUT).toString(),
+    ).toBe('');
+  });
+
   it('relire ce qui a été écrit redonne les mêmes filtres', () => {
     const filtres = { ...FILTRES_PAR_DEFAUT, date: '2026-07-15', dureeMax: 30, faisable: true };
     expect(lireFiltres(ecrireFiltres(url(''), filtres))).toEqual(filtres);
@@ -68,6 +99,10 @@ describe('ecrireFiltres', () => {
 describe('nombreFiltres', () => {
   it('ne compte rien par défaut, ni la date', () => {
     expect(nombreFiltres({ ...FILTRES_PAR_DEFAUT, date: '2026-11-14' })).toBe(0);
+  });
+
+  it('ne compte pas la recherche de destination, montrée dans la barre du trajet', () => {
+    expect(nombreFiltres({ ...FILTRES_PAR_DEFAUT, recherche: 'beau' })).toBe(0);
   });
 
   it('compte chaque catégorie et chaque écart', () => {
@@ -126,6 +161,11 @@ describe('lienAvecDepart', () => {
 describe('filtresDeLUrl', () => {
   it('garde les filtres', () => {
     expect(filtresDeLUrl(url('categories=nature&faisable=1'))).toBe('categories=nature&faisable=1');
+  });
+  it('garde la recherche de destination au retour sur Explorer (D070, D084)', () => {
+    expect(filtresDeLUrl(url('gare=A&recherche=Beaune&destination=87713545'))).toBe(
+      'recherche=Beaune&destination=87713545',
+    );
   });
   it('écarte la gare, la date et toute position', () => {
     expect(filtresDeLUrl(url('gare=A&date=2026-11-18&lat=47.3&lon=5'))).toBe('');

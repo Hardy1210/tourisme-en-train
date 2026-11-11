@@ -18,6 +18,7 @@ import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
 import { RangeeFiltres } from './rangee-filtres';
 import { ResultatsExplorer } from './resultats-explorer';
+import { TrajetExplorer } from './trajet-explorer';
 
 export function EcranExplorer() {
   const choix = useChoixDepart();
@@ -64,7 +65,17 @@ export function EcranExplorer() {
         className={cn('mt-1 flex-none', pret && 'lg:col-start-1 lg:row-start-1 lg:border-b')}
         action={pret && <BoutonDate date={filtres.date} surClic={() => setFeuilleDate(true)} />}
       >
-        <BoutonDepart choix={choix} />
+        {depart.etat === 'pret' ? (
+          <TrajetExplorer
+            choix={choix}
+            depart={depart}
+            filtres={filtres}
+            surModification={changer}
+            surResultats={() => setPositionFeuille('plein')}
+          />
+        ) : (
+          <BoutonDepart choix={choix} />
+        )}
         {pret && (
           <RangeeFiltres
             categories={filtres.categories}
@@ -103,7 +114,8 @@ export function EcranExplorer() {
         filtres={filtres}
         surModification={changer}
       />
-      <FeuilleChoixDepart choix={choix} />
+      {/* Gare prête : le départ se choisit dans la feuille « Votre trajet » (D084). */}
+      {depart.etat !== 'pret' && <FeuilleChoixDepart choix={choix} />}
     </div>
   );
 }
