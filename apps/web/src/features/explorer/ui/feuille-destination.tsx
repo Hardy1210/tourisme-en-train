@@ -1,10 +1,10 @@
 'use client';
 
 // Feuille « Où allez-vous ? » (D084) : recherche d'une destination dans la liste déjà chargée, triée par
-// temps de trajet. Ouverte à sa hauteur maximale : les résultats apparaissent sous le champ sans la
-// faire bouger ; le bouton reste collé en bas. Le clavier ne vient qu'au toucher du champ.
+// temps de trajet. Même comportement que « D'où partez-vous ? » : hauteur de son contenu, poussée par
+// le clavier ; le bouton reste collé en bas. Le clavier ne vient qu'au toucher du champ.
 // Textes : `contenu-trajet.ts`.
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Bouton } from '@/components/ui/bouton';
 import { ChampRecherche } from '@/components/ui/champ-recherche';
@@ -33,17 +33,22 @@ export function FeuilleDestination({
   rechercheActuelle,
   surAppliquer,
 }: Proprietes) {
-  // null : rien tapé depuis l'ouverture, le champ montre la recherche en cours. Remis à null à la
-  // fermeture : chaque ouverture repart de la recherche en cours.
+  // null : rien tapé depuis l'ouverture, le champ montre la recherche en cours. Remis à null une fois
+  // la feuille sortie : chaque ouverture repart de la recherche en cours, sans que le contenu change
+  // pendant la glissade.
   const [saisie, setSaisie] = useState<string | null>(null);
   const brouillon = saisie ?? rechercheActuelle;
-  const changer = (etat: boolean) => {
-    if (!etat) setSaisie(null);
-    surChangement(etat);
-  };
+  // Choix en attente : appliqué une fois la feuille sortie de l'écran (voir `apresFermeture`).
+  const choix = useRef<Recherche | null>(null);
   const appliquer = (recherche: Recherche) => {
+    choix.current = recherche;
+    surChangement(false);
+  };
+  const apresFermeture = () => {
     setSaisie(null);
-    surAppliquer(recherche);
+    const recherche = choix.current;
+    choix.current = null;
+    if (recherche) surAppliquer(recherche);
   };
   const tape = brouillon.trim() !== '';
   const trouvees = destinations
@@ -54,9 +59,9 @@ export function FeuilleDestination({
   return (
     <Feuille
       ouverte={ouverte}
-      surChangement={changer}
+      surChangement={surChangement}
+      apresFermeture={apresFermeture}
       titre={TEXTES_TRAJET.titreFeuille}
-      pleineHauteur
       pied={
         tape &&
         trouvees.length > 0 && (

@@ -29,9 +29,9 @@ export function TrajetExplorer({
 }: Proprietes) {
   const [destinationOuverte, setDestinationOuverte] = useState(false);
   const { avantRecherche, liste } = useListeDestinations(depart.gare.uic, filtres);
+  // Appelé une fois la feuille « Où allez-vous ? » refermée.
   const appliquer = (recherche: Recherche) => {
     surModification(recherche);
-    setDestinationOuverte(false);
     surResultats();
   };
 

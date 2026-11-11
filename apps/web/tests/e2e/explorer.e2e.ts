@@ -268,6 +268,46 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
+  test('la feuille s’ouvre à la hauteur de son contenu, pas au maximum', async ({ page }) => {
+    await page.goto(ECRAN);
+    const feuille = await ouvrirDestination(page);
+    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
+    const hauteur = (await feuille.boundingBox())?.height ?? 0;
+    const ecran = page.viewportSize()?.height ?? 0;
+    // Titre + champ seulement : bien moins que la moitié de l'écran.
+    expect(hauteur).toBeLessThan(ecran / 2);
+  });
+
+  test('choisir une destination referme la feuille en glissant, comme « D’où partez-vous ? »', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN_ETE);
+    await expect(sorties(page).first()).toBeVisible();
+    const feuille = await ouvrirDestination(page);
+    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
+    // Filtrer la liste et la carte bloque le téléphone ~0,7 s : fait pendant la glissade, la feuille
+    // disparaît d'un coup. La liste ne doit changer qu'une fois la feuille partie de la page.
+    await page.evaluate(() => {
+      const fenetre = window as unknown as { listeChangeeSousLaFeuille: boolean };
+      fenetre.listeChangeeSousLaFeuille = false;
+      const compter = () => document.querySelectorAll('[data-destination]').length;
+      const avant = compter();
+      new MutationObserver(() => {
+        const feuilleEncoreLa = document.querySelector('[role="dialog"]') !== null;
+        if (feuilleEncoreLa && compter() !== avant) fenetre.listeChangeeSousLaFeuille = true;
+      }).observe(document.body, { subtree: true, childList: true });
+    });
+    await feuille.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+
+    await expect(feuille).toHaveCount(0);
+    await expect(page).toHaveURL(/destination=/);
+    await expect(sorties(page)).toHaveCount(1);
+    const changee = await page.evaluate(
+      () => (window as unknown as { listeChangeeSousLaFeuille: boolean }).listeChangeeSousLaFeuille,
+    );
+    expect(changee).toBe(false);
+  });
+
   test('la feuille s’ouvre sans le clavier : il ne vient qu’au toucher du champ', async ({
     page,
   }) => {
