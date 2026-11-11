@@ -1,8 +1,8 @@
 'use client';
 
 // Feuille « Où allez-vous ? » (D084) : recherche d'une destination dans la liste déjà chargée, triée par
-// temps de trajet. Ouverte à sa hauteur maximale : les résultats apparaissent sous le champ sans la
-// faire bouger ; le bouton reste collé en bas. Le clavier ne vient qu'au toucher du champ.
+// temps de trajet. S'ouvre et se ferme comme « D'où partez-vous ? » ; le bouton reste collé en bas.
+// Le clavier ne vient qu'au toucher du champ.
 // Textes : `contenu-trajet.ts`.
 import { useState } from 'react';
 
@@ -56,7 +56,6 @@ export function FeuilleDestination({
       ouverte={ouverte}
       surChangement={changer}
       titre={TEXTES_TRAJET.titreFeuille}
-      pleineHauteur
       pied={
         tape &&
         trouvees.length > 0 && (

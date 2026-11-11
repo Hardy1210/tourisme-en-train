@@ -11,8 +11,6 @@ type Proprietes = {
   titre: string;
   /** Sur grand écran : petit panneau flottant à côté du rail de navigation, sans voile. */
   ancreeAuRail?: boolean;
-  /** Ouverte d'emblée à sa hauteur maximale : le contenu qui arrive (résultats d'une frappe) ne la fait pas bouger. */
-  pleineHauteur?: boolean;
   /** Collé en bas, hors de la zone qui défile (bouton d'action). */
   pied?: ReactNode;
   children: ReactNode;
@@ -24,7 +22,6 @@ export function Feuille({
   surChangement,
   titre,
   ancreeAuRail = false,
-  pleineHauteur = false,
   pied,
   children,
 }: Proprietes) {
@@ -41,7 +38,6 @@ export function Feuille({
           aria-describedby={undefined}
           className={cn(
             'fixed inset-x-0 bottom-(--decalage-bas) z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
-            pleineHauteur && 'h-(--feuille-hauteur-max)',
             ancreeAuRail &&
               'lg:right-auto lg:bottom-4 lg:left-[calc(var(--rail-largeur)+0.5rem)] lg:w-80 lg:rounded-lg lg:border lg:px-3 lg:pt-1.5 lg:shadow-float lg:after:hidden',
           )}
