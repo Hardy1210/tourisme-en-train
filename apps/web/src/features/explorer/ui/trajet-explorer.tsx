@@ -3,6 +3,8 @@
 // Barre du trajet + feuille « Où allez-vous ? » d'Explorer, une fois la gare de départ prête (D084).
 import { useState } from 'react';
 
+import { amorcerClavier } from '@/lib/amorce-clavier';
+
 import type { Depart } from '../depart';
 import type { Filtres } from '../filtres';
 import type { useChoixDepart } from '../hooks';
@@ -42,7 +44,10 @@ export function TrajetExplorer({
         destination={libelleDestination(filtres, liste?.length ?? 0)}
         // Le départ se choisit dans la feuille « D'où partez-vous ? » d'avant.
         surDepart={() => choix.setFeuilleOuverte(true)}
-        surDestination={() => setDestinationOuverte(true)}
+        surDestination={() => {
+          amorcerClavier(); // le clavier vient avec la page « Où allez-vous ? »
+          setDestinationOuverte(true);
+        }}
         surEffacer={() => surModification({ recherche: '', destination: null })}
       />
       <FeuilleDestination

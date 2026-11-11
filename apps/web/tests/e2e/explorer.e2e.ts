@@ -268,17 +268,42 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  test('la feuille s’ouvre à la hauteur de son contenu, comme « D’où partez-vous ? »', async ({
-    page,
-  }) => {
+  // Téléphone : « Où allez-vous ? » et « D'où partez-vous ? » sont des pages plein écran, qui montent du
+  // bas avec leur champ prêt à taper ; la flèche vers le bas les referme. Ordinateur : petit panneau.
+  const PAGES_TRAJET = [
+    { nom: 'Où allez-vous ?', bouton: /^Destination :/, champ: 'Nom de la destination' },
+    { nom: "D'où partez-vous ?", bouton: /^Départ :/, champ: 'Rechercher une ville ou une gare' },
+  ];
+  for (const { nom, bouton, champ } of PAGES_TRAJET) {
+    test(`« ${nom} » : page plein écran sur téléphone, champ prêt ; petit panneau sur ordinateur`, async ({
+      page,
+      isMobile,
+    }) => {
+      await page.goto(ECRAN);
+      await barre(page).getByRole('button', { name: bouton }).click();
+      const fenetre = page.getByRole('dialog', { name: nom });
+      await expect(fenetre).toBeVisible();
+      await page.waitForTimeout(700); // fin de la montée
+      const cadre = await fenetre.boundingBox();
+      const ecran = page.viewportSize()?.height ?? 0;
+      const saisie = fenetre.getByRole('searchbox', { name: champ });
+      if (isMobile) {
+        expect(cadre?.y ?? -1).toBeLessThan(2);
+        expect(cadre?.height ?? 0).toBeGreaterThan(ecran - 2);
+        await expect(saisie).toBeFocused();
+      } else {
+        expect(cadre?.y ?? 0).toBeGreaterThan(ecran / 4);
+        await expect(saisie).not.toBeFocused();
+      }
+    });
+  }
+
+  test('téléphone : la flèche vers le bas referme la page', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'La page plein écran n’existe que sur téléphone.');
     await page.goto(ECRAN);
-    const feuille = await ouvrirDestination(page);
-    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
-    await page.waitForTimeout(700); // fin de la montée
-    const hauteur = (await feuille.boundingBox())?.height ?? 0;
-    const ecran = page.viewportSize()?.height ?? 0;
-    // Titre + champ seulement : une grande feuille vide monterait en haut de l'écran avec le clavier.
-    expect(hauteur).toBeLessThan(ecran / 3);
+    const fenetre = await ouvrirDestination(page);
+    await fenetre.getByRole('button', { name: 'Fermer' }).click();
+    await expect(fenetre).toBeHidden();
   });
 
   test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
@@ -331,9 +356,11 @@ test.describe('position acceptée', () => {
     expect(changee).toBe(false);
   });
 
-  test('la feuille s’ouvre sans le clavier : il ne vient qu’au toucher du champ', async ({
+  test('ordinateur : le panneau s’ouvre sans prendre la main ; le champ la prend au clic', async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, 'Sur téléphone, le champ est prêt dès l’ouverture.');
     await page.goto(ECRAN);
     const feuille = await ouvrirDestination(page);
     const champ = feuille.getByRole('searchbox', { name: 'Nom de la destination' });
