@@ -176,7 +176,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E18 | Publication de la réutilisation sur data.gouv.fr | Fin | ⬜ |
 
 Semaines : S1 = 05/10 → 11/10 · S2 = 12 → 18/10 · S3 = 19 → 25/10 · S4 = 26/10 → 01/11 · S5 = 02 → 08/11 · S6 = 09 → 15/11 · S7 = 16 → 22/11 · S8 = 23 → 29/11 · Fin = 30/11 → 02/12.
-Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé au plus tard le 22/11** · **gel des nouvelles fonctionnalités au plus tard le 27/11** · **livraison le 30/11** · **soutenance le 03/12**. Après le gel : corrections, retouches de design et déploiements jusqu'à la soutenance. De l'avance ? Elle va aux P1 (D078).
+Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé au plus tard le 22/11** · **gel des nouvelles fonctionnalités au plus tard le 27/11** · **livraison le 30/11** · **soutenance le 03/12**. Retouches de design du 23 au 25/11, avant E15 (D080). Après le gel : corrections et déploiements jusqu'à la soutenance. De l'avance ? Elle va aux P1 (D078).
 
 ---
 
@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** finir les étapes prévues (D079) : E11 et E12 ⏸, partie fonctionnelle · E13 🟡 : 3 textes du pitch · E14 🟡 : Android · puis E15, E16, E18. E17 : phase 1 en ligne, phase 2 après le P0
-- **Dernière session :** 07/11/2026 — mise en ligne complète (OVH, Coolify), procédure de mise en ligne (D077), dates du P0 et du gel, 97 Mt et 69 % en ligne (D078), ordre du travail (D079)
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos avec ses 3 chiffres, Mentions légales ; production à jour sur `d1f0206` : HTTPS, base fermée, seuls 22, 80 et 443 ouverts, aucune position dans les journaux, installation iPhone validée, déploiement manuel, mises à jour automatiques de Coolify coupées
-- **À valider par Hardy :** À propos sur l'iPhone ; Android à trouver ; 3 textes du pitch au plus tard le 22/11 ; `A-FAIRE` § 1. **Ne pas lui redemander sa liste de changements de design et de structure : il l'enverra après les étapes prévues (D079)**
-- **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** E11 et E12, partie fonctionnelle seulement. Relire les fiches et `A-FAIRE`, vérifier dans le code ce qui est déjà fait (états d'Explorer, parcours des filtres F05, recherche de destination, guidage si la position est refusée, nom TER Mobigo, recherche de ville sans lieux-dits, chronomètre), proposer un plan court et attendre la validation de Hardy (§ 10). Rien de design ni de structure UI/UX pour l'instant. Extraction `osm` possible à partir du 08/11
+- **Étape en cours :** E11 et E12, partie fonctionnelle, plan en 6 points (D080) : 1 à 4 fusionnés (#90 → #93) ; **5 = #94, ouverte, que Hardy affine avant de fusionner** ; 6 = parcours des filtres F05. Puis intégration continue + règle ESLint des couches avant le 22/11, E13 (3 textes du pitch), E14 (Android), E15, E16, E18
+- **Dernière session :** 10–11/11/2026 — travail « comme un produit » (CHANGELOG, versions, `v0.1.0`, D080), communes seules (D081), TER Mobigo (D082), guidage de la localisation (D083), barre du trajet et recherche de destination (D084, #94)
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; production en 0.1.0 (`d1f0206`), inchangée depuis le 07/11 : les nouveautés attendent sous « Non publié » dans `CHANGELOG.md`
+- **À valider par Hardy :** la #94 sur téléphone (revenue à `f3ee6d8` par `7789d45`), ses « comportements bizarres » et ce qu'il attend de la montée de la feuille « Où aller » : **à lui faire décrire avant de recoder**, la dernière lecture était fausse ; textes Android du guidage pendant E14 ; À propos sur l'iPhone ; 3 textes du pitch au plus tard le 22/11 ; `A-FAIRE` § 1
+- **Bloquant :** rien. Parcours instable sur `main` (3 échecs sur 20, `A-FAIRE` § 1). Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). Mise en ligne : `infra/README.md`, relire « Non publié » avant le Redeploy ; Coolify ne déploie que sur un clic de Hardy
+- **Prochaine action précise :** corriger le parcours instable (`apps/web/tests/e2e/explorer.e2e.ts`, « une destination s'ouvre ») dans une PR à part, cause d'abord ; puis la PR de l'en-tête repliable (`A-FAIRE`, D084), construite sur la branche de la #94 ; reprendre la #94 quand Hardy décrit ce qui le gêne
 ---
 
 ## 10. Réaliser une étape

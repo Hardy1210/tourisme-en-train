@@ -52,3 +52,4 @@
 | 07/11/2026 | 1.56 | § 9 : sauvegarde de session, tâches à reprendre dans l'ordre |
 | 07/11/2026 | 1.57 | § 9 : sauvegarde de session, étapes prévues d'abord — D079 |
 | 10/11/2026 | 1.58 | § 11 : un bug commence par un test ; § 15 : CHANGELOG et numéro de version — D080 |
+| 11/11/2026 | 1.59 | § 8 : design du 23 au 25/11 ; § 9 : sauvegarde de session, #94 ouverte — D080 → D084 |

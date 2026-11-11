@@ -10,6 +10,8 @@
 
 | Quoi | Contexte | Déclencheur |
 |---|---|---|
+| **Parcours instable à corriger (règle 5 des tests)** : « les résultats arrivent sans action, puis une destination s'ouvre » (`explorer.e2e.ts`) échoue 3 fois sur 20 sur `main` (`53b43fe`, 11/11), mobile et ordinateur : après le toucher de « Voir la sortie », la fiche ne s'ouvre pas dans les 5 s. Chercher la cause (chargement de la fiche sous la charge des parcours en parallèle ? clic avant la fin de l'affichage ?) avant de toucher au délai | Vu pendant la #94, présent avant elle (L55) | PR à part, avant la PR de l'en-tête repliable |
+| **« Comportements bizarres » vus par Hardy dans la #94** (recherche de destination), non détaillés | Hardy a gardé la #94 ouverte pour l'affiner | Quand Hardy les décrit, avant la fusion de la #94 |
 | Relire l'ensemble de la documentation (docs 00 → 08, fiches) | Rédigée le 30/09 | Avant de lancer E00 |
 | Variantes de la maquette Explorer : carte avec ~20 destinations, lieu sans description, destination sans prix, trains sans statut, bascule Samedi/Dimanche, station sans nombre de vélos ; retirer le transport à la demande | Décisions D017 → D021 | Avant ~09/11 (E11–E12) |
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |
