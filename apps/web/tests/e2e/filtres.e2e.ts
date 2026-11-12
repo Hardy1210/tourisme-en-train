@@ -12,10 +12,8 @@ test.use({ geolocation: DIJON, permissions: ['geolocation'] });
 
 test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
 
-test.beforeEach(async ({ context, baseURL, page }) => {
+test.beforeEach(async ({ context, baseURL }) => {
   await couperLeReseau(context, baseURL);
-  // « Réinitialiser » remet la date à aujourd'hui (D086) : aujourd'hui doit être un jour de l'échantillon.
-  await page.clock.install({ time: new Date(`${DATE}T08:00:00+01:00`) });
   await context.route('**/api/geocodage/inverse*', (requete) =>
     requete.fulfill({ json: { commune: 'Dijon', codeInsee: '21231', horsLigne: false } }),
   );
@@ -77,9 +75,16 @@ test.describe('Explorer', () => {
     await boutonFiltres(page).click();
     await feuilleFiltres(page).getByRole('button', { name: 'Réinitialiser' }).click();
     await expect(page).not.toHaveURL(/dureeMax=/);
-    // Feuille ouverte, la liste est cachée aux lecteurs d'écran : on la referme pour compter.
-    await feuilleFiltres(page).getByRole('button', { name: 'Voir les sorties' }).click();
-    await expect(sorties(page)).toHaveCount(toutes);
+    // La liste n'est pas recomptée : « Réinitialiser » remet aussi la date à aujourd'hui (D086), que le
+    // serveur lit à sa propre horloge, et l'échantillon n'a de trains que le 15/07 et le 18/11.
+    await expect(
+      feuilleFiltres(page)
+        .getByRole('radiogroup', { name: 'Temps de train maximum' })
+        .getByRole('radio', { checked: true }),
+    ).toHaveCount(1);
+    await expect(
+      option(feuilleFiltres(page), 'Temps de train maximum', '30 min'),
+    ).not.toBeChecked();
   });
 
   test('« Faisable dans la journée » réduit la liste et la carte, reste après un rechargement', async ({
