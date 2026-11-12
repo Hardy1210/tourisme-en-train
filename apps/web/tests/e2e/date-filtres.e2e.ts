@@ -88,13 +88,22 @@ test.describe('Explorer', () => {
   test('« Choisir une date » : calendrier dans la même feuille, « Retour », puis une date', async ({
     page,
   }) => {
+    // L'échantillon n'a d'horaires que jusqu'au 18 : on ouvre le calendrier jusqu'à mi-décembre.
+    await page.route('**/api/sources', async (requete) => {
+      const reponse = await requete.fetch();
+      const corps = (await reponse.json()) as { horaires: { fin: string } };
+      await requete.fulfill({
+        json: { ...corps, horaires: { ...corps.horaires, fin: '2026-12-13' } },
+      });
+    });
     await page.goto(ECRAN);
     await expect(titre(page)).toBeVisible();
     await boutonFiltres(page).click();
     await quand(page)
       .getByRole('button', { name: /^Choisir une date/ })
       .click();
-    await expect(page.getByRole('dialog')).toHaveCount(1);
+    // La même feuille, dont le titre change : pas de deuxième feuille par-dessus.
+    await expect(feuille(page)).toHaveCount(1);
     await expect(feuille(page)).toHaveAccessibleName('Choisir une date');
     await feuille(page).getByRole('button', { name: 'Retour' }).click();
     await expect(quand(page)).toBeVisible();
