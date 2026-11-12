@@ -2,7 +2,7 @@
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { StyleSpecification } from 'maplibre-gl';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Map, { type MapRef } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
 import { formaterDuree } from '@/features/destinations/presentation';
@@ -10,6 +10,7 @@ import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { useArretsTrain } from '@/features/trains/hooks';
 import {
+  centreDestination,
   clesEtiquetees,
   empriseDe,
   pointsCadrage,
@@ -39,6 +40,8 @@ export type ProprietesCarte = {
   /** Date choisie ; null pour aujourd'hui. */
   date: string | null;
   destinations: readonly Destination[];
+  /** Destination choisie dans la recherche (D084) : la carte se centre sur sa gare ; null sinon. */
+  destinationCherchee: string | null;
   lieux: readonly LieuResume[];
   lienDe: (destination: Destination) => string;
   /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
@@ -62,6 +65,7 @@ export function CarteExplorer({
   gareDepart,
   date,
   destinations,
+  destinationCherchee,
   lieux,
   lienDe,
   masqueEnBas,
@@ -103,6 +107,37 @@ export function CarteExplorer({
     maxZoom: 12,
     duration: 0,
   });
+  // Destination choisie : centrée sur sa gare ; sinon (ou « Recentrer ») le cadrage de départ.
+  const centre = centreDestination(
+    destinations.map((d) => ({ uic: d.gare.uic, lat: d.gare.lat, lon: d.gare.lon })),
+    destinationCherchee,
+  );
+  const cadrer = () => {
+    const instance = carte.current;
+    if (!instance) return;
+    if (centre)
+      instance.easeTo({
+        center: [centre.lon, centre.lat],
+        zoom: parametres.carte.zoomDestination,
+        padding: marge().padding,
+        duration: 0,
+      });
+    else if (emprise) instance.fitBounds(emprise, marge());
+  };
+  const cleCentre = centre ? `${centre.lat},${centre.lon}` : null;
+  const cadrerRef = useRef(cadrer);
+  useEffect(() => {
+    cadrerRef.current = cadrer;
+  });
+  const premierCadrage = useRef(true);
+  useEffect(() => {
+    // Le premier cadrage se fait au chargement de la carte (`onLoad`).
+    if (premierCadrage.current) {
+      premierCadrage.current = false;
+      return;
+    }
+    cadrerRef.current();
+  }, [cleCentre]);
   // Une couche n'est recalculée que si ses données changent : sinon la ligne du train attend les autres.
   const { lat: departLat, lon: departLon } = gareDepart;
   const segments = useMemo(
@@ -166,7 +201,7 @@ export function CarteExplorer({
           attributionControl={false}
           onClick={() => setSelection(null)}
           onLoad={(evenement) => {
-            evenement.target.fitBounds(emprise, marge());
+            cadrer();
             setZoom(evenement.target.getZoom());
           }}
           onZoomEnd={(evenement) => setZoom(evenement.target.getZoom())}
@@ -200,7 +235,7 @@ export function CarteExplorer({
       <CommandesCarte
         surRecentrer={() => {
           setSelection(null);
-          carte.current?.fitBounds(emprise, marge());
+          if (emprise) carte.current?.fitBounds(emprise, marge());
         }}
         pleinEcran={pleinEcran}
       />

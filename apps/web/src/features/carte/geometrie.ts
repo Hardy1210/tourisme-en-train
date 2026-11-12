@@ -95,3 +95,12 @@ export function pointsEtiquettes(
       })),
   };
 }
+
+/** Gare de la destination choisie dans la recherche, si elle est dans la liste : la carte s'y centre. */
+export function centreDestination(
+  destinations: readonly (Point & { uic: string })[],
+  uic: string | null,
+): Point | null {
+  const trouvee = uic === null ? undefined : destinations.find((d) => d.uic === uic);
+  return trouvee ? { lat: trouvee.lat, lon: trouvee.lon } : null;
+}

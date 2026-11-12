@@ -78,6 +78,7 @@ export function ResultatsExplorer({
           gareDepart={{ uic: gare.uic, lat: gare.lat, lon: gare.lon, nom: gare.nom }}
           date={filtres.date}
           destinations={liste ?? AUCUNE_DESTINATION}
+          destinationCherchee={filtres.destination}
           carteTouchee={carteTouchee}
           lieux={lieux.data?.lieux ?? []}
           lienDe={lienDe}
