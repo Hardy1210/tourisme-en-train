@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   clesEtiquetees,
   empriseDe,
+  margesVerticales,
   pointsCadrage,
   pointsEtiquettes,
   ligneArrets,
@@ -112,5 +113,33 @@ describe('pointsEtiquettes', () => {
   it('donne la priorité à la sélection dans les collisions', () => {
     const { features } = pointsEtiquettes(LISTE, new Set(['A', 'B']), 'B');
     expect(features.map((f) => f.properties.priorite)).toEqual([1, 0]);
+  });
+});
+
+// Bug du 12/11 : feuille des résultats montée, marges plus grandes que la carte, MapLibre ne cadrait plus.
+describe('margesVerticales', () => {
+  it('garde les marges quand elles tiennent', () => {
+    expect(margesVerticales({ haut: 100, bas: 200, hauteur: 800, minimum: 96 })).toEqual({
+      top: 100,
+      bottom: 200,
+    });
+  });
+
+  it('feuille montée : la marge basse cède pour laisser le minimum de carte', () => {
+    expect(margesVerticales({ haut: 150, bas: 700, hauteur: 800, minimum: 96 })).toEqual({
+      top: 150,
+      bottom: 554,
+    });
+  });
+
+  it('carte minuscule : la marge haute cède aussi, jamais de marge négative', () => {
+    expect(margesVerticales({ haut: 150, bas: 700, hauteur: 120, minimum: 96 })).toEqual({
+      top: 24,
+      bottom: 0,
+    });
+    expect(margesVerticales({ haut: 150, bas: 700, hauteur: 0, minimum: 96 })).toEqual({
+      top: 0,
+      bottom: 0,
+    });
   });
 });
