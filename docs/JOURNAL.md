@@ -24,6 +24,23 @@
 
 ---
 
+## 12/11/2026 — Étape E11 — page de départ sur Lieux, fond sous le clavier, date dans « Filtres » (D086)
+**Fait :**
+- Dépôt réparé : objet du commit `4c571eb` et 5 documents vidés par un arrêt brutal de WSL pendant un `pull` ; objet retéléchargé, documents remis depuis le commit
+- #99 : le fond de la page plein écran ne suit plus le clavier, seul le contenu se cale au-dessus (`placement-page.ts`, test d'abord) ; validé par Hardy sur iPhone
+- #100 : page « D'où partez-vous ? » plein écran sur Lieux, au téléphone ; validée par Hardy sur iPhone
+- Parcours instable : non reproduit seul (80/80) ni dans une suite complète (166/166), puis 1 échec sur 180 dans une autre suite complète (adresse inchangée après le toucher)
+- En-tête allégé, date dans « Filtres » (maquette « Explorer Mobile v5 »), sur Explorer **et** Lieux : prototype validé par Hardy, puis tests et documentation
+**Décisions :** D086 ; D084 point 4 remplacé
+**Problèmes rencontrés :**
+- Les parcours refont le build dans la copie `../tourisme-recherche` : le serveur de Hardy lancé dessus sert alors un build périmé, à relancer
+**À valider par Hardy :** le texte « Voir les sorties » ou « Afficher N sorties » (maquette v5) ; l'ordinateur sans bouton date
+**Prochaine action :** point 6 du plan (D080) : parcours des filtres rayon, durée, ville (F05)
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (340 dans `apps/web`) · parcours 174/180 puis les 6 échecs repris : 5 erreurs de test corrigées, 1 = parcours instable connu
+**Commit :** branche `feat/e11-date-dans-filtres`
+
+---
+
 ## 11–12/11/2026 (soir) — Étape E11 — #94 : page « Trajet » plein écran sur téléphone (D085)
 **Fait :**
 - Trois essais sur les feuilles, abandonnés après l'essai de Hardy sur iPhone : hauteur fixe à 250 px du haut ; hauteur fixe aux filtres, clavier par-dessus (`repositionInputs` de vaul coupé) ; feuille `vaul` agrandie à tout l'écran avec un champ d'amorce du clavier (page qui part en haut, sortie coupée par le clavier). Chaque essai annulé par `git revert`

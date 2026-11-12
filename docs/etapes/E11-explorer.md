@@ -36,7 +36,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [x] Desktop : panneau gauche 440 px + carte.
 - [x] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne (bandeau commun, E14), erreur.
 - [x] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
-- [x] *Ajouté le 11–12/11 :* recherche de destination, barre du trajet (D084) ; sur téléphone, page « Trajet » plein écran (D085), essayée par Hardy sur iPhone (#94). Reste : la même page sur Lieux, l'en-tête repliable.
+- [x] *Ajouté le 11–12/11 :* recherche de destination, barre du trajet (D084) ; sur téléphone, page « Trajet » plein écran (D085), essayée par Hardy sur iPhone (#94). Puis la même page sur Lieux (#100), et l'en-tête allégé, date dans « Filtres » (D086), à la place de l'en-tête repliable.
 
 ## Critères d'acceptation
 - [ ] **Chronomètre :** de l'ouverture à la liste des destinations en < 3 s en local.
@@ -85,3 +85,4 @@ Voir `_MODELE.md`.
 - 10/11/2026 : « TER Mobigo » selon les deux terminus du train, nom dans `region.nomTer` (D082).
 - 10/11/2026 : guidage de la localisation refusée selon l'appareil, textes dans `contenu-guidage.ts` (D083).
 - 11/11/2026 : barre du trajet et recherche de destination (D084), après comparaison de trois variantes sur maquette ; en-tête repliable à suivre.
+- 12/11/2026 : page de départ plein écran sur Lieux (#100), fond de la page fixe sous le clavier (#99), en-tête allégé et date dans « Filtres » (D086), Lieux compris.
