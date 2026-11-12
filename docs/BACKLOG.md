@@ -36,7 +36,7 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 | F02 | En tant que voyageur, je veux voir tout de suite les lieux à pied et les gares proches afin de savoir ce qu'il y a autour de moi. | Must (P0) | 3 | Lieux dans le rayon défini par les paramètres ; gares proches avec distance. | E08 · E11 | S6 | ✅ |
 | F03 | En tant que voyageur, je veux connaître mes gares de départ les plus proches et pouvoir en changer. | Must (P0) | 2 | Par défaut, la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064) ; changement de gare possible. | E08 · E11 | S6 | ✅ |
 | F04 | En tant que voyageur, je veux voir les destinations atteignables en train direct à la date choisie afin de choisir une sortie. | Must (P0) | 8 | Aucune correspondance ; durée, trains par jour, premier départ, dernier retour. | E02 · E03 · E04 · E08 · E11 | S6 | ✅ |
-| F05 | En tant que voyageur, je veux filtrer (rayon, durée de train, ville, catégories, date) afin d'affiner mes idées. | Must (P0) | 3 | Chaque filtre modifie la liste et la carte ; filtres conservés dans l'adresse de la page. | E11 | S6 | 🟡 |
+| F05 | En tant que voyageur, je veux filtrer (rayon, durée de train, ville, catégories, date) afin d'affiner mes idées. | Must (P0) | 3 | Chaque filtre modifie la liste et la carte ; filtres conservés dans l'adresse de la page. | E11 | S6 | ✅ |
 | F06 | En tant que voyageur, je veux une fiche destination avec les lieux à pied depuis la gare afin de préparer ma visite. | Must (P0) | 5 | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel. | E05 · E06 · E09 · E12 | S7 | 🟡 |
 | F07 | En tant que voyageur, je veux les trains aller et retour de la journée afin de savoir quand partir et rentrer. | Must (P0) | 3 | Horaires théoriques de la date ; dernier retour mis en évidence. | E03 · E09 · E12 | S7 | ✅ |
 | F08 | En tant que voyageur, je veux une carte avec les gares colorées selon le temps de trajet afin de visualiser les distances. | Must (P0) | 5 | Position, gares, lieux par catégorie ; couleurs par tranche de temps ; bascule liste / carte. | E11 | S6 | 🟡 |
@@ -159,7 +159,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 
 | Ligne | État | Ce qui manque |
 |---|---|---|
-| F05 | 🟡 | Seules les catégories ont un parcours ; rien de tel pour le rayon, la durée et la ville. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` |
+| F05 | ✅ | Parcours de chaque filtre (`filtres.e2e.ts`, `date-filtres.e2e.ts`, catégories dans `explorer.e2e.ts`) : liste, carte, adresse, rechargement. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` ; la section « À deux pas » va évoluer (`A-FAIRE`), d'où un parcours léger |
 | F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
 | F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
 | F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
@@ -177,7 +177,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 
 | Étape | Pour quand | Fait | Reste | Estimation |
 |---|---|---|---|---|
-| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet) et D085 (page « Trajet » sur téléphone, #94), puis page « Trajet » sur Lieux ✅ (#100) et en-tête allégé, date dans « Filtres » (D086, remplace l'en-tête repliable) ; (6) parcours des filtres rayon, durée, ville (F05). Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
+| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet) et D085 (page « Trajet » sur téléphone, #94), puis page « Trajet » sur Lieux ✅ (#100) et en-tête allégé, date dans « Filtres » (D086, remplace l'en-tête repliable) ; (6) parcours des filtres rayon, durée, ville (F05) ✅. Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
 | Intégration continue | P0, 22/11 | Rien | GitHub Actions sur chaque PR : `pnpm verifier`, intégration (PostgreSQL + PostGIS), parcours Playwright si possible ; fusion bloquée si un test échoue ; règle ESLint des couches (D080) | 1 j |
 | Design | 23 → 25/11 | Maquettes v3 | Retouches de Hardy, après le P0 et avant E15, pour que l'accessibilité, la performance et les captures du pitch portent sur l'interface finale (D080) | 3 j |
 | E13 | P0, 22/11 | Sources, À propos, Mentions, en ligne | 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
