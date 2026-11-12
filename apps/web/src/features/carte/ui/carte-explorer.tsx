@@ -115,6 +115,9 @@ export function CarteExplorer({
   const cadrer = () => {
     const instance = carte.current;
     if (!instance) return;
+    // `easeTo` garde ses marges en mémoire, et `fitBounds` les ajouterait aux siennes : une fois la
+    // feuille des résultats montée, le total dépasse la carte et MapLibre ne bouge plus.
+    instance.getMap().setPadding({ top: 0, right: 0, bottom: 0, left: 0 });
     if (centre)
       instance.easeTo({
         center: [centre.lon, centre.lat],
@@ -235,7 +238,7 @@ export function CarteExplorer({
       <CommandesCarte
         surRecentrer={() => {
           setSelection(null);
-          if (emprise) carte.current?.fitBounds(emprise, marge());
+          cadrer();
         }}
         pleinEcran={pleinEcran}
       />
