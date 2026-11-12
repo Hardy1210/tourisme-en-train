@@ -83,3 +83,4 @@ Voir `_MODELE.md`.
 - 10/11/2026 : recherche de ville limitée aux communes (D081) : la plupart des homonymes étaient des rues, pas des lieux-dits. Les états d'Explorer (chargement, position refusée, hors région, aucun résultat, erreur, hors ligne) sont tous dans le code, relus le 10/11.
 - 10/11/2026 : « TER Mobigo » selon les deux terminus du train, nom dans `region.nomTer` (D082).
 - 10/11/2026 : guidage de la localisation refusée selon l'appareil, textes dans `contenu-guidage.ts` (D083).
+- 11/11/2026 : barre du trajet et recherche de destination (D084), après comparaison de trois variantes sur maquette ; en-tête repliable à suivre.

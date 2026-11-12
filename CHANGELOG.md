@@ -8,12 +8,15 @@
 ## [Non publié]
 
 ### Ajouté
+- Recherche de destination : en haut d'Explorer, « Autour de Dijon → Où aller ? » : touchez « Où aller ? » pour chercher. Tapez « beau » ou « besancon », et la liste comme la carte ne montrent plus que ces destinations, sans changer la gare de départ. Sur téléphone, départ et destination se choisissent dans une page plein écran, clavier prêt, avec les destinations les plus proches en train.
+- Dans les feuilles de recherche, un trait fin sur le côté signale qu'il reste des résultats plus bas, cachés par le clavier.
 - Position refusée : un guide « Comment autoriser la localisation ? » donne les étapes exactes pour iPhone, Android ou ordinateur. Il s'ouvre tout seul si la position est encore bloquée.
 
 ### Modifié
 - Dans la fiche destination, les TER qui partent et arrivent en Bourgogne-Franche-Comté s'appellent « TER Mobigo », comme sur SNCF Connect. Les autres restent « TER ».
 
 ### Corrigé
+- En cherchant une destination, les résultats sont triés par temps de trajet : en tapant « b », Besançon Franche-Comté TGV (26 min) passe avant Paris (1 h 36).
 - La recherche de ville ne propose plus que des communes : « Beaune » ne fait plus apparaître des rues ou des hameaux du même nom dans d'autres départements (Sornac, Eymoutiers…). Partir de Paris reste possible.
 
 ## [0.1.0] — 07/11/2026

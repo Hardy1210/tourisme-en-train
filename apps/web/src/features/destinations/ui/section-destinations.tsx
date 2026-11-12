@@ -22,6 +22,14 @@ type Proprietes = {
   /** « Élargir à 1 h de train » ; null si la durée est déjà la plus grande. */
   elargir: { libelle: string; action: () => void } | null;
   surEffacer: () => void;
+  /** Recherche de destination active (D084) : compteur « 2 destinations sur 101 » et état vide dédié. */
+  recherche: {
+    compte: string;
+    titreVide: string;
+    texteVide: string;
+    libelleEffacer: string;
+    surEffacer: () => void;
+  } | null;
 };
 
 export function SectionDestinations({
@@ -36,6 +44,7 @@ export function SectionDestinations({
   surAujourdhui,
   elargir,
   surEffacer,
+  recherche,
 }: Proprietes) {
   const nombre = destinations?.length ?? 0;
   return (
@@ -46,9 +55,11 @@ export function SectionDestinations({
         </h2>
         {destinations !== undefined && (
           <p className="tabular text-sm text-muted-foreground">
-            {nombre === 0
-              ? 'Aucune destination'
-              : `${nombre} destination${nombre > 1 ? 's' : ''} · triées par temps de trajet`}
+            {recherche
+              ? recherche.compte
+              : nombre === 0
+                ? 'Aucune destination'
+                : `${nombre} destination${nombre > 1 ? 's' : ''} · triées par temps de trajet`}
           </p>
         )}
         <LegendeTemps />
@@ -73,7 +84,16 @@ export function SectionDestinations({
         </EtatVide>
       )}
 
-      {destinations?.length === 0 && (
+      {destinations?.length === 0 && recherche && (
+        <EtatVide titre={recherche.titreVide} texte={recherche.texteVide}>
+          <Bouton onClick={recherche.surEffacer}>{recherche.libelleEffacer}</Bouton>
+          <Bouton variante="secondaire" onClick={surEffacer}>
+            Effacer les filtres
+          </Bouton>
+        </EtatVide>
+      )}
+
+      {destinations?.length === 0 && !recherche && (
         <EtatVide
           mention={
             <span className="flex size-12 items-center justify-center rounded-pill bg-primary-soft">

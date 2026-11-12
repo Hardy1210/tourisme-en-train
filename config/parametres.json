@@ -18,6 +18,7 @@
   },
   "carte": { "etiquettesMax": 5, "dureeCadrageMin": 60, "zoomMinLieux": 10.5, "zoomMaxFiche": 15 },
   "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
+  "recherche": { "destinationsProchesMax": 5 },
   "empriseFrance": { "latMin": 41, "latMax": 51.5, "lonMin": -5.5, "lonMax": 10 },
   "controles": {
     "communesFranceMin": 34000,

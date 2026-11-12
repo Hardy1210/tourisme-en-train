@@ -61,6 +61,11 @@ export const schemaParametres = z
       delaiSaisieMs: z.number().int().positive(),
       longueurMinRecherche: z.number().int().positive(),
     }),
+    /** Page « Trajet » du téléphone (D085). */
+    recherche: z.strictObject({
+      /** Destinations proposées sous « Les plus proches en train », champ vide. */
+      destinationsProchesMax: z.number().int().positive(),
+    }),
     /** Positions acceptées par l'API (`lat`, `lon`) : France métropolitaine (docs/05-api.md § 1). */
     empriseFrance: schemaEmprise,
     /** Seuils des contrôles bloquants de l'ETL (docs/04-traitement-donnees.md § 4). */

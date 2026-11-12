@@ -33,7 +33,8 @@ test('Explorer → destination → onglet Trains : le dernier retour est visible
     page.getByRole('region', { name: 'Aller' }).getByRole('listitem').first(),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Retour' }).click();
+  // La page « Trajet » fermée (D085) a aussi son « Retour », inerte : celui de la fiche est dans `main`.
+  await page.getByRole('main').getByRole('button', { name: 'Retour' }).click();
   await expect(page.getByRole('heading', { name: /En train direct depuis/ })).toBeVisible();
   await expect(page).toHaveURL(new RegExp(`date=${DATE_HIVER}`));
 });

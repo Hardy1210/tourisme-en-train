@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.16 · **Date** 10/11/2026
+> **Version** 1.19 · **Date** 12/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -37,7 +37,7 @@
 
 - **Typographie :** `font-display` (titres, noms de lieux), `font-sans` (reste). Classe `tabular` sur **tous** les horaires, durées, distances, prix.
 - **Icônes :** Lucide, trait 1,75 px. Catégories : `enfants` → `FerrisWheel`, `nature` → `Mountain`, `parcs` → `Trees`, `patrimoine` → `Castle`, `culture` → `Theater`. Transports : `TrainFront`, `Bus`, `TramFront`, `Bike`.
-- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo`.
+- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet ; un **indicateur de défilement** remplace la barre du navigateur : trait fin de la marque sur un rail presque invisible, visible tant que du contenu est caché plus bas, même sans geste, car Safari sur iPhone n'affiche sa barre que pendant le geste et ignore son style), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo`.
 - **Mode sombre** (P1) : uniquement par les tokens `.dark`.
 - **Maquettes Claude Design** : conseil visuel. On copie l'aspect, jamais le comportement sans vérification.
 
@@ -47,6 +47,8 @@
 
 ### Structure mobile, de haut en bas
 1. **En-tête collant** : logo (`marque.nom`), puce de localisation « 📍 Autour de <commune> ▾ » (→ Ma position / Une autre ville ; `<commune>` vient de `/api/geocodage/inverse`, voir `05` § 3.11 bis ; en attendant la réponse : « Autour de vous »), puce de date « Aujourd'hui ▾ » (Aujourd'hui · Demain · Ce week-end · Choisir). **« Ce week-end »** = samedi (ou aujourd'hui si on est déjà le week-end), voir `05` § A.3.
+   **Depuis D084**, une fois la gare prête, la puce de localisation devient la **barre du trajet**, sur une seule ligne : « 📍 Autour de Dijon → Où aller ? ». Si la place manque, le départ est coupé (« … »), la destination reste entière. Le départ ouvre la feuille « D'où partez-vous ? » d'avant. La destination ouvre la feuille **« Où allez-vous ? »**, qui se comporte comme « D'où partez-vous ? » : hauteur de son contenu, posée sur le clavier, elle grandit avec les résultats ; le clavier ne vient qu'au toucher du champ « Nom de la destination ». Pendant la frappe, les destinations trouvées s'affichent sous le champ, triées par temps de trajet, suivies du bouton « Afficher les x destinations » (dans la liste, pas collé en bas : il écrasait la liste dans une feuille basse). Recherche dans la liste déjà chargée, sans appel à l'API : sans accents ni majuscules, début de mot, sur la ville, la commune et toutes les gares. Texte tapé : `?recherche=` ; destination touchée : `?destination=<UIC>` en plus. Ensuite, la feuille de résultats monte au plus haut, sous les catégories, et défile jusqu'à la première destination trouvée, centrée ; la liste et la carte ne montrent que les destinations trouvées (« 2 destinations sur 101 ») ; barre « → Beaune ✕ » ou « → « beau » · 2 ✕ » ; aucun résultat : « Aucune destination « xyz » avec ces filtres », « Effacer la recherche » et « Effacer les filtres ». Le choix s'applique une fois la feuille sortie de l'écran : filtrer la liste et la carte pendant sa glissade bloquerait le téléphone, et la feuille disparaîtrait d'un coup. La gare de départ ne change jamais. Textes : `features/explorer/contenu-trajet.ts`.
+   **Sur téléphone, depuis D085**, les deux côtés de la barre (et « Changer de gare ») ouvrent la **page « Trajet »** plein écran, en fondu, curseur dans le champ touché et clavier ouvert : « ← Retour », champs Départ et Destination reliés par la ligne du logo, zone du bas selon le champ actif (Départ : « Ma position », gares proches, villes tapées ; Destination : « En train direct depuis… », « Voir toutes les destinations », « Les plus proches en train », puis compteur, « Afficher » et résultats triés par temps). Un choix fait passer le curseur à l'autre champ s'il est vide, sinon la page se ferme ; la page reste fixe sous le doigt, seule sa liste défile. Les feuilles ci-dessus restent sur ordinateur.
 2. **Rangée de filtres** (défilement horizontal) : « Tout » + 5 catégories (multi-sélection) ; bouton « Filtres » avec compteur → feuille : rayon (`autourDeMoiOptionsM`), durée de train max (`trainMaxOptionsMin`), « Faisable dans la journée » (P1).
 3. **Carte (sur mobile : plein écran, sous l'en-tête sans fond, D072 ; ~40 % de la hauteur visible)** : point pulsant de l'utilisateur, gare la plus proche, lieux proches (épingles par catégorie), gares de destination **colorées par tranche de temps** ; mini-fiche au toucher ; boutons « Recentrer » et « Plein écran ».
    - **Liaisons :** segments droits vers toutes les destinations cachés, à l'essai ; à la sélection d'une carte ou d'un point, **une ligne d'arrêt en arrêt** suit le prochain train (D074). Vrais tracés plus tard (`A-FAIRE`). *La maquette montre des lignes « bien rangées » : c'est un dessin, la vraie carte ne l'est pas.*
@@ -175,3 +177,6 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 06/11/2026 | 1.14 | § 5 : écran Sources par thème, adresse `/sources` — D075 |
 | 06/11/2026 | 1.15 | § 5 : page Mentions légales et confidentialité (E13) |
 | 10/11/2026 | 1.16 | § 3 : guidage de la localisation selon l'appareil — D083 |
+| 11/11/2026 | 1.17 | § 3 : barre du trajet et recherche de destination — D084 |
+| 12/11/2026 | 1.19 | Page « Trajet » plein écran sur téléphone — D085 |
+| 11/11/2026 | 1.18 | « Où allez-vous ? » à la hauteur de son contenu, bouton dans la liste, choix appliqué après la glissade ; indicateur de défilement des feuilles — D084 |

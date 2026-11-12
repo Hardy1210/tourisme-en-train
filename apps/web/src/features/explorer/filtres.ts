@@ -11,6 +11,10 @@ export type Filtres = {
   rayon: number;
   dureeMax: number;
   faisable: boolean;
+  /** Recherche de destination (D084) : texte tapé, ou nom de la destination touchée. Vide = aucune. */
+  recherche: string;
+  /** Code UIC de la destination touchée dans la liste ; null pour un texte tapé. */
+  destination: string | null;
 };
 
 const { autourDeMoiDefautM, autourDeMoiOptionsM } = parametres.rayons;
@@ -22,6 +26,8 @@ export const FILTRES_PAR_DEFAUT: Filtres = {
   rayon: autourDeMoiDefautM,
   dureeMax: Math.max(...trainMaxOptionsMin),
   faisable: false,
+  recherche: '',
+  destination: null,
 };
 
 const parmi = (texte: string | null, options: readonly number[], defaut: number): number => {
@@ -34,12 +40,20 @@ const estCategorie = (texte: string): texte is Categorie =>
 
 export function lireFiltres(url: URLSearchParams): Filtres {
   const date = url.get('date');
+  const recherche = (url.get('recherche') ?? '').trim();
+  const destination = url.get('destination');
   return {
     date: date !== null && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null,
     categories: [...new Set((url.get('categories') ?? '').split(',').filter(estCategorie))],
     rayon: parmi(url.get('rayon'), autourDeMoiOptionsM, FILTRES_PAR_DEFAUT.rayon),
     dureeMax: parmi(url.get('dureeMax'), trainMaxOptionsMin, FILTRES_PAR_DEFAUT.dureeMax),
     faisable: url.get('faisable') === '1',
+    recherche,
+    // Une destination touchée garde toujours son nom, affiché dans la barre du trajet.
+    destination:
+      destination !== null && /^[0-9A-Z]{8}$/.test(destination) && recherche !== ''
+        ? destination
+        : null,
   };
 }
 
@@ -58,6 +72,9 @@ export function ecrireFiltres(url: URLSearchParams, filtres: Filtres): URLSearch
     filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? null : String(filtres.dureeMax),
   );
   poser('faisable', filtres.faisable ? '1' : null);
+  const recherche = filtres.recherche.trim();
+  poser('recherche', recherche === '' ? null : recherche);
+  poser('destination', recherche === '' ? null : filtres.destination);
   // Jamais de position dans un lien, même arrivée par un ancien lien (D058).
   suite.delete('lat');
   suite.delete('lon');
@@ -79,7 +96,14 @@ export function nombreFiltresLieux(filtres: Filtres): number {
   return filtres.categories.length + (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1);
 }
 
-const CLES_FILTRES = ['categories', 'rayon', 'dureeMax', 'faisable'] as const;
+const CLES_FILTRES = [
+  'categories',
+  'rayon',
+  'dureeMax',
+  'faisable',
+  'recherche',
+  'destination',
+] as const;
 
 /** Les filtres d'une adresse, et rien d'autre : jamais de position (D058). */
 export const filtresDeLUrl = (url: URLSearchParams): string => {

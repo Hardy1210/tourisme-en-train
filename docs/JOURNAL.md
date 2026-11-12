@@ -24,6 +24,22 @@
 
 ---
 
+## 11–12/11/2026 (soir) — Étape E11 — #94 : page « Trajet » plein écran sur téléphone (D085)
+**Fait :**
+- Trois essais sur les feuilles, abandonnés après l'essai de Hardy sur iPhone : hauteur fixe à 250 px du haut ; hauteur fixe aux filtres, clavier par-dessus (`repositionInputs` de vaul coupé) ; feuille `vaul` agrandie à tout l'écran avec un champ d'amorce du clavier (page qui part en haut, sortie coupée par le clavier). Chaque essai annulé par `git revert`
+- Solution de Hardy, d'après la maquette « Explorer mobile v4 » : une page plein écran « Trajet » (D085), couche fixe superposée sans route, fondu, champ qui prend la main dans le toucher, enchaînement Départ → Destination. Prototype validé par Hardy sur iPhone
+- Page fixe sous le doigt : geste annulé hors de la liste ou aux bords de la liste (`lib/blocage-geste.ts`, test d'abord), fond verrouillé
+- Tri par temps de la recherche (test d'abord) : Besançon Franche-Comté TGV avant Paris
+- Les parcours ont trouvé un défaut d'accessibilité : le ✕ dans le `<label>` s'ajoutait au nom du champ ; corrigé
+- `main` fusionnée dans la branche (sauvegardes #95 → #97)
+**Décisions :** D085 ; D084 renvoie à D085 pour le téléphone
+**Problèmes rencontrés :**
+- Trop de tests et de builds écrits pour des essais ensuite abandonnés. Règle de Hardy pour cette session : prototype d'abord, tests et documentation une fois le design approuvé
+**À valider par Hardy :** la #94 avant la fusion
+**Prochaine action :** page « Trajet » sur l'écran Lieux (`A-FAIRE`), plan court d'abord
+**Vérifications :** voir la PR
+**Commit :** branche `etape/E11-recherche-destination`
+
 ## 11/11/2026 (après-midi) — Étape E11 — #94 : feuille « Où allez-vous ? » et indicateur de défilement
 **Fait :**
 - #94, retours de Hardy sur téléphone : « Où allez-vous ? » ne s'ouvre plus à sa hauteur maximale ; elle prend la hauteur de son contenu, comme « D'où partez-vous ? » (une hauteur fixe, essayée entre-temps, faisait monter la feuille vide en haut de l'écran avec le clavier)

@@ -1,15 +1,9 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
 import { AttributionFondCarte } from '@/features/carte/ui/attribution-fond-carte';
-import { useDestinations } from '@/features/destinations/hooks';
-import {
-  dureeElargie,
-  prochainTrainDirect,
-  sansTrainsPartis,
-} from '@/features/destinations/presentation';
-import { useMaintenant } from '@/lib/dates/use-maintenant';
+import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
 import { SectionDestinations } from '@/features/destinations/ui/section-destinations';
 import type { Destination } from '@/features/destinations/schemas';
 import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
@@ -21,6 +15,9 @@ import { plusProcheDifferente, type Depart } from '../depart';
 import type { PositionFeuille } from '../position-feuille';
 import { FeuilleResultats } from './feuille-resultats';
 import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
+import { TEXTES_TRAJET } from '../contenu-trajet';
+import { useDefilementVersDestination } from '../defilement-destination';
+import { useListeDestinations } from '../liste-destinations';
 
 const AUCUNE_DESTINATION: readonly Destination[] = [];
 
@@ -34,6 +31,8 @@ type Proprietes = {
   surPosition: (position: PositionFeuille) => void;
   /** Hauteur de l'en-tête posé sur la carte, pour ne rien cadrer dessous. */
   masqueEnHaut: () => number;
+  /** Augmente à chaque recherche appliquée : la feuille défile jusqu'à la première destination (D084). */
+  demandeDefilement: number;
 };
 
 /** « Votre gare », « À deux pas de vous », « En train direct » : tout suit les filtres de l'URL. */
@@ -46,34 +45,18 @@ export function ResultatsExplorer({
   position,
   surPosition,
   masqueEnHaut,
+  demandeDefilement,
 }: Proprietes) {
   const feuille = useRef<HTMLDivElement>(null);
   const [survolee, setSurvolee] = useState<string | null>(null);
   const [carteTouchee, setCarteTouchee] = useState(0);
   const { gare, point, origine } = depart;
   const plusProche = plusProcheDifferente(depart);
-  const maintenant = useMaintenant();
   const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
-  const destinations = useDestinations({
-    gare: gare.uic,
-    date: filtres.date,
-    categories: filtres.categories,
-    dureeMax: filtres.dureeMax,
-  });
-
-  // « Faisable dans la journée » s'applique ici, dans l'interface (docs/05-api.md § 3.4).
-  const reponse = destinations.data;
-  // Une autre date, choisie exprès, montre sa journée entière.
-  const pourAujourdhui = filtres.date === null || filtres.date === maintenant.dateDuJour;
-  // Gardée entre deux affichages : une nouvelle liste ferait recalculer toutes les couches de la carte.
-  const liste = useMemo(() => {
-    const filtrees = filtres.faisable
-      ? reponse?.destinations.filter((d) => d.faisableJournee)
-      : reponse?.destinations;
-    return filtrees && reponse && pourAujourdhui
-      ? sansTrainsPartis(filtrees, reponse.date, maintenant)
-      : filtrees;
-  }, [reponse, filtres.faisable, pourAujourdhui, maintenant]);
+  // Liste partagée avec la feuille « Où allez-vous ? » ; `liste` suit aussi la recherche (D084).
+  const { requete: destinations, avantRecherche, liste } = useListeDestinations(gare.uic, filtres);
+  const rechercheActive = filtres.recherche !== '';
+  useDefilementVersDestination(feuille, demandeDefilement, rechercheActive, liste);
 
   const lienDe = (destination: Destination) => {
     const suite = new URLSearchParams({ depuis: gare.uic });
@@ -124,7 +107,7 @@ export function ResultatsExplorer({
               distanceM={gare.distanceM}
               dureeMarcheMin={gare.dureeMarcheMin}
               dureeVeloMin={gare.dureeVeloMin}
-              prochainDepart={liste ? prochainTrainDirect(liste) : null}
+              prochainDepart={avantRecherche ? prochainTrainDirect(avantRecherche) : null}
               surChangement={surChangementGare}
               plusProche={
                 plusProche && {
@@ -173,6 +156,17 @@ export function ResultatsExplorer({
                   dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
                   faisable: FILTRES_PAR_DEFAUT.faisable,
                 })
+              }
+              recherche={
+                rechercheActive && avantRecherche
+                  ? {
+                      compte: TEXTES_TRAJET.compte(liste?.length ?? 0, avantRecherche.length),
+                      titreVide: TEXTES_TRAJET.aucune(filtres.recherche),
+                      texteVide: TEXTES_TRAJET.aucuneTexte,
+                      libelleEffacer: TEXTES_TRAJET.effacer,
+                      surEffacer: () => surModification({ recherche: '', destination: null }),
+                    }
+                  : null
               }
             />
           </div>

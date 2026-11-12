@@ -1,6 +1,6 @@
 # Prompts Claude Design — écrans complémentaires
 
-> **Version** 1.1 · **Date** 09/10/2026
+> **Version** 1.2 · **Date** 11/11/2026
 > **Dépend de :** maquette Explorer v2 (`Explorer_Desktop_v2`), `docs/06-interface.md`, `docs/05-api.md`
 > **Usage :** à coller dans Claude Design, **dans le même projet que la maquette Explorer v2**, pour qu'il réutilise `tokens.css` et les composants existants.
 
@@ -24,6 +24,8 @@
 | 8 | Détail « Comparer » (CO₂) | Utile |
 | 9 | Avant la demande de localisation + installation de l'app | Utile |
 | 10 | Navigation : relier tous les écrans | Indispensable |
+| 11 | Recherche de destination : variantes A et B (10/11) | Comparaison |
+| 12 | Recherche de destination : variante C et en-tête repliable (11/11) | Comparaison |
 
 ---
 
@@ -301,9 +303,30 @@ Ajoute un sélecteur d'écrans de démonstration (discret, hors de l'interface) 
 
 ---
 
+## Prompt 11 — Recherche de destination : variantes A et B
+
+**À quoi ça sert :** comparer deux emplacements pour la recherche d'une destination (D084). Résultat déposé par Hardy dans `design/maquettes/` (« Recherche Destination Variantes », hors Git).
+
+```
+Contexte : maquette « Explorer Mobile v3 » de Wagoo (390 × 844). Je veux comparer DEUX VARIANTES d'une seule nouveauté : la recherche d'une destination. Garde tout le reste de l'écran strictement identique (même design system tokens-v3.css, mêmes composants, aucune nouvelle couleur ni police en dur ; si un token manque, dis-le).
+Règles communes : la recherche ne change jamais la gare de départ ; elle filtre la liste « En train direct depuis Dijon-Ville » et les points de la carte ; accents et majuscules ignorés, début de mot accepté ; elle cherche parmi les résultats actuels (« 2 destinations sur 101 ») ; aucun résultat : « Aucune destination « xyz » avec ces filtres », « Effacer la recherche » et « Effacer les filtres » ; ✕ pour effacer ; rien ne disparaît sous « Votre gare ».
+VARIANTE A — dans la barre du haut : un conteneur « Autour de Dijon » + « Chercher une destination » ; une feuille qui monte du bas, champ « Nom de la destination », liste pendant la frappe.
+VARIANTE B — dans la liste : un champ « Chercher une destination » sous « 101 destinations · triées par temps de trajet », filtrage pendant la frappe.
+Pour chaque variante, 4 états côte à côte en 390 px : vide, frappe « beau », « Beaune » trouvée, aucun résultat « xyz ».
+```
+
+## Prompt 12 — Recherche de destination : variante C et en-tête repliable
+
+**À quoi ça sert :** la variante retenue (D084). Codée directement avec le design system, sans attendre la maquette.
+
+```
+Ajoute une VARIANTE C. 1) En-tête repliable : fermé par défaut, seule la rangée des catégories avec « Filtres » reste ; un bouton rond sur la carte, au-dessus de « Recentrer », fait descendre logo, date et barre du trajet avec une animation fluide ; pastille si la date n'est pas aujourd'hui ou si une destination est cherchée. 2) Barre du trajet sur UNE ligne : « 📍 Autour de Dijon → Où aller ? » ; « → Beaune ✕ » ; « → « beau » · 2 ✕ » ; départ coupé avec « … » si trop long. Feuille « Votre trajet » : « De » et « À », liste pendant la frappe triée par temps, « Afficher les 2 destinations » ; ensuite la feuille de résultats monte au plus haut, sous les catégories. États : en-tête fermé, ouvert, frappe « beau », après « Afficher », aucun résultat « xyz ».
+```
+
 ## Historique
 
 | Date | Version | Modification |
 |---|---|---|
 | 30/09/2026 | 1.0 | Création |
 | 09/10/2026 | 1.1 | « Menu » dans la navigation basse (Explorer · Menu), comme la fiche E10 et `06` § 3 |
+| 11/11/2026 | 1.2 | Prompts 11 et 12 : recherche de destination — D084 |

@@ -1,9 +1,10 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { Drawer } from 'vaul';
 import { cn } from '@/lib/classes';
 import { BoutonFermer } from './bouton';
+import { IndicateurDefilement } from './indicateur-defilement';
 
 type Proprietes = {
   ouverte: boolean;
@@ -11,6 +12,11 @@ type Proprietes = {
   titre: string;
   /** Sur grand écran : petit panneau flottant à côté du rail de navigation, sans voile. */
   ancreeAuRail?: boolean;
+  /**
+   * Une fois la feuille sortie de l'écran. Un travail lourd lancé pendant la glissade (filtrer la liste
+   * et la carte) bloque le téléphone : la feuille disparaîtrait d'un coup au lieu de glisser.
+   */
+  apresFermeture?: () => void;
   children: ReactNode;
 };
 
@@ -20,8 +26,11 @@ export function Feuille({
   surChangement,
   titre,
   ancreeAuRail = false,
+  apresFermeture,
   children,
 }: Proprietes) {
+  const zone = useRef<HTMLDivElement>(null);
+  const contenu = useRef<HTMLDivElement>(null);
   return (
     <Drawer.Root open={ouverte} onOpenChange={surChangement}>
       <Drawer.Portal>
@@ -33,6 +42,10 @@ export function Feuille({
         />
         <Drawer.Content
           aria-describedby={undefined}
+          // Fin de la glissade de sortie (aussi quand le téléphone réduit les animations).
+          onAnimationEnd={(evenement) => {
+            if (evenement.target === evenement.currentTarget && !ouverte) apresFermeture?.();
+          }}
           className={cn(
             'fixed inset-x-0 bottom-(--decalage-bas) z-overlay flex max-h-(--feuille-hauteur-max) flex-col gap-4 rounded-t-feuille bg-feuille-bg px-5 pt-2.5 shadow-sheet outline-none safe-bottom',
             ancreeAuRail &&
@@ -59,8 +72,18 @@ export function Feuille({
               <BoutonFermer className={cn('-mr-2.5', ancreeAuRail && 'lg:hidden')} />
             </Drawer.Close>
           </div>
-          <div className={cn('min-h-0 flex-1 overflow-y-auto pb-6', ancreeAuRail && 'lg:pb-1.5')}>
-            {children}
+          {/* Barre du navigateur masquée : l'indicateur la remplace, visible même sans geste. */}
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <div
+              ref={zone}
+              className={cn(
+                'min-h-0 flex-1 overflow-y-auto pb-6 scrollbar-none',
+                ancreeAuRail && 'lg:pb-1.5',
+              )}
+            >
+              <div ref={contenu}>{children}</div>
+            </div>
+            <IndicateurDefilement zone={zone} contenu={contenu} />
           </div>
         </Drawer.Content>
       </Drawer.Portal>

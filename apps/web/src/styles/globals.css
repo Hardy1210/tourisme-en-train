@@ -307,6 +307,12 @@
   --feuille-poignee: var(--border-strong);
   --feuille-hauteur-max: 86dvh;
 
+  /* Indicateur de défilement des feuilles : trait de la marque, rail presque invisible, même largeur */
+  --indicateur-defilement: var(--primary);
+  --indicateur-defilement-rail: color-mix(in oklab, var(--primary) 12%, transparent);
+  --indicateur-defilement-largeur: 0.1875rem; /* 3 px */
+  --indicateur-defilement-min: 1.5rem; /* longueur minimale du trait, même pour une très longue liste */
+
   /* Récompenses et favoris */
   --reward: var(--accent);
   --reward-soft: var(--accent);
@@ -431,6 +437,8 @@
   --color-interrupteur-pastille: var(--interrupteur-pastille);
   --color-feuille-bg: var(--feuille-bg);
   --color-feuille-poignee: var(--feuille-poignee);
+  --color-indicateur-defilement: var(--indicateur-defilement);
+  --color-indicateur-defilement-rail: var(--indicateur-defilement-rail);
 
   --font-display: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body-family), ui-sans-serif, system-ui, sans-serif;
@@ -607,6 +615,13 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Trait de l'indicateur de défilement : longueur = part visible, position = progression (0 à 1) */
+@utility indicateur-defilement-trait {
+  --longueur: max(var(--indicateur-defilement-min), var(--part-visible));
+  height: var(--longueur);
+  top: calc((100% - var(--longueur)) * var(--progression));
 }
 
 /* Superpositions */
