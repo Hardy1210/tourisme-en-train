@@ -1,7 +1,8 @@
 'use client';
 
 // Les deux champs de la page « Trajet » (D085), reliés par la ligne du logo : anneau devant le départ,
-// point plein devant la destination. Le champ actif est entouré de la couleur principale.
+// point plein devant la destination. Le champ actif est entouré de la couleur principale. Sans
+// destination (écran Lieux), le champ Départ reste seul, sans la ligne.
 import { X } from 'lucide-react';
 import type { RefObject } from 'react';
 
@@ -19,7 +20,7 @@ type Champ = {
 
 type Proprietes = {
   depart: Champ;
-  destination: Champ;
+  destination?: Champ;
   actif: ChampTrajet;
   surActif: (champ: ChampTrajet) => void;
   surEntree: () => void;
@@ -69,6 +70,8 @@ export function ChampsTrajet({ depart, destination, actif, surActif, surEntree }
       )}
     </div>
   );
+
+  if (!destination) return champ('depart', depart);
 
   return (
     <div className="flex gap-3">
