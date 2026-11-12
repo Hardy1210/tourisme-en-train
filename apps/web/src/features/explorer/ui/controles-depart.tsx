@@ -28,13 +28,13 @@ export function BoutonDate({ date, surClic }: { date: string | null; surClic: ()
   );
 }
 
-/** Bouton « Autour de… » de l'en-tête. */
-export function BoutonDepart({ choix }: { choix: Choix }) {
+/** Bouton « Autour de… » de l'en-tête. Par défaut, il ouvre la feuille « D'où partez-vous ? ». */
+export function BoutonDepart({ choix, surClic }: { choix: Choix; surClic?: () => void }) {
   return (
     <Bouton
       variante="secondaire"
       className="w-full justify-start border-0 bg-surface text-base font-normal shadow-xs"
-      onClick={() => choix.setFeuilleOuverte(true)}
+      onClick={surClic ?? (() => choix.setFeuilleOuverte(true))}
     >
       <MapPin aria-hidden="true" className="size-4.5 flex-none text-primary" />
       <span className="min-w-0 flex-1 truncate text-left">{choix.libelle}</span>

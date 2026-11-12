@@ -25,6 +25,8 @@ export const TEXTES_TRAJET = {
   chargement: 'Les destinations arrivent…',
   // Page « Trajet » du téléphone (D085).
   titrePage: 'Trajet',
+  /** Page du départ seul, sur l'écran Lieux. */
+  titrePageDepart: "D'où partez-vous ?",
   retour: 'Retour',
   champDepart: 'Départ',
   champDestination: 'Destination',
