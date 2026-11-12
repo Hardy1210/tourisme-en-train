@@ -177,7 +177,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 
 | Étape | Pour quand | Fait | Reste | Estimation |
 |---|---|---|---|---|
-| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet), puis en-tête repliable ; (6) parcours des filtres rayon, durée, ville (F05). Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
+| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet) et D085 (page « Trajet » sur téléphone, #94), puis page « Trajet » sur Lieux et en-tête repliable ; (6) parcours des filtres rayon, durée, ville (F05). Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
 | Intégration continue | P0, 22/11 | Rien | GitHub Actions sur chaque PR : `pnpm verifier`, intégration (PostgreSQL + PostGIS), parcours Playwright si possible ; fusion bloquée si un test échoue ; règle ESLint des couches (D080) | 1 j |
 | Design | 23 → 25/11 | Maquettes v3 | Retouches de Hardy, après le P0 et avant E15, pour que l'accessibilité, la performance et les captures du pitch portent sur l'interface finale (D080) | 3 j |
 | E13 | P0, 22/11 | Sources, À propos, Mentions, en ligne | 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
