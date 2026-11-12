@@ -56,3 +56,4 @@
 | 11/11/2026 | 1.60 | § 16 : `pnpm dev` arrêté seulement pour un build dans le dépôt lui-même, pas dans une copie |
 | 11/11/2026 | 1.61 | § 9 : sauvegarde de session de l'après-midi, #94 à essayer sur iPhone |
 | 12/11/2026 | 1.62 | § 9 : sauvegarde de session, #94 fusionnée, page « Trajet » (D085), Lieux ensuite |
+| 12/11/2026 | 1.63 | § 9 : sauvegarde de session du soir, #99 et #100 fusionnées, #101 ouverte (D086) |
