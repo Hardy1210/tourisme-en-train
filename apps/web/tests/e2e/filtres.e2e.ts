@@ -48,7 +48,7 @@ async function dansFiltres(
 }
 
 const option = (feuille: ReturnType<typeof feuilleFiltres>, groupe: string, libelle: string) =>
-  feuille.getByRole('group', { name: groupe }).getByRole('radio', { name: libelle });
+  feuille.getByRole('radiogroup', { name: groupe }).getByRole('radio', { name: libelle });
 
 test.describe('Explorer', () => {
   const ECRAN = `/?date=${DATE}`;
