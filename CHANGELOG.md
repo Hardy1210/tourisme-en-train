@@ -14,6 +14,7 @@
 - Position refusée : un guide « Comment autoriser la localisation ? » donne les étapes exactes pour iPhone, Android ou ordinateur. Il s'ouvre tout seul si la position est encore bloquée.
 
 ### Modifié
+- La carte d'Explorer s'ouvre plus près de votre gare (depuis Dijon, de Mâlain à Genlis). Choisir une destination centre la carte sur sa gare ; effacer la recherche ramène aux environs de votre gare.
 - En haut d'Explorer et de Lieux, sur téléphone, il ne reste que le trajet et les catégories : la date se choisit maintenant dans « Filtres » (« Quand ? »). Si ce n'est pas aujourd'hui, une pastille « Demain ✕ » le rappelle devant les catégories, et la date s'ajoute au titre de la liste.
 - Dans la fiche destination, les TER qui partent et arrivent en Bourgogne-Franche-Comté s'appellent « TER Mobigo », comme sur SNCF Connect. Les autres restent « TER ».
 

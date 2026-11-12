@@ -54,6 +54,8 @@ export const schemaParametres = z
       zoomMinLieux: z.number().positive(),
       /** Zoom maximal du cadrage sur une gare et ses lieux : une gare sans lieu reste située. */
       zoomMaxFiche: z.number().positive(),
+      /** Zoom sur la gare d'une destination choisie dans la recherche : on voit la ville autour. */
+      zoomDestination: z.number().positive(),
     }),
     localisation: z.strictObject({
       delaiPositionMs: z.number().int().positive(),
