@@ -75,6 +75,8 @@ test.describe('Explorer', () => {
     await boutonFiltres(page).click();
     await feuilleFiltres(page).getByRole('button', { name: 'Réinitialiser' }).click();
     await expect(page).not.toHaveURL(/dureeMax=/);
+    // Feuille ouverte, la liste est cachée aux lecteurs d'écran : on la referme pour compter.
+    await feuilleFiltres(page).getByRole('button', { name: 'Voir les sorties' }).click();
     await expect(sorties(page)).toHaveCount(toutes);
   });
 
@@ -98,7 +100,7 @@ test.describe('Explorer', () => {
     await expect(sorties(page)).toHaveCount(faisables);
   });
 
-  // Test léger (A-FAIRE : la section « À deux pas » va évoluer) : le nombre de lieux et l'adresse.
+  // Test léger (A-FAIRE : la section « À deux pas » va évoluer) : la demande, le nombre de lieux et l'adresse.
   test('rayon : 1 km montre moins de lieux à deux pas, reste après un rechargement', async ({
     page,
   }) => {
@@ -109,7 +111,7 @@ test.describe('Explorer', () => {
     const autour = await lieux.count();
 
     const demande = page.waitForRequest(
-      (r) => r.url().includes('/api/lieux') && r.url().includes('rayon=1000'),
+      (r) => r.url().includes('/api/autour') && r.url().includes('rayon=1000'),
     );
     await dansFiltres(page, (feuille) => option(feuille, 'Rayon autour de moi', '1 km').click());
     await demande;
