@@ -12,8 +12,10 @@ test.use({ geolocation: DIJON, permissions: ['geolocation'] });
 
 test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
 
-test.beforeEach(async ({ context, baseURL }) => {
+test.beforeEach(async ({ context, baseURL, page }) => {
   await couperLeReseau(context, baseURL);
+  // « Réinitialiser » remet la date à aujourd'hui (D086) : aujourd'hui doit être un jour de l'échantillon.
+  await page.clock.install({ time: new Date(`${DATE}T08:00:00+01:00`) });
   await context.route('**/api/geocodage/inverse*', (requete) =>
     requete.fulfill({ json: { commune: 'Dijon', codeInsee: '21231', horsLigne: false } }),
   );
