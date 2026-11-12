@@ -13,6 +13,7 @@ import {
   centreDestination,
   clesEtiquetees,
   empriseDe,
+  margesVerticales,
   pointsCadrage,
   pointsEtiquettes,
   ligneArrets,
@@ -99,10 +100,14 @@ export function CarteExplorer({
   const arrets = useArretsTrain(gareDepart.uic, survolee ?? uicChoisi, date);
   const marge = () => ({
     padding: {
-      top: MARGE_PX + masqueEnHaut(),
+      ...margesVerticales({
+        haut: MARGE_PX + masqueEnHaut(),
+        bas: MARGE_PX + masqueEnBas(),
+        hauteur: carte.current?.getContainer().clientHeight ?? 0,
+        minimum: 2 * MARGE_PX,
+      }),
       left: MARGE_PX,
       right: MARGE_PX,
-      bottom: MARGE_PX + masqueEnBas(),
     },
     maxZoom: 12,
     duration: 0,

@@ -104,3 +104,24 @@ export function centreDestination(
   const trouvee = uic === null ? undefined : destinations.find((d) => d.uic === uic);
   return trouvee ? { lat: trouvee.lat, lon: trouvee.lon } : null;
 }
+
+/**
+ * Marges haute et basse du cadrage, réduites pour laisser au moins `minimum` pixels de carte : sans cela,
+ * avec la feuille des résultats montée, elles dépassent la carte et MapLibre ne cadre plus du tout. La
+ * marge basse (la feuille) cède d'abord, puis la haute.
+ */
+export function margesVerticales({
+  haut,
+  bas,
+  hauteur,
+  minimum,
+}: {
+  haut: number;
+  bas: number;
+  hauteur: number;
+  minimum: number;
+}): { top: number; bottom: number } {
+  const place = Math.max(0, hauteur - minimum);
+  const top = Math.min(haut, place);
+  return { top, bottom: Math.max(0, Math.min(bas, place - top)) };
+}
