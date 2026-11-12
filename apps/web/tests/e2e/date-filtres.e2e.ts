@@ -114,6 +114,10 @@ test.describe('Explorer', () => {
     await feuille(page)
       .getByRole('button', { name: /24 novembre/ })
       .click();
+    // Le calendrier se valide : on revient alors aux filtres.
+    await feuille(page)
+      .getByRole('button', { name: /^Voir les sorties du/ })
+      .click();
     await expect(quand(page).getByRole('button', { name: /^Choisir une date/ })).toHaveAttribute(
       'aria-pressed',
       'true',
