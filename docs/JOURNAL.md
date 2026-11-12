@@ -24,6 +24,55 @@
 
 ---
 
+## 11/11/2026 (après-midi) — Étape E11 — #94 : feuille « Où allez-vous ? » et indicateur de défilement
+**Fait :**
+- #94, retours de Hardy sur téléphone : « Où allez-vous ? » ne s'ouvre plus à sa hauteur maximale ; elle prend la hauteur de son contenu, comme « D'où partez-vous ? » (une hauteur fixe, essayée entre-temps, faisait monter la feuille vide en haut de l'écran avec le clavier)
+- Fermeture au choix d'une destination : la feuille disparaissait d'un coup. Cause mesurée : filtrer la liste et la carte bloquait le navigateur ~0,7 s (9 tâches longues) pendant la glissade. Le choix s'applique désormais une fois la feuille sortie (`Feuille.apresFermeture`). Test qui reproduisait le défaut (3 échecs sur 3), puis correction
+- Indicateur de défilement dans toutes les feuilles (trait de la marque, rail presque invisible, même largeur), visible tant que du contenu est caché : Safari sur iPhone n'affiche sa barre que pendant le geste et ignore son style. Calcul pur testé (`lib/defilement.ts`), jetons `--indicateur-defilement-*`
+- Bouton « Afficher les x destinations » dans la liste, plus collé en bas (il écrasait la liste)
+- `A-FAIRE` : « Où allez-vous ? » deviendra probablement une page
+**Décisions :** D084 modifiée (sur la branche de la #94)
+**Problèmes rencontrés :**
+- Première hypothèse fausse (montée de la feuille de résultats) : trouvée par expériences, mais trop de builds et d'erreurs évitables ; Hardy a relevé le coût (45 000 tokens)
+- Parcours instable connu : 1 échec sur 40 relances, même erreur qu'avant
+**À valider par Hardy :**
+- #94 sur iPhone (`767d36f`) : « Où allez-vous ? » posée sur le clavier, glissade à la fermeture, indicateur
+- Vu sans y toucher : choisir une gare proche dans « D'où partez-vous ? » semble aussi faire disparaître la feuille d'un coup ; en tapant « b », Paris (1 h 36) passe avant Besançon Franche-Comté TGV (26 min)
+**Prochaine action :**
+- Retour de Hardy sur la #94 ; puis parcours instable (PR à part), puis en-tête repliable
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (523) · parcours 160/161, l'échec = parcours instable connu
+**Commit :** `767d36f` (branche `etape/E11-recherche-destination`)
+
+## 10–11/11/2026 — Étape E11 — recherche de ville, TER Mobigo, guidage, recherche de destination ; travail « comme un produit »
+**Fait :**
+- Nouvelle façon de travailler (D080) : `main` + CHANGELOG, versions (0.1.0 = mise en ligne du 07/11, étiquette `v0.1.0` posée ; 1.0.0 = premier client), une PR = un sujet, un bug commence par un test, règles de travail dans une PR à part.
+- #90 : recherche de ville limitée aux communes (D081). Mesuré : les « Beaune » parasites étaient surtout des **rues**, pas des lieux-dits.
+- #91 : « TER Mobigo » si les deux terminus du train sont dans la région (D082). Mesuré : 1 104 TER Mobigo, 1 449 TER sur 2 553 ; les horaires SNCF ne donnent pas la région.
+- #92 : test « prix non calibré » sur les cartes d'Explorer.
+- #93 : guidage de la localisation refusée selon l'appareil (D083), essayé par Hardy sur iPhone.
+- #94, **ouverte, non fusionnée** : barre du trajet « Autour de Dijon → Où aller ? » et feuille « Où allez-vous ? » (D084), après comparaison de trois variantes sur maquette ; corrigée deux fois après les essais de Hardy sur téléphone.
+- Production inchangée (0.1.0) : tout attend sous « Non publié » dans `CHANGELOG.md`.
+
+**Décisions :** D080, D081, D082, D083, D084 (D084 dans la #94).
+
+**Problèmes rencontrés :**
+- Une règle « nom exact » dans la recherche de destination faisait perdre Besançon TGV : écartée par les tests.
+- « Bligny-lès-Beaune » de la maquette n'existe pas : donnée inventée de mes tests, recopiée dans le prompt (L54).
+- Parcours « les résultats arrivent, puis une destination s'ouvre » **instable sur `main`** : 3 échecs sur 20 (la fiche ne s'ouvre pas en 5 s). À corriger dans une PR à part (`A-FAIRE` § 1, L55).
+- Hardy a noté des « comportements bizarres » dans la #94, sans les détailler : à reprendre avec lui.
+- Demande mal comprise : « que la feuille monte comme celle d'Autour de Dijon » a été lue comme « même hauteur d'ouverture » (`0cf7202`). Hardy a demandé de revenir en arrière : `7789d45` annule ce commit, la #94 est identique à `f3ee6d8`, la version qu'il avait essayée. Avant de recoder, lui faire décrire le geste attendu, avec un exemple à l'écran.
+
+**À valider par Hardy :**
+- La #94 sur téléphone, puis la fusion. Textes Android du guidage pendant E14.
+
+**Prochaine action :**
+- Voir `CLAUDE.md` § 9.
+
+**Vérifications :** `main` (`53b43fe`) : typecheck ✅ · lint ✅ · format ✅ · tests ✅ (500). Parcours : 3 échecs sur 20 du même test instable, existant avant la session.
+**Commit :** voir `docs(contexte): sauvegarde de session du 11/11` (branche `etape/contexte-1111`)
+
+---
+
 ## 07/11/2026 — Étape E13 — chiffres en ligne, ordre du travail fixé
 **Fait :**
 - #88 fusionnée et déployée (`d1f0206`). Contrôle de la production : tout est bon. `/a-propos` affiche 97 Mt, 69 % et 14 kg contre 2,8 kg, sans erreur ni débordement en 390 px dans Chromium.

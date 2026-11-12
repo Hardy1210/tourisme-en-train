@@ -10,6 +10,8 @@
 
 | Quoi | Contexte | Déclencheur |
 |---|---|---|
+| **Parcours instable à corriger (règle 5 des tests)** : « les résultats arrivent sans action, puis une destination s'ouvre » (`explorer.e2e.ts`) échoue 3 fois sur 20 sur `main` (`53b43fe`, 11/11), mobile et ordinateur : après le toucher de « Voir la sortie », la fiche ne s'ouvre pas dans les 5 s. Chercher la cause (chargement de la fiche sous la charge des parcours en parallèle ? clic avant la fin de l'affichage ?) avant de toucher au délai | Vu pendant la #94, présent avant elle (L55) | PR à part, avant la PR de l'en-tête repliable |
+| **#94 à essayer sur iPhone (`767d36f`)** : « Où allez-vous ? » à la hauteur de son contenu, posée sur le clavier ; glissade à la fermeture ; indicateur de défilement. Vu en passant, non corrigé : (1) choisir une gare proche dans « D'où partez-vous ? » semble faire disparaître la feuille d'un coup (même cause probable : calcul lourd pendant la glissade) ; (2) en tapant « b », Paris (1 h 36) passe avant Besançon Franche-Comté TGV (26 min) | Le clavier de l'iPhone ne se reproduit pas dans les parcours | Essai de Hardy, avant la fusion de la #94 |
 | Relire l'ensemble de la documentation (docs 00 → 08, fiches) | Rédigée le 30/09 | Avant de lancer E00 |
 | Variantes de la maquette Explorer : carte avec ~20 destinations, lieu sans description, destination sans prix, trains sans statut, bascule Samedi/Dimanche, station sans nombre de vélos ; retirer le transport à la demande | Décisions D017 → D021 | Avant ~09/11 (E11–E12) |
 | Maquettes fiche lieu, feuille Filtres, choix de ville (si non couvertes) — prompts dans `design/prompts-ecrans.md` | — | Avant ~09/11 (E11–E12) |

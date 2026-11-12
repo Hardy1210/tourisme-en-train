@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.11 · **Date** 06/11/2026
+> **Version** 1.13 · **Date** 11/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -361,6 +361,18 @@
 - **À retenir :** avant de croire un résultat vide, se demander ce qu'on aurait vu si le problème existait. Et dire ce que le test ne couvre pas : ici, une vraie panne serveur reste couverte par un test automatique, pas par ce contrôle.
 - **Origine :** D077.
 
+### L54 — Une donnée inventée pour un test peut fuir dans une maquette
+- **Problème :** « Bligny-lès-Beaune », inventé pour un test de recherche, a été repris dans le prompt de la maquette ; la maquette l'a affiché comme une vraie destination, alors qu'aucune gare de ce nom n'existe.
+- **Solution :** vérifier dans la base chaque exemple donné à un outil de maquette ou à une présentation.
+- **À retenir :** un exemple écrit pour illustrer finit par passer pour un fait. Les exemples d'un prompt viennent de la base, pas des tests.
+- **Origine :** D084.
+
+### L55 — Un test qui échoue « parfois » : le lancer d'abord sans son changement
+- **Problème :** un parcours a échoué pendant la recherche de destination ; il était tentant d'accuser le nouveau code, ou de relancer jusqu'au succès.
+- **Solution :** le lancer plusieurs fois sur `main`, sans le changement : 3 échecs sur 20, l'instabilité existait déjà.
+- **À retenir :** répéter le test (`--repeat-each`) sur la version d'avant dit si le défaut est nouveau. Un test instable se corrige à part, avec sa cause, sans allonger les délais au hasard.
+- **Origine :** journal du 10–11/11.
+
 ## Dossier CO₂ pour la soutenance (relevé du 06/11/2026)
 
 Lecture de pages, pas un avis juridique. À relire avant la soutenance : ces pages peuvent changer.
@@ -415,3 +427,4 @@ Valeurs en g CO₂e/km.
 | 05/11/2026 | 1.10 | L44 → L46 (serveur en marche, sortie du hors-ligne, cache par défaut) |
 | 06/11/2026 | 1.11 | L47 → L52 et dossier CO₂ (licence lue à la source, portée d'une page, périmètre d'un chiffre, chiffre vérifiable, marché d'abord, conseil vérifié point par point) |
 | 07/11/2026 | 1.12 | L53 (contrôle à zéro et témoin) |
+| 11/11/2026 | 1.13 | L54, L55 (exemple inventé qui fuit, test instable lancé sans son changement) |

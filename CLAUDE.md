@@ -176,7 +176,7 @@ Toute nouvelle arborescence respecte cette structure. La modifier = mettre à jo
 | E18 | Publication de la réutilisation sur data.gouv.fr | Fin | ⬜ |
 
 Semaines : S1 = 05/10 → 11/10 · S2 = 12 → 18/10 · S3 = 19 → 25/10 · S4 = 26/10 → 01/11 · S5 = 02 → 08/11 · S6 = 09 → 15/11 · S7 = 16 → 22/11 · S8 = 23 → 29/11 · Fin = 30/11 → 02/12.
-Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé au plus tard le 22/11** · **gel des nouvelles fonctionnalités au plus tard le 27/11** · **livraison le 30/11** · **soutenance le 03/12**. Après le gel : corrections, retouches de design et déploiements jusqu'à la soutenance. De l'avance ? Elle va aux P1 (D078).
+Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API complète le 08/11** · **P0 terminé au plus tard le 22/11** · **gel des nouvelles fonctionnalités au plus tard le 27/11** · **livraison le 30/11** · **soutenance le 03/12**. Retouches de design du 23 au 25/11, avant E15 (D080). Après le gel : corrections et déploiements jusqu'à la soutenance. De l'avance ? Elle va aux P1 (D078).
 
 ---
 
@@ -184,12 +184,12 @@ Fiches : `docs/etapes/Exx-*.md`. Jalons : **données en base le 01/11** · **API
 
 > Mis à jour à chaque « garde le contexte ». **On supprime ce qui est résolu** : ce qui mérite d'être gardé part dans `JOURNAL.md` ou `DECISIONS.md`.
 
-- **Étape en cours :** finir les étapes prévues (D079) : E11 et E12 ⏸, partie fonctionnelle · E13 🟡 : 3 textes du pitch · E14 🟡 : Android · puis E15, E16, E18. E17 : phase 1 en ligne, phase 2 après le P0
-- **Dernière session :** 07/11/2026 — mise en ligne complète (OVH, Coolify), procédure de mise en ligne (D077), dates du P0 et du gel, 97 Mt et 69 % en ligne (D078), ordre du travail (D079)
-- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos avec ses 3 chiffres, Mentions légales ; production à jour sur `d1f0206` : HTTPS, base fermée, seuls 22, 80 et 443 ouverts, aucune position dans les journaux, installation iPhone validée, déploiement manuel, mises à jour automatiques de Coolify coupées
-- **À valider par Hardy :** À propos sur l'iPhone ; Android à trouver ; 3 textes du pitch au plus tard le 22/11 ; `A-FAIRE` § 1. **Ne pas lui redemander sa liste de changements de design et de structure : il l'enverra après les étapes prévues (D079)**
-- **Bloquant :** rien ; routes P1 reportées après le P0 (D051) ; horaires chargés jusqu'au 31/12 ; prochaine extraction `osm` au plus tôt le 08/11. Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree`). **Ne jamais construire dans le dépôt pendant que `pnpm dev` tourne** (boucle de rechargement du 06/11, § 16)
-- **Prochaine action précise :** E11 et E12, partie fonctionnelle seulement. Relire les fiches et `A-FAIRE`, vérifier dans le code ce qui est déjà fait (états d'Explorer, parcours des filtres F05, recherche de destination, guidage si la position est refusée, nom TER Mobigo, recherche de ville sans lieux-dits, chronomètre), proposer un plan court et attendre la validation de Hardy (§ 10). Rien de design ni de structure UI/UX pour l'instant. Extraction `osm` possible à partir du 08/11
+- **Étape en cours :** E11 et E12, partie fonctionnelle, plan en 6 points (D080) : 1 à 4 fusionnés (#90 → #93) ; **5 = #94, ouverte, à essayer par Hardy sur iPhone (`767d36f`)** ; 6 = parcours des filtres F05. Puis intégration continue + règle ESLint des couches avant le 22/11, E13 (3 textes du pitch), E14 (Android), E15, E16, E18
+- **Dernière session :** 11/11/2026 après-midi — #94 : « Où allez-vous ? » à la hauteur de son contenu, choix appliqué après la glissade (filtrage qui bloquait ~0,7 s), indicateur de défilement des feuilles, bouton dans la liste (`JOURNAL.md`)
+- **Fait :** données et API P0 ; Explorer, Lieux, fiches, Sources, À propos, Mentions légales ; production en 0.1.0 (`d1f0206`), inchangée depuis le 07/11 : les nouveautés attendent sous « Non publié » dans `CHANGELOG.md`
+- **À valider par Hardy :** la #94 sur iPhone (feuille posée sur le clavier, glissade, indicateur ; deux observations dans `A-FAIRE` § 1) ; textes Android du guidage pendant E14 ; À propos sur l'iPhone ; 3 textes du pitch au plus tard le 22/11 ; `A-FAIRE` § 1
+- **Bloquant :** rien. Parcours instable sur `main` (3 échecs sur 20, `A-FAIRE` § 1). Un serveur de Hardy tourne souvent sur le `.next` du dépôt : parcours, builds, `typecheck` et `verifier` dans une copie (`git worktree` ; celle de la #94 : `../tourisme-recherche`). Mise en ligne : `infra/README.md`, relire « Non publié » avant le Redeploy ; Coolify ne déploie que sur un clic de Hardy
+- **Prochaine action précise :** recueillir le retour de Hardy sur la #94 (`apps/web/src/features/explorer/ui/feuille-destination.tsx`, `components/ui/feuille.tsx`) et corriger sur sa branche, test d'abord ; puis le parcours instable (`apps/web/tests/e2e/explorer.e2e.ts`, « une destination s'ouvre ») dans une PR à part, cause d'abord ; puis l'en-tête repliable (D084)
 ---
 
 ## 10. Réaliser une étape
@@ -343,7 +343,7 @@ Données, panne, retour en arrière : mêmes sections d'`infra/README.md`. **Jam
 | Lancer les tests | `pnpm test` (tous les paquets) |
 | Formater | `pnpm format` |
 | Lancer le traitement des données | `pnpm etl <source\|all> [--force] [--hors-ligne]` · `pnpm etl --help` · disponibles : `sources`, `communes`, `contours`, `gares`, `gtfs_sncf`, `liaisons`, `regles`, `datatourisme`, `osm`, `rattachements`, `transport_local` (dans cet ordre) |
-| Essayer sur le téléphone (tunnel Cloudflare, depuis la racine) | **Arrêter `pnpm dev` d'abord.** Puis `pnpm --filter @tourisme/web build` et `pnpm --filter @tourisme/web exec next start -p 3200` ; dans un autre terminal : `~/cloudflared tunnel --url http://localhost:3200`, dont l'adresse change à chaque lancement. `pnpm dev` peut être relancé une fois le build terminé |
+| Essayer sur le téléphone (tunnel Cloudflare, depuis la racine) | **Dans une copie (`git worktree`), `pnpm dev` peut continuer** : elle a son propre `.next`. **Dans le dépôt lui-même, arrêter `pnpm dev` d'abord.** Puis `pnpm --filter @tourisme/web build` et `pnpm --filter @tourisme/web exec next start -p 3200` ; dans un autre terminal : `~/cloudflared tunnel --url http://localhost:3200`, dont l'adresse change à chaque lancement. `pnpm dev` peut être relancé une fois le build terminé |
 | Essayer la production en local (depuis la racine) | `docker compose -p essai-prod --project-directory . --env-file <fichier> -f infra/compose.prod.yml up -d --build` ; export et restauration : `infra/README.md` |
 | Contrôler la production depuis l'extérieur | `infra/scripts/controler-production.sh https://wagoo.hardylino.com` (lecture seule, code retour 0 si tout est bon) |
 | Lancer le traitement dans Docker | `docker compose run --rm etl <source\|all> [--force] [--hors-ligne]` (image reconstruite : `docker compose build etl`) |
