@@ -98,3 +98,66 @@ test.describe('position refusée', () => {
     await expect(page.getByRole('heading', { name: 'Lieux à visiter' })).toBeHidden();
   });
 });
+
+// Départ sur téléphone : la page plein écran d'Explorer (D085), réduite au champ Départ ; la barre de
+// Lieux ne change pas. Sur ordinateur, la feuille « D'où partez-vous ? » reste.
+test.describe('choix du départ', () => {
+  test.use({ geolocation: DIJON_VILLE, permissions: ['geolocation'] });
+  const pageDepart = (page: Page) => page.getByRole('dialog', { name: "D'où partez-vous ?" });
+  const boutonDepart = (page: Page) => page.getByRole('button', { name: /^(Autour|Au départ) de/ });
+
+  test('téléphone : page plein écran, curseur dans Départ, sans Destination', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La page n’existe que sur téléphone.');
+    await page.goto(ECRAN);
+    await boutonDepart(page).click();
+    await expect(pageDepart(page).getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+    await expect(pageDepart(page).getByRole('searchbox', { name: 'Destination' })).toHaveCount(0);
+    await expect(pageDepart(page).getByRole('button', { name: /^Ma position/ })).toBeVisible();
+    await expect(pageDepart(page).getByText('Gares proches de vous')).toBeVisible();
+    const cadre = await pageDepart(page).boundingBox();
+    expect(cadre?.height ?? 0).toBeGreaterThan((page.viewportSize()?.height ?? 0) - 2);
+  });
+
+  test('téléphone : une gare choisie ferme la page et change la liste', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La page n’existe que sur téléphone.');
+    await page.goto(ECRAN);
+    await expect(page.getByText(/en train direct depuis Dijon-Ville/)).toBeVisible();
+    await boutonDepart(page).click();
+    await pageDepart(page)
+      .getByRole('button', { name: /^Dijon-Porte-Neuve/ })
+      .click();
+    await expect(pageDepart(page)).toHaveAttribute('inert', '');
+    await expect(pageDepart(page)).toHaveCSS('opacity', '0');
+    await expect(boutonDepart(page)).toContainText('Dijon-Porte-Neuve');
+  });
+
+  test('téléphone : « Retour » ferme la page sans changer le départ', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La page n’existe que sur téléphone.');
+    await page.goto(ECRAN);
+    await expect(boutonDepart(page)).toBeVisible();
+    const avant = await boutonDepart(page).textContent();
+    await boutonDepart(page).click();
+    await pageDepart(page).getByRole('button', { name: 'Retour' }).click();
+    await expect(pageDepart(page)).toHaveAttribute('inert', '');
+    await expect(boutonDepart(page)).toHaveText(avant ?? '');
+  });
+
+  test('ordinateur : la feuille « D’où partez-vous ? » reste', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Sur téléphone, c’est la page plein écran.');
+    await page.goto(ECRAN);
+    await boutonDepart(page).click();
+    // La page plein écran, cachée sur grand écran, n'est pas dans l'arbre d'accessibilité : seule la
+    // feuille répond, avec son champ de recherche.
+    await expect(pageDepart(page)).toBeVisible();
+    await expect(pageDepart(page)).not.toHaveAttribute('inert');
+  });
+});
