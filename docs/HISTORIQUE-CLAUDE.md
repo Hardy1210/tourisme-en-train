@@ -58,3 +58,4 @@
 | 12/11/2026 | 1.62 | § 9 : sauvegarde de session, #94 fusionnée, page « Trajet » (D085), Lieux ensuite |
 | 12/11/2026 | 1.63 | § 9 : sauvegarde de session du soir, #99 et #100 fusionnées, #101 ouverte (D086) |
 | 12/11/2026 | 1.64 | § 9 : #101 fusionnée (D086) ; prochaine action : parcours des filtres F05 |
+| 12/11/2026 | 1.65 | § 9 et § 16 : deux copies, `tourisme-recherche` pour le serveur d'essai, `tourisme-parcours` pour les parcours |
