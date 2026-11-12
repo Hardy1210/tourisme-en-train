@@ -104,12 +104,15 @@ test('retour avec une autre date : les trains de cette date sont demandés', asy
   await allerSurLieux(page);
   const appels = appelsExplorer(page);
 
-  await page.getByRole('button', { name: /18 nov|Aujourd/ }).click();
+  // La date se choisit dans « Filtres » (D086).
+  await page.getByRole('button', { name: /^Filtres/ }).click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: /^Demain/ })
     .click();
   await expect(page).toHaveURL(/date=2026-11-19/);
+  await page.getByRole('dialog').getByRole('button', { name: 'Voir les lieux' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
   expect(appels).toEqual([]);
 
   const requete = page.waitForRequest(

@@ -44,7 +44,7 @@ export function RangeeFiltres({
         {date !== null && (
           <Puce
             selectionnee
-            aria-label={`Date : ${date}. Revenir à aujourd'hui`}
+            aria-label={`Date : ${date.replace(/\.$/, '')}. Revenir à aujourd'hui`}
             icone={<CalendarDays aria-hidden="true" />}
             onClick={surAujourdhui}
           >
