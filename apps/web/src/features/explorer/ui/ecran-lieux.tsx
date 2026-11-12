@@ -1,20 +1,20 @@
 'use client';
 
+import { dateDuJour } from '@tourisme/commun';
 import { useState } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { ListeLieuxAccessibles } from '@/features/lieux/ui/liste-lieux-accessibles';
 import { FILTRES_PAR_DEFAUT, nombreFiltresLieux } from '../filtres';
+import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
 import { usePageTrajet } from '../use-page-trajet';
 import {
-  BoutonDate,
   BoutonDepart,
   ErreurChoixDepart,
   EtatsDepart,
   FeuilleChoixDepart,
 } from './controles-depart';
-import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
 import { PageDepart } from './page-depart';
 import { RangeeFiltres } from './rangee-filtres';
@@ -23,9 +23,9 @@ import { RangeeFiltres } from './rangee-filtres';
 export function EcranLieux() {
   const choix = useChoixDepart();
   const { depart } = choix;
-  const [feuilleDate, setFeuilleDate] = useState(false);
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const { filtres, changer } = useFiltres();
+  const aujourdhui = dateDuJour();
   const pret = depart.etat === 'pret';
   const grandEcran = useGrandEcran();
   // Sur téléphone, le départ se choisit dans une page plein écran, comme dans Explorer (D085).
@@ -33,11 +33,7 @@ export function EcranLieux() {
 
   return (
     <div className="flex min-h-full flex-col bg-hero-bg lg:grid lg:h-full lg:min-h-0 lg:grid-cols-[var(--panneau-largeur)_minmax(0,1fr)] lg:overflow-hidden">
-      <EnTete
-        surHero={!grandEcran}
-        className="lg:h-full lg:overflow-y-auto lg:border-r"
-        action={pret && <BoutonDate date={filtres.date} surClic={() => setFeuilleDate(true)} />}
-      >
+      <EnTete surHero={!grandEcran} className="lg:h-full lg:overflow-y-auto lg:border-r">
         <BoutonDepart
           choix={choix}
           surClic={grandEcran ? undefined : () => trajet.ouvrir('depart')}
@@ -46,7 +42,11 @@ export function EcranLieux() {
           <RangeeFiltres
             categories={filtres.categories}
             surCategories={(categories) => changer({ categories })}
-            nombre={nombreFiltresLieux(filtres)}
+            nombre={nombreFiltresLieux(filtres, aujourdhui)}
+            date={
+              dateChoisie(filtres.date, aujourdhui) ? libelleDate(filtres.date, aujourdhui) : null
+            }
+            surAujourdhui={() => changer({ date: null })}
             surFiltres={() => setFeuilleFiltres(true)}
           />
         )}
@@ -73,12 +73,6 @@ export function EcranLieux() {
         </div>
       )}
 
-      <FeuilleDate
-        ouverte={feuilleDate}
-        surChangement={setFeuilleDate}
-        date={filtres.date}
-        surChoix={(date) => changer({ date })}
-      />
       <FeuilleFiltres
         ouverte={feuilleFiltres}
         surChangement={setFeuilleFiltres}

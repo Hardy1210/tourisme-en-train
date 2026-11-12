@@ -81,19 +81,29 @@ export function ecrireFiltres(url: URLSearchParams, filtres: Filtres): URLSearch
   return suite;
 }
 
-/** Nombre affiché sur le bouton « Filtres » : ce qui s'écarte du défaut, hors date. */
-export function nombreFiltres(filtres: Filtres): number {
+/** La date compte quand ce n'est pas aujourd'hui (elle vit dans « Filtres ») ; sans `dateDuJour`, toute date posée compte. */
+function compteDate(filtres: Filtres, dateDuJour?: string): number {
+  return filtres.date !== null && filtres.date !== dateDuJour ? 1 : 0;
+}
+
+/** Nombre affiché sur le bouton « Filtres » : ce qui s'écarte du défaut, date comprise. */
+export function nombreFiltres(filtres: Filtres, dateDuJour?: string): number {
   return (
     filtres.categories.length +
     (filtres.rayon === FILTRES_PAR_DEFAUT.rayon ? 0 : 1) +
     (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1) +
-    (filtres.faisable ? 1 : 0)
+    (filtres.faisable ? 1 : 0) +
+    compteDate(filtres, dateDuJour)
   );
 }
 
 /** Écran Lieux : ni rayon ni « faisable », que sa route n'utilise pas (`05` § 3.6 bis). */
-export function nombreFiltresLieux(filtres: Filtres): number {
-  return filtres.categories.length + (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1);
+export function nombreFiltresLieux(filtres: Filtres, dateDuJour?: string): number {
+  return (
+    filtres.categories.length +
+    (filtres.dureeMax === FILTRES_PAR_DEFAUT.dureeMax ? 0 : 1) +
+    compteDate(filtres, dateDuJour)
+  );
 }
 
 const CLES_FILTRES = [

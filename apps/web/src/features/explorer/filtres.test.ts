@@ -97,8 +97,16 @@ describe('ecrireFiltres', () => {
 });
 
 describe('nombreFiltres', () => {
-  it('ne compte rien par défaut, ni la date', () => {
-    expect(nombreFiltres({ ...FILTRES_PAR_DEFAUT, date: '2026-11-14' })).toBe(0);
+  it('ne compte rien par défaut', () => {
+    expect(nombreFiltres(FILTRES_PAR_DEFAUT, '2026-11-12')).toBe(0);
+  });
+
+  it('compte la date quand ce n’est pas aujourd’hui (elle vit dans « Filtres »)', () => {
+    expect(nombreFiltres({ ...FILTRES_PAR_DEFAUT, date: '2026-11-14' }, '2026-11-12')).toBe(1);
+  });
+
+  it('ne compte pas la date d’aujourd’hui écrite dans l’adresse', () => {
+    expect(nombreFiltres({ ...FILTRES_PAR_DEFAUT, date: '2026-11-12' }, '2026-11-12')).toBe(0);
   });
 
   it('ne compte pas la recherche de destination, montrée dans la barre du trajet', () => {
@@ -136,6 +144,10 @@ describe('nombreFiltresLieux', () => {
   });
   it('ne compte ni le rayon ni « faisable », sans effet sur cet écran', () => {
     expect(nombreFiltresLieux(lireFiltres(url('rayon=5000&faisable=1')))).toBe(0);
+  });
+  it('compte la date quand ce n’est pas aujourd’hui', () => {
+    expect(nombreFiltresLieux(lireFiltres(url('date=2026-11-14')), '2026-11-12')).toBe(1);
+    expect(nombreFiltresLieux(lireFiltres(url('date=2026-11-12')), '2026-11-12')).toBe(0);
   });
 });
 

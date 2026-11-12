@@ -1,6 +1,6 @@
 'use client';
 
-import type { Categorie } from '@tourisme/commun';
+import { dateDuJour, type Categorie } from '@tourisme/commun';
 import { BadgeCheck, Footprints, TrainFront } from 'lucide-react';
 import Link from 'next/link';
 import { Bandeau } from '@/components/ui/bandeau';
@@ -8,6 +8,7 @@ import { Bouton } from '@/components/ui/bouton';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { formaterDuree } from '@/features/destinations/presentation';
+import { suffixeDate } from '@/features/explorer/date';
 import { cn } from '@/lib/classes';
 import { formaterDistance } from '@/lib/geo/formats';
 import { ErreurClient } from '@/lib/http/client';
@@ -102,7 +103,8 @@ export function ListeLieuxAccessibles({
               {total} {total > 1 ? 'lieux' : 'lieu'}{' '}
             </strong>
           )}
-          à pied depuis une gare, en train direct depuis {gare.nom}.
+          à pied depuis une gare, en train direct depuis {gare.nom}
+          {suffixeDate(date, dateDuJour())}.
         </p>
       </div>
 

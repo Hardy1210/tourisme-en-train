@@ -73,7 +73,7 @@ test.describe('position acceptée', () => {
 
   test('une date hors des horaires propose de revenir à aujourd’hui', async ({ page }) => {
     await page.goto('/lieux?date=2020-01-01');
-    await expect(page.getByRole('button', { name: /Revenir à aujourd/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^Revenir à aujourd/ })).toBeVisible();
   });
 
   test('la gare choisie et la date suivent entre Explorer et Lieux', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { joursDuWeekEnd, libelleDate, optionsDate } from './date';
+import { dateChoisie, joursDuWeekEnd, libelleDate, optionsDate, suffixeDate } from './date';
 
 const parCle = (jour: string, cle: string) => optionsDate(jour).find((o) => o.cle === cle);
 
@@ -63,5 +63,28 @@ describe('joursDuWeekEnd', () => {
   });
   it('ne donne rien un dimanche', () => {
     expect(joursDuWeekEnd('2026-11-22', '2026-11-22')).toBeNull();
+  });
+});
+
+// Mercredi 4 novembre 2026 : demain = jeudi 5, week-end = samedi 7.
+describe('dateChoisie', () => {
+  it('faux pour aujourd’hui, qu’il soit absent ou écrit', () => {
+    expect(dateChoisie(null, '2026-11-04')).toBe(false);
+    expect(dateChoisie('2026-11-04', '2026-11-04')).toBe(false);
+  });
+  it('vrai pour toute autre date', () => {
+    expect(dateChoisie('2026-11-05', '2026-11-04')).toBe(true);
+  });
+});
+
+describe('suffixeDate et libellé de la pastille', () => {
+  it.each([
+    [null, '', "Aujourd'hui"],
+    ['2026-11-05', ' · demain', 'Demain'],
+    ['2026-11-07', ' · ce week-end', 'Ce week-end'],
+    ['2026-11-14', ' · sam. 14 nov.', 'Sam. 14 nov.'],
+  ])('%s : titre « …%s », pastille « %s »', (date, suffixe, pastille) => {
+    expect(suffixeDate(date, '2026-11-04')).toBe(suffixe);
+    expect(libelleDate(date, '2026-11-04')).toBe(pastille);
   });
 });

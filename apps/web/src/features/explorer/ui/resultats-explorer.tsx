@@ -1,5 +1,6 @@
 'use client';
 
+import { dateDuJour } from '@tourisme/commun';
 import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
 import { AttributionFondCarte } from '@/features/carte/ui/attribution-fond-carte';
@@ -11,6 +12,7 @@ import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
 import { useLieuxAutour } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
+import { suffixeDate } from '../date';
 import { plusProcheDifferente, type Depart } from '../depart';
 import type { PositionFeuille } from '../position-feuille';
 import { FeuilleResultats } from './feuille-resultats';
@@ -127,6 +129,7 @@ export function ResultatsExplorer({
             />
             <SectionDestinations
               gareNom={gare.nom}
+              suffixeDate={suffixeDate(filtres.date, dateDuJour())}
               destinations={liste}
               chargement={destinations.isPending}
               erreur={destinations.isError ? destinations.error.message : null}
