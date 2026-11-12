@@ -37,7 +37,7 @@
 **À valider par Hardy :** le texte « Voir les sorties » ou « Afficher N sorties » (maquette v5) ; l'ordinateur sans bouton date
 **Prochaine action :** point 6 du plan (D080) : parcours des filtres rayon, durée, ville (F05)
 **Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (340 dans `apps/web`) · parcours 174/180 puis les 6 échecs repris : 5 erreurs de test corrigées, 1 = parcours instable connu
-**Commit :** branche `feat/e11-date-dans-filtres`
+**Commit :** `9630e7a` (#101), sauvegardes #102 et suivante
 
 ---
 
