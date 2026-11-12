@@ -35,10 +35,10 @@
 **Décisions :** D085 ; D084 renvoie à D085 pour le téléphone
 **Problèmes rencontrés :**
 - Trop de tests et de builds écrits pour des essais ensuite abandonnés. Règle de Hardy pour cette session : prototype d'abord, tests et documentation une fois le design approuvé
-**À valider par Hardy :** la #94 avant la fusion
-**Prochaine action :** page « Trajet » sur l'écran Lieux (`A-FAIRE`), plan court d'abord
-**Vérifications :** voir la PR
-**Commit :** branche `etape/E11-recherche-destination`
+**À valider par Hardy :** le plan de la page « Trajet » sur Lieux
+**Prochaine action :** page « Trajet » sur l'écran Lieux (`A-FAIRE`), plan court d'abord, prototype avant les tests
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (535, sur `main` après fusion) · parcours 161 réussis, 1 échec de test corrigé (`destination.e2e.ts`, « Retour » visé dans `main`), relancé 26/26
+**Commit :** #94 fusionnée (`c41c2c3`)
 
 ## 11/11/2026 (après-midi) — Étape E11 — #94 : feuille « Où allez-vous ? » et indicateur de défilement
 **Fait :**

@@ -36,6 +36,7 @@ L'écran Explorer complet, en mobile et en desktop, avec tous ses états.
 - [x] Desktop : panneau gauche 440 px + carte.
 - [x] États : chargement, localisation refusée, hors région, aucun résultat, hors ligne (bandeau commun, E14), erreur.
 - [x] Test Playwright : ouverture avec position simulée (Dijon) → résultats → clic sur une destination.
+- [x] *Ajouté le 11–12/11 :* recherche de destination, barre du trajet (D084) ; sur téléphone, page « Trajet » plein écran (D085), essayée par Hardy sur iPhone (#94). Reste : la même page sur Lieux, l'en-tête repliable.
 
 ## Critères d'acceptation
 - [ ] **Chronomètre :** de l'ouverture à la liste des destinations en < 3 s en local.

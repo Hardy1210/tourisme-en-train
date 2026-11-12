@@ -55,3 +55,4 @@
 | 11/11/2026 | 1.59 | § 8 : design du 23 au 25/11 ; § 9 : sauvegarde de session, #94 ouverte — D080 → D084 |
 | 11/11/2026 | 1.60 | § 16 : `pnpm dev` arrêté seulement pour un build dans le dépôt lui-même, pas dans une copie |
 | 11/11/2026 | 1.61 | § 9 : sauvegarde de session de l'après-midi, #94 à essayer sur iPhone |
+| 12/11/2026 | 1.62 | § 9 : sauvegarde de session, #94 fusionnée, page « Trajet » (D085), Lieux ensuite |
