@@ -3,13 +3,15 @@
 // Page plein écran du téléphone (D085). Toujours présente, mais cachée (`inert`, transparente) tant
 // qu'elle est fermée : un champ peut ainsi prendre la main DANS le toucher qui l'ouvre, seule façon
 // d'ouvrir le clavier sur iPhone (`ouvrirPage`). Fondu à l'ouverture et à la fermeture ; rien ne glisse
-// et rien ne suit le clavier : seule sa hauteur s'arrête au-dessus de lui.
+// et rien ne suit le clavier : le fond couvre toujours tout l'écran, seul le contenu s'arrête au-dessus
+// du clavier (`placementPage`).
 import { ArrowLeft } from 'lucide-react';
 import { type ReactNode, type RefObject, useEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { bloquerGeste, positionListe } from '@/lib/blocage-geste';
 import { cn } from '@/lib/classes';
 import { useZoneVisible } from '@/lib/use-zone-visible';
+import { placementPage } from './placement-page';
 
 type Proprietes = {
   ouverte: boolean;
@@ -49,7 +51,7 @@ export function PagePleinEcran({
     () => true,
     () => false,
   );
-  const zone = useZoneVisible(ouverte);
+  const placement = placementPage(useZoneVisible(ouverte));
   // Fermeture en cours : `apresFermeture` une seule fois, à la fin du fondu (ou sans animation).
   const enFermeture = useRef(false);
   const terminer = () => {
@@ -123,22 +125,24 @@ export function PagePleinEcran({
         if (evenement.target === evenement.currentTarget && !ouverte) terminer();
       }}
       className={cn(
-        'fixed inset-x-0 top-0 z-overlay flex h-(--hauteur-app) flex-col bg-background transition-opacity safe-top lg:hidden',
+        'fixed inset-x-0 top-0 z-overlay h-(--hauteur-app) bg-background transition-opacity lg:hidden',
         ouverte ? 'opacity-100' : 'pointer-events-none opacity-0',
       )}
-      style={zone ? { top: zone.haut, height: zone.hauteur } : undefined}
+      style={placement.fond}
     >
-      <div className="flex-none px-4">
-        <button
-          type="button"
-          onClick={surRetour}
-          className="-ml-1 flex h-touch cursor-pointer items-center gap-2 rounded-bouton px-1 text-base font-semibold text-primary"
-        >
-          <ArrowLeft aria-hidden="true" className="size-5" />
-          {libelleRetour}
-        </button>
+      <div className="flex h-full flex-col safe-top" style={placement.contenu}>
+        <div className="flex-none px-4">
+          <button
+            type="button"
+            onClick={surRetour}
+            className="-ml-1 flex h-touch cursor-pointer items-center gap-2 rounded-bouton px-1 text-base font-semibold text-primary"
+          >
+            <ArrowLeft aria-hidden="true" className="size-5" />
+            {libelleRetour}
+          </button>
+        </div>
+        {children}
       </div>
-      {children}
     </div>,
     document.body,
   );
