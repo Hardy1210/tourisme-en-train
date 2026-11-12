@@ -27,30 +27,33 @@ type Proprietes = {
 
 export function ChampsTrajet({ depart, destination, actif, surActif, surEntree }: Proprietes) {
   const champ = (nom: ChampTrajet, { valeur, indication, ref, surSaisie }: Champ) => (
-    <label
+    // Le ✕ reste hors du <label> : sinon son nom s'ajoute à celui du champ (« Destination Effacer… »).
+    <div
       className={cn(
         'flex h-13 items-center gap-2 rounded-champ bg-champ-bg px-3.5',
         actif === nom && 'outline-2 outline-primary',
       )}
     >
-      <span className="sr-only">
-        {nom === 'depart' ? TEXTES_TRAJET.champDepart : TEXTES_TRAJET.champDestination}
-      </span>
-      {/* 16 px minimum : en dessous, iOS zoome sur la page à la saisie. */}
-      <input
-        ref={ref}
-        type="search"
-        value={valeur}
-        placeholder={indication}
-        onFocus={() => surActif(nom)}
-        onChange={(evenement) => surSaisie(evenement.target.value)}
-        onKeyDown={(evenement) => {
-          if (evenement.key === 'Enter') surEntree();
-        }}
-        enterKeyHint="search"
-        autoComplete="off"
-        className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
-      />
+      <label className="flex min-w-0 flex-1 items-center">
+        <span className="sr-only">
+          {nom === 'depart' ? TEXTES_TRAJET.champDepart : TEXTES_TRAJET.champDestination}
+        </span>
+        {/* 16 px minimum : en dessous, iOS zoome sur la page à la saisie. */}
+        <input
+          ref={ref}
+          type="search"
+          value={valeur}
+          placeholder={indication}
+          onFocus={() => surActif(nom)}
+          onChange={(evenement) => surSaisie(evenement.target.value)}
+          onKeyDown={(evenement) => {
+            if (evenement.key === 'Enter') surEntree();
+          }}
+          enterKeyHint="search"
+          autoComplete="off"
+          className="min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden"
+        />
+      </label>
       {valeur !== '' && (
         <button
           type="button"
@@ -64,7 +67,7 @@ export function ChampsTrajet({ depart, destination, actif, surActif, surEntree }
           <X aria-hidden="true" className="size-4.5" />
         </button>
       )}
-    </label>
+    </div>
   );
 
   return (

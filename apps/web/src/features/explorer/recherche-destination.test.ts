@@ -3,7 +3,12 @@ import { describe, expect, it } from 'vitest';
 
 import type { Destination } from '@/features/destinations/schemas';
 
-import { filtrerDestinations, libelleDestination, normaliser } from './recherche-destination';
+import {
+  filtrerDestinations,
+  libelleDestination,
+  normaliser,
+  plusProches,
+} from './recherche-destination';
 
 type Exemple = { titre: string; commune?: string; gare: string; autres?: string[] };
 
@@ -98,6 +103,15 @@ describe('filtrerDestinations : ordre des résultats', () => {
     ]);
     const p = filtrerDestinations(DANS_L_ORDRE_DE_L_API, { recherche: 'p', destination: null });
     expect(p.map((d) => d.titre)).toEqual(['Paris']);
+  });
+
+  it('« Les plus proches » : les plus rapides d’abord, au plus le nombre demandé', () => {
+    expect(plusProches(DANS_L_ORDRE_DE_L_API, 2).map((d) => d.titre)).toEqual([
+      'Beaune',
+      'Besançon Franche-Comté TGV',
+    ]);
+    expect(plusProches(DANS_L_ORDRE_DE_L_API, 10)).toHaveLength(4);
+    expect(DANS_L_ORDRE_DE_L_API[2]?.titre).toBe('Paris'); // la liste d'origine ne change pas
   });
 
   it('rien de cherché : la liste reste dans son ordre (celle d’Explorer)', () => {

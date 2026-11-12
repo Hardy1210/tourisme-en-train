@@ -55,6 +55,11 @@ export function filtrerDestinations<T extends Destination>(
   return liste.filter((d) => correspond(nomsDe(d), mots)).sort((a, b) => a.dureeMin - b.dureeMin);
 }
 
+/** « Les plus proches en train » (page « Trajet », D085) : les `nombre` plus rapides, sans changer la liste. */
+export function plusProches<T extends Destination>(liste: readonly T[], nombre: number): T[] {
+  return [...liste].sort((a, b) => a.dureeMin - b.dureeMin).slice(0, nombre);
+}
+
 /** Partie destination de la barre du trajet : « Où aller ? », « Beaune » ou « « beau » · 2 ». */
 export function libelleDestination(
   { recherche, destination }: Recherche,

@@ -17,7 +17,7 @@ import { TEXTES_TRAJET } from '../contenu-trajet';
 import type { Depart } from '../depart';
 import type { Filtres } from '../filtres';
 import { useListeDestinations } from '../liste-destinations';
-import { filtrerDestinations } from '../recherche-destination';
+import { filtrerDestinations, plusProches } from '../recherche-destination';
 
 type Proprietes = {
   depart: Extract<Depart, { etat: 'pret' }>;
@@ -62,9 +62,7 @@ export function ZoneDestination({
     ? filtrerDestinations(avantRecherche, { recherche: texte, destination: null })
     : [];
   const proches = avantRecherche
-    ? [...avantRecherche]
-        .sort((a, b) => a.dureeMin - b.dureeMin)
-        .slice(0, parametres.recherche.destinationsProchesMax)
+    ? plusProches(avantRecherche, parametres.recherche.destinationsProchesMax)
     : [];
 
   return (

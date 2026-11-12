@@ -212,15 +212,28 @@ test.describe('position acceptée', () => {
     await expect(page.getByText(/estimation|€/)).toHaveCount(0);
   });
 
-  // Recherche de destination (D084) : barre du trajet + feuille « Où allez-vous ? ».
+  // Recherche de destination (D084) : barre du trajet ; sur téléphone, page « Trajet » plein écran (D085) ;
+  // sur ordinateur, feuilles « Où allez-vous ? » et « D'où partez-vous ? ».
   const barre = (page: Page) => page.getByRole('group', { name: /^Trajet :/ });
   // Été : les deux Besançon (Viotte et TGV) ont un train direct depuis Dijon dans l'échantillon.
   const ECRAN_ETE = '/?date=2026-07-15';
+  const pageTrajet = (page: Page) => page.getByRole('dialog', { name: 'Trajet' });
+  /** La page « Trajet » (téléphone) ou la feuille « Où allez-vous ? » (ordinateur), et son champ. */
   const ouvrirDestination = async (page: Page) => {
     await barre(page)
       .getByRole('button', { name: /^Destination :/ })
       .click();
-    return page.getByRole('dialog', { name: 'Où allez-vous ?' });
+    const fenetre = page.getByRole('dialog', { name: /^(Trajet|Où allez-vous \?)$/ });
+    const champ = fenetre.getByRole('searchbox', { name: /^(Destination|Nom de la destination)$/ });
+    await expect(champ).toBeVisible();
+    return { fenetre, champ };
+  };
+  /** Fermée : la page « Trajet » devient transparente et inerte ; la feuille quitte la page. */
+  const attendreFermeture = async (page: Page, isMobile: boolean) => {
+    if (isMobile) {
+      await expect(pageTrajet(page)).toHaveAttribute('inert', '');
+      await expect(pageTrajet(page)).toHaveCSS('opacity', '0');
+    } else await expect(page.getByRole('dialog')).toHaveCount(0);
   };
 
   test('barre du trajet : départ et « Où aller ? » sur une seule ligne', async ({ page }) => {
@@ -236,10 +249,10 @@ test.describe('position acceptée', () => {
   }) => {
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
-    const feuille = await ouvrirDestination(page);
-    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
-    await expect(feuille.getByText(/^2 destinations sur \d+$/).first()).toBeVisible();
-    await feuille.getByRole('button', { name: 'Afficher les 2 destinations' }).click();
+    const { fenetre, champ } = await ouvrirDestination(page);
+    await champ.fill('besancon');
+    await expect(fenetre.getByText(/^2 destinations sur \d+$/).first()).toBeVisible();
+    await fenetre.getByRole('button', { name: 'Afficher les 2 destinations' }).click();
 
     await expect(page).toHaveURL(/recherche=besancon/);
     // La première destination trouvée est la première chose vue, sans défiler.
@@ -256,9 +269,9 @@ test.describe('position acceptée', () => {
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
     const avant = await sorties(page).count();
-    const feuille = await ouvrirDestination(page);
-    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
-    await feuille.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+    const { fenetre, champ } = await ouvrirDestination(page);
+    await champ.fill('besancon');
+    await fenetre.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
 
     await expect(page).toHaveURL(/destination=/);
     await expect(sorties(page)).toHaveCount(1);
@@ -268,103 +281,171 @@ test.describe('position acceptée', () => {
     await expect(barre(page)).toContainText('Où aller ?');
   });
 
-  test('la feuille s’ouvre à la hauteur de son contenu, comme « D’où partez-vous ? »', async ({
-    page,
-  }) => {
-    await page.goto(ECRAN);
-    const feuille = await ouvrirDestination(page);
-    await expect(feuille.getByRole('searchbox', { name: 'Nom de la destination' })).toBeVisible();
-    await page.waitForTimeout(700); // fin de la montée
-    const hauteur = (await feuille.boundingBox())?.height ?? 0;
-    const ecran = page.viewportSize()?.height ?? 0;
-    // Titre + champ seulement : une grande feuille vide monterait en haut de l'écran avec le clavier.
-    expect(hauteur).toBeLessThan(ecran / 3);
-  });
-
-  test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
-    page,
-  }) => {
-    // Écran raccourci comme par le clavier du téléphone.
-    await page.setViewportSize({ width: 390, height: 480 });
+  test('« b » : Besançon Franche-Comté TGV (26 min) avant Paris (1 h 36)', async ({ page }) => {
     await page.goto(ECRAN_ETE);
-    await expect(sorties(page).first()).toBeVisible();
-    const feuille = await ouvrirDestination(page);
-    const champ = feuille.getByRole('searchbox', { name: 'Nom de la destination' });
-    const indicateur = feuille.locator('[data-indicateur-defilement]');
-
-    // 4 destinations : la dernière passe sous le bord.
+    const { fenetre, champ } = await ouvrirDestination(page);
     await champ.fill('b');
-    await expect(feuille.getByText(/^4 destinations sur \d+$/).first()).toBeVisible();
-    await expect(indicateur).toBeVisible();
-    await champ.fill('beaune');
-    await expect(feuille.getByText(/^1 destination sur \d+$/).first()).toBeVisible();
-    await expect(indicateur).toHaveCount(0);
+    const titres = await fenetre.locator('li button .font-semibold.truncate').allTextContents();
+    expect(titres.indexOf('Besançon Franche-Comté TGV')).toBeLessThan(titres.indexOf('Paris'));
   });
 
-  test('choisir une destination referme la feuille en glissant, comme « D’où partez-vous ? »', async ({
+  test('choisir une destination ferme la page ou la feuille, puis seulement filtre la liste', async ({
     page,
+    isMobile,
   }) => {
     await page.goto(ECRAN_ETE);
     await expect(sorties(page).first()).toBeVisible();
-    const feuille = await ouvrirDestination(page);
-    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('besancon');
-    // Filtrer la liste et la carte bloque le téléphone ~0,7 s : fait pendant la glissade, la feuille
-    // disparaît d'un coup. La liste ne doit changer qu'une fois la feuille partie de la page.
+    const { fenetre, champ } = await ouvrirDestination(page);
+    await champ.fill('besancon');
+    // Filtrer la liste et la carte bloque le téléphone ~0,7 s : fait pendant l'animation de sortie, la
+    // page ou la feuille disparaît d'un coup. La liste ne doit changer qu'une fois elle partie.
     await page.evaluate(() => {
-      const fenetre = window as unknown as { listeChangeeSousLaFeuille: boolean };
-      fenetre.listeChangeeSousLaFeuille = false;
+      const fenetreJs = window as unknown as { listeChangeeSousLaFenetre: boolean };
+      fenetreJs.listeChangeeSousLaFenetre = false;
       const compter = () => document.querySelectorAll('[data-destination]').length;
       const avant = compter();
+      const encoreVisible = () =>
+        [...document.querySelectorAll<HTMLElement>('[role="dialog"]')].some((element) => {
+          const style = getComputedStyle(element);
+          return style.display !== 'none' && style.opacity !== '0';
+        });
       new MutationObserver(() => {
-        const feuilleEncoreLa = document.querySelector('[role="dialog"]') !== null;
-        if (feuilleEncoreLa && compter() !== avant) fenetre.listeChangeeSousLaFeuille = true;
+        if (encoreVisible() && compter() !== avant) fenetreJs.listeChangeeSousLaFenetre = true;
       }).observe(document.body, { subtree: true, childList: true });
     });
-    await feuille.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+    await fenetre.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
 
-    await expect(feuille).toHaveCount(0);
+    await attendreFermeture(page, isMobile);
     await expect(page).toHaveURL(/destination=/);
     await expect(sorties(page)).toHaveCount(1);
     const changee = await page.evaluate(
-      () => (window as unknown as { listeChangeeSousLaFeuille: boolean }).listeChangeeSousLaFeuille,
+      () => (window as unknown as { listeChangeeSousLaFenetre: boolean }).listeChangeeSousLaFenetre,
     );
     expect(changee).toBe(false);
   });
 
-  test('la feuille s’ouvre sans le clavier : il ne vient qu’au toucher du champ', async ({
+  test('« xyz » : message dans la page ; par un lien, état vide et ses deux boutons', async ({
     page,
   }) => {
     await page.goto(ECRAN);
-    const feuille = await ouvrirDestination(page);
-    const champ = feuille.getByRole('searchbox', { name: 'Nom de la destination' });
-    await expect(champ).toBeVisible();
-    await expect(champ).not.toBeFocused();
-    await champ.click();
-    await expect(champ).toBeFocused();
-  });
-
-  test('« Autour de Dijon » ouvre toujours « D’où partez-vous ? »', async ({ page }) => {
-    await page.goto(ECRAN);
-    await barre(page)
-      .getByRole('button', { name: /^Départ :/ })
-      .click();
-    await expect(page.getByRole('dialog', { name: "D'où partez-vous ?" })).toBeVisible();
-  });
-
-  test('« xyz » : message dans la feuille ; par un lien, état vide et ses deux boutons', async ({
-    page,
-  }) => {
-    await page.goto(ECRAN);
-    const feuille = await ouvrirDestination(page);
-    await feuille.getByRole('searchbox', { name: 'Nom de la destination' }).fill('xyz');
-    await expect(feuille.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
-    await expect(feuille.getByRole('button', { name: /^Afficher/ })).toHaveCount(0);
+    const { fenetre, champ } = await ouvrirDestination(page);
+    await champ.fill('xyz');
+    await expect(fenetre.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
+    await expect(fenetre.getByRole('button', { name: /^Afficher/ })).toHaveCount(0);
 
     await page.goto(`${ECRAN}&recherche=xyz`);
     await expect(page.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Effacer les filtres' })).toBeVisible();
     await page.getByRole('button', { name: 'Effacer la recherche' }).last().click();
     await expect(sorties(page).first()).toBeVisible();
+  });
+
+  test.describe('téléphone : page « Trajet » (D085)', () => {
+    test.beforeEach(({ isMobile }) => {
+      test.skip(!isMobile, 'La page « Trajet » n’existe que sur téléphone.');
+    });
+
+    test('« Où aller ? » : page plein écran, curseur dans Destination, les plus proches', async ({
+      page,
+    }) => {
+      await page.goto(ECRAN_ETE);
+      const { fenetre, champ } = await ouvrirDestination(page);
+      await expect(champ).toBeFocused();
+      await expect(fenetre.getByText('Les plus proches en train')).toBeVisible();
+      await expect(fenetre.getByText(/^En train direct depuis/)).toContainText('Dijon-Ville');
+      const cadre = await fenetre.boundingBox();
+      const ecran = page.viewportSize()?.height ?? 0;
+      expect(cadre?.y ?? -1).toBeLessThan(2);
+      expect(cadre?.height ?? 0).toBeGreaterThan(ecran - 2);
+    });
+
+    test('« Autour de Dijon » : curseur dans Départ, sa position et les gares proches', async ({
+      page,
+    }) => {
+      await page.goto(ECRAN);
+      await barre(page)
+        .getByRole('button', { name: /^Départ :/ })
+        .click();
+      await expect(pageTrajet(page).getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+      await expect(pageTrajet(page).getByRole('button', { name: /^Ma position/ })).toBeVisible();
+      await expect(pageTrajet(page).getByText('Gares proches de vous')).toBeVisible();
+    });
+
+    test('un départ choisi : le curseur passe à Destination, la page reste ouverte', async ({
+      page,
+    }) => {
+      await page.goto(ECRAN);
+      await barre(page)
+        .getByRole('button', { name: /^Départ :/ })
+        .click();
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Dijon-Porte-Neuve/ })
+        .click();
+      await expect(pageTrajet(page).getByRole('searchbox', { name: 'Destination' })).toBeFocused();
+      await expect(pageTrajet(page)).not.toHaveAttribute('inert');
+      await expect(pageTrajet(page).getByText(/^En train direct depuis/)).toContainText(
+        'Dijon-Porte-Neuve',
+      );
+    });
+
+    test('« Retour » ferme la page sans rien changer ; « Voir toutes » efface la recherche', async ({
+      page,
+      isMobile,
+    }) => {
+      await page.goto(`${ECRAN_ETE}&recherche=besancon`);
+      await expect(sorties(page)).toHaveCount(2);
+      let { fenetre } = await ouvrirDestination(page);
+      await fenetre.getByRole('button', { name: 'Retour' }).click();
+      await attendreFermeture(page, isMobile);
+      await expect(page).toHaveURL(/recherche=besancon/);
+
+      ({ fenetre } = await ouvrirDestination(page));
+      await fenetre.getByRole('button', { name: 'Voir toutes les destinations' }).click();
+      await attendreFermeture(page, isMobile);
+      await expect(page).not.toHaveURL(/recherche=/);
+      await expect(barre(page)).toContainText('Où aller ?');
+    });
+  });
+
+  test.describe('ordinateur : feuilles inchangées', () => {
+    test.beforeEach(({ isMobile }) => {
+      test.skip(isMobile, 'Sur téléphone, la page « Trajet » les remplace.');
+    });
+
+    test('la feuille s’ouvre sans le clavier : il ne vient qu’au clic du champ', async ({
+      page,
+    }) => {
+      await page.goto(ECRAN);
+      const { champ } = await ouvrirDestination(page);
+      await expect(champ).not.toBeFocused();
+      await champ.click();
+      await expect(champ).toBeFocused();
+    });
+
+    test('« Autour de Dijon » ouvre « D’où partez-vous ? »', async ({ page }) => {
+      await page.goto(ECRAN);
+      await barre(page)
+        .getByRole('button', { name: /^Départ :/ })
+        .click();
+      await expect(page.getByRole('dialog', { name: "D'où partez-vous ?" })).toBeVisible();
+    });
+
+    test('des résultats cachés en bas : l’indicateur de défilement le dit ; tout visible : rien', async ({
+      page,
+    }) => {
+      // Écran bas : la feuille ne montre pas tous les résultats.
+      await page.setViewportSize({ width: 1280, height: 480 });
+      await page.goto(ECRAN_ETE);
+      await expect(sorties(page).first()).toBeVisible();
+      const { fenetre, champ } = await ouvrirDestination(page);
+      const indicateur = fenetre.locator('[data-indicateur-defilement]');
+      await champ.fill('b');
+      await expect(fenetre.getByText(/^4 destinations sur \d+$/).first()).toBeVisible();
+      await expect(indicateur).toBeVisible();
+      await champ.fill('beaune');
+      await expect(fenetre.getByText(/^1 destination sur \d+$/).first()).toBeVisible();
+      await expect(indicateur).toHaveCount(0);
+    });
   });
 
   test('une date hors des horaires propose de revenir à aujourd’hui', async ({ page }) => {

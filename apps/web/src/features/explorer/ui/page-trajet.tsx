@@ -34,6 +34,8 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
   const [saisieDestination, setSaisieDestination] = useState<string | null>(null);
   const [verifierDepuis, setVerifierDepuis] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  // Fondu de fermeture en cours : le contenu reste affiché jusqu'à la fin.
+  const [enFondu, setEnFondu] = useState(false);
   // Choix en attente : appliqué une fois le fondu terminé (le filtrage bloquerait l'animation).
   const enAttente = useRef<Recherche | null>(null);
   const texteDestination = saisieDestination ?? filtres.recherche;
@@ -43,11 +45,13 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
     (recherche: Recherche | null) => {
       if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       enAttente.current = recherche;
+      setEnFondu(true);
       setOuverte(false);
     },
     [setOuverte],
   );
   const apresFermeture = () => {
+    setEnFondu(false);
     setTexteDepart('');
     setSaisieDestination(null);
     setVerifierDepuis(null);
@@ -140,7 +144,8 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
         {...{ [ATTRIBUT_DEFILEMENT]: '' }}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6"
       >
-        {trajet.champActif === 'depart' ? (
+        {/* Fermée : seuls les champs restent, pour prendre la main dans le toucher qui l'ouvre. */}
+        {!trajet.ouverte && !enFondu ? null : trajet.champActif === 'depart' ? (
           <ZoneDepart
             texte={texteDepart}
             choix={choix}
