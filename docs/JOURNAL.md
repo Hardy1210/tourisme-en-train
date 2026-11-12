@@ -24,6 +24,24 @@
 
 ---
 
+## 12/11/2026 (nuit) — Étape E11 — parcours des filtres (F05), cadrage de la carte (D087)
+**Fait :**
+- #104 : idées de la maquette v6 notées dans `A-FAIRE` (nombre de lieux par gare, section « À deux pas » en 4 situations, « Distance à pied ») ; reportés : icônes au zoom libre, Dijon-Ville par défaut sans position
+- #105 : parcours des filtres durée, faisable, rayon (léger), ville, Lieux ; F05 ✅ ; plan en 6 points terminé
+- #107 : cadrage de départ à 16 min (mesuré : Genlis 10 min, Mâlain 16 min depuis Dijon) et centrage sur la destination choisie ; bug trouvé par Hardy sur iPhone (✕ sans effet, feuille montée) : test du chemin exact d'abord, puis marges limitées et remises à zéro
+- #106 : règle des deux copies (`tourisme-recherche` pour le serveur d'essai, `tourisme-parcours` pour les parcours)
+- Plan du point (b) proposé à Hardy
+**Décisions :** D087
+**Problèmes rencontrés :**
+- Les parcours refaisaient le build sous le serveur d'essai de Hardy : d'où la deuxième copie
+- J'avais décrit « Recentrer » comme ramenant sur la destination alors que le prototype ne le faisait pas ; corrigé
+**À valider par Hardy :** plan du point (b)
+**Prochaine action :** point (b) après l'accord de Hardy (`CLAUDE.md` § 9)
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (343) · parcours des PR : filtres 30/30, cadrage 7/7
+**Commit :** `fcbb8f1` (#107)
+
+---
+
 ## 12/11/2026 — Étape E11 — page de départ sur Lieux, fond sous le clavier, date dans « Filtres » (D086)
 **Fait :**
 - Dépôt réparé : objet du commit `4c571eb` et 5 documents vidés par un arrêt brutal de WSL pendant un `pull` ; objet retéléchargé, documents remis depuis le commit
