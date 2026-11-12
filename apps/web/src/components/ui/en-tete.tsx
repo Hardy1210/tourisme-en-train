@@ -8,8 +8,6 @@ type Proprietes = {
   /** Mobile : posé sur la carte, sans fond ; on peut déplacer la carte entre ses boutons (D072). */
   flottant?: boolean;
   ref?: Ref<HTMLElement>;
-  /** À droite du logo (choix de la date). */
-  action?: ReactNode;
   /** Contrôles propres à l'écran (position, filtres). */
   children?: ReactNode;
   className?: string;
@@ -19,7 +17,6 @@ export function EnTete({
   surHero = false,
   flottant = false,
   ref,
-  action,
   children,
   className,
 }: Proprietes) {
@@ -34,9 +31,9 @@ export function EnTete({
         className,
       )}
     >
-      <div className="flex min-h-touch items-center justify-between gap-3">
+      {/* Logo sur ordinateur seulement : sur téléphone, l'en-tête garde le trajet et les filtres. */}
+      <div className="hidden min-h-touch items-center lg:flex">
         <Logo surHero={surHero} />
-        {action}
       </div>
       {children}
     </header>

@@ -36,6 +36,16 @@ export function libelleDate(date: string | null, dateDuJour: string): string {
   return option ? option.libelle : libelleCourt(date);
 }
 
+/** Une date autre qu'aujourd'hui est choisie : pastille, compteur de « Filtres », fin des titres. */
+export function dateChoisie(date: string | null, dateDuJour: string): boolean {
+  return date !== null && date !== dateDuJour;
+}
+
+/** Fin des titres de liste : « · demain », « · ce week-end », « · sam. 14 nov. » ; rien aujourd'hui. */
+export function suffixeDate(date: string | null, dateDuJour: string): string {
+  return dateChoisie(date, dateDuJour) ? ` · ${libelleDate(date, dateDuJour).toLowerCase()}` : '';
+}
+
 /** Samedi et dimanche du week-end affiché si `date` en fait partie ; null sinon, ou un dimanche (il ne reste qu'un jour). */
 export function joursDuWeekEnd(
   date: string | null,

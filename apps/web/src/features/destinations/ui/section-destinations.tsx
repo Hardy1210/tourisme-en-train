@@ -9,6 +9,8 @@ import { LegendeTemps } from './legende-temps';
 
 type Proprietes = {
   gareNom: string;
+  /** Date autre qu'aujourd'hui, en fin de titre : « · demain » ; vide sinon. */
+  suffixeDate?: string;
   destinations: readonly DestinationAffichee[] | undefined;
   chargement: boolean;
   /** Message d'erreur à montrer (ex. date hors des horaires) ; null sinon. */
@@ -34,6 +36,7 @@ type Proprietes = {
 
 export function SectionDestinations({
   gareNom,
+  suffixeDate = '',
   destinations,
   chargement,
   erreur,
@@ -52,6 +55,7 @@ export function SectionDestinations({
       <div className="flex flex-col gap-0.5">
         <h2 id="en-train-direct" className="text-xl font-bold">
           En train direct depuis {gareNom}
+          {suffixeDate}
         </h2>
         {destinations !== undefined && (
           <p className="tabular text-sm text-muted-foreground">

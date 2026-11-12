@@ -1,21 +1,21 @@
 'use client';
 
+import { dateDuJour } from '@tourisme/commun';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { cn } from '@/lib/classes';
 import { nombreFiltres } from '../filtres';
+import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
 import { usePageTrajet } from '../use-page-trajet';
 import type { PositionFeuille } from '../position-feuille';
 import {
-  BoutonDate,
   BoutonDepart,
   ErreurChoixDepart,
   EtatsDepart,
   FeuilleChoixDepart,
 } from './controles-depart';
-import { FeuilleDate } from './feuille-date';
 import { FeuilleFiltres } from './feuille-filtres';
 import { PageTrajet } from './page-trajet';
 import { RangeeFiltres } from './rangee-filtres';
@@ -26,10 +26,10 @@ export function EcranExplorer() {
   const choix = useChoixDepart();
   const { depart } = choix;
   const [positionFeuille, setPositionFeuille] = useState<PositionFeuille>('milieu');
-  const [feuilleDate, setFeuilleDate] = useState(false);
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const [demandeDefilement, setDemandeDefilement] = useState(0);
   const { filtres, changer } = useFiltres();
+  const aujourdhui = dateDuJour();
 
   const pret = depart.etat === 'pret';
   const grandEcran = useGrandEcran();
@@ -71,7 +71,6 @@ export function EcranExplorer() {
         ref={enTete}
         flottant={pret}
         className={cn('mt-1 flex-none', pret && 'lg:col-start-1 lg:row-start-1 lg:border-b')}
-        action={pret && <BoutonDate date={filtres.date} surClic={() => setFeuilleDate(true)} />}
       >
         {depart.etat === 'pret' ? (
           <TrajetExplorer
@@ -89,7 +88,11 @@ export function EcranExplorer() {
           <RangeeFiltres
             categories={filtres.categories}
             surCategories={(categories) => changer({ categories })}
-            nombre={nombreFiltres(filtres)}
+            nombre={nombreFiltres(filtres, aujourdhui)}
+            date={
+              dateChoisie(filtres.date, aujourdhui) ? libelleDate(filtres.date, aujourdhui) : null
+            }
+            surAujourdhui={() => changer({ date: null })}
             surFiltres={() => setFeuilleFiltres(true)}
           />
         )}
@@ -114,12 +117,6 @@ export function EcranExplorer() {
         />
       )}
 
-      <FeuilleDate
-        ouverte={feuilleDate}
-        surChangement={setFeuilleDate}
-        date={filtres.date}
-        surChoix={(date) => changer({ date })}
-      />
       <FeuilleFiltres
         ouverte={feuilleFiltres}
         surChangement={setFeuilleFiltres}

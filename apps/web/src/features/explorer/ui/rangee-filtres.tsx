@@ -1,7 +1,7 @@
 'use client';
 
 import { CATEGORIES, type Categorie } from '@tourisme/commun';
-import { SlidersHorizontal } from 'lucide-react';
+import { CalendarDays, SlidersHorizontal, X } from 'lucide-react';
 import { Puce } from '@/components/ui/puce';
 import { APPARENCE_CATEGORIE, IconeCategorie } from '@/features/lieux/ui/icone-categorie';
 
@@ -10,10 +10,23 @@ type Proprietes = {
   surCategories: (categories: readonly Categorie[]) => void;
   nombre: number;
   surFiltres: () => void;
+  /** Date autre qu'aujourd'hui (« Demain », « Sam. 14 nov. ») : pastille avant « Tout » ; null sinon. */
+  date: string | null;
+  surAujourdhui: () => void;
 };
 
-/** « Tout » et les 5 catégories (plusieurs possibles), puis le bouton « Filtres », toujours visible. */
-export function RangeeFiltres({ categories, surCategories, nombre, surFiltres }: Proprietes) {
+/**
+ * Pastille de la date si ce n'est pas aujourd'hui (la toucher y revient), « Tout » et les 5 catégories
+ * (plusieurs possibles), puis le bouton « Filtres », toujours visible.
+ */
+export function RangeeFiltres({
+  categories,
+  surCategories,
+  nombre,
+  surFiltres,
+  date,
+  surAujourdhui,
+}: Proprietes) {
   const basculer = (categorie: Categorie) =>
     surCategories(
       categories.includes(categorie)
@@ -28,6 +41,17 @@ export function RangeeFiltres({ categories, surCategories, nombre, surFiltres }:
         aria-label="Catégories"
         className="scrollbar-none flex min-w-0 flex-1 gap-2 overflow-x-auto py-0.5 lg:flex-wrap lg:overflow-visible"
       >
+        {date !== null && (
+          <Puce
+            selectionnee
+            aria-label={`Date : ${date}. Revenir à aujourd'hui`}
+            icone={<CalendarDays aria-hidden="true" />}
+            onClick={surAujourdhui}
+          >
+            {date}
+            <X aria-hidden="true" />
+          </Puce>
+        )}
         <Puce selectionnee={categories.length === 0} onClick={() => surCategories([])}>
           Tout
         </Puce>
