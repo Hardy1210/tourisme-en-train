@@ -16,6 +16,7 @@
 - Dans la fiche destination, les TER qui partent et arrivent en Bourgogne-Franche-Comté s'appellent « TER Mobigo », comme sur SNCF Connect. Les autres restent « TER ».
 
 ### Corrigé
+- Sur téléphone, quand le clavier monte dans une page plein écran, l'écran du dessous ne se voit plus, même un instant, à la place du clavier.
 - En cherchant une destination, les résultats sont triés par temps de trajet : en tapant « b », Besançon Franche-Comté TGV (26 min) passe avant Paris (1 h 36).
 - La recherche de ville ne propose plus que des communes : « Beaune » ne fait plus apparaître des rues ou des hameaux du même nom dans d'autres départements (Sornac, Eymoutiers…). Partir de Paris reste possible.
 
