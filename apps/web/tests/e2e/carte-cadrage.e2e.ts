@@ -42,3 +42,30 @@ test('« Recentrer » ramène sur la destination tant qu’elle est choisie', as
   await expect(gareBeaune(page)).toBeInViewport();
   await expect(gareDepart(page)).not.toBeInViewport();
 });
+
+// Le chemin de Hardy sur iPhone : Beaune choisie dans la page « Trajet », la feuille des résultats monte
+// tout en haut, puis le ✕ de la barre.
+test('téléphone : Beaune choisie dans « Trajet », puis ✕ : retour au cadrage de départ', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, 'La page « Trajet » n’existe que sur téléphone.');
+  await page.goto(`/?date=${DATE}`);
+  await expect(gareDepart(page)).toBeInViewport();
+  await page
+    .getByRole('group', { name: /^Trajet :/ })
+    .getByRole('button', { name: /^Destination :/ })
+    .click();
+  const pageTrajet = page.getByRole('dialog', { name: 'Trajet' });
+  await pageTrajet.getByRole('searchbox', { name: 'Destination' }).fill('Beaune');
+  await pageTrajet
+    .getByRole('button', { name: /^Beaune/ })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/destination=EX000002/);
+  await expect(gareDepart(page)).not.toBeInViewport();
+
+  await page.getByRole('button', { name: 'Effacer la recherche' }).click();
+  await expect(page).not.toHaveURL(/destination=/);
+  await expect(gareDepart(page)).toBeInViewport();
+});
