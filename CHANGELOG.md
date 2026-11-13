@@ -11,6 +11,7 @@
 - Recherche de destination : en haut d'Explorer, « Autour de Dijon → Où aller ? » : touchez « Où aller ? » pour chercher. Tapez « beau » ou « besancon », et la liste comme la carte ne montrent plus que ces destinations, sans changer la gare de départ. Sur téléphone, départ et destination se choisissent dans une page plein écran, clavier prêt, avec les destinations les plus proches en train.
 - Lieux, sur téléphone : « Autour de… » ouvre une page plein écran, clavier prêt, pour choisir sa position, une gare proche ou une autre ville, comme dans Explorer.
 - Dans les feuilles de recherche, un trait fin sur le côté signale qu'il reste des résultats plus bas, cachés par le clavier.
+- Sur la carte d'Explorer, chaque gare de destination affiche dans une bulle le nombre de lieux à voir à pied depuis la gare, recompté selon les catégories choisies. Touchez une gare : le détail par catégorie s'affiche.
 - Position refusée : un guide « Comment autoriser la localisation ? » donne les étapes exactes pour iPhone, Android ou ordinateur. Il s'ouvre tout seul si la position est encore bloquée.
 
 ### Modifié
