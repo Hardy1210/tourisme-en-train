@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.24 · **Date** 13/11/2026
+> **Version** 1.25 · **Date** 14/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -36,7 +36,7 @@
 | GET | `/api/sante` | État de l'application et des données | P0 | E08 |
 | GET | `/api/gares/proches` | Gares les plus proches d'une position | P0 | E08 |
 | GET | `/api/autour` | Lieux autour d'une position | P0 | E08 |
-| GET | `/api/carte/lieux` | Tous les lieux de la carte, en bulles (D091, D092) | P0 | E11 |
+| GET | `/api/carte/lieux` | Lieux de la carte d'une zone (position, gares), en bulles (D092, D094) | P0 | E11 |
 | GET | `/api/destinations` | Destinations en train direct depuis une gare | P0 | E08 |
 | GET | `/api/destinations/[uic]` | Résumé d'une destination (gare, lieux par catégorie, liaison) | P0 | E09 |
 | GET | `/api/destinations/[uic]/lieux` | Lieux à pied depuis une gare | P0 | E09 |
@@ -93,8 +93,8 @@ type LieuResume = { cle: string; nom: string; categorie: Categorie; sousCategori
 ```
 Cache : aucun (position).
 
-### 3.3 bis `GET /api/carte/lieux`
-Tous les lieux de la carte, la même réponse pour tout le monde : en cache (`cache.donneesStablesS`), **compressée en gzip** (Next.js ne compresse pas les routes d'API ; ≈ 180 Ko mesurés le 13/11). Ni doublon, ni membre d'un site, ni fiche de ville ; aires de jeux seulement si elles sont reliées à une gare ; loin de toute gare (aucune ligne `lieu_gare`), les lieux « pauvres » de `acces.lieuxPauvresSources` × `acces.lieuxPauvresCategories` (sans description, photo, label ni article Wikipédia) ne sont pas montrés, sauf `acces.lieuxPauvresToujoursGardes`. **Rien n'est supprimé de la base** : c'est une sélection (D092).
+### 3.3 bis `GET /api/carte/lieux?lat&lon&rayon&gares`
+Les lieux de la carte d'une **zone** (D094) : autour d'un point (`lat`, `lon`, `rayon` parmi `rayons.autourDeMoiOptionsM` : la position ou la gare de départ, rayon du filtre « Distance autour de vous ») **et/ou** les lieux à pied d'une liste de gares (`gares`, codes UIC séparés par des virgules, au plus `limites.destinations` : les gares de destination affichées, ou la seule destination choisie). Au moins l'un des deux ; `lat`, `lon` et `rayon` vont ensemble. Sans limite de nombre (les bulles comptent tout). **Avec une position : jamais en cache** (règle 5) ; seulement des gares : en cache (`cache.donneesStablesS`). Toujours **compressée en gzip** (Next.js ne compresse pas les routes d'API). Ni doublon, ni membre d'un site, ni fiche de ville ; aires de jeux seulement si elles sont reliées à une gare ; loin de toute gare (aucune ligne `lieu_gare`), les lieux « pauvres » de `acces.lieuxPauvresSources` × `acces.lieuxPauvresCategories` (sans description, photo, label ni article Wikipédia) ne sont pas montrés, sauf `acces.lieuxPauvresToujoursGardes`. **Rien n'est supprimé de la base** : c'est une sélection (D092).
 ```ts
 { lieux: Array<[cle: string, lat: number, lon: number, categorie: Categorie, secondaires: Categorie[]]> }
 ```
@@ -347,3 +347,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 10/11/2026 | 1.22 | § 3.8 : `terminusEnRegion`, nom régional des TER — D082 |
 | 13/11/2026 | 1.23 | § 3.3 : aires de jeux à 1 km au plus ; § 3.6 : rayon maximum `acces.rayonPiedM` (2 km) — D091 |
 | 13/11/2026 | 1.24 | § 3.3 bis : `/api/carte/lieux` — D091, D092 |
+| 14/11/2026 | 1.25 | § 3.3 bis : `/api/carte/lieux` par zone (point et/ou gares) — D094 |
