@@ -3,7 +3,12 @@
 import { TrainFront } from 'lucide-react';
 import { Marker } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
-import { couleurTranche, formaterDuree } from '@/features/destinations/presentation';
+import {
+  couleurTranche,
+  formaterDuree,
+  formaterNombreLieux,
+  totalLieux,
+} from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { IconeCategorie } from '@/features/lieux/ui/icone-categorie';
@@ -65,6 +70,7 @@ export function MarqueursDestinations({
   return destinations.map((d) => {
     const choisie = uicChoisi === d.gare.uic;
     const enAvant = choisie || survolee === d.gare.uic;
+    const nombre = totalLieux(d.lieuxParCategorie);
     return (
       <Marker
         key={d.gare.uic}
@@ -74,7 +80,9 @@ export function MarqueursDestinations({
       >
         <button
           type="button"
-          aria-label={`${d.titre}, ${formaterDuree(d.dureeMin)} en train direct`}
+          aria-label={`${d.titre}, ${formaterDuree(d.dureeMin)} en train direct${
+            nombre > 0 ? `, ${formaterNombreLieux(nombre)} à pied depuis la gare` : ''
+          }`}
           aria-pressed={choisie}
           onMouseEnter={() => surSurvol(d.gare.uic)}
           onMouseLeave={() => surSurvol(null)}
@@ -91,6 +99,18 @@ export function MarqueursDestinations({
               couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
             )}
           />
+          {/* Bulle à côté du point, sans le recouvrir : lieux à voir à pied, catégories choisies (maquette v6). */}
+          {nombre > 0 && (
+            <span
+              aria-hidden="true"
+              className={cn(
+                'tabular pointer-events-none absolute bottom-[calc(50%+3px)] left-[calc(50%+3px)] flex h-5 min-w-5 items-center justify-center rounded-pill border border-border-strong bg-surface px-1 text-2xs leading-none font-bold text-foreground shadow-xs',
+                enAvant && 'ring-2 ring-primary',
+              )}
+            >
+              {nombre}
+            </span>
+          )}
         </button>
       </Marker>
     );

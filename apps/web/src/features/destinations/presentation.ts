@@ -28,6 +28,19 @@ export function sansTrainsPartis(
   );
 }
 
+/**
+ * Lieux à voir à pied depuis la gare, dans les catégories choisies : l'API ne renvoie que celles-là
+ * (bulle de la carte, mini-fiche). Avec un filtre, un lieu peut compter dans deux catégories (D060).
+ */
+export function totalLieux(lieuxParCategorie: Destination['lieuxParCategorie']): number {
+  return Object.values(lieuxParCategorie).reduce((somme, n) => somme + (n ?? 0), 0);
+}
+
+/** « 1 lieu », « 12 lieux ». */
+export function formaterNombreLieux(nombre: number): string {
+  return `${nombre} ${nombre > 1 ? 'lieux' : 'lieu'}`;
+}
+
 /** Couleur de la tranche de temps ; classes entières pour que Tailwind les trouve. */
 const COULEURS = ['bg-map-time-1', 'bg-map-time-2', 'bg-map-time-3', 'bg-map-time-4'] as const;
 

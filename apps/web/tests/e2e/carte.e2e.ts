@@ -91,7 +91,7 @@ test('la carte dessine son fond, sans erreur du module de travail', async ({
 
   await page.goto('/?date=2026-11-18');
   // Délai large : c'est souvent le premier parcours, sur un serveur qui vient de démarrer.
-  await expect(page.getByRole('button', { name: /en train direct$/ }).first()).toBeAttached({
+  await expect(page.getByRole('button', { name: /en train direct(,|$)/ }).first()).toBeAttached({
     timeout: 20_000,
   });
 
