@@ -60,14 +60,16 @@ export function valeursRattachements(p = parametres): Record<string, unknown> {
     prefixes_fiche_ville: p.lieux.fichesVille.prefixes,
     exceptions_fiche_ville: p.lieux.fichesVille.exceptions,
     parc_chateau_m: p.regroupementParcChateau.distanceM,
-    rayon_m: p.rayons.lieuxGareM,
-    coef_detour: p.marche.coefDetour,
-    vitesse_kmh: p.marche.vitesseKmH,
+    rayon_m: p.acces.rayonPiedM,
+    rayon_aires_m: p.acces.rayonAiresDeJeuxM,
+    aires_de_jeux: p.acces.sousCategoriesAiresDeJeux,
+    coef_detour: p.acces.coefDetour,
+    vitesse_kmh: p.acces.vitessePiedKmH,
   };
 }
 
 export function controlesRattachements(rejetsDecisions = 0): Controle[] {
-  const { rayons } = parametres;
+  const { acces } = parametres;
   return [
     {
       nom: 'Lignes illisibles dans regles/doublons_manuels.csv',
@@ -122,7 +124,13 @@ export function controlesRattachements(rejetsDecisions = 0): Controle[] {
     aucune(
       'Rattachements au-delà du rayon à pied',
       'SELECT count(*)::int AS n FROM lieu_gare WHERE distance_m > $1::int + 1',
-      [rayons.lieuxGareM],
+      [acces.rayonPiedM],
+    ),
+    aucune(
+      'Aires de jeux rattachées au-delà de leur rayon (D091)',
+      `SELECT count(*)::int AS n FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+       WHERE coalesce(l.sous_categorie, '') = ANY($1::text[]) AND lg.distance_m > $2::int + 1`,
+      [acces.sousCategoriesAiresDeJeux, acces.rayonAiresDeJeuxM],
     ),
     aucune(
       'Gares dont gare_stats ne totalise pas leurs lignes de lieu_gare',

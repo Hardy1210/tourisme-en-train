@@ -130,7 +130,7 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
         fichier,
         force: options.force,
         suivi,
-        async *lire(index, descriptionMax) {
+        async *lire(index, descriptionMax, inclusion) {
           const { elements } = schemaReponseOverpass.parse(
             JSON.parse(await readFile(fichier.chemin, 'utf8')),
           );
@@ -138,7 +138,8 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
           suivi.lecture = { lues: elements.length, rejets };
           for (const [i, brut] of elements.entries()) {
             const element = schemaElementOsm.safeParse(brut);
-            if (element.success) yield lireElementOsm(element.data, index, descriptionMax);
+            if (element.success)
+              yield lireElementOsm(element.data, index, descriptionMax, inclusion);
             else rejets.push({ ligne: i + 1, raison: 'élément Overpass illisible' });
           }
         },

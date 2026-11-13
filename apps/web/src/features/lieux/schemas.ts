@@ -44,22 +44,19 @@ export const schemaReponseAutour = z.object({
   total: z.number().int(),
 });
 
-/** GET /api/destinations/[uic]/lieux (docs/05-api.md § 3.6) : rayon à pied, au plus `rayons.lieuxGareM`. */
+/** GET /api/destinations/[uic]/lieux (docs/05-api.md § 3.6) : rayon à pied, au plus `acces.rayonPiedM`. */
 export const schemaParametresLieuxGare = z.object({
   categories: schemaCategories,
   rayon: z.coerce
     .number()
-    .int(`Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`)
-    .min(
-      100,
-      `Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`,
-    )
+    .int(`Le rayon doit être un nombre de mètres entre 100 et ${parametres.acces.rayonPiedM}.`)
+    .min(100, `Le rayon doit être un nombre de mètres entre 100 et ${parametres.acces.rayonPiedM}.`)
     .max(
-      parametres.rayons.lieuxGareM,
-      `Le rayon doit être un nombre de mètres entre 100 et ${parametres.rayons.lieuxGareM}.`,
+      parametres.acces.rayonPiedM,
+      `Le rayon doit être un nombre de mètres entre 100 et ${parametres.acces.rayonPiedM}.`,
     )
     .optional()
-    .transform((rayon) => rayon ?? parametres.rayons.lieuxGareM),
+    .transform((rayon) => rayon ?? parametres.acces.rayonPiedM),
 });
 
 const optionsDureeMax = parametres.durees.trainMaxOptionsMin;

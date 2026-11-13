@@ -7,7 +7,8 @@ import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-const { sousCategoriesRetirees, sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
+// Piscines : plus chargées en base (acces.sousCategoriesRetirees, D091), rien à filtrer ici.
+const { sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
 
 const liste = (valeurs: readonly string[]) =>
   sql.join(
@@ -43,7 +44,7 @@ export type LieuAccessibleBrut = z.infer<typeof schemaLigne>;
  * Lieux à pied d'une gare atteinte en train direct, le temps total (train + marche) le plus court
  * d'abord (D056). Un lieu proche de plusieurs gares apparaît une fois, par la plus rapide. Les lieux
  * de la ville de départ sont écartés : à pied de la gare de départ, ou à côté d'une gare de sa commune.
- * Piscines ordinaires et aires de jeux sans nom propre sont réservées à « À deux pas » et à la fiche (D057).
+ * Aires de jeux sans nom propre réservées à « Près de vous » et à la fiche (D057).
  */
 export async function lieuxAccessibles(options: {
   gareId: number;
@@ -68,7 +69,6 @@ export async function lieuxAccessibles(options: {
         AND g.code_insee IS DISTINCT FROM ${options.codeInsee}
         AND l.doublon_de IS NULL AND l.site_de IS NULL
         AND ${filtreCategories(options.categories)}
-        AND coalesce(l.sous_categorie, '') NOT IN (${liste(sousCategoriesRetirees)})
         AND NOT (coalesce(l.sous_categorie, '') IN (${liste(sousCategoriesNomPropreRequis)})
                  AND lower(unaccent(l.nom)) = lower(unaccent(l.sous_categorie)))
         AND NOT EXISTS (SELECT 1 FROM lieu_gare depart

@@ -36,12 +36,19 @@
   },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
-  "marche": { "vitesseKmH": 4.5, "coefDetour": 1.3 },
-  "velo": { "vitesseKmH": 15, "coefDetour": 1.3 },
+  "acces": {
+    "rayonPiedM": 2000,
+    "rayonVeloM": 6000,
+    "vitessePiedKmH": 4.5,
+    "vitesseVeloKmH": 15,
+    "coefDetour": 1.3,
+    "rayonAiresDeJeuxM": 1000,
+    "sousCategoriesAiresDeJeux": ["aire de jeux"],
+    "sousCategoriesRetirees": ["piscine", "centre aquatique"]
+  },
   "voiture": { "vitesseKmH": 50, "coefDetour": 1.3 },
   "rail": { "coefDetour": 1.2 },
   "rayons": {
-    "lieuxGareM": 1500,
     "autourDeMoiDefautM": 2000,
     "autourDeMoiOptionsM": [1000, 2000, 5000, 10000],
     "mobiliteM": 800,
@@ -84,7 +91,6 @@
       "exceptions": ["village du livre", "lac des rouges truites"]
     },
     "ongletLieux": {
-      "sousCategoriesRetirees": ["piscine"],
       "sousCategoriesNomPropreRequis": ["aire de jeux"]
     }
   },

@@ -19,6 +19,10 @@ export async function autour({
     lon,
     rayonVolOiseauM: rayonVolOiseauM(rayon),
     categories,
+    airesDeJeux: {
+      sousCategories: parametres.acces.sousCategoriesAiresDeJeux,
+      rayonVolOiseauM: rayonVolOiseauM(parametres.acces.rayonAiresDeJeuxM),
+    },
     limite: parametres.limites.lieux,
   });
   return {

@@ -1,17 +1,21 @@
 // Corrections manuelles d'un lieu (docs/04-traitement-donnees.md § 4.5, D061) : fonction pure.
+import { schemaCategorie, type Categorie } from '@tourisme/commun';
 import type { LieuACharger } from './lieux';
 
 export interface CorrectionLieu {
   source: string;
   idSource: string;
-  action: 'retirer' | 'reclasser';
+  action: 'retirer' | 'reclasser' | 'inclure';
   categorie: string | null;
   sousCategorie: string | null;
   /** null = règle normale ; [] = aucune ; sinon, ces catégories seulement. */
   secondaires: readonly string[] | null;
 }
 
-/** Le lieu corrigé, ou null s'il est retiré. */
+/**
+ * Le lieu corrigé, ou null s'il est retiré. « inclure » se comporte comme « reclasser » : le lieu, que
+ * les règles auraient écarté, est gardé avec la catégorie donnée (le lecteur l'a déjà construit).
+ */
 export function corrigerLieu(lieu: LieuACharger, correction: CorrectionLieu): LieuACharger | null {
   if (correction.action === 'retirer') return null;
   const categorie = correction.categorie ?? lieu.categorie;
@@ -24,4 +28,35 @@ export function corrigerLieu(lieu: LieuACharger, correction: CorrectionLieu): Li
       (c) => c !== categorie,
     ),
   };
+}
+
+/** Catégorie imposée à une ligne que les règles écartent (« inclure ») ; sinon undefined. */
+export type Inclusion = (
+  idSource: string,
+) => { categorie: Categorie; sousCategorie: string | null } | undefined;
+
+/** Les inclusions d'une liste de corrections, par identifiant de source. */
+export function inclusionsDe(corrections: readonly CorrectionLieu[]): Inclusion {
+  const parId = new Map(
+    corrections
+      .filter((c) => c.action === 'inclure' && c.categorie !== null)
+      .map((c) => [
+        c.idSource,
+        { categorie: schemaCategorie.parse(c.categorie), sousCategorie: c.sousCategorie },
+      ]),
+  );
+  return (idSource) => parId.get(idSource);
+}
+
+/**
+ * Un lieu est-il écarté par sa sous-catégorie (`acces.sousCategoriesRetirees`, ex. piscine) ? Une
+ * correction manuelle passe avant (D091) : un lieu « inclure » ou « reclasser » n'est jamais écarté ici.
+ */
+export function retireParSousCategorie(
+  sousCategorie: string | null,
+  retirees: readonly string[],
+  correction: CorrectionLieu | undefined,
+): boolean {
+  if (correction && correction.action !== 'retirer') return false;
+  return sousCategorie !== null && retirees.includes(sousCategorie);
 }

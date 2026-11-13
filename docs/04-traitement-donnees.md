@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.19 · **Date** 04/11/2026
+> **Version** 1.20 · **Date** 13/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -43,12 +43,14 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
-  "marche":  { "vitesseKmH": 4.5, "coefDetour": 1.3 },
-  "velo":    { "vitesseKmH": 15,  "coefDetour": 1.3 },
+  "acces": {
+    "rayonPiedM": 2000, "rayonVeloM": 6000, "vitessePiedKmH": 4.5, "vitesseVeloKmH": 15, "coefDetour": 1.3,
+    "rayonAiresDeJeuxM": 1000, "sousCategoriesAiresDeJeux": ["aire de jeux"],
+    "sousCategoriesRetirees": ["piscine", "centre aquatique"]
+  },
   "voiture": { "vitesseKmH": 50,  "coefDetour": 1.3 },
   "rail":    { "coefDetour": 1.2 },
   "rayons": {
-    "lieuxGareM": 1500,
     "autourDeMoiDefautM": 2000,
     "autourDeMoiOptionsM": [1000, 2000, 5000, 10000],
     "mobiliteM": 800,
@@ -93,6 +95,21 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   }
 }
 ```
+
+**Section `acces` (D091)** : comment on rejoint un lieu depuis une gare. Toutes les distances sont « à pied » : vol d'oiseau × `coefDetour`.
+
+| Paramètre | Valeur | Ce qu'il règle | Pourquoi cette valeur |
+|---|---|---|---|
+| `rayonPiedM` | 2000 | Lieux « à pied » d'une gare (`lieu_gare`), nombres par gare, « Près de la gare de… » | Choix de Hardy (13/11) : ≈ 27 min à 4,5 km/h, affiché « ≈ 30 min » ; 1 500 m cachait des lieux proches (testeur : Mâlain) |
+| `rayonVeloM` | 6000 | Limite « à vélo » (carte, textes d'accès, à venir) ; doit dépasser `rayonPiedM` | ≈ 24 min à 15 km/h ; 4 858 lieux à 6 km ou moins d'une gare desservie (mesure du 13/11) |
+| `vitessePiedKmH` | 4,5 | Toutes les durées à pied de l'application | Inchangée (ancienne `marche.vitesseKmH`) pour ne pas changer les temps affichés |
+| `vitesseVeloKmH` | 15 | Durées à vélo | Inchangée (ancienne `velo.vitesseKmH`) |
+| `coefDetour` | 1,3 | Distance à pied ou à vélo = vol d'oiseau × ce coefficient (rues qui ne vont pas tout droit) | Inchangé (ancien `marche.coefDetour` et `velo.coefDetour`, même valeur) |
+| `rayonAiresDeJeuxM` | 1000 | Aires de jeux : reliées à une gare, ou montrées dans « Près de vous », seulement à ce rayon au plus ; ≤ `rayonPiedM` | Elles ne valent pas un trajet plus loin (Hardy, 13/11) : 2 091 en base, elles envahiraient la carte |
+| `sousCategoriesAiresDeJeux` | aire de jeux | Sous-catégories soumises à `rayonAiresDeJeuxM` | — |
+| `sousCategoriesRetirees` | piscine, centre aquatique | Sous-catégories **non chargées** à l'import (rapport : « sous-catégorie retirée ») ; changer la liste recharge la source | Retirées « pour l'instant » (Hardy, 13/11). Une correction manuelle passe avant (§ 4.5) |
+
+Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`dureeMin`, `dureeVeloDepuisDistanceMin`, `niveauAcces`), testées en paires ; l'import applique la même formule en SQL (`rattachements.sql`), avec les mêmes paramètres.
 
 - Les valeurs `null` (D031) — toutes renseignées le 03/11/2026 (D048) ; la règle reste pour une région ou une source future :
   - **facteur CO₂ à `null`** (valeur pas encore relevée) : toujours accepté par le schéma ; `/api/impact` renvoie alors `co2Kg.train: null` pour ce type de train ;
@@ -274,7 +291,16 @@ Spécifique :
 - **Festivals (P1, après le P0) :** `periode` = mois de début–fin en texte (« juin–juillet »).
 
 ### 4.5 Catégorisation
-- **Corrections manuelles (D061) :** `etl/src/regles/corrections_manuelles.csv`, lignes validées par Hardy, appliquées après le classement.
+- **Corrections manuelles (D061, D091) :** `etl/src/regles/corrections_manuelles.csv`, versionné, lignes validées par Hardy (`decision` = `oui`), réappliquées à **chaque** import : une mise à jour des données ne les efface pas. Elles passent **avant** les règles automatiques (noms exclus, `acces.sousCategoriesRetirees`). Actions :
+  - `retirer` : le lieu n'est plus une sortie ;
+  - `reclasser` : nouvelle `categorie` (obligatoire) et `sous_categorie` ;
+  - `inclure` : garder un lieu que les règles écartent (sans règle, exclu, sans nom…), avec la `categorie` donnée (obligatoire). Il doit être dans le fichier téléchargé de la source.
+
+  **Marche à suivre** : trouver l'identifiant du lieu (DATAtourisme : `URI_ID_du_POI` ; OSM : `type/id`, ex. `way/123456`, lisible sur openstreetmap.org), ajouter une ligne, puis `pnpm etl <source> && pnpm etl rattachements`. Exemple :
+  ```
+  osm;"way/123456";"Château de Mâlain";patrimoine / ruines;inclure;patrimoine;château;;Château classé, écarté faute de règle;oui
+  ```
+  Colonnes : `source;id_source;nom;classement_actuel;action;categorie;sous_categorie;secondaire;raison;decision`. Tests : `etl/tests/corrections.test.ts`, `sources-lieux.test.ts`.
 - **Catégories secondaires (D060) :** `etl/src/regles/categories_secondaires.csv` ajoute des catégories à un lieu, sans changer sa catégorie principale.
 - **Source de vérité :** `etl/src/regles/categories.csv` (colonnes `source;cle;valeur;categorie;sous_categorie;priorite;condition`, lignes `#` = commentaires), versionné, **modifiable sans code**, chargé par `pnpm etl regles` dans `categorie_regle` (remplacée en entier ; une ligne illisible ou une règle en double bloque le chargement).
 - **Clés :** DATAtourisme `categorie` + nom de classe (`Museum`) ; OSM nom du tag + valeur, `*` = toute valeur.
@@ -299,7 +325,7 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
 2. **Qualité Tourisme** : lu dans le champ `Classements_du_POI` de DATAtourisme (§ 4.4) ; le fichier séparé de 2024 n'est pas utilisé (D043).
 3. **Sites** : pour chaque sous-catégorie de `regroupementSites` (grotte, site archéologique, aire de jeux), lieux non doublons à moins de sa distance l'un de l'autre (de proche en proche, `ST_ClusterDBSCAN`) → un **site**. Représentant : la source la plus prioritaire, puis le lieu le plus proche du centre du groupe ; les autres reçoivent `site_de`. **Jamais tout le patrimoine** : avec 150 m, les monuments du centre de Dijon formeraient un seul site de 92 lieux.
    **Parc d'un château** (D045) : un lieu dont le nom commence par parc, jardin(s), potager, verger, roseraie ou domaine et contient le **nom complet** d'un « Château de … » à moins de `regroupementParcChateau.distanceM` devient une partie du site du château (« Parc du château de Commarin »). Pas de règle large « un nom contenu dans un autre » (182 liens, trop de faux positifs).
-4. **`lieu_gare`** : lieux ni doublons ni membres d'un site, dont la **distance à pied** (vol d'oiseau × `marche.coefDetour`) est ≤ `rayons.lieuxGareM` ; durée = ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉. **Lieu en longueur** (`lieu.trace`, canal) : distance au point de son tracé le plus proche de la gare, une ligne par gare.
+4. **`lieu_gare`** : lieux ni doublons ni membres d'un site, dont la **distance à pied** (vol d'oiseau × `acces.coefDetour`) est ≤ `acces.rayonPiedM` (≤ `acces.rayonAiresDeJeuxM` pour les aires de jeux, D091) ; durée = ⌈ distance à pied / (`acces.vitessePiedKmH` × 1000 / 60) ⌉. **Lieu en longueur** (`lieu.trace`, canal) : distance au point de son tracé le plus proche de la gare, une ligne par gare.
 5. **`gare_stats`** : `COUNT(*)` par gare et catégorie depuis `lieu_gare`.
 
 **Lieux en longueur (OSM)** : les tags de `lieux.enLongueurOsm` (`waterway=canal`) sont demandés à Overpass en lignes avec leur tracé (`way…; out geom tags;`) ; au chargement, les tronçons de même nom à moins de `lieux.raccordTronconsM` sont réunis en un lieu (plus petit identifiant), dont le point est le point du tracé le plus proche de son centre.
@@ -314,7 +340,7 @@ Commande `pnpm etl transport_local [--hors-ligne]` (D046) : réseaux lus dans `c
 2. **GTFS** (dans le ZIP) : arrêts (pas les stations parentes) desservis par au moins une ligne (`stop_times` → `trips` → `routes`) ; ligne de tram (`route_type` 0) → `TRAM`, sinon le type du réseau (`BUS`, ou `CAR` pour Mobigo) ; **transport à la demande exclu** (`route_type` 715, D020) ; numéros de ligne triés (2 avant 10) ; nom nettoyé (tiret final de Mobigo).
 3. **GBFS** : stations de `station_information.json` (nom texte ou traduit), type `VELO`, `id_source` = `station_id`.
 4. **Quais** (SQL) : arrêts d'un même réseau de même nom (sans accents ni majuscules), de proche en proche à moins de `mobilite.regroupementQuaisM` → un arrêt (plus petit identifiant, lignes réunies, centre des quais).
-5. **Une ligne par couple (arrêt, gare de la région)** à moins de `rayons.mobiliteM` **à pied** (vol d'oiseau × `marche.coefDetour`) ; `mobilite_locale` remplacée en entier dans une transaction.
+5. **Une ligne par couple (arrêt, gare de la région)** à moins de `rayons.mobiliteM` **à pied** (vol d'oiseau × `acces.coefDetour`) ; `mobilite_locale` remplacée en entier dans une transaction.
 
 **Contrôles** : au moins un réseau chargé ; aucun arrêt au-delà du rayon à pied ; aucun arrêt de bus, tram ou car sans ligne ; réseau sans arrêt près d'une gare (avertissement). **Tests en paires** : deux quais « République » à 30 m → un arrêt / deux noms différents → deux ; 790 m à pied gardé / 810 m écarté ; tram → `TRAM` / bus seul → type du réseau ; transport à la demande écarté ; licence reconnue / non reconnue.
 
@@ -347,9 +373,10 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 
 | Calcul | Formule | Paramètres |
 |---|---|---|
-| Distance à pied | distance vol d'oiseau × `marche.coefDetour` | |
-| Durée à pied (min) | ⌈ distance à pied / (`marche.vitesseKmH` × 1000 / 60) ⌉ | |
-| Durée vélo / voiture jusqu'à la gare | idem avec `velo` / `voiture` | |
+| Distance à pied | distance vol d'oiseau × `acces.coefDetour` | |
+| Durée à pied (min) | ⌈ distance à pied / (`acces.vitessePiedKmH` × 1000 / 60) ⌉ | |
+| Niveau d'accès | `pied` si distance ≤ `acces.rayonPiedM`, `velo` si ≤ `acces.rayonVeloM`, sinon `loin` (`niveauAcces`, D091) | |
+| Durée vélo / voiture jusqu'à la gare | idem avec `acces.vitesseVeloKmH` / `voiture` | |
 | Tranche de temps | `<=30`, `<=60`, `<=90`, `>90` selon `durees.tranchesTempsMin` (D055) | |
 | Faisable dans la journée | un aller arrive avant `journee.arriveeMaxAller` **et** un retour part après cette arrivée + `journee.dureeVisiteMin` | **calculé par l'ETL** (§ 4.3), lu dans `liaison_directe.faisable_journee` (D040) |
 | CO₂ train (kg, aller-retour) | 2 × distance_km × facteur du type de train / 1000 | `impact.facteursCo2GParKm` |
@@ -387,3 +414,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 03/11/2026 | 1.17 | § 2 : facteurs CO₂ et prix renseignés, `prix.dateCalibrage`, `empriseFrance` (positions acceptées par l'API), `destinations` (D049, D050) ; § 6 : CO₂ et prix d'une carte de destination, prix calibré — D047, D048 |
 | 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |
 | 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 ; `lieux.fichesVille`, `lieux.ongletLieux` — D057 |
+| 13/11/2026 | 1.20 | § 2 : section `acces` (rayon à pied 2 km, vélo, aires de jeux, sous-catégories retirées), `marche`, `velo` et `rayons.lieuxGareM` déplacés ; § 4.5 : action `inclure` et marche à suivre ; § 4.6 : rayon des aires de jeux — D091 |

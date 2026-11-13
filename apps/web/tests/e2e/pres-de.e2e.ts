@@ -48,7 +48,7 @@ test('sans destination : « Près de vous » en haut, avant les trains', async (
   await expect(presDeBeaune(page)).toHaveCount(0);
 });
 
-test('destination choisie : « Près de la gare de Beaune » en bas, à 1,5 km, et le train vers Beaune', async ({
+test('destination choisie : « Près de la gare de Beaune » en bas, à 2 km, et le train vers Beaune', async ({
   page,
 }) => {
   await page.goto(AVEC_BEAUNE);
@@ -56,7 +56,7 @@ test('destination choisie : « Près de la gare de Beaune » en bas, à 1,5 km, 
   await expect(section).toBeAttached();
   await expect(presDeVous(page)).toHaveCount(0);
   expect(await avant(titreTrains(page), section)).toBe(true);
-  await expect(section).toContainText('à moins de 1,5 km');
+  await expect(section).toContainText('à moins de 2 km');
   await expect(section.getByRole('listitem').first()).toBeAttached();
   await expect(page.getByText('Prochain départ direct').locator('..')).toContainText('→ Beaune');
 });

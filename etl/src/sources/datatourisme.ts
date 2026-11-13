@@ -46,13 +46,13 @@ export async function traiterDatatourisme(options: {
         fichier,
         force: options.force,
         suivi,
-        async *lire(index, descriptionMax) {
+        async *lire(index, descriptionMax, inclusion) {
           const { lignes, bilan } = lireCsv(fichier.chemin, schemaLigneDatatourisme, {
             delimiteur: ',',
           });
           suivi.lecture = bilan;
           for await (const ligne of lignes)
-            yield lireLigneDatatourisme(ligne, index, descriptionMax);
+            yield lireLigneDatatourisme(ligne, index, descriptionMax, inclusion);
         },
       });
     });

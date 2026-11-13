@@ -31,7 +31,13 @@ import { LIBELLES_ECART, type LieuACharger } from '../transformations/lieux';
 import { motifQuiExclut, type MotifExclu } from '../transformations/noms-exclus';
 import { lireReglesSecondaires } from '../chargement/categories-secondaires';
 import { lireCorrections } from '../chargement/corrections';
-import { corrigerLieu, type CorrectionLieu } from '../transformations/corrections';
+import {
+  corrigerLieu,
+  inclusionsDe,
+  retireParSousCategorie,
+  type CorrectionLieu,
+  type Inclusion,
+} from '../transformations/corrections';
 import { ecrireLieuxExclus, lireNomsExclus, type LieuExclu } from '../chargement/noms-exclus';
 import { estInchange, lireEmpreinteConnue, type FichierBrut } from './base';
 
@@ -47,14 +53,19 @@ export function empreinteLieux(
   nomsExclus: readonly MotifExclu[] = [],
   secondaires: readonly RegleSecondaire[] = [],
   corrections: readonly CorrectionLieu[] = [],
+  sousCategoriesRetirees: readonly string[] = [],
 ): string {
-  return createHash('sha256')
-    .update(fichier)
-    .update(JSON.stringify(regles))
-    .update(JSON.stringify(nomsExclus))
-    .update(JSON.stringify(secondaires))
-    .update(JSON.stringify(corrections))
-    .digest('hex');
+  return (
+    createHash('sha256')
+      .update(fichier)
+      .update(JSON.stringify(regles))
+      .update(JSON.stringify(nomsExclus))
+      .update(JSON.stringify(secondaires))
+      .update(JSON.stringify(corrections))
+      // Changer la liste des sous-catégories retirées doit recharger la source (D091).
+      .update(JSON.stringify(sousCategoriesRetirees))
+      .digest('hex')
+  );
 }
 
 export async function chargerLieux(options: {
@@ -65,7 +76,11 @@ export async function chargerLieux(options: {
   force: boolean;
   suivi: Suivi;
   /** Lit la source et renvoie chaque ligne classée ; remplit le bilan de lecture. */
-  lire: (index: IndexRegles, descriptionMax: number) => AsyncIterable<ResultatLigne>;
+  lire: (
+    index: IndexRegles,
+    descriptionMax: number,
+    inclusion: Inclusion,
+  ) => AsyncIterable<ResultatLigne>;
 }): Promise<'SUCCES' | 'IGNORE'> {
   const { pool, source, suivi } = options;
   const client = await pool.connect();
@@ -76,15 +91,16 @@ export async function chargerLieux(options: {
   const nomsExclus = await lireNomsExclus();
   const secondaires = await lireReglesSecondaires();
   const toutesCorrections = await lireCorrections();
-  const corrections = new Map(
-    toutesCorrections.filter((c) => c.source === source).map((c) => [c.idSource, c]),
-  );
+  const deLaSource = toutesCorrections.filter((c) => c.source === source);
+  const corrections = new Map(deLaSource.map((c) => [c.idSource, c]));
+  const inclusion = inclusionsDe(deLaSource);
   const empreinte = empreinteLieux(
     options.fichier.empreinte,
     regles,
     nomsExclus,
     secondaires,
     toutesCorrections,
+    parametres.acces.sousCategoriesRetirees,
   );
   if (estInchange(empreinte, connue, options.force)) return 'IGNORE';
 
@@ -93,13 +109,20 @@ export async function chargerLieux(options: {
   const lus = new Set<string>();
   const exclusParNom: LieuExclu[] = [];
   async function* lieux(): AsyncGenerator<LieuACharger> {
-    for await (const resultat of options.lire(index, parametres.lieux.descriptionMaxCaracteres)) {
+    const descriptionMax = parametres.lieux.descriptionMaxCaracteres;
+    for await (const resultat of options.lire(index, descriptionMax, inclusion)) {
       if (resultat.type === 'ecarte') {
         compter(compte, resultat.raison, resultat.nonClassees);
       } else if (lus.has(resultat.lieu.idSource)) {
         compter(compte, 'doublon', []);
       } else {
-        const motif = motifQuiExclut(resultat.lieu.nom, nomsExclus);
+        const correction = corrections.get(resultat.lieu.idSource);
+        // Une correction manuelle passe avant les règles automatiques (D091) : un lieu inclu ou reclassé
+        // à la main n'est écarté ni par son nom, ni par sa sous-catégorie.
+        const motif =
+          correction && correction.action !== 'retirer'
+            ? null
+            : motifQuiExclut(resultat.lieu.nom, nomsExclus);
         if (motif) {
           const { idSource, nom } = resultat.lieu;
           exclusParNom.push({ idSource, nom, motif: motif.texte, raison: motif.raison });
@@ -116,10 +139,14 @@ export async function chargerLieux(options: {
             categorie: resultat.lieu.categorie,
           }),
         };
-        const correction = corrections.get(lieu.idSource);
         const corrige = correction ? corrigerLieu(lieu, correction) : lieu;
         if (corrige === null) {
           compter(compte, 'correction', resultat.nonClassees);
+          continue;
+        }
+        const { sousCategoriesRetirees } = parametres.acces;
+        if (retireParSousCategorie(corrige.sousCategorie, sousCategoriesRetirees, correction)) {
+          compter(compte, 'sous_categorie_retiree', resultat.nonClassees);
           continue;
         }
         compter(compte, null, resultat.nonClassees);

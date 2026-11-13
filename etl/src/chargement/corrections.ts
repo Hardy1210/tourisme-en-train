@@ -13,14 +13,14 @@ const schemaLigne = z
   .object({
     source: z.string().trim().min(1),
     id_source: z.string().trim().min(1),
-    action: z.enum(['retirer', 'reclasser']),
+    action: z.enum(['retirer', 'reclasser', 'inclure']),
     categorie: z.string().transform(vide).pipe(schemaCategorie.nullable()),
     sous_categorie: z.string().transform(vide),
     secondaire: z.union([z.enum(['', 'retirer']), schemaCategorie]),
     decision: z.enum(['', 'oui', 'non']),
   })
-  .refine((l) => l.action !== 'reclasser' || l.categorie !== null, {
-    message: 'Une ligne « reclasser » doit donner une catégorie.',
+  .refine((l) => l.action === 'retirer' || l.categorie !== null, {
+    message: 'Une ligne « reclasser » ou « inclure » doit donner une catégorie.',
   });
 
 /** Corrections validées (« oui ») ; une ligne illisible est une erreur, jamais ignorée en silence. */

@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.16 · **Date** 04/11/2026
+> **Version** 1.17 · **Date** 13/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -319,7 +319,7 @@ Source de vérité : `etl/src/regles/categories.csv` (versionné, éditable sans
 |---|---|---|---|
 | `lieu_id` | bigint | PK (1/2), FK → lieu ON DELETE CASCADE | |
 | `gare_id` | integer | PK (2/2), FK → gare | |
-| `distance_m` | integer | NN | Distance à pied estimée (≤ `rayons.lieuxGareM`) ; lieu en longueur : jusqu'au point de son tracé le plus proche (D043) |
+| `distance_m` | integer | NN | Distance à pied estimée (≤ `acces.rayonPiedM` ; aires de jeux ≤ `acces.rayonAiresDeJeuxM`, D091) ; lieu en longueur : jusqu'au point de son tracé le plus proche (D043) |
 | `duree_marche_min` | smallint | NN | |
 
 Index : (`gare_id`, `distance_m`).
@@ -343,7 +343,7 @@ Index : (`gare_id`, `distance_m`).
 | `operateur` | text | | Producteur du réseau (`source_donnees.producteur`) |
 | `source` | text | NN, FK → source_donnees(code) | Code du réseau (`reseau_divia`, `reseau_mobigo`, `velos_besancon`…) |
 | `id_source` | text | | Identifiant dans la source (`stop_id` GTFS du premier quai ; `station_id` GBFS, pour lire la disponibilité des vélos en direct) |
-| `distance_m` | integer | NN | Distance à pied depuis la gare (vol d'oiseau × `marche.coefDetour`) |
+| `distance_m` | integer | NN | Distance à pied depuis la gare (vol d'oiseau × `acces.coefDetour`) |
 | `geom` | geography(Point, 4326) | NN | Centre des quais regroupés |
 
 Index : (`gare_id`, `distance_m`). Contrainte : UQ(`gare_id`, `source`, `id_source`) (migration `0010`, D046).
@@ -487,3 +487,4 @@ ORDER BY a.depart_s;
 | 02/11/2026 | 1.14 | § 3.10 : une ligne par couple (arrêt, gare), type `CAR`, rayon à pied, contrainte d'unicité (migration `0010`) — D046 |
 | 03/11/2026 | 1.15 | § 3.6 : `lieu.cle`, clé publique générée et unique (migration `0011`) ; § 6 : échantillon complété (E08) — D052 |
 | 04/11/2026 | 1.16 | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 ; `lieu.categories_secondaires`, `gare_stats.nb_secondaires` — D060 |
+| 13/11/2026 | 1.17 | `lieu_gare` : rayon `acces.rayonPiedM` (2 km), aires de jeux à 1 km — D091 |
