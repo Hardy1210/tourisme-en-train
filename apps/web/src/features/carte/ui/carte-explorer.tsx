@@ -240,21 +240,17 @@ export function CarteExplorer({
             cadrer();
             void enregistrerIconesCategories(evenement.target).then(() =>
               setCouleursBulles(
+                // Bulles claires à contour : distinctes des points des gares, pleins (D088, D091).
                 lireTokens({
-                  bulle: '--primary',
-                  texteBulle: '--primary-foreground',
-                  halo: '--map-halo',
+                  bulle: '--surface',
+                  texteBulle: '--foreground',
+                  halo: '--primary',
                 }),
               ),
             );
           }}
         >
-          <CouchesCarte
-            segments={segments}
-            parcours={parcours}
-            etiquettes={etiquettes}
-            couleurs={style.data.couleurs}
-          />
+          {/* Avant les couches des gares : leurs étiquettes restent au-dessus des bulles. */}
           {couleursBulles && tousLesLieux.data && (
             <CoucheLieux
               lieux={tousLesLieux.data.lieux}
@@ -262,6 +258,12 @@ export function CarteExplorer({
               couleurs={couleursBulles}
             />
           )}
+          <CouchesCarte
+            segments={segments}
+            parcours={parcours}
+            etiquettes={etiquettes}
+            couleurs={style.data.couleurs}
+          />
           <MarqueursDestinations
             destinations={destinations}
             uicChoisi={uicChoisi}
