@@ -53,16 +53,18 @@ export async function autour({
 export async function lieuxPourCarte(zone: ParametresLieuxCarte): Promise<ReponseLieuxCarte> {
   const { acces } = parametres;
   const lignes = await lieuxCarte({
-    zone:
-      'gare' in zone
-        ? { type: 'gare', uic: zone.gare }
-        : {
-            type: 'point',
-            lat: zone.lat,
-            lon: zone.lon,
-            rayonVolOiseauM: rayonVolOiseauM(zone.rayon),
-            airesVolOiseauM: rayonVolOiseauM(acces.rayonAiresDeJeuxM),
-          },
+    zone: {
+      point:
+        zone.lat !== undefined && zone.lon !== undefined && zone.rayon !== undefined
+          ? {
+              lat: zone.lat,
+              lon: zone.lon,
+              rayonVolOiseauM: rayonVolOiseauM(zone.rayon),
+              airesVolOiseauM: rayonVolOiseauM(acces.rayonAiresDeJeuxM),
+            }
+          : null,
+      gares: zone.gares,
+    },
     airesDeJeux: acces.sousCategoriesAiresDeJeux,
     pauvres: {
       sources: acces.lieuxPauvresSources,

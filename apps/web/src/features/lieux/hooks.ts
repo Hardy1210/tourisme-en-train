@@ -81,22 +81,20 @@ export function useFicheLieu(cle: string) {
 }
 
 /**
- * Lieux de la carte dans une zone (D094) : autour d'un point (rayon du filtre) ou d'une gare de
+ * Lieux de la carte dans une zone (D094) : autour d'un point (rayon du filtre) et/ou autour de gares de
  * destination. `null` tant que la carte n'est pas chargée : la demande ne ralentit pas son affichage.
  * Les bulles précédentes restent pendant le chargement de la nouvelle zone.
  */
 export function useLieuxCarte(zone: ParametresLieuxCarte | null) {
+  // Gares triées : la même liste dans un autre ordre garde la même réponse en mémoire.
   const visible = useEcranVisible();
-  const requete =
-    zone === null
-      ? ''
-      : 'gare' in zone
-        ? new URLSearchParams({ gare: zone.gare }).toString()
-        : new URLSearchParams({
-            lat: String(zone.lat),
-            lon: String(zone.lon),
-            rayon: String(zone.rayon),
-          }).toString();
+  const requete = new URLSearchParams();
+  if (zone?.lat !== undefined && zone.lon !== undefined && zone.rayon !== undefined) {
+    requete.set('lat', String(zone.lat));
+    requete.set('lon', String(zone.lon));
+    requete.set('rayon', String(zone.rayon));
+  }
+  if (zone && zone.gares.length > 0) requete.set('gares', [...zone.gares].sort().join(','));
   const chemin = `/api/carte/lieux?${requete}`;
   return useQuery({
     queryKey: ['lieux-carte', chemin],

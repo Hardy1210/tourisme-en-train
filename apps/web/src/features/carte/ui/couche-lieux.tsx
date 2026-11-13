@@ -45,7 +45,7 @@ export function CoucheLieux({
   couleurs: { bulle: string; texteBulle: string; halo: string };
 }) {
   const donnees = useMemo(() => lieuxGeoJson(lieux, categories), [lieux, categories]);
-  const { bullesRayonPx, bullesZoomMax } = parametres.acces;
+  const { bullesRayonPx, bullesZoomMax, bullesDecalagePx } = parametres.acces;
   return (
     <Source
       id={SOURCE_LIEUX}
@@ -61,6 +61,7 @@ export function CoucheLieux({
         filter={['has', 'point_count']}
         paint={{
           'circle-color': couleurs.bulle,
+          'circle-translate': bullesDecalagePx,
           'circle-stroke-color': couleurs.halo,
           'circle-stroke-width': 2,
           // Plus de lieux, plus grande bulle : 15 px, 19 px dès 10 lieux, 24 px dès 100.
@@ -77,7 +78,7 @@ export function CoucheLieux({
           'text-size': 12,
           'text-allow-overlap': true,
         }}
-        paint={{ 'text-color': couleurs.texteBulle }}
+        paint={{ 'text-color': couleurs.texteBulle, 'text-translate': bullesDecalagePx }}
       />
       <Layer
         id={COUCHE_ICONES}

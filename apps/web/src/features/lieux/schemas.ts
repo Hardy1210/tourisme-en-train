@@ -130,17 +130,30 @@ export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAcc
 export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
 
 /**
- * GET /api/carte/lieux (D094) : autour d'un point (`lat`, `lon`, `rayon` parmi les distances du filtre) ou
- * d'une gare de destination (`gare`). Un seul des deux.
+ * GET /api/carte/lieux (D094) : les lieux autour d'un point (`lat`, `lon`, `rayon` parmi les distances du
+ * filtre) et/ou les lieux à pied d'une liste de gares (`gares`, codes UIC séparés par des virgules). Au
+ * moins l'un des deux.
  */
-export const schemaParametresLieuxCarte = z.union([
-  z.object({ gare: schemaUic }),
-  z.object({
-    lat: schemaLat,
-    lon: schemaLon,
-    rayon: schemaParmi(parametres.rayons.autourDeMoiOptionsM, 'Rayons (m)'),
-  }),
-]);
+export const schemaParametresLieuxCarte = z
+  .object({
+    lat: schemaLat.optional(),
+    lon: schemaLon.optional(),
+    rayon: schemaParmi(parametres.rayons.autourDeMoiOptionsM, 'Rayons (m)').optional(),
+    gares: z
+      .string()
+      .optional()
+      .transform((texte) => (texte ? [...new Set(texte.split(','))] : []))
+      .pipe(z.array(schemaUic).max(parametres.limites.destinations)),
+  })
+  .refine(
+    (p) =>
+      (p.lat === undefined) === (p.lon === undefined) &&
+      (p.lat === undefined) === (p.rayon === undefined),
+    { message: 'lat, lon et rayon vont ensemble.' },
+  )
+  .refine((p) => p.lat !== undefined || p.gares.length > 0, {
+    message: 'Il faut un point ou au moins une gare.',
+  });
 export type ParametresLieuxCarte = z.infer<typeof schemaParametresLieuxCarte>;
 
 /**

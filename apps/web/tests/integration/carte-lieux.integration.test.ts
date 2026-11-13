@@ -30,8 +30,8 @@ async function lire(chemin: string) {
 }
 
 describe('/api/carte/lieux (D094)', () => {
-  it('autour d’une gare de destination : ses lieux à pied, en cache, compressés', async () => {
-    const { cles, cache } = await lire('/api/carte/lieux?gare=EX000005');
+  it('seulement des gares : leurs lieux à pied, en cache, compressés', async () => {
+    const { cles, cache } = await lire('/api/carte/lieux?gares=EX000005');
     expect(cache).toMatch(/^public, max-age=\d+$/);
     expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L47')]));
     // Fiche de ville et lieu masqué (piscine, D093) : jamais.
@@ -48,6 +48,15 @@ describe('/api/carte/lieux (D094)', () => {
     expect(cles).not.toContain(cle('ECH_L50'));
   });
 
+  it('position et gares ensemble : les lieux des deux zones, jamais en cache', async () => {
+    const { cles, cache } = await lire(
+      '/api/carte/lieux?lat=46.5&lon=4.2&rayon=1000&gares=EX000005',
+    );
+    expect(cache).toBe('no-store');
+    // Autour du point (lieux « loin des gares ») et autour de la gare EX000005.
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L50'), cle('ECH_L47')]));
+  });
+
   it('un rayon hors des choix du filtre → 400', async () => {
     const reponse = await route.GET(
       new Request('http://localhost/api/carte/lieux?lat=46.3&lon=6.9&rayon=1234'),
@@ -61,12 +70,9 @@ describe('lieuxCarte : tri des lieux pauvres loin des gares (D092)', () => {
   // Autour des lieux d'exemple « loin des gares » (4,2 ; 46,5), sans aucune ligne lieu_gare.
   const OPTIONS = {
     zone: {
-      type: 'point',
-      lat: 46.5,
-      lon: 4.2,
-      rayonVolOiseauM: 5000,
-      airesVolOiseauM: 770,
-    } as const,
+      point: { lat: 46.5, lon: 4.2, rayonVolOiseauM: 5000, airesVolOiseauM: 770 },
+      gares: [],
+    },
     airesDeJeux: ['aire de jeux'],
     pauvres: {
       sources: ['echantillon'],
