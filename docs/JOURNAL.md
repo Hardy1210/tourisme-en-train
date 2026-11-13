@@ -42,6 +42,23 @@
 
 ---
 
+## 14/11/2026 — Étape E11 — piscines masquées, nombres sans fondu, carte par zone (D093, D094)
+**Fait :**
+- #114 et #115 fusionnées
+- #116 fusionnée (D093) : piscines rechargées en base et masquées (`lieu.masque`, migration 0015) ; 95 en base, 94 masquées
+- #117 fusionnée : nombres des bulles sans fondu (`fadeDuration` 0)
+- #118 ouverte (D094) : carte des lieux autour de soi (rayon du filtre) et de chaque gare de destination affichée ; bulles décalées [20, -5] ; réglages de Hardy sur iPhone (37 px, zoom 13). Parcours 207/207
+- `LECONS.md` : L56 → L62 et questions du jury sur la carte
+**Décisions :** D093, D094
+**Problèmes rencontrés :**
+- Hardy a modifié `parametres.json` dans le dépôt alors que son serveur d'essai tourne dans `../tourisme-recherche` : un réglage s'essaie dans la copie, et demande un nouveau build
+**À valider par Hardy :** fusion de #118 ; couleurs inversées des bulles (à essayer dans `tourisme-recherche`) ; mise en ligne quand il le décide
+**Prochaine action :** PR vélo prouvé, ou PR des parcours instables (au choix de Hardy) ; mise en ligne (« mets en ligne ») : 2 migrations (0014, 0015) puis les données
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` 573, intégration 181, parcours 207/207 sur la branche de #118)
+**Commit :** #116 (`ba3f660`), #117 (`3edd8ce`) ; #118 ouverte
+
+---
+
 ## 13/11/2026 (soir) — Étape E11 — audit des lieux hors périmètre, section `acces`, carte de tous les lieux
 **Fait :**
 - Audit sans code (D090) : 81 % des lieux cachés par le périmètre (8 678 sur 10 749), jamais écartés à l'import ; rapport `docs/audits/carte-lieux-accessibilite.md` (non versionné, dans le dossier de Hardy)
