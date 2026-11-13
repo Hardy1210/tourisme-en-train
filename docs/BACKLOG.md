@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.5 · **Date** 10/11/2026
+> **Version** 1.6 · **Date** 13/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -159,7 +159,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 
 | Ligne | État | Ce qui manque |
 |---|---|---|
-| F05 | ✅ | Parcours de chaque filtre (`filtres.e2e.ts`, `date-filtres.e2e.ts`, catégories dans `explorer.e2e.ts`) : liste, carte, adresse, rechargement. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` ; la section « À deux pas » va évoluer (`A-FAIRE`), d'où un parcours léger |
+| F05 | ✅ | Parcours de chaque filtre (`filtres.e2e.ts`, `date-filtres.e2e.ts`, catégories dans `explorer.e2e.ts`) : liste, carte, adresse, rechargement. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` ; section « Près de vous » et mode destination : `pres-de.e2e.ts` (D089) |
 | F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
 | F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
 | F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
@@ -200,3 +200,4 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | 05/11/2026 | 1.3 | États relus dans le code et les tests : F01, F02, F03, F04, F07, F10, F11, F15, F25, T3 terminés ; F05, F06, F08, F09, F20 en cours |
 | 07/11/2026 | 1.4 | INF1, INF2, INF8, INF9 et F13 terminés ; F14 en cours ; § 8 : reste à faire et estimations — D077 |
 | 10/11/2026 | 1.5 | § 8 : ordre des 6 points d'E11–E12, intégration continue, design du 23 au 25/11 — D080, D081 |
+| 13/11/2026 | 1.6 | § 8 bis : F05, parcours « Près de vous » et mode destination — D089 |

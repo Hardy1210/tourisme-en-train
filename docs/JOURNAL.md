@@ -42,6 +42,23 @@
 
 ---
 
+## 13/11/2026 — Étape E11 — carte v6 : bulles (#110), « Près de vous » et mode destination (#111)
+**Fait :**
+- #110 : bulle du nombre de lieux à pied sur chaque gare, à côté du point ; mini-fiche avec le détail par catégorie (D088). Validée par Hardy sur iPhone
+- #111 : « Près de vous » / « Près de la gare de… » ; destination choisie : section en bas autour de sa gare, train vers elle dans « Votre gare », « Filtres » réduit à « Quand ? » (D089). Essais successifs sur iPhone : distance grisée, puis temps et faisable grisés avec une phrase, enfin cachés
+- #109 : `A-FAIRE`, périmètre dessiné autour de la gare et lieux hors périmètre (retour d'un testeur : Mâlain)
+- Mesure du 13/11 (gare la plus proche, hors lieux en longueur, estimation) : ≈ 2 085 lieux à 1,5 km à pied d'une gare, 2 587 à 2 km, 2 947 à 2,5 km, 3 299 à 3 km, sur 10 749 ; Mâlain à 2 178 m
+- c2 prévue (icônes au zoom, limitées au périmètre) abandonnée : audit d'abord (D090)
+**Décisions :** D088, D089, D090
+**Problèmes rencontrés :**
+- Sous la charge des parcours, des touchers sur les points de la carte n'aboutissent pas en 30 s (téléphone), sur `main` comme sur la branche : instabilité existante, ajoutée à `A-FAIRE`
+**À valider par Hardy :** design des bulles (plus tard) ; prompt de l'audit des lieux hors périmètre
+**Prochaine action :** audit sans code des lieux hors du périmètre des gares (D090), d'après le prompt de Hardy
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (558, `pnpm verifier` sur `main` `3bd4398`) · parcours : 111 réussis, 2 échecs sous la charge, qui passent ensuite seuls (cadrage 6/6, mini-fiche 5/5) ; 2 échecs de même nature sur `main`
+**Commit :** #109, #110 (`8ab5a95`), #111 (`3bd4398`)
+
+---
+
 ## 12/11/2026 — Étape E11 — page de départ sur Lieux, fond sous le clavier, date dans « Filtres » (D086)
 **Fait :**
 - Dépôt réparé : objet du commit `4c571eb` et 5 documents vidés par un arrêt brutal de WSL pendant un `pull` ; objet retéléchargé, documents remis depuis le commit
