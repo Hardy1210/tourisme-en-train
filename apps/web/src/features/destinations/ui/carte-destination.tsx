@@ -1,10 +1,9 @@
-import { CATEGORIES } from '@tourisme/commun';
 import { ArrowRight, Check, Clock, Leaf, MapPinOff, Moon, TrainFront } from 'lucide-react';
 import Link from 'next/link';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
 import { parametres } from '@/config/parametres';
-import { APPARENCE_CATEGORIE, IconeCategorie } from '@/features/lieux/ui/icone-categorie';
+import { PastillesCategories } from './pastilles-categories';
 import { cn } from '@/lib/classes';
 import {
   couleurTranche,
@@ -65,26 +64,7 @@ export function CarteDestination({ destination: d, lien, survolee, surSurvol }: 
       </p>
 
       {d.lieuxCharges ? (
-        <ul className="flex flex-wrap gap-1.5">
-          {CATEGORIES.filter((c) => (d.lieuxParCategorie[c] ?? 0) > 0).map((c) => {
-            const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[c];
-            const nombre = d.lieuxParCategorie[c];
-            return (
-              <li
-                key={c}
-                aria-label={`${nombre} ${libelle}`}
-                className={cn(
-                  'tabular flex h-7.5 items-center gap-1 rounded-pill pr-2.5 pl-2 text-sm font-bold',
-                  classeFond,
-                  classeTexte,
-                )}
-              >
-                <IconeCategorie categorie={c} className="size-4" />
-                {nombre}
-              </li>
-            );
-          })}
-        </ul>
+        <PastillesCategories lieuxParCategorie={d.lieuxParCategorie} />
       ) : (
         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <MapPinOff aria-hidden="true" className="size-4 flex-none" />

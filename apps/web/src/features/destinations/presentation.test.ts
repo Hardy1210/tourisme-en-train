@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  formaterNombreLieux,
+  totalLieux,
   couleurTranche,
   dureeElargie,
   formaterDuree,
@@ -105,5 +107,18 @@ describe('sansTrainsPartis', () => {
   });
   it('« Votre gare » n’annonce rien quand tous sont partis', () => {
     expect(prochainTrainDirect(sansTrainsPartis([dix], JOUR, a(36_001)))).toBeNull();
+  });
+});
+
+describe('totalLieux', () => {
+  it('additionne les catégories renvoyées', () => {
+    expect(totalLieux({ enfants: 5, parcs: 7 })).toBe(12);
+  });
+  it('vaut 0 sans lieu (pas de bulle)', () => {
+    expect(totalLieux({})).toBe(0);
+  });
+  it('accorde le mot', () => {
+    expect(formaterNombreLieux(1)).toBe('1 lieu');
+    expect(formaterNombreLieux(2)).toBe('2 lieux');
   });
 });

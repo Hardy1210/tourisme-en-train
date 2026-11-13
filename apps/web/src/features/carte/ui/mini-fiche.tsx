@@ -2,7 +2,12 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Bouton, BoutonFermer } from '@/components/ui/bouton';
-import { formaterDuree } from '@/features/destinations/presentation';
+import {
+  formaterDuree,
+  formaterNombreLieux,
+  totalLieux,
+} from '@/features/destinations/presentation';
+import { PastillesCategories } from '@/features/destinations/ui/pastilles-categories';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { lienLieu } from '@/features/lieux/liens';
@@ -42,12 +47,21 @@ export function MiniFicheDestination({
   lien: string;
   surFermeture: () => void;
 }) {
+  const nombre = totalLieux(d.lieuxParCategorie);
   return (
     <Cadre titre={d.titre} surFermeture={surFermeture}>
       <p className="tabular text-sm text-muted-foreground">
         {formaterDuree(d.dureeMin)} en train direct · {d.nbTrains}{' '}
         {d.nbTrains > 1 ? 'trains' : 'train'}/jour
       </p>
+      {nombre > 0 && (
+        <>
+          <p className="tabular text-sm font-semibold">
+            {formaterNombreLieux(nombre)} à voir à pied depuis la gare
+          </p>
+          <PastillesCategories lieuxParCategorie={d.lieuxParCategorie} className="mt-0.5" />
+        </>
+      )}
       <Bouton variante="sortie" asChild className="mt-1 self-end">
         <Link href={lien}>
           Voir la sortie
