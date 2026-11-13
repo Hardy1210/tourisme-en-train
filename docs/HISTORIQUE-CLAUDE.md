@@ -61,3 +61,4 @@
 | 12/11/2026 | 1.65 | § 9 et § 16 : deux copies, `tourisme-recherche` pour le serveur d'essai, `tourisme-parcours` pour les parcours |
 | 12/11/2026 | 1.66 | § 9 : sauvegarde de la nuit, #104 → #107 fusionnées, point (b) ensuite |
 | 13/11/2026 | 1.67 | § 9 : sauvegarde, #109 → #111 fusionnées (D088, D089), c2 remplacée par un audit (D090) |
+| 13/11/2026 | 1.68 | § 9 : sauvegarde du soir, #113 fusionnée, #114 ouverte (D091, D092), PR piscines ensuite |

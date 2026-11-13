@@ -87,3 +87,4 @@ Voir `_MODELE.md`.
 - 11/11/2026 : barre du trajet et recherche de destination (D084), après comparaison de trois variantes sur maquette ; en-tête repliable à suivre.
 - 12/11/2026 : page de départ plein écran sur Lieux (#100), fond de la page fixe sous le clavier (#99), en-tête allégé et date dans « Filtres » (D086), Lieux compris.
 - 13/11/2026 : bulle du nombre de lieux sur chaque gare (D088, #110) ; « Près de vous » et mode destination (D089, #111) ; suite de la carte décidée après l'audit des lieux hors périmètre (D090).
+- 13/11/2026 (soir) : section `acces` (D091, #113) ; carte de tous les lieux en bulles, tri, Wikipédia (D092, #114 ouverte) ; suite : piscines, cercles, vélo prouvé (`A-FAIRE`).
