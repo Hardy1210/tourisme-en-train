@@ -314,7 +314,7 @@ JOIN lieu l ON l.id_source = r.id_source
 JOIN gare g ON g.uic = r.uic;
 
 -- D057 : fiche de ville (jamais listée) et lieux retirés de l'onglet Lieux seulement, au même point.
--- Piscines et centres aquatiques : plus chargés en base (acces.sousCategoriesRetirees, D091).
+-- Piscine : gardée en base mais masquée (acces.sousCategoriesMasquees, D093), jamais montrée.
 INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, code_insee, geom, fiche_ville)
 SELECT 'echantillon', l.id_source, l.nom, l.categorie, l.sous_categorie, 'Donnée d''exemple.', '71076',
        ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography, l.fiche
@@ -361,5 +361,10 @@ FROM (VALUES
   ('ECH_L51', 'Exemple - Château connu', 'patrimoine', 'château', 'https://fr.wikipedia.org/wiki/Exemple'),
   ('ECH_L52', 'Aire de jeux', 'enfants', 'aire de jeux', NULL)
 ) AS l (id_source, nom, categorie, sous_categorie, wikipedia);
+
+-- D093 : piscine gardée en base mais masquée, au même point que les lieux de « Près de vous » (6,9 ; 46,3).
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, code_insee, geom, masque)
+SELECT 'echantillon', 'ECH_L53', 'Exemple - Piscine municipale', 'enfants', 'piscine', '71076',
+       ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography, true;
 
 COMMIT;

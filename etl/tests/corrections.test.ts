@@ -3,7 +3,7 @@ import { lireCorrections } from '../src/chargement/corrections';
 import {
   corrigerLieu,
   inclusionsDe,
-  retireParSousCategorie,
+  masqueParSousCategorie,
   type CorrectionLieu,
 } from '../src/transformations/corrections';
 import type { LieuACharger } from '../src/transformations/lieux';
@@ -97,22 +97,22 @@ describe('inclure (D091)', () => {
   });
 });
 
-describe('retireParSousCategorie (D091)', () => {
+describe('masqueParSousCategorie (D093)', () => {
   const RETIREES = ['piscine', 'centre aquatique'];
 
-  it('retire une piscine, garde un parc aquatique', () => {
-    expect(retireParSousCategorie('piscine', RETIREES, undefined)).toBe(true);
-    expect(retireParSousCategorie('parc aquatique', RETIREES, undefined)).toBe(false);
-    expect(retireParSousCategorie(null, RETIREES, undefined)).toBe(false);
+  it('masque une piscine, pas un parc aquatique', () => {
+    expect(masqueParSousCategorie('piscine', RETIREES, undefined)).toBe(true);
+    expect(masqueParSousCategorie('parc aquatique', RETIREES, undefined)).toBe(false);
+    expect(masqueParSousCategorie(null, RETIREES, undefined)).toBe(false);
   });
 
-  it('une correction manuelle passe avant : une piscine incluse ou reclassée reste', () => {
-    expect(retireParSousCategorie('piscine', RETIREES, correction({ action: 'inclure' }))).toBe(
+  it('une correction manuelle passe avant : une piscine incluse ou reclassée n’est pas masquée', () => {
+    expect(masqueParSousCategorie('piscine', RETIREES, correction({ action: 'inclure' }))).toBe(
       false,
     );
-    expect(retireParSousCategorie('piscine', RETIREES, correction({}))).toBe(false);
+    expect(masqueParSousCategorie('piscine', RETIREES, correction({}))).toBe(false);
     expect(
-      retireParSousCategorie(
+      masqueParSousCategorie(
         'piscine',
         RETIREES,
         correction({ action: 'retirer', categorie: null }),

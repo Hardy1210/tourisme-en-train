@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.21 · **Date** 13/11/2026
+> **Version** 1.22 · **Date** 13/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -46,7 +46,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   "acces": {
     "rayonPiedM": 2000, "rayonVeloM": 6000, "vitessePiedKmH": 4.5, "vitesseVeloKmH": 15, "coefDetour": 1.3,
     "rayonAiresDeJeuxM": 1000, "sousCategoriesAiresDeJeux": ["aire de jeux"],
-    "sousCategoriesRetirees": ["piscine", "centre aquatique"]
+    "sousCategoriesMasquees": ["piscine", "centre aquatique"]
   },
   "voiture": { "vitesseKmH": 50,  "coefDetour": 1.3 },
   "rail":    { "coefDetour": 1.2 },
@@ -111,7 +111,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | `lieuxPauvresToujoursGardes` | musée, abbaye | Sous-catégories jamais retirées par ce tri | Presque toujours de vraies visites, peu nombreuses (74 remis le 13/11) |
 | `bullesRayonPx` | 45 | Carte : distance (px) sous laquelle des lieux se regroupent en une bulle | Réglé à l'œil par Hardy sur iPhone (13/11) : à 40 px et zoom 11, des icônes s'empilaient |
 | `bullesZoomMax` | 12 | Carte : au-delà, plus de bulles, chaque lieu a son icône | Idem |
-| `sousCategoriesRetirees` | piscine, centre aquatique | Sous-catégories **non chargées** à l'import (rapport : « sous-catégorie retirée ») ; changer la liste recharge la source | Retirées « pour l'instant » (Hardy, 13/11). Une correction manuelle passe avant (§ 4.5) |
+| `sousCategoriesMasquees` | piscine, centre aquatique | Sous-catégories **gardées en base** mais cachées de tous les écrans (`lieu.masque`, calculé à l'import : carte, « Près de vous », liens aux gares) ; changer la liste recharge la source | Cachées « pour l'instant » (Hardy, 13/11). **On ne supprime jamais un lieu de la base, on choisit ce qu'on montre** (D093). Une correction manuelle passe avant (§ 4.5) |
 
 Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`dureeMin`, `dureeVeloDepuisDistanceMin`, `niveauAcces`), testées en paires ; l'import applique la même formule en SQL (`rattachements.sql`), avec les mêmes paramètres.
 
@@ -295,7 +295,7 @@ Spécifique :
 - **Festivals (P1, après le P0) :** `periode` = mois de début–fin en texte (« juin–juillet »).
 
 ### 4.5 Catégorisation
-- **Corrections manuelles (D061, D091) :** `etl/src/regles/corrections_manuelles.csv`, versionné, lignes validées par Hardy (`decision` = `oui`), réappliquées à **chaque** import : une mise à jour des données ne les efface pas. Elles passent **avant** les règles automatiques (noms exclus, `acces.sousCategoriesRetirees`). Actions :
+- **Corrections manuelles (D061, D091) :** `etl/src/regles/corrections_manuelles.csv`, versionné, lignes validées par Hardy (`decision` = `oui`), réappliquées à **chaque** import : une mise à jour des données ne les efface pas. Elles passent **avant** les règles automatiques (noms exclus, `acces.sousCategoriesMasquees`). Actions :
   - `retirer` : le lieu n'est plus une sortie ;
   - `reclasser` : nouvelle `categorie` (obligatoire) et `sous_categorie` ;
   - `inclure` : garder un lieu que les règles écartent (sans règle, exclu, sans nom…), avec la `categorie` donnée (obligatoire). Il doit être dans le fichier téléchargé de la source.
@@ -420,3 +420,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 ; `lieux.fichesVille`, `lieux.ongletLieux` — D057 |
 | 13/11/2026 | 1.20 | § 2 : section `acces` (rayon à pied 2 km, vélo, aires de jeux, sous-catégories retirées), `marche`, `velo` et `rayons.lieuxGareM` déplacés ; § 4.5 : action `inclure` et marche à suivre ; § 4.6 : rayon des aires de jeux — D091 |
 | 13/11/2026 | 1.21 | § 2 : `acces.lieuxPauvres*`, `bullesRayonPx`, `bullesZoomMax` ; import OSM : tag `wikipedia` — D092 |
+| 13/11/2026 | 1.22 | § 2 : `sousCategoriesRetirees` devient `sousCategoriesMasquees` (gardées en base, `lieu.masque`) — D093 |

@@ -104,6 +104,19 @@ describe('rattachements — lieux à pied des gares (04 § 4.6, D043)', () => {
     expect(dijon.sort()).toEqual(['AIRE_PRES', 'PARC']);
   });
 
+  it('lieu masqué (piscine) : jamais relié à une gare ; son voisin non masqué l’est (D093)', async () => {
+    const liens = await apres(
+      [
+        ['PISCINE', 'osm', 'Piscine', 'enfants', 'piscine', DIJON.lon, nord(200)],
+        ['PARC', 'osm', 'Test parc', 'parcs', 'parc', DIJON.lon, nord(200)],
+      ],
+      rattaches,
+      "UPDATE lieu SET masque = true WHERE id_source = 'PISCINE'",
+    );
+    const dijon = liens.filter((l) => l.uic === 'EX000001').map((l) => l.id_source);
+    expect(dijon).toEqual(['PARC']);
+  });
+
   it('gare_stats : une gare compte autant de lieux que ses lignes de lieu_gare', async () => {
     const [stats] = await apres(
       [

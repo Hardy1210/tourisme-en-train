@@ -99,8 +99,8 @@ export const schemaParametres = z
       /** Aires de jeux : seulement près d'une gare ou de l'utilisateur, à ce rayon au plus (D091). */
       rayonAiresDeJeuxM: schemaDistanceM,
       sousCategoriesAiresDeJeux: z.array(z.string().min(1)),
-      /** Sous-catégories non chargées à l'import (aucun écran ne les montre). */
-      sousCategoriesRetirees: z.array(z.string().min(1)),
+      /** Sous-catégories gardées en base mais cachées de tous les écrans (`lieu.masque`, D093). */
+      sousCategoriesMasquees: z.array(z.string().min(1)),
       /**
        * Carte : au-delà du rayon à pied de toute gare, un lieu de ces sources et catégories n'apparaît que
        * s'il a une description, une photo, un label ou un article Wikipédia (D092).

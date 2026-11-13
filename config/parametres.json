@@ -44,7 +44,7 @@
     "coefDetour": 1.3,
     "rayonAiresDeJeuxM": 1000,
     "sousCategoriesAiresDeJeux": ["aire de jeux"],
-    "sousCategoriesRetirees": ["piscine", "centre aquatique"],
+    "sousCategoriesMasquees": ["piscine", "centre aquatique"],
     "lieuxPauvresSources": ["osm"],
     "lieuxPauvresCategories": ["patrimoine"],
     "lieuxPauvresToujoursGardes": ["musée", "abbaye"],

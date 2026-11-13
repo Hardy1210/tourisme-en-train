@@ -49,14 +49,15 @@ export function inclusionsDe(corrections: readonly CorrectionLieu[]): Inclusion 
 }
 
 /**
- * Un lieu est-il écarté par sa sous-catégorie (`acces.sousCategoriesRetirees`, ex. piscine) ? Une
- * correction manuelle passe avant (D091) : un lieu « inclure » ou « reclasser » n'est jamais écarté ici.
+ * Un lieu est-il masqué par sa sous-catégorie (`acces.sousCategoriesMasquees`, ex. piscine) ? Il reste
+ * en base, caché de tous les écrans (D093). Une correction manuelle passe avant (D091) : un lieu
+ * « inclure » ou « reclasser » n'est jamais masqué ici.
  */
-export function retireParSousCategorie(
+export function masqueParSousCategorie(
   sousCategorie: string | null,
-  retirees: readonly string[],
+  masquees: readonly string[],
   correction: CorrectionLieu | undefined,
 ): boolean {
   if (correction && correction.action !== 'retirer') return false;
-  return sousCategorie !== null && retirees.includes(sousCategorie);
+  return sousCategorie !== null && masquees.includes(sousCategorie);
 }

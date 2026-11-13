@@ -101,6 +101,8 @@ describe('/api/lieux', () => {
     const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
     expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L45')]));
     expect(cles).not.toContain(cle('ECH_L42'));
+    // Piscine masquée au même point : gardée en base, jamais montrée (D093).
+    expect(cles).not.toContain(cle('ECH_L53'));
   });
 
   // Le point est ≈ 890 m au nord des lieux : 1 157 m à pied, dans le rayon de 2 km, au-delà des 1 000 m

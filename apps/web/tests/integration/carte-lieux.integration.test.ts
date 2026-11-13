@@ -34,6 +34,8 @@ describe('/api/carte/lieux', () => {
     expect(cles).not.toContain(cle('ECH_L52'));
     // Fiche de ville : jamais.
     expect(cles).not.toContain(cle('ECH_L42'));
+    // Lieu masqué (piscine) : gardé en base, jamais sur la carte (D093).
+    expect(cles).not.toContain(cle('ECH_L53'));
   });
 });
 

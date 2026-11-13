@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.18 · **Date** 13/11/2026
+> **Version** 1.19 · **Date** 13/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -283,6 +283,7 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `code_insee` | char(5) | FK → commune(code_insee) | Commune dont le contour contient le lieu, quelle que soit la source (D041) ; nom de la commune par jointure |
 | `url` | text | | Site officiel |
 | `image_url` | text | | |
+| `masque` | boolean | NN, défaut faux | Gardé en base mais caché de tous les écrans (`acces.sousCategoriesMasquees`, calculé à l'import ; une correction manuelle passe avant), migration `0015` (D093) |
 | `wikipedia` | text | | Article Wikipédia (OSM, tag `wikipedia`, migration `0014`) : signe d'intérêt pour le tri de la carte (D092). Wikidata non gardé |
 | `horaires` | text | | Texte tel que fourni |
 | `periode` | text | | Festivals : période de l'année |
@@ -490,3 +491,4 @@ ORDER BY a.depart_s;
 | 04/11/2026 | 1.16 | § 3.6 : `lieu.fiche_ville` (migration `0012`) — D057 ; `lieu.categories_secondaires`, `gare_stats.nb_secondaires` — D060 |
 | 13/11/2026 | 1.17 | `lieu_gare` : rayon `acces.rayonPiedM` (2 km), aires de jeux à 1 km — D091 |
 | 13/11/2026 | 1.18 | `lieu.wikipedia` — D092 |
+| 13/11/2026 | 1.19 | `lieu.masque` — D093 |

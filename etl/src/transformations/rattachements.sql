@@ -199,6 +199,8 @@ FROM lieu l
 JOIN gare g
   ON ST_DWithin(coalesce(l.trace::geography, l.geom::geography), g.geom, :rayon_m::float8 / :coef_detour::float8)
 WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
+  -- Lieu masqué (piscines…) : gardé en base, jamais relié à une gare (D093).
+  AND NOT l.masque
   AND (NOT coalesce(l.sous_categorie, '') = ANY(:aires_de_jeux::text[])
        OR ST_DWithin(coalesce(l.trace::geography, l.geom::geography), g.geom,
                      :rayon_aires_m::float8 / :coef_detour::float8));

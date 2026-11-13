@@ -24,16 +24,12 @@ export interface LieuNormalise {
 /** Lieu prêt à charger : ses catégories secondaires sont ajoutées après le classement (D060). */
 export type LieuACharger = LieuNormalise & { categoriesSecondaires: readonly string[] };
 
+/** Lieu chargé en base : `masque` le cache de tous les écrans sans le supprimer (D093). */
+export type LieuMasquable = LieuACharger & { masque: boolean };
+
 /** Pourquoi une ligne de source n'est pas devenue un lieu (compté dans le rapport). */
 export type RaisonEcart =
-  | 'exclu'
-  | 'non_classe'
-  | 'condition'
-  | 'sans_position'
-  | 'doublon'
-  | 'nom_exclu'
-  | 'correction'
-  | 'sous_categorie_retiree';
+  'exclu' | 'non_classe' | 'condition' | 'sans_position' | 'doublon' | 'nom_exclu' | 'correction';
 
 export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   exclu: 'écartés par une règle (hébergement, restauration, commerce, événement, générique…)',
@@ -43,7 +39,6 @@ export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   doublon: 'identifiant déjà lu dans le fichier (même lieu publié par deux diffuseurs)',
   nom_exclu: 'écartés par leur nom (activité, objet, fermé : regles/noms_exclus.csv)',
   correction: 'retirés par une correction manuelle (regles/corrections_manuelles.csv)',
-  sous_categorie_retiree: 'sous-catégorie retirée (acces.sousCategoriesRetirees : piscines…)',
 };
 
 const ENTITES: Readonly<Record<string, string>> = {

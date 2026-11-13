@@ -1,0 +1,1 @@
+ALTER TABLE "lieu" ADD COLUMN "masque" boolean DEFAULT false NOT NULL;
