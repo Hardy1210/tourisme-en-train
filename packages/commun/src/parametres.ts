@@ -85,12 +85,25 @@ export const schemaParametres = z
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),
-    marche: schemaMode,
-    velo: schemaMode,
+    /**
+     * Accès aux lieux depuis une gare, à pied ou à vélo (D091 ; docs/04 § 2 : rôle et raison de chaque
+     * valeur). Distances « à pied » = vol d'oiseau × `coefDetour`.
+     */
+    acces: z.strictObject({
+      rayonPiedM: schemaDistanceM,
+      rayonVeloM: schemaDistanceM,
+      vitessePiedKmH: z.number().positive(),
+      vitesseVeloKmH: z.number().positive(),
+      coefDetour: z.number().min(1),
+      /** Aires de jeux : seulement près d'une gare ou de l'utilisateur, à ce rayon au plus (D091). */
+      rayonAiresDeJeuxM: schemaDistanceM,
+      sousCategoriesAiresDeJeux: z.array(z.string().min(1)),
+      /** Sous-catégories non chargées à l'import (aucun écran ne les montre). */
+      sousCategoriesRetirees: z.array(z.string().min(1)),
+    }),
     voiture: schemaMode,
     rail: z.strictObject({ coefDetour: z.number().min(1) }),
     rayons: z.strictObject({
-      lieuxGareM: schemaDistanceM,
       autourDeMoiDefautM: schemaDistanceM,
       autourDeMoiOptionsM: z.array(schemaDistanceM).min(1),
       mobiliteM: schemaDistanceM,
@@ -138,9 +151,8 @@ export const schemaParametres = z
         prefixes: z.array(z.string().min(1)),
         exceptions: z.array(z.string().min(1)),
       }),
-      /** Retirés de l'onglet Lieux seulement (D057) ; restent dans « À deux pas » et la fiche destination. */
+      /** Règles de l'onglet Lieux seulement (D057) ; « Près de vous » et la fiche destination gardent ces lieux. */
       ongletLieux: z.strictObject({
-        sousCategoriesRetirees: z.array(z.string().min(1)),
         /** Retirées quand le nom n'est que la sous-catégorie (« Aire de jeux »). */
         sousCategoriesNomPropreRequis: z.array(z.string().min(1)),
       }),
@@ -227,6 +239,14 @@ export const schemaParametres = z
   .refine((p) => p.dedoublonnage.similariteARelire < p.dedoublonnage.similariteNom, {
     message: 'Le seuil « à relire » doit être sous la similarité de fusion.',
     path: ['dedoublonnage', 'similariteARelire'],
+  })
+  .refine((p) => p.acces.rayonAiresDeJeuxM <= p.acces.rayonPiedM, {
+    message: 'Le rayon des aires de jeux ne peut pas dépasser le rayon à pied.',
+    path: ['acces', 'rayonAiresDeJeuxM'],
+  })
+  .refine((p) => p.acces.rayonPiedM < p.acces.rayonVeloM, {
+    message: 'Le rayon à vélo doit dépasser le rayon à pied.',
+    path: ['acces', 'rayonVeloM'],
   })
   .refine((p) => p.rayons.autourDeMoiOptionsM.includes(p.rayons.autourDeMoiDefautM), {
     message: 'Le rayon « autour de moi » par défaut doit faire partie des options.',

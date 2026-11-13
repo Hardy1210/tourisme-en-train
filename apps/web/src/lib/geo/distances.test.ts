@@ -3,12 +3,15 @@ import {
   distanceMarcheM,
   dureeMarcheDepuisAPiedMin,
   dureeMarcheMin,
+  dureeVeloDepuisDistanceMin,
+  niveauAcces,
   dureeVeloMin,
   dureeVoitureMin,
   rayonVolOiseauM,
 } from './distances';
 
-// Paramètres du dépôt : marche 4,5 km/h, vélo 15 km/h, voiture 50 km/h, détour 1,3 partout.
+// Paramètres du dépôt (`acces`, D091) : marche 4,5 km/h, vélo 15 km/h, voiture 50 km/h, détour 1,3 partout ;
+// à pied jusqu'à 2 000 m, à vélo jusqu'à 6 000 m (distances déjà mesurées avec le détour).
 describe('distances et durées', () => {
   it('distance à pied = vol d’oiseau × 1,3', () => {
     expect(distanceMarcheM(1000)).toBe(1300);
@@ -38,5 +41,27 @@ describe('distances et durées', () => {
   it('rayon à vol d’oiseau : 1 300 m à pied → 1 000 m', () => {
     expect(rayonVolOiseauM(1300)).toBeCloseTo(1000);
     expect(distanceMarcheM(rayonVolOiseauM(2000))).toBe(2000);
+  });
+
+  it('vélo, distance déjà mesurée : 250 m par minute ; 4 000 m → 16 min, 4 001 m → 17 min', () => {
+    expect(dureeVeloDepuisDistanceMin(4000)).toBe(16);
+    expect(dureeVeloDepuisDistanceMin(4001)).toBe(17);
+  });
+
+  it('rayon à pied : 2 000 m → 27 min à 4,5 km/h', () => {
+    expect(dureeMarcheDepuisAPiedMin(2000)).toBe(27);
+  });
+});
+
+describe('niveauAcces', () => {
+  it('à pied jusqu’à 2 000 m compris, à vélo dès 2 001 m', () => {
+    expect(niveauAcces(0)).toBe('pied');
+    expect(niveauAcces(2000)).toBe('pied');
+    expect(niveauAcces(2001)).toBe('velo');
+  });
+
+  it('à vélo jusqu’à 6 000 m compris, loin dès 6 001 m', () => {
+    expect(niveauAcces(6000)).toBe('velo');
+    expect(niveauAcces(6001)).toBe('loin');
   });
 });

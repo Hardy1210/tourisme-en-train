@@ -129,7 +129,7 @@ export async function chargerTransportLocalDans(
   const valeurs = {
     regroupement_m: parametres.mobilite.regroupementQuaisM,
     rayon_m: parametres.rayons.mobiliteM,
-    coef_detour: parametres.marche.coefDetour,
+    coef_detour: parametres.acces.coefDetour,
   };
   let lignes = 0;
   for (const nom of SECTIONS) {

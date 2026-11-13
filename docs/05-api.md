@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.22 · **Date** 10/11/2026
+> **Version** 1.23 · **Date** 13/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -78,7 +78,7 @@ Utilisée par la supervision et le déploiement.
 `gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à `gareConseillee.distanceMaxM` au plus a aujourd'hui au moins `gareConseillee.ratioTrainsMin` fois plus de trains **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
-`categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre.
+`categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre. Aires de jeux (`acces.sousCategoriesAiresDeJeux`) : seulement à `acces.rayonAiresDeJeuxM` au plus du point, quel que soit `rayon` (D091). La position n'est jamais enregistrée (règle 5).
 | Paramètre | Type | Défaut |
 |---|---|---|
 | `lat`, `lon` | nombre | obligatoire |
@@ -155,7 +155,7 @@ Mêmes valeurs que la carte de destination (§ 3.4) : la fiche n'affiche jamais 
 | Paramètre | Défaut |
 |---|---|
 | `categories` | toutes |
-| `rayon` | `rayons.lieuxGareM` (maximum ; distance à pied) |
+| `rayon` | `acces.rayonPiedM` (maximum, 2 000 m ; distance à pied, D091) |
 ```ts
 { lieux: Array<LieuResume>, total: number }   // distance et durée à pied depuis la gare (lieu_gare)
 ```
@@ -338,3 +338,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 06/11/2026 | 1.20 | § 3.12 : `groupe`, thème de la source — D075 |
 | 10/11/2026 | 1.21 | § 3.11 : communes seules, plus de rues ni de lieux-dits (`type: "adresse"` n'est plus renvoyé) — D081 |
 | 10/11/2026 | 1.22 | § 3.8 : `terminusEnRegion`, nom régional des TER — D082 |
+| 13/11/2026 | 1.23 | § 3.3 : aires de jeux à 1 km au plus ; § 3.6 : rayon maximum `acces.rayonPiedM` (2 km) — D091 |

@@ -73,12 +73,12 @@ describe('/api/destinations/[uic]/lieux', () => {
     expect(liste).not.toContain('Exemple - Musée des beaux-arts');
   });
 
-  it('catégorie culture : théâtre et musée seulement ; rayon au-delà de 1 500 m → 400', async () => {
+  it('catégorie culture : théâtre et musée seulement ; rayon au-delà de 2 000 m → 400', async () => {
     expect(await noms('categories=culture')).toEqual([
       'Exemple - Théâtre',
       'Exemple - Musée des beaux-arts',
     ]);
-    const trop = await appeler(lieuxGare, '/api/destinations/EX000001/lieux?rayon=1600', {
+    const trop = await appeler(lieuxGare, '/api/destinations/EX000001/lieux?rayon=2100', {
       uic: 'EX000001',
     });
     expect(trop.statut).toBe(400);

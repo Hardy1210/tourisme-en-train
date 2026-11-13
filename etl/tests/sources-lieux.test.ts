@@ -91,6 +91,23 @@ describe('DATAtourisme', () => {
       raison: 'exclu',
     });
   });
+
+  it('ligne d’hôtel incluse à la main (D091) → lieu avec la catégorie imposée ; une autre reste écartée', () => {
+    const hotel = {
+      ...ligne,
+      Categories_de_POI: 'https://www.datatourisme.fr/ontology/core#Hotel',
+    };
+    const inclusion = (id: string) =>
+      id === ligne.URI_ID_du_POI
+        ? { categorie: 'patrimoine' as const, sousCategorie: 'château' }
+        : undefined;
+    expect(lireLigneDatatourisme(hotel, index, 500, inclusion)).toMatchObject({
+      type: 'lieu',
+      lieu: { categorie: 'patrimoine', sousCategorie: 'château' },
+    });
+    const autre = { ...hotel, URI_ID_du_POI: 'https://data.datatourisme.fr/autre' };
+    expect(lireLigneDatatourisme(autre, index, 500, inclusion)).toMatchObject({ type: 'ecarte' });
+  });
 });
 
 describe('OSM', () => {
@@ -168,6 +185,22 @@ describe('OSM', () => {
     expect(lireElementOsm(aire, index, 500)).toMatchObject({
       type: 'lieu',
       lieu: { idSource: 'node/42', nom: 'Aire de jeux', categorie: 'enfants' },
+    });
+  });
+
+  it('élément sans règle inclus à la main (D091) → lieu ; sans inclusion → écarté', () => {
+    const chateau: ElementOsm = {
+      type: 'way',
+      id: 5,
+      center: { lat: 47.2, lon: 4.7 },
+      tags: { historic: 'castle' },
+    };
+    const inclusion = (id: string) =>
+      id === 'way/5' ? { categorie: 'patrimoine' as const, sousCategorie: 'château' } : undefined;
+    expect(lireElementOsm(chateau, index, 500)).toMatchObject({ type: 'ecarte' });
+    expect(lireElementOsm(chateau, index, 500, inclusion)).toMatchObject({
+      type: 'lieu',
+      lieu: { idSource: 'way/5', nom: 'Château', categorie: 'patrimoine' },
     });
   });
 

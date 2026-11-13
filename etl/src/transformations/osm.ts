@@ -8,6 +8,7 @@ import {
   type IndexRegles,
   type RegleCategorie,
 } from './categories';
+import type { Inclusion } from './corrections';
 import type { ResultatLigne } from './datatourisme';
 import { nettoyerDescription, normaliserNom, texteOuNull, urlValide } from './lieux';
 
@@ -125,12 +126,17 @@ export function lireElementOsm(
   element: ElementOsm,
   index: IndexRegles,
   descriptionMax: number,
+  inclusion: Inclusion = () => undefined,
 ): ResultatLigne {
   const { tags } = element;
   const etiquettes: Etiquette[] = Object.entries(tags);
   const nonClassees = etiquettesNonClassees(index, etiquettes);
   const nom = normaliserNom(tags.name ?? '');
-  const classement = classer(index, etiquettes, { aNom: nom !== '', notable: estNotable(tags) });
+  // « inclure » (corrections manuelles) passe avant les règles de catégorie (D091).
+  const impose = inclusion(`${element.type}/${element.id}`);
+  const classement = impose
+    ? ({ type: 'classe', ...impose } as const)
+    : classer(index, etiquettes, { aNom: nom !== '', notable: estNotable(tags) });
   if (classement.type !== 'classe') return { type: 'ecarte', raison: classement.type, nonClassees };
 
   const trace = traceDe(element);

@@ -10,7 +10,7 @@ Les lieux sont en base (E05). Il faut les relier aux gares (lieux à distance de
 ## Documents à lire
 - `CLAUDE.md`
 - `docs/03-base-de-donnees.md` (§ 3.6, 3.8, 3.9)
-- `docs/04-traitement-donnees.md` (§ 4.6, § 2 : `dedoublonnage`, `rayons.lieuxGareM`, `marche`)
+- `docs/04-traitement-donnees.md` (§ 4.6, § 2 : `dedoublonnage`, `rayons.lieuxGareM`, `marche`) — *Modifié après coup :* devenus `acces.rayonPiedM` et `acces` (D091)
 - `docs/02-sources-donnees.md` (§ 2.8)
 
 ## Objectif

@@ -77,17 +77,31 @@ const rattaches = (client: pg.PoolClient) =>
   );
 
 describe('rattachements — lieux à pied des gares (04 § 4.6, D043)', () => {
-  it('lieu à 1 430 m à pied rattaché à Dijon-Ville ; lieu à 1 625 m à pied non rattaché', async () => {
+  // Rayon à pied : 2 000 m (acces.rayonPiedM, D091) ; distance à pied = vol d'oiseau × 1,3.
+  it('lieu à 1 950 m à pied rattaché à Dijon-Ville ; lieu à 2 080 m à pied non rattaché', async () => {
     const liens = await apres(
       [
-        ['PRES', 'osm', 'Test parc proche', 'parcs', 'parc', DIJON.lon, nord(1100)],
-        ['LOIN', 'osm', 'Test parc loin', 'parcs', 'parc', DIJON.lon, nord(1250)],
+        ['PRES', 'osm', 'Test parc proche', 'parcs', 'parc', DIJON.lon, nord(1500)],
+        ['LOIN', 'osm', 'Test parc loin', 'parcs', 'parc', DIJON.lon, nord(1600)],
       ],
       rattaches,
     );
     const dijon = liens.filter((l) => l.uic === 'EX000001');
     expect(dijon.map((l) => l.id_source)).toEqual(['PRES']);
-    expect(dijon[0]?.distance_m).toBe(1430);
+    expect(dijon[0]?.distance_m).toBe(1950);
+  });
+
+  it('aire de jeux à 650 m à pied rattachée ; à 1 430 m non, alors qu’un parc l’est (D091)', async () => {
+    const liens = await apres(
+      [
+        ['AIRE_PRES', 'osm', 'Aire de jeux', 'enfants', 'aire de jeux', DIJON.lon, nord(500)],
+        ['AIRE_LOIN', 'osm', 'Aire de jeux', 'enfants', 'aire de jeux', DIJON.lon, nord(1100)],
+        ['PARC', 'osm', 'Test parc', 'parcs', 'parc', DIJON.lon, nord(1100)],
+      ],
+      rattaches,
+    );
+    const dijon = liens.filter((l) => l.uic === 'EX000001').map((l) => l.id_source);
+    expect(dijon.sort()).toEqual(['AIRE_PRES', 'PARC']);
   });
 
   it('gare_stats : une gare compte autant de lieux que ses lignes de lieu_gare', async () => {

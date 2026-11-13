@@ -89,7 +89,7 @@ export function ResultatsExplorer({
   const sectionLieux = avecSection && (
     <SectionAPied
       titre={presDe.titre}
-      rayonLibelle={libelleRayon(autourDeMoi ? filtres.rayon : parametres.rayons.lieuxGareM)}
+      rayonLibelle={libelleRayon(autourDeMoi ? filtres.rayon : parametres.acces.rayonPiedM)}
       lieux={lieux.data?.lieux}
       chargement={lieux.isPending}
       erreur={lieux.isError}

@@ -89,23 +89,28 @@ describe('/api/lieux', () => {
     expect(loin).toMatchObject({ lieux: [], total, pageSuivante: null });
   });
 
-  it('retire de l’onglet les piscines ordinaires et les aires de jeux sans nom propre', async () => {
+  // Piscines et centres aquatiques ne sont plus chargés en base (D091) : rien à retirer ici.
+  it('retire de l’onglet les aires de jeux sans nom propre, garde les aires nommées', async () => {
     const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
-    expect(cles).not.toContain(cle('ECH_L43'));
     expect(cles).not.toContain(cle('ECH_L44'));
-  });
-
-  it('garde les aires de jeux nommées et les centres aquatiques', async () => {
-    const cles = (await lire(DIJON)).lieux.map((l) => l.cle);
     expect(cles).toContain(cle('ECH_L45'));
-    expect(cles).toContain(cle('ECH_L46'));
   });
 
   it('garde ces lieux dans « À deux pas de vous », sans la fiche de ville', async () => {
     const reponse = await appeler(autour, '/api/autour?lat=46.3&lon=6.9');
     const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
-    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L43'), cle('ECH_L44')]));
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L45')]));
     expect(cles).not.toContain(cle('ECH_L42'));
+  });
+
+  // Le point est ≈ 890 m au nord des lieux : 1 157 m à pied, dans le rayon de 2 km, au-delà des 1 000 m
+  // des aires de jeux (D091). Le parc animalier, au même endroit qu'elles, sert de témoin.
+  it('« Près de vous » : aires de jeux à 1 km au plus, les autres lieux suivent le rayon', async () => {
+    const reponse = await appeler(autour, '/api/autour?lat=46.308&lon=6.9&rayon=2000');
+    const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
+    expect(cles).toContain(cle('ECH_L47'));
+    expect(cles).not.toContain(cle('ECH_L44'));
+    expect(cles).not.toContain(cle('ECH_L45'));
   });
 
   it('garde ces lieux sur la fiche destination', async () => {
@@ -113,7 +118,7 @@ describe('/api/lieux', () => {
       uic: 'EX000005',
     });
     const cles = schemaReponseAutour.parse(reponse.corps).lieux.map((l) => l.cle);
-    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L43'), cle('ECH_L44')]));
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L45')]));
   });
 
   it('garde une fiche de ville accessible par son lien, sans la lister', async () => {

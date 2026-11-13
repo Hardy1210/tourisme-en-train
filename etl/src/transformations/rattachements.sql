@@ -2,7 +2,8 @@
 -- Entrée : lieu, gare (E02, E05), tmp_decision (décisions manuelles, créée par le code). Sortie : lieu.doublon_de, lieu.site_de, lieu_gare, gare_stats.
 -- Paramètres (parametres.json) : :distance_m, :similarite, :distance_large_m, :similarite_large,
 -- :similarite_relire, :priorites (dedoublonnage) ; :sites (regroupementSites, JSON) ;
--- :rayon_m (rayons.lieuxGareM, distance À PIED), :coef_detour, :vitesse_kmh (marche).
+-- :rayon_m (acces.rayonPiedM, distance À PIED), :rayon_aires_m et :aires_de_jeux (acces, D091),
+-- :coef_detour, :vitesse_kmh (acces.vitessePiedKmH).
 -- Une section = une instruction, exécutées dans l'ordre par chargement/rattachements.ts.
 
 -- @reinitialiser
@@ -188,6 +189,7 @@ DELETE FROM lieu_gare;
 -- @lieu_gare
 -- Distance à pied = distance à vol d'oiseau × coef_detour ; gardée si ≤ rayon_m (à pied, D043).
 -- Lieu en longueur (canal) : distance au point de son tracé le plus proche, une ligne par gare.
+-- Aires de jeux : seulement à rayon_aires_m au plus (D091), elles ne valent pas un trajet plus loin.
 INSERT INTO lieu_gare (lieu_id, gare_id, distance_m, duree_marche_min)
 SELECT l.id, g.id,
        round(ST_Distance(coalesce(l.trace::geography, l.geom::geography), g.geom) * :coef_detour::float8)::int,
@@ -196,7 +198,10 @@ SELECT l.id, g.id,
 FROM lieu l
 JOIN gare g
   ON ST_DWithin(coalesce(l.trace::geography, l.geom::geography), g.geom, :rayon_m::float8 / :coef_detour::float8)
-WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville;
+WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
+  AND (NOT coalesce(l.sous_categorie, '') = ANY(:aires_de_jeux::text[])
+       OR ST_DWithin(coalesce(l.trace::geography, l.geom::geography), g.geom,
+                     :rayon_aires_m::float8 / :coef_detour::float8));
 
 -- @vider_gare_stats
 DELETE FROM gare_stats;

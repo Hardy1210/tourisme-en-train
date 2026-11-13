@@ -1,6 +1,7 @@
 // Lecture d'une ligne du CSV régional DATAtourisme (docs/02-sources-donnees.md § 2.3, D041).
 // Fonctions pures : la ligne arrive validée par Zod, les règles en paramètre.
 import { classer, etiquettesNonClassees, type Etiquette, type IndexRegles } from './categories';
+import type { Inclusion } from './corrections';
 import {
   nettoyerDescription,
   normaliserNom,
@@ -66,11 +67,16 @@ export function lireLigneDatatourisme(
   ligne: LigneDatatourisme,
   index: IndexRegles,
   descriptionMax: number,
+  inclusion: Inclusion = () => undefined,
 ): ResultatLigne {
   const etiquettes = classesDe(ligne.Categories_de_POI);
   const nonClassees = etiquettesNonClassees(index, etiquettes);
   const nom = normaliserNom(ligne.Nom_du_POI);
-  const classement = classer(index, etiquettes, { aNom: nom !== '', notable: false });
+  // « inclure » (corrections manuelles) passe avant les règles de catégorie (D091).
+  const impose = inclusion(ligne.URI_ID_du_POI);
+  const classement = impose
+    ? ({ type: 'classe', ...impose } as const)
+    : classer(index, etiquettes, { aNom: nom !== '', notable: false });
   if (classement.type !== 'classe') return { type: 'ecarte', raison: classement.type, nonClassees };
 
   return {
