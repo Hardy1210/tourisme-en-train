@@ -1,5 +1,6 @@
 // Réponses JSON, en-têtes de cache et traduction des erreurs (docs/05-api.md § 1).
 // Seul endroit qui transforme une erreur en réponse : les routes restent fines.
+import { gzipSync } from 'node:zlib';
 import { journal } from '@/lib/journal';
 
 import { ErreurApi } from './erreurs';
@@ -16,6 +17,23 @@ export function repondre(donnees: unknown, cache: Cache, statut = 200): Response
     status: statut,
     headers: { 'Cache-Control': enteteCache(cache) },
   });
+}
+
+/**
+ * Comme `repondre`, compressée en gzip quand le navigateur l'accepte : Next.js ne compresse pas les
+ * réponses des routes d'API. Pour les grosses réponses (tous les lieux de la carte, D091).
+ */
+export function repondreCompresse(requete: Request, donnees: unknown, cache: Cache): Response {
+  const corps = JSON.stringify(donnees);
+  const enTetes = {
+    'Cache-Control': enteteCache(cache),
+    'Content-Type': 'application/json',
+    Vary: 'Accept-Encoding',
+  };
+  if (!(requete.headers.get('accept-encoding') ?? '').includes('gzip')) {
+    return new Response(corps, { headers: enTetes });
+  }
+  return new Response(gzipSync(corps), { headers: { ...enTetes, 'Content-Encoding': 'gzip' } });
 }
 
 /**
