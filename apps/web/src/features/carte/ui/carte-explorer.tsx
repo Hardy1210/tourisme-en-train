@@ -28,6 +28,7 @@ import { enregistrerIconesCategories } from '../icones-categories';
 import { AttributionFondCarte } from './attribution-fond-carte';
 import { CommandesCarte } from './commandes-carte';
 import { COUCHE_BULLES, COUCHE_ICONES, CoucheLieux, SOURCE_LIEUX } from './couche-lieux';
+import { IconesCachees } from './icones-cachees';
 import { CouchesCarte } from './couches-carte';
 import { MarqueurGareDepart, MarqueursDestinations, MarqueurUtilisateur } from './marqueurs-carte';
 import { MiniFicheDestination, MiniFicheLieu, MiniFicheLieuCarte } from './mini-fiche';
@@ -83,6 +84,7 @@ export function CarteExplorer({
   const [selection, setSelection] = useState<Selection>(null);
   const style = useStyleCarte();
   const tousLesLieux = useLieuxCarte();
+  const icones = useRef<HTMLDivElement>(null);
   // Couleurs des bulles et icônes de catégorie, lues dans les tokens une fois la carte chargée.
   const [couleursBulles, setCouleursBulles] = useState<{
     bulle: string;
@@ -224,6 +226,7 @@ export function CarteExplorer({
       aria-label="Carte des lieux et des destinations"
       className="relative h-full overflow-hidden"
     >
+      <IconesCachees ref={icones} />
       {/* Isolée : les épingles restent sous la mini-fiche et le bouton. */}
       <div className="absolute inset-0 isolate">
         <Map
@@ -238,7 +241,8 @@ export function CarteExplorer({
           onClick={(evenement) => void toucher(evenement)}
           onLoad={(evenement) => {
             cadrer();
-            void enregistrerIconesCategories(evenement.target).then(() =>
+            if (!icones.current) return;
+            void enregistrerIconesCategories(evenement.target, icones.current).then(() =>
               setCouleursBulles(
                 // Bulles claires à contour : distinctes des points des gares, pleins (D088, D091).
                 lireTokens({
