@@ -147,7 +147,14 @@ export function ResultatsExplorer({
               distanceM={gare.distanceM}
               dureeMarcheMin={gare.dureeMarcheMin}
               dureeVeloMin={gare.dureeVeloMin}
-              prochainDepart={avantRecherche ? prochainTrainDirect(avantRecherche) : null}
+              prochainDepart={
+                destinationChoisie
+                  ? (prochainTrainDirect([destinationChoisie]) ??
+                    TEXTES_TRAJET.plusDeTrain(destinationChoisie.titre, filtres.date !== null))
+                  : avantRecherche
+                    ? prochainTrainDirect(avantRecherche)
+                    : null
+              }
               surChangement={surChangementGare}
               plusProche={
                 plusProche && {

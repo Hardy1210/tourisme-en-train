@@ -50,6 +50,11 @@ export function FeuilleFiltres({
   const aujourdhui = lireDateDuJour();
   const options = optionsDate(aujourdhui);
   const date = filtres.date === aujourdhui ? null : filtres.date;
+  // Destination choisie : « Près de la gare de… » suit le périmètre fixe des gares, pas ce filtre.
+  const noteDistance =
+    filtres.destination === null
+      ? null
+      : `Autour de la gare de ${filtres.recherche} : ${libelleRayon(parametres.rayons.lieuxGareM)} à pied`;
   const dateDuCalendrier = date !== null && !options.some((o) => o.date === date);
 
   const changerOuverture = (valeur: boolean) => {
@@ -114,6 +119,8 @@ export function FeuilleFiltres({
               options={OPTIONS_RAYON}
               valeur={String(filtres.rayon)}
               surChangement={(valeur) => surModification({ rayon: Number(valeur) })}
+              desactive={noteDistance !== null}
+              note={noteDistance ?? undefined}
             />
           )}
           <Selecteur
