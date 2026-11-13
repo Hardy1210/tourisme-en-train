@@ -79,12 +79,15 @@ export function useFicheLieu(cle: string) {
   });
 }
 
-/** Tous les lieux de la carte (D091) : une seule demande, gardée tant que l'application est ouverte. */
-export function useLieuxCarte() {
+/**
+ * Tous les lieux de la carte (D091) : une seule demande, gardée tant que l'application est ouverte.
+ * `actif` faux tant que la carte n'est pas chargée : la demande ne ralentit pas son affichage.
+ */
+export function useLieuxCarte(actif: boolean) {
   const visible = useEcranVisible();
   return useQuery({
     queryKey: ['lieux-carte'],
-    enabled: visible,
+    enabled: visible && actif,
     staleTime: Infinity,
     queryFn: ({ signal }) => lireApi('/api/carte/lieux', schemaReponseLieuxCarte, signal),
   });

@@ -83,7 +83,6 @@ export function CarteExplorer({
   const carte = useRef<MapRef>(null);
   const [selection, setSelection] = useState<Selection>(null);
   const style = useStyleCarte();
-  const tousLesLieux = useLieuxCarte();
   const icones = useRef<HTMLDivElement>(null);
   // Couleurs des bulles et icônes de catégorie, lues dans les tokens une fois la carte chargée.
   const [couleursBulles, setCouleursBulles] = useState<{
@@ -91,6 +90,7 @@ export function CarteExplorer({
     texteBulle: string;
     halo: string;
   } | null>(null);
+  const tousLesLieux = useLieuxCarte(couleursBulles !== null);
 
   const [derniereCarteTouchee, setDerniereCarteTouchee] = useState(carteTouchee);
   if (carteTouchee !== derniereCarteTouchee) {
