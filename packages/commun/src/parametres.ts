@@ -107,6 +107,8 @@ export const schemaParametres = z
        */
       lieuxPauvresSources: z.array(z.string().min(1)),
       lieuxPauvresCategories: z.array(schemaCategorie),
+      /** Sous-catégories jamais retirées par ce tri : presque toujours de vraies visites (D092). */
+      lieuxPauvresToujoursGardes: z.array(z.string().min(1)),
       /** Carte : rayon (px) dans lequel des lieux se regroupent en une bulle. */
       bullesRayonPx: z.number().int().positive(),
       /** Carte : au-delà de ce zoom, plus de bulles, chaque lieu a son icône. */

@@ -47,6 +47,7 @@
     "sousCategoriesRetirees": ["piscine", "centre aquatique"],
     "lieuxPauvresSources": ["osm"],
     "lieuxPauvresCategories": ["patrimoine"],
+    "lieuxPauvresToujoursGardes": ["musée", "abbaye"],
     "bullesRayonPx": 45,
     "bullesZoomMax": 12
   },

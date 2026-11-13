@@ -49,7 +49,11 @@ export async function lieuxPourCarte(): Promise<ReponseLieuxCarte> {
   const { acces } = parametres;
   const lignes = await lieuxCarte({
     airesDeJeux: acces.sousCategoriesAiresDeJeux,
-    pauvres: { sources: acces.lieuxPauvresSources, categories: acces.lieuxPauvresCategories },
+    pauvres: {
+      sources: acces.lieuxPauvresSources,
+      categories: acces.lieuxPauvresCategories,
+      toujoursGardes: acces.lieuxPauvresToujoursGardes,
+    },
   });
   return {
     lieux: lignes.map((l): ReponseLieuxCarte['lieux'][number] => [
