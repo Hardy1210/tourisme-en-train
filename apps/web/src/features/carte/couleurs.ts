@@ -13,6 +13,11 @@ const TOKENS: Record<keyof CouleursCarte, string> = {
 };
 
 export function lireCouleursCarte(): CouleursCarte {
+  return lireTokens(TOKENS);
+}
+
+/** Valeur `rgb(…)` de chaque token CSS demandé (MapLibre et les images de la carte ne lisent pas `var()`). */
+export function lireTokens<Cle extends string>(tokens: Record<Cle, string>): Record<Cle, string> {
   const sonde = document.createElement('span');
   document.body.append(sonde);
   const toile = document.createElement('canvas');
@@ -29,7 +34,7 @@ export function lireCouleursCarte(): CouleursCarte {
     const [r = 0, g = 0, b = 0] = contexte.getImageData(0, 0, 1, 1).data;
     return `rgb(${r}, ${g}, ${b})`;
   };
-  const entrees = Object.entries(TOKENS).map(([cle, token]) => [cle, versRgb(token)]);
+  const entrees = Object.entries<string>(tokens).map(([cle, token]) => [cle, versRgb(token)]);
   sonde.remove();
-  return Object.fromEntries(entrees) as CouleursCarte;
+  return Object.fromEntries(entrees) as Record<Cle, string>;
 }

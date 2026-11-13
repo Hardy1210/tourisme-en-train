@@ -3,9 +3,10 @@ import 'server-only';
 import { parametres } from '@/config/parametres';
 import { distanceMarcheM, dureeMarcheMin, rayonVolOiseauM } from '@/lib/geo/distances';
 
-import type { ParametresAutour, ReponseAutour } from '../schemas';
+import type { ParametresAutour, ReponseAutour, ReponseLieuxCarte } from '../schemas';
 
 import { lieuxAutour } from './requetes';
+import { lieuxCarte } from './requetes-carte';
 
 /** Lieux autour de l'utilisateur ; le rayon est une distance à pied, comme pour les gares (D043). */
 export async function autour({
@@ -40,5 +41,19 @@ export async function autour({
       lon: l.lon,
     })),
     total: lignes[0]?.total ?? 0,
+  };
+}
+
+/** Tous les lieux de la carte, regroupés en bulles sur le téléphone (D091). */
+export async function lieuxPourCarte(): Promise<ReponseLieuxCarte> {
+  const lignes = await lieuxCarte(parametres.acces.sousCategoriesAiresDeJeux);
+  return {
+    lieux: lignes.map((l): ReponseLieuxCarte['lieux'][number] => [
+      l.cle,
+      l.lat,
+      l.lon,
+      l.categorie,
+      l.secondaires,
+    ]),
   };
 }

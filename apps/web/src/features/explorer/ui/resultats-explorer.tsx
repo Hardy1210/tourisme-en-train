@@ -118,6 +118,7 @@ export function ResultatsExplorer({
           destinationCherchee={filtres.destination}
           carteTouchee={carteTouchee}
           lieux={lieux.data?.lieux ?? []}
+          categories={filtres.categories}
           lienDe={lienDe}
           masqueEnHaut={masqueEnHaut}
           masqueEnBas={() => {

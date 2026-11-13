@@ -128,3 +128,14 @@ export type LieuResume = z.infer<typeof schemaLieuResume>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;
 export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAccessibles>;
 export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
+
+/**
+ * GET /api/carte/lieux (D091) : tous les lieux de la carte, en tableaux courts pour une réponse légère :
+ * [clé, latitude, longitude, catégorie, catégories secondaires].
+ */
+export const schemaReponseLieuxCarte = z.object({
+  lieux: z.array(
+    z.tuple([z.string(), z.number(), z.number(), schemaCategorie, z.array(schemaCategorie)]),
+  ),
+});
+export type ReponseLieuxCarte = z.infer<typeof schemaReponseLieuxCarte>;

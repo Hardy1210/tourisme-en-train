@@ -99,18 +99,6 @@ export function MarqueursDestinations({
               couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
             )}
           />
-          {/* Bulle à côté du point, sans le recouvrir : lieux à voir à pied, catégories choisies (maquette v6). */}
-          {nombre > 0 && (
-            <span
-              aria-hidden="true"
-              className={cn(
-                'tabular pointer-events-none absolute bottom-[calc(50%+3px)] left-[calc(50%+3px)] flex h-5 min-w-5 items-center justify-center rounded-pill border border-border-strong bg-surface px-1 text-2xs leading-none font-bold text-foreground shadow-xs',
-                enAvant && 'ring-2 ring-primary',
-              )}
-            >
-              {nombre}
-            </span>
-          )}
         </button>
       </Marker>
     );

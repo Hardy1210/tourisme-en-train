@@ -44,7 +44,9 @@
     "coefDetour": 1.3,
     "rayonAiresDeJeuxM": 1000,
     "sousCategoriesAiresDeJeux": ["aire de jeux"],
-    "sousCategoriesRetirees": ["piscine", "centre aquatique"]
+    "sousCategoriesRetirees": ["piscine", "centre aquatique"],
+    "bullesRayonPx": 50,
+    "bullesZoomMax": 13
   },
   "voiture": { "vitesseKmH": 50, "coefDetour": 1.3 },
   "rail": { "coefDetour": 1.2 },

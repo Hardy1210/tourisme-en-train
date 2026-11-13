@@ -4,7 +4,12 @@ import type { Categorie } from '@tourisme/commun';
 import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useEcranVisible } from '@/lib/ecran-visible';
 import { lireApi } from '@/lib/http/client';
-import { schemaFicheLieu, schemaReponseAutour, schemaReponseLieuxAccessibles } from './schemas';
+import {
+  schemaFicheLieu,
+  schemaReponseAutour,
+  schemaReponseLieuxAccessibles,
+  schemaReponseLieuxCarte,
+} from './schemas';
 
 type Options = {
   point: { lat: number; lon: number };
@@ -71,5 +76,16 @@ export function useFicheLieu(cle: string) {
   return useQuery({
     queryKey: ['fiche-lieu', chemin],
     queryFn: ({ signal }) => lireApi(chemin, schemaFicheLieu, signal),
+  });
+}
+
+/** Tous les lieux de la carte (D091) : une seule demande, gardée tant que l'application est ouverte. */
+export function useLieuxCarte() {
+  const visible = useEcranVisible();
+  return useQuery({
+    queryKey: ['lieux-carte'],
+    enabled: visible,
+    staleTime: Infinity,
+    queryFn: ({ signal }) => lireApi('/api/carte/lieux', schemaReponseLieuxCarte, signal),
   });
 }

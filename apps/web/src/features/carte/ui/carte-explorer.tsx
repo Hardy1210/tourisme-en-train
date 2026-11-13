@@ -1,12 +1,14 @@
 'use client';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { StyleSpecification } from 'maplibre-gl';
+import type { Categorie } from '@tourisme/commun';
+import type { GeoJSONSource, StyleSpecification } from 'maplibre-gl';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Map, { type MapRef } from 'react-map-gl/maplibre';
+import Map, { type MapLayerMouseEvent, type MapRef } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
 import { formaterDuree } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
+import { useLieuxCarte } from '@/features/lieux/hooks';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { useArretsTrain } from '@/features/trains/hooks';
 import {
@@ -20,17 +22,15 @@ import {
   segmentsDepuis,
   type Point,
 } from '../geometrie';
+import { lireTokens } from '../couleurs';
 import { useStyleCarte } from '../hooks';
+import { enregistrerIconesCategories } from '../icones-categories';
 import { AttributionFondCarte } from './attribution-fond-carte';
 import { CommandesCarte } from './commandes-carte';
+import { COUCHE_BULLES, COUCHE_ICONES, CoucheLieux, SOURCE_LIEUX } from './couche-lieux';
 import { CouchesCarte } from './couches-carte';
-import {
-  MarqueurGareDepart,
-  MarqueursDestinations,
-  MarqueursLieux,
-  MarqueurUtilisateur,
-} from './marqueurs-carte';
-import { MiniFicheDestination, MiniFicheLieu } from './mini-fiche';
+import { MarqueurGareDepart, MarqueursDestinations, MarqueurUtilisateur } from './marqueurs-carte';
+import { MiniFicheDestination, MiniFicheLieu, MiniFicheLieuCarte } from './mini-fiche';
 
 type Selection = { type: 'destination'; uic: string } | { type: 'lieu'; cle: string } | null;
 
@@ -44,6 +44,8 @@ export type ProprietesCarte = {
   /** Destination choisie dans la recherche (D084) : la carte se centre sur sa gare ; null sinon. */
   destinationCherchee: string | null;
   lieux: readonly LieuResume[];
+  /** Catégories choisies : filtrent les bulles et les icônes de tous les lieux (D091). */
+  categories: readonly Categorie[];
   lienDe: (destination: Destination) => string;
   /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
   masqueEnBas: () => number;
@@ -68,6 +70,7 @@ export function CarteExplorer({
   destinations,
   destinationCherchee,
   lieux,
+  categories,
   lienDe,
   masqueEnBas,
   masqueEnHaut,
@@ -78,8 +81,14 @@ export function CarteExplorer({
 }: ProprietesCarte) {
   const carte = useRef<MapRef>(null);
   const [selection, setSelection] = useState<Selection>(null);
-  const [zoom, setZoom] = useState(0);
   const style = useStyleCarte();
+  const tousLesLieux = useLieuxCarte();
+  // Couleurs des bulles et icônes de catégorie, lues dans les tokens une fois la carte chargée.
+  const [couleursBulles, setCouleursBulles] = useState<{
+    bulle: string;
+    texteBulle: string;
+    halo: string;
+  } | null>(null);
 
   const [derniereCarteTouchee, setDerniereCarteTouchee] = useState(carteTouchee);
   if (carteTouchee !== derniereCarteTouchee) {
@@ -179,6 +188,24 @@ export function CarteExplorer({
   const lieuChoisi =
     selection?.type === 'lieu' ? lieux.find((l) => l.cle === selection.cle) : undefined;
 
+  // Bulle touchée : la carte zoome jusqu'à ce qu'elle se divise ; icône touchée : la mini-fiche du lieu.
+  const toucher = async (evenement: MapLayerMouseEvent) => {
+    const touche = evenement.features?.[0];
+    if (!touche) {
+      setSelection(null);
+      return;
+    }
+    if (touche.layer.id === COUCHE_BULLES && touche.geometry.type === 'Point') {
+      const source = carte.current?.getSource(SOURCE_LIEUX) as GeoJSONSource | undefined;
+      const zoom = await source?.getClusterExpansionZoom(Number(touche.properties.cluster_id));
+      if (zoom === undefined) return;
+      const [lon = 0, lat = 0] = touche.geometry.coordinates;
+      carte.current?.easeTo({ center: [lon, lat], zoom });
+      return;
+    }
+    setSelection({ type: 'lieu', cle: String(touche.properties.cle) });
+  };
+
   if (style.isError) {
     return (
       <p className="h-full bg-surface-sunken p-4 text-sm text-muted-foreground">
@@ -207,12 +234,20 @@ export function CarteExplorer({
             fitBoundsOptions: { padding: MARGE_PX, maxZoom: 12 },
           }}
           attributionControl={false}
-          onClick={() => setSelection(null)}
+          interactiveLayerIds={couleursBulles ? [COUCHE_BULLES, COUCHE_ICONES] : []}
+          onClick={(evenement) => void toucher(evenement)}
           onLoad={(evenement) => {
             cadrer();
-            setZoom(evenement.target.getZoom());
+            void enregistrerIconesCategories(evenement.target).then(() =>
+              setCouleursBulles(
+                lireTokens({
+                  bulle: '--primary',
+                  texteBulle: '--primary-foreground',
+                  halo: '--map-halo',
+                }),
+              ),
+            );
           }}
-          onZoomEnd={(evenement) => setZoom(evenement.target.getZoom())}
         >
           <CouchesCarte
             segments={segments}
@@ -220,8 +255,12 @@ export function CarteExplorer({
             etiquettes={etiquettes}
             couleurs={style.data.couleurs}
           />
-          {zoom >= parametres.carte.zoomMinLieux && (
-            <MarqueursLieux lieux={lieux} surChoix={(cle) => setSelection({ type: 'lieu', cle })} />
+          {couleursBulles && tousLesLieux.data && (
+            <CoucheLieux
+              lieux={tousLesLieux.data.lieux}
+              categories={categories}
+              couleurs={couleursBulles}
+            />
           )}
           <MarqueursDestinations
             destinations={destinations}
@@ -256,6 +295,9 @@ export function CarteExplorer({
         />
       )}
       {lieuChoisi && <MiniFicheLieu lieu={lieuChoisi} surFermeture={() => setSelection(null)} />}
+      {selection?.type === 'lieu' && !lieuChoisi && (
+        <MiniFicheLieuCarte cle={selection.cle} surFermeture={() => setSelection(null)} />
+      )}
     </div>
   );
 }

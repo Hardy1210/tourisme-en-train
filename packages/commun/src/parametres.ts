@@ -100,6 +100,10 @@ export const schemaParametres = z
       sousCategoriesAiresDeJeux: z.array(z.string().min(1)),
       /** Sous-catégories non chargées à l'import (aucun écran ne les montre). */
       sousCategoriesRetirees: z.array(z.string().min(1)),
+      /** Carte : rayon (px) dans lequel des lieux se regroupent en une bulle. */
+      bullesRayonPx: z.number().int().positive(),
+      /** Carte : au-delà de ce zoom, plus de bulles, chaque lieu a son icône. */
+      bullesZoomMax: z.number().positive(),
     }),
     voiture: schemaMode,
     rail: z.strictObject({ coefDetour: z.number().min(1) }),

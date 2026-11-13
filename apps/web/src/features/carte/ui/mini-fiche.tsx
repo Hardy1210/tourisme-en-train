@@ -10,6 +10,7 @@ import {
 import { PastillesCategories } from '@/features/destinations/ui/pastilles-categories';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
+import { useFicheLieu } from '@/features/lieux/hooks';
 import { lienLieu } from '@/features/lieux/liens';
 import { APPARENCE_CATEGORIE } from '@/features/lieux/ui/icone-categorie';
 import { formaterDistance } from '@/lib/geo/formats';
@@ -87,6 +88,36 @@ export function MiniFicheLieu({
       </p>
       <Bouton variante="sortie" asChild className="mt-1 self-end">
         <Link href={lienLieu(lieu.cle)}>
+          Voir le lieu
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
+      </Bouton>
+    </Cadre>
+  );
+}
+
+/**
+ * Mini-fiche d'un lieu touché parmi tous les lieux de la carte (D091) : la carte ne connaît que sa clé,
+ * le nom et la catégorie arrivent avec sa fiche.
+ */
+export function MiniFicheLieuCarte({
+  cle,
+  surFermeture,
+}: {
+  cle: string;
+  surFermeture: () => void;
+}) {
+  const fiche = useFicheLieu(cle);
+  return (
+    <Cadre titre={fiche.data?.nom ?? 'Chargement…'} surFermeture={surFermeture}>
+      {fiche.data && (
+        <p className="text-sm text-muted-foreground">
+          {APPARENCE_CATEGORIE[fiche.data.categorie].libelle}
+          {fiche.data.commune ? ` · ${fiche.data.commune}` : ''}
+        </p>
+      )}
+      <Bouton variante="sortie" asChild className="mt-1 self-end">
+        <Link href={lienLieu(cle)}>
           Voir le lieu
           <ArrowRight aria-hidden="true" className="size-4" />
         </Link>
