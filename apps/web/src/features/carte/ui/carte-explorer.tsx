@@ -249,11 +249,11 @@ export function CarteExplorer({
             if (!icones.current) return;
             void enregistrerIconesCategories(evenement.target, icones.current).then(() =>
               setCouleursBulles(
-                // Bulles claires à contour : distinctes des points des gares, pleins (D088, D091).
+                // Bulles pleines à la couleur de la marque, nombre clair, contour clair (essai de Hardy, 14/11).
                 lireTokens({
-                  bulle: '--surface',
-                  texteBulle: '--foreground',
-                  halo: '--primary',
+                  bulle: '--primary',
+                  texteBulle: '--primary-foreground',
+                  halo: '--surface',
                 }),
               ),
             );
