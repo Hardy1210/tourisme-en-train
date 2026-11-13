@@ -55,7 +55,7 @@
 - Hardy a modifié `parametres.json` dans le dépôt alors que son serveur d'essai tourne dans `../tourisme-recherche` : un réglage s'essaie dans la copie, et demande un nouveau build
 - Cadrage sur Beaune (`carte-cadrage.e2e.ts:25`, téléphone) : 3 réussis sur 6 sur `main` après #118 (la suite complète de #118 était passée) ; mini-fiche d'une épingle (`explorer.e2e.ts:121`) échoue aussi parfois. Priorité de la prochaine session
 **À valider par Hardy :** fusion de #118 ; couleurs inversées des bulles (à essayer dans `tourisme-recherche`) ; mise en ligne quand il le décide
-**Prochaine action :** PR des parcours instables d'abord (cadrage plus fréquent depuis #118), puis PR vélo prouvé ; mise en ligne (« mets en ligne ») : 2 migrations (0014, 0015) puis les données
+**Prochaine action :** performance de la carte d'abord (Hardy : la carte charge longtemps, les bulles arrivent après ; #120 et #121 fusionnées), avec les parcours instables, puis PR vélo prouvé ; mise en ligne (« mets en ligne ») : 2 migrations (0014, 0015) puis les données
 **Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` 573, intégration 181, parcours 207/207 sur la branche de #118)
 **Commit :** #116 (`ba3f660`), #117 (`3edd8ce`) ; #118 ouverte
 

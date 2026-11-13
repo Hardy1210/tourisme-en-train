@@ -65,3 +65,4 @@
 | 13/11/2026 | 1.69 | § 9 : PR piscines (D093) ouverte, prochaine action : PR cercles |
 | 14/11/2026 | 1.70 | § 9 : sauvegarde, #116 et #117 fusionnées, #118 ouverte (D094), leçons L56 → L62 |
 | 14/11/2026 | 1.71 | § 9 : sauvegarde du soir, #118 et #119 fusionnées, #120 ouverte, parcours instables en priorité |
+| 14/11/2026 | 1.72 | § 9 : #120 et #121 fusionnées ; priorité : performance de la carte |
