@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.18 · **Date** 12/11/2026
+> **Version** 1.19 · **Date** 13/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -32,6 +32,8 @@
 | **Recherche de destination** | Filtre d'Explorer par le nom d'une destination (ville, commune ou gare), sans changer la gare de départ : texte tapé, ou destination touchée dans la liste (D084) | `Recherche`, `recherche`, `destination` (UIC) | *(interface seulement, dans l'adresse de la page)* | Recherche de ville (→ départ, API Adresse) |
 | **Barre du trajet** | Bouton d'une ligne en haut d'Explorer : « Autour de Dijon → Où aller ? » ; le départ ouvre « D'où partez-vous ? », la destination « Où allez-vous ? » (D084) ; sur téléphone, la page « Trajet » (D085) | `BarreTrajet` | — | Puce de localisation (écran Lieux) |
 | **Page « Trajet »** | Sur téléphone, page plein écran avec les champs Départ et Destination, ouverte par la barre du trajet (D085) | `PageTrajet`, `PagePleinEcran` | — | Feuille (sur ordinateur) |
+| **Mode destination** | État d'Explorer quand une destination est choisie : section « Près de la gare de… » en bas, train vers elle, « Filtres » réduit à « Quand ? » (D089) | `sectionPresDe`, `modeDestination` | — | Recherche de destination (le texte tapé) |
+| **Bulle (carte)** | Nombre de lieux à voir à pied depuis une gare de destination, à côté de son point, selon les catégories choisies (D088) | `totalLieux` | — | Point de la gare, icône de lieu |
 | **Gare hors de la ville** | Gare dont le nom contient « TGV » (`destinations.motGareHorsVille`) : le train n'arrive pas en ville ; elle forme sa propre destination, au nom de la gare, avec « à <commune> » dessous (D049) | `horsVille` | — | Gare de la ville |
 | **Peu de lieux** | Destination de la région avec moins de `destinations.lieuxMinEnTete` (3) lieux à pied des catégories demandées : en fin de liste, jamais supprimée (D050) | `peuDeLieux` | — | Sans lieu (0 : retirée par le filtre des envies) |
 | **Gare en tête** | Gare d'une destination qui a le plus de trains ce jour-là (à égalité, la plus rapide) : ses valeurs remplissent la carte de destination ; les autres gares de la ville sont listées à côté (D047) | `gare` (dans `Destination`), `autresGares` | — | Gare d'arrivée |
@@ -147,3 +149,4 @@
 | 06/11/2026 | 1.16 | Parcours — D074 |
 | 11/11/2026 | 1.17 | Recherche de destination, barre du trajet — D084 |
 | 12/11/2026 | 1.18 | Page « Trajet » — D085 |
+| 13/11/2026 | 1.19 | Mode destination, bulle de la carte — D088, D089 |
