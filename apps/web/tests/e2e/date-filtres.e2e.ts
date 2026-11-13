@@ -140,7 +140,7 @@ test.describe('Lieux', () => {
     if (isMobile) await expect(page.locator('header').getByText(marque.nom)).toBeHidden();
     await boutonFiltres(page).click();
     await expect(quand(page)).toBeVisible();
-    await expect(feuille(page).getByText('Rayon autour de moi')).toHaveCount(0);
+    await expect(feuille(page).getByText('Distance autour de vous')).toHaveCount(0);
     await quand(page)
       .getByRole('button', { name: /^Demain/ })
       .click();

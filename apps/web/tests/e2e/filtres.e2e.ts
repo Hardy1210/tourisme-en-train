@@ -107,11 +107,11 @@ test.describe('Explorer', () => {
     await expect(sorties(page)).toHaveCount(faisables);
   });
 
-  // Test léger (A-FAIRE : la section « À deux pas » va évoluer) : la demande, le nombre de lieux et l'adresse.
-  test('rayon : 1 km montre moins de lieux à deux pas, reste après un rechargement', async ({
+  // Test léger (section « Près de vous », maquette v6) : la demande, le nombre de lieux et l'adresse.
+  test('rayon : 1 km montre moins de lieux près de vous, reste après un rechargement', async ({
     page,
   }) => {
-    const section = page.getByRole('region', { name: 'À deux pas de vous' });
+    const section = page.getByRole('region', { name: 'Près de vous' });
     const lieux = section.getByRole('listitem');
     await page.goto(ECRAN);
     await expect(lieux.first()).toBeVisible();
@@ -120,7 +120,9 @@ test.describe('Explorer', () => {
     const demande = page.waitForRequest(
       (r) => r.url().includes('/api/autour') && r.url().includes('rayon=1000'),
     );
-    await dansFiltres(page, (feuille) => option(feuille, 'Rayon autour de moi', '1 km').click());
+    await dansFiltres(page, (feuille) =>
+      option(feuille, 'Distance autour de vous', '1 km').click(),
+    );
     await demande;
     await expect(page).toHaveURL(/rayon=1000/);
     await expect(section).toContainText('à moins de 1 km');
