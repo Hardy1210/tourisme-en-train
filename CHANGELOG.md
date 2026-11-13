@@ -15,6 +15,7 @@
 - Position refusée : un guide « Comment autoriser la localisation ? » donne les étapes exactes pour iPhone, Android ou ordinateur. Il s'ouvre tout seul si la position est encore bloquée.
 
 ### Modifié
+- « À deux pas de vous » devient « Près de vous », ou « Près de la gare de Beaune » si vous partez d'une autre gare. Quand vous choisissez une destination, cette section passe en bas, après les trains, et montre les lieux à pied autour de sa gare, aussi sur la carte. La carte « Votre gare » donne alors le prochain train vers cette destination, et « Filtres » ne garde que la date. Le filtre « Rayon autour de moi » s'appelle maintenant « Distance autour de vous ».
 - La carte d'Explorer s'ouvre plus près de votre gare (depuis Dijon, de Mâlain à Genlis). Choisir une destination centre la carte sur sa gare ; effacer la recherche ramène aux environs de votre gare.
 - En haut d'Explorer et de Lieux, sur téléphone, il ne reste que le trajet et les catégories : la date se choisit maintenant dans « Filtres » (« Quand ? »). Si ce n'est pas aujourd'hui, une pastille « Demain ✕ » le rappelle devant les catégories, et la date s'ajoute au titre de la liste.
 - Dans la fiche destination, les TER qui partent et arrivent en Bourgogne-Franche-Comté s'appellent « TER Mobigo », comme sur SNCF Connect. Les autres restent « TER ».
