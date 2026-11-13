@@ -19,7 +19,8 @@ test.beforeEach(async ({ context, baseURL }) => {
 });
 
 const gareDepart = (page: Page) => page.getByRole('img', { name: 'Gare de Dijon-Ville' });
-const gareBeaune = (page: Page) => page.getByRole('button', { name: /^Beaune.*en train direct$/ });
+const gareBeaune = (page: Page) =>
+  page.getByRole('button', { name: /^Beaune.*en train direct(,|$)/ });
 
 test('destination choisie : la carte est sur Beaune, Dijon hors de l’écran', async ({ page }) => {
   await page.goto(AVEC_BEAUNE);

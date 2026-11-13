@@ -30,7 +30,7 @@ test.beforeEach(async ({ context, baseURL }) => {
 });
 
 const sorties = (page: Page) => page.getByRole('link', { name: 'Voir la sortie' });
-const marqueurs = (page: Page) => page.getByRole('button', { name: /en train direct$/ });
+const marqueurs = (page: Page) => page.getByRole('button', { name: /en train direct(,|$)/ });
 const boutonFiltres = (page: Page) => page.getByRole('button', { name: /^Filtres/ });
 const feuilleFiltres = (page: Page) => page.getByRole('dialog', { name: 'Filtres' });
 

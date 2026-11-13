@@ -33,7 +33,7 @@ test.beforeEach(async ({ context, baseURL }) => {
 });
 
 const sorties = (page: Page) => page.getByRole('link', { name: 'Voir la sortie' });
-const marqueurs = (page: Page) => page.getByRole('button', { name: /en train direct$/ });
+const marqueurs = (page: Page) => page.getByRole('button', { name: /en train direct(,|$)/ });
 const titreDestinations = (page: Page) =>
   page.getByRole('heading', { name: 'En train direct depuis Dijon-Ville' });
 
@@ -80,6 +80,48 @@ test.describe('position acceptée', () => {
     await categories.getByRole('button', { name: 'Tout' }).click();
     await expect(sorties(page)).toHaveCount(nombreInitial);
     await expect(marqueurs(page)).toHaveCount(nombreInitial);
+  });
+
+  test('chaque gare montre ses lieux à pied, recomptés selon les catégories (maquette v6)', async ({
+    page,
+  }) => {
+    // Nom de la gare → nombre de lieux à pied, lu dans le libellé de chaque point de destination.
+    const nombresParGare = async () => {
+      const libelles = await marqueurs(page).evaluateAll((boutons) =>
+        boutons.map((b) => b.getAttribute('aria-label') ?? ''),
+      );
+      return new Map(
+        libelles.flatMap((libelle) => {
+          const trouve = /^(.*?), .*, (\d+) lieux? à pied depuis la gare$/.exec(libelle);
+          return trouve ? [[trouve[1], Number(trouve[2])] as const] : [];
+        }),
+      );
+    };
+
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+    await expect(marqueurs(page).first()).toBeAttached();
+    const tout = await nombresParGare();
+    expect(tout.size).toBeGreaterThan(0);
+
+    // La bulle affiche le même nombre que le libellé.
+    const [nom, nombre] = [...tout][0]!;
+    await expect(
+      page.getByRole('button', { name: new RegExp(`^${nom}, .*, ${nombre} lieux? à pied`) }),
+    ).toContainText(String(nombre));
+
+    await page
+      .getByRole('group', { name: 'Catégories' })
+      .getByRole('button', { name: 'Enfants' })
+      .click();
+    await expect(page).toHaveURL(/categories=enfants/);
+    await expect.poll(async () => (await nombresParGare()).size).toBeLessThanOrEqual(tout.size);
+    const enfants = await nombresParGare();
+    // Une gare ne compte jamais plus de lieux pour une seule catégorie que pour toutes.
+    for (const [gare, n] of enfants) expect(n).toBeLessThanOrEqual(tout.get(gare) ?? Infinity);
+    expect([...enfants.values()].reduce((a, b) => a + b, 0)).toBeLessThan(
+      [...tout.values()].reduce((a, b) => a + b, 0),
+    );
   });
 
   test('une épingle de destination ouvre sa mini-fiche, recentrer la referme', async ({ page }) => {
