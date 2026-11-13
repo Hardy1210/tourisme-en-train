@@ -42,6 +42,24 @@
 
 ---
 
+## 13/11/2026 (soir) — Étape E11 — audit des lieux hors périmètre, section `acces`, carte de tous les lieux
+**Fait :**
+- Audit sans code (D090) : 81 % des lieux cachés par le périmètre (8 678 sur 10 749), jamais écartés à l'import ; rapport `docs/audits/carte-lieux-accessibilite.md` (non versionné, dans le dossier de Hardy)
+- #113 fusionnée (D091) : section `acces` (2 km à pied, vélo 6 km, aires de jeux à 1 km, piscines retirées), action `inclure` ; 2 243 lieux à pied
+- #114 ouverte (D092) : tous les lieux en bulles qui se divisent au zoom puis icônes, réglées par Hardy sur iPhone (zoom 12, 45 px) ; tri du patrimoine OSM pauvre loin des gares (8 733 → 7 459, musées et abbayes gardés) ; `lieu.wikipedia` (migration 0014, 1 943 lieux)
+- Idée de Hardy, gardée pour la suite : cercles à pied et vélo autour de la destination choisie, vélo seulement si une donnée le prouve (`A-FAIRE`)
+**Décisions :** D091, D092 (dans #114)
+**Problèmes rencontrés :**
+- Erreur de Claude : #113 « ne charge pas » les piscines, ce qui les supprime de la base au rechargement. Hardy ne voulait que les retirer de la carte. Correction prévue (PR piscines) avant toute mise en ligne des données
+- La carte de tous les lieux ralentissait l'affichage sur téléphone (`react-dom/server`, demande en parallèle) : trouvé par les parcours, corrigé
+- Une commande `pkill -f` a arrêté sa propre session (motif contenu dans la commande) : arrêter un serveur par son port
+**À valider par Hardy :** fusion de #114 ; rayon à pied 1 560 m (cercle de 1,2 km) pour la PR cercles ; design des bulles
+**Prochaine action :** PR piscines (recharger en base, cacher à l'affichage), puis PR cercles
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` 573 sur la branche de #114 ; `main` `16d9015` vérifié avec #113 : 568) · intégration 177 ✅ · parcours 207 ✅, 0 échec (#114)
+**Commit :** #113 (`16d9015`) ; #114 ouverte
+
+---
+
 ## 13/11/2026 — Étape E11 — carte v6 : bulles (#110), « Près de vous » et mode destination (#111)
 **Fait :**
 - #110 : bulle du nombre de lieux à pied sur chaque gare, à côté du point ; mini-fiche avec le détail par catégorie (D088). Validée par Hardy sur iPhone
