@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.20 · **Date** 13/11/2026
+> **Version** 1.21 · **Date** 13/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -107,6 +107,10 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | `coefDetour` | 1,3 | Distance à pied ou à vélo = vol d'oiseau × ce coefficient (rues qui ne vont pas tout droit) | Inchangé (ancien `marche.coefDetour` et `velo.coefDetour`, même valeur) |
 | `rayonAiresDeJeuxM` | 1000 | Aires de jeux : reliées à une gare, ou montrées dans « Près de vous », seulement à ce rayon au plus ; ≤ `rayonPiedM` | Elles ne valent pas un trajet plus loin (Hardy, 13/11) : 2 091 en base, elles envahiraient la carte |
 | `sousCategoriesAiresDeJeux` | aire de jeux | Sous-catégories soumises à `rayonAiresDeJeuxM` | — |
+| `lieuxPauvresSources`, `lieuxPauvresCategories` | osm ; patrimoine | Carte : loin de toute gare, un lieu de ces sources et catégories sans description, photo, label ni article Wikipédia n'est pas montré (il reste en base) | 1 274 lieux retirés de la carte le 13/11 (« Ruines de fondations », « Ancien lavoir », « Château » sans nom…) ; la carte était saturée (D092) |
+| `lieuxPauvresToujoursGardes` | musée, abbaye | Sous-catégories jamais retirées par ce tri | Presque toujours de vraies visites, peu nombreuses (74 remis le 13/11) |
+| `bullesRayonPx` | 45 | Carte : distance (px) sous laquelle des lieux se regroupent en une bulle | Réglé à l'œil par Hardy sur iPhone (13/11) : à 40 px et zoom 11, des icônes s'empilaient |
+| `bullesZoomMax` | 12 | Carte : au-delà, plus de bulles, chaque lieu a son icône | Idem |
 | `sousCategoriesRetirees` | piscine, centre aquatique | Sous-catégories **non chargées** à l'import (rapport : « sous-catégorie retirée ») ; changer la liste recharge la source | Retirées « pour l'instant » (Hardy, 13/11). Une correction manuelle passe avant (§ 4.5) |
 
 Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`dureeMin`, `dureeVeloDepuisDistanceMin`, `niveauAcces`), testées en paires ; l'import applique la même formule en SQL (`rattachements.sql`), avec les mêmes paramètres.
@@ -415,3 +419,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 04/11/2026 | 1.18 | § 2 et § 6 : tranches de temps 30, 60, 90, limite comprise — D055 |
 | 04/11/2026 | 1.19 | § 2 : `limites.lieuxParPage` — D056 ; `lieux.fichesVille`, `lieux.ongletLieux` — D057 |
 | 13/11/2026 | 1.20 | § 2 : section `acces` (rayon à pied 2 km, vélo, aires de jeux, sous-catégories retirées), `marche`, `velo` et `rayons.lieuxGareM` déplacés ; § 4.5 : action `inclure` et marche à suivre ; § 4.6 : rayon des aires de jeux — D091 |
+| 13/11/2026 | 1.21 | § 2 : `acces.lieuxPauvres*`, `bullesRayonPx`, `bullesZoomMax` ; import OSM : tag `wikipedia` — D092 |

@@ -349,4 +349,17 @@ INSERT INTO gare_stats (gare_id, categorie, nb_lieux, nb_secondaires)
 SELECT id, 'enfants', 0, 1 FROM gare WHERE uic = 'EX000006'
 ON CONFLICT (gare_id, categorie) DO UPDATE SET nb_secondaires = 1;
 
+-- D092 : carte de tous les lieux. Loin de toute gare (aucune ligne lieu_gare), sans description :
+-- un monument « pauvre » (retiré si la source est triée), un musée (toujours gardé), un monument avec un
+-- article Wikipédia (gardé), une aire de jeux non reliée à une gare (jamais sur la carte).
+INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, wikipedia, code_insee, geom)
+SELECT 'echantillon', l.id_source, l.nom, l.categorie, l.sous_categorie, l.wikipedia, '71076',
+       ST_SetSRID(ST_MakePoint(4.2, 46.5), 4326)::geography
+FROM (VALUES
+  ('ECH_L49', 'Exemple - Croix de chemin', 'patrimoine', 'monument historique', NULL),
+  ('ECH_L50', 'Exemple - Musée du village', 'patrimoine', 'musée', NULL),
+  ('ECH_L51', 'Exemple - Château connu', 'patrimoine', 'château', 'https://fr.wikipedia.org/wiki/Exemple'),
+  ('ECH_L52', 'Aire de jeux', 'enfants', 'aire de jeux', NULL)
+) AS l (id_source, nom, categorie, sous_categorie, wikipedia);
+
 COMMIT;
