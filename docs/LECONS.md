@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.13 · **Date** 11/11/2026
+> **Version** 1.14 · **Date** 14/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -373,6 +373,58 @@
 - **À retenir :** répéter le test (`--repeat-each`) sur la version d'avant dit si le défaut est nouveau. Un test instable se corrige à part, avec sa cause, sans allonger les délais au hasard.
 - **Origine :** journal du 10–11/11.
 
+## Carte et choix des lieux (à défendre à la soutenance, 13–14/11)
+
+### L56 — Un périmètre fixe cache des lieux sans le dire
+- **Problème :** un testeur ne trouvait pas le château de Mâlain. Il était en base, mais à 2 178 m à pied de sa gare, au-delà des 1 500 m retenus.
+- **Cause :** un seul seuil décidait de ce qui existait à l'écran. Mesuré ensuite : **81 % des lieux** (8 678 sur 10 749) étaient cachés ainsi.
+- **Solution :** un audit chiffré avant de coder (D090), puis un périmètre réglable et des lieux montrés selon la zone qui compte pour l'utilisateur (D091, D094).
+- **À retenir :** un filtre silencieux se mesure : combien d'éléments écarte-t-il, et lesquels ? Un retour d'utilisateur sur un seul lieu peut révéler un problème qui touche presque tout.
+- **Origine :** D090, `docs/audits/carte-lieux-accessibilite.md`.
+
+### L57 — Tout montrer sature ; ne rien montrer fait croire qu'il n'y a rien
+- **Problème :** pour ne plus rien cacher, la carte a montré les 8 733 lieux de la région : fluide, mais illisible, et le filtre de distance n'y servait plus à rien.
+- **Solution :** montrer la **zone utile** : autour de soi (à la distance choisie) et autour de chaque gare où le train va (D094). La carte n'est jamais vide, et chaque bulle a un sens.
+- **À retenir :** entre « tout » et « trop peu », choisir selon la question de l'utilisateur (« que faire en descendant du train ? »). Essayer sur le vrai téléphone : c'est là que la saturation se voit.
+- **Origine :** D092, D094.
+
+### L58 — Cacher n'est pas supprimer
+- **Problème :** pour retirer les piscines, l'import ne les « chargeait plus » ; au rechargement, cela les a **effacées de la base** (94 lieux).
+- **Solution :** les charger et les **marquer** comme cachées (`lieu.masque`), chaque écran les ignore (D093).
+- **À retenir :** une base de données garde tout ; l'affichage choisit. Une règle de tri doit pouvoir changer sans perdre de données, et une correction manuelle doit pouvoir passer avant.
+- **Origine :** D091 (modifiée), D093.
+
+### L59 — Un signe d'intérêt doit séparer, pas tout laisser passer
+- **Problème :** pour trier les fiches vides, Wikidata semblait un bon signe d'intérêt.
+- **Cause :** 1 007 monuments historiques sur 1 088 en ont un, importé en masse depuis la base Mérimée : le tri n'aurait retiré que 739 lieux sur 2 375.
+- **Solution :** garder seulement l'article **Wikipédia** (quelqu'un a jugé le lieu notable), et toujours garder musées et abbayes.
+- **À retenir :** avant d'adopter un critère, compter combien d'éléments il garde et regarder un échantillon de ceux qu'il retire (« Ancien lavoir » oui, « Écomusée de la Vigne et du Vin » non).
+- **Origine :** D092.
+
+### L60 — Une bibliothèque de serveur dans le code du téléphone
+- **Problème :** la carte mettait plus de 5 s à s'afficher sur un téléphone simulé ; le parcours du cadrage échouait 2 fois sur 3.
+- **Cause :** `react-dom/server`, utilisé pour dessiner les icônes, ajoutait 209 Ko à la carte ; et la demande de tous les lieux partait en même temps que son chargement.
+- **Solution :** copier les icônes depuis des icônes cachées rendues par React, et ne demander les lieux qu'une fois la carte chargée. Le même parcours lancé sur `main` (12 sur 12) a prouvé que le défaut venait de la branche (L55).
+- **À retenir :** surveiller ce qu'un import ajoute au code envoyé au téléphone. Les tests de parcours servent aussi à mesurer la vitesse, pas seulement le résultat.
+- **Origine :** #114, D092.
+
+### L61 — Un filtre doit avoir un effet visible
+- **Problème :** après la carte de tous les lieux, choisir 1 km ou 10 km ne changeait rien à l'écran ; plus tôt, avec une destination choisie, la distance et le temps de train ne filtraient plus rien non plus.
+- **Solution :** relier le filtre à ce qu'on voit (la zone de la carte, D094) ; cacher les filtres inutiles dans un mode donné (D089), plutôt que de les griser avec des phrases que l'utilisateur ne cherche pas.
+- **À retenir :** après chaque changement d'affichage, repasser sur chaque filtre : que change-t-il maintenant ? Un réglage sans effet trompe.
+- **Origine :** D089, D094.
+
+### L62 — Les réglages visuels se décident sur le vrai téléphone
+- **Problème :** le regroupement des bulles et leur position autour du point d'une gare ne se jugent pas à la lecture du code.
+- **Solution :** chaque réglage dans `parametres.json` (`bullesRayonPx`, `bullesZoomMax`, `bullesDecalagePx`), réglé par Hardy sur l'iPhone, dans une copie d'essai séparée avec son propre build.
+- **À retenir :** un fichier JSON est lu au moment du build : le modifier demande de reconstruire, dans la copie où tourne le serveur d'essai. Les textes d'une carte MapLibre ont un fondu de 0,3 s par défaut (`fadeDuration`).
+- **Origine :** #117, #118.
+
+### Questions probables du jury sur la carte
+- *Pourquoi ne pas montrer tous les lieux ?* La carte devenait illisible ; on montre ce qu'on peut faire autour de soi et en descendant du train (L57).
+- *Où sont passés les lieux retirés ?* Toujours en base ; un lieu signalé se remet avec une ligne `inclure` (L58).
+- *Comment choisissez-vous les lieux ?* Règles chiffrées et réglables : distance à pied, fiche non vide ou article Wikipédia loin des gares (L59).
+
 ## Dossier CO₂ pour la soutenance (relevé du 06/11/2026)
 
 Lecture de pages, pas un avis juridique. À relire avant la soutenance : ces pages peuvent changer.
@@ -428,3 +480,4 @@ Valeurs en g CO₂e/km.
 | 06/11/2026 | 1.11 | L47 → L52 et dossier CO₂ (licence lue à la source, portée d'une page, périmètre d'un chiffre, chiffre vérifiable, marché d'abord, conseil vérifié point par point) |
 | 07/11/2026 | 1.12 | L53 (contrôle à zéro et témoin) |
 | 11/11/2026 | 1.13 | L54, L55 (exemple inventé qui fuit, test instable lancé sans son changement) |
+| 14/11/2026 | 1.14 | L56 → L62 et questions du jury sur la carte (périmètre qui cache, saturation, cacher n'est pas supprimer, signe d'intérêt, poids du code, filtre visible, réglages sur le téléphone) |
