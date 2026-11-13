@@ -3,7 +3,12 @@ import 'server-only';
 import { parametres } from '@/config/parametres';
 import { distanceMarcheM, dureeMarcheMin, rayonVolOiseauM } from '@/lib/geo/distances';
 
-import type { ParametresAutour, ReponseAutour, ReponseLieuxCarte } from '../schemas';
+import type {
+  ParametresAutour,
+  ParametresLieuxCarte,
+  ReponseAutour,
+  ReponseLieuxCarte,
+} from '../schemas';
 
 import { lieuxAutour } from './requetes';
 import { lieuxCarte } from './requetes-carte';
@@ -44,10 +49,20 @@ export async function autour({
   };
 }
 
-/** Tous les lieux de la carte, regroupés en bulles sur le téléphone (D091). */
-export async function lieuxPourCarte(): Promise<ReponseLieuxCarte> {
+/** Lieux de la carte dans une zone, regroupés en bulles sur le téléphone (D094). */
+export async function lieuxPourCarte(zone: ParametresLieuxCarte): Promise<ReponseLieuxCarte> {
   const { acces } = parametres;
   const lignes = await lieuxCarte({
+    zone:
+      'gare' in zone
+        ? { type: 'gare', uic: zone.gare }
+        : {
+            type: 'point',
+            lat: zone.lat,
+            lon: zone.lon,
+            rayonVolOiseauM: rayonVolOiseauM(zone.rayon),
+            airesVolOiseauM: rayonVolOiseauM(acces.rayonAiresDeJeuxM),
+          },
     airesDeJeux: acces.sousCategoriesAiresDeJeux,
     pauvres: {
       sources: acces.lieuxPauvresSources,

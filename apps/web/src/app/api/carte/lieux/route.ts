@@ -1,10 +1,16 @@
 import { parametres } from '@/config/parametres';
+import { schemaParametresLieuxCarte } from '@/features/lieux/schemas';
 import { lieuxPourCarte } from '@/features/lieux/server/service';
 import { gererRoute, repondreCompresse } from '@/lib/http/reponse';
+import { lireParametres } from '@/lib/http/valider';
 
-// Les mêmes lieux pour tout le monde, changés seulement par un import : en cache (D091).
-export const GET = gererRoute('carte-lieux', async (requete) =>
-  repondreCompresse(requete, await lieuxPourCarte(), {
-    publicMaxAgeS: parametres.cache.donneesStablesS,
-  }),
-);
+// Autour d'une position : jamais en cache (règle 5, docs/05-api.md § 1.11). Autour d'une gare : les mêmes
+// lieux pour tout le monde, en cache (D094).
+export const GET = gererRoute('carte-lieux', async (requete) => {
+  const zone = lireParametres(requete, schemaParametresLieuxCarte);
+  return repondreCompresse(
+    requete,
+    await lieuxPourCarte(zone),
+    'gare' in zone ? { publicMaxAgeS: parametres.cache.donneesStablesS } : 'aucun',
+  );
+});

@@ -130,6 +130,20 @@ export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAcc
 export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
 
 /**
+ * GET /api/carte/lieux (D094) : autour d'un point (`lat`, `lon`, `rayon` parmi les distances du filtre) ou
+ * d'une gare de destination (`gare`). Un seul des deux.
+ */
+export const schemaParametresLieuxCarte = z.union([
+  z.object({ gare: schemaUic }),
+  z.object({
+    lat: schemaLat,
+    lon: schemaLon,
+    rayon: schemaParmi(parametres.rayons.autourDeMoiOptionsM, 'Rayons (m)'),
+  }),
+]);
+export type ParametresLieuxCarte = z.infer<typeof schemaParametresLieuxCarte>;
+
+/**
  * GET /api/carte/lieux (D091) : tous les lieux de la carte, en tableaux courts pour une réponse légère :
  * [clé, latitude, longitude, catégorie, catégories secondaires].
  */

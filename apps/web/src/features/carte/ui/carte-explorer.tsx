@@ -9,7 +9,7 @@ import { parametres } from '@/config/parametres';
 import { formaterDuree } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
 import { useLieuxCarte } from '@/features/lieux/hooks';
-import type { LieuResume } from '@/features/lieux/schemas';
+import type { LieuResume, ParametresLieuxCarte } from '@/features/lieux/schemas';
 import { useArretsTrain } from '@/features/trains/hooks';
 import {
   centreDestination,
@@ -45,8 +45,10 @@ export type ProprietesCarte = {
   /** Destination choisie dans la recherche (D084) : la carte se centre sur sa gare ; null sinon. */
   destinationCherchee: string | null;
   lieux: readonly LieuResume[];
-  /** Catégories choisies : filtrent les bulles et les icônes de tous les lieux (D091). */
+  /** Catégories choisies : filtrent les bulles et les icônes des lieux (D091). */
   categories: readonly Categorie[];
+  /** Zone des lieux de la carte : autour de la position ou de la gare de départ, ou de la destination (D094). */
+  zoneLieux: ParametresLieuxCarte;
   lienDe: (destination: Destination) => string;
   /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
   masqueEnBas: () => number;
@@ -72,6 +74,7 @@ export function CarteExplorer({
   destinationCherchee,
   lieux,
   categories,
+  zoneLieux,
   lienDe,
   masqueEnBas,
   masqueEnHaut,
@@ -90,7 +93,7 @@ export function CarteExplorer({
     texteBulle: string;
     halo: string;
   } | null>(null);
-  const tousLesLieux = useLieuxCarte(couleursBulles !== null);
+  const tousLesLieux = useLieuxCarte(couleursBulles === null ? null : zoneLieux);
 
   const [derniereCarteTouchee, setDerniereCarteTouchee] = useState(carteTouchee);
   if (carteTouchee !== derniereCarteTouchee) {

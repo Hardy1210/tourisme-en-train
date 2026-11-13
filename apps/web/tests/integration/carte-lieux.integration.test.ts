@@ -17,30 +17,56 @@ beforeAll(async () => {
   ({ lieuxCarte } = await import('@/features/lieux/server/requetes-carte'));
 });
 
-describe('/api/carte/lieux', () => {
-  it('répond en gzip, en cache, avec les lieux en tableaux courts', async () => {
+async function lire(chemin: string) {
+  const reponse = await route.GET(
+    new Request(`http://localhost${chemin}`, { headers: { 'Accept-Encoding': 'gzip' } }),
+    { params: Promise.resolve({}) },
+  );
+  expect(reponse.status).toBe(200);
+  expect(reponse.headers.get('content-encoding')).toBe('gzip');
+  const corps = JSON.parse(gunzipSync(Buffer.from(await reponse.arrayBuffer())).toString());
+  const cles = schemaReponseLieuxCarte.parse(corps).lieux.map(([c]) => c);
+  return { cles, cache: reponse.headers.get('cache-control') };
+}
+
+describe('/api/carte/lieux (D094)', () => {
+  it('autour d’une gare de destination : ses lieux à pied, en cache, compressés', async () => {
+    const { cles, cache } = await lire('/api/carte/lieux?gare=EX000005');
+    expect(cache).toMatch(/^public, max-age=\d+$/);
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L47')]));
+    // Fiche de ville et lieu masqué (piscine, D093) : jamais.
+    expect(cles).not.toContain(cle('ECH_L42'));
+    expect(cles).not.toContain(cle('ECH_L53'));
+  });
+
+  it('autour d’une position : jamais en cache (règle 5), le rayon du filtre compte', async () => {
+    const { cles, cache } = await lire('/api/carte/lieux?lat=46.3&lon=6.9&rayon=1000');
+    expect(cache).toBe('no-store');
+    expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L47')]));
+    expect(cles).not.toContain(cle('ECH_L53'));
+    // Les lieux d'exemple « loin des gares » sont à plus de 200 km : hors du rayon.
+    expect(cles).not.toContain(cle('ECH_L50'));
+  });
+
+  it('un rayon hors des choix du filtre → 400', async () => {
     const reponse = await route.GET(
-      new Request('http://localhost/api/carte/lieux', { headers: { 'Accept-Encoding': 'gzip' } }),
+      new Request('http://localhost/api/carte/lieux?lat=46.3&lon=6.9&rayon=1234'),
       { params: Promise.resolve({}) },
     );
-    expect(reponse.status).toBe(200);
-    expect(reponse.headers.get('content-encoding')).toBe('gzip');
-    expect(reponse.headers.get('cache-control')).toMatch(/^public, max-age=\d+$/);
-    const corps = JSON.parse(gunzipSync(Buffer.from(await reponse.arrayBuffer())).toString());
-    const { lieux } = schemaReponseLieuxCarte.parse(corps);
-    const cles = lieux.map(([c]) => c);
-    // Aire de jeux reliée à une gare : sur la carte ; non reliée : jamais.
-    expect(cles).toContain(cle('ECH_L44'));
-    expect(cles).not.toContain(cle('ECH_L52'));
-    // Fiche de ville : jamais.
-    expect(cles).not.toContain(cle('ECH_L42'));
-    // Lieu masqué (piscine) : gardé en base, jamais sur la carte (D093).
-    expect(cles).not.toContain(cle('ECH_L53'));
+    expect(reponse.status).toBe(400);
   });
 });
 
 describe('lieuxCarte : tri des lieux pauvres loin des gares (D092)', () => {
+  // Autour des lieux d'exemple « loin des gares » (4,2 ; 46,5), sans aucune ligne lieu_gare.
   const OPTIONS = {
+    zone: {
+      type: 'point',
+      lat: 46.5,
+      lon: 4.2,
+      rayonVolOiseauM: 5000,
+      airesVolOiseauM: 770,
+    } as const,
     airesDeJeux: ['aire de jeux'],
     pauvres: {
       sources: ['echantillon'],

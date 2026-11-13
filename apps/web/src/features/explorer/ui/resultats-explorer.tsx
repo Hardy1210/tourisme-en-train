@@ -119,6 +119,11 @@ export function ResultatsExplorer({
           carteTouchee={carteTouchee}
           lieux={lieux.data?.lieux ?? []}
           categories={filtres.categories}
+          zoneLieux={
+            presDe.autour === 'destination'
+              ? { gare: presDe.uic }
+              : { lat: point.lat, lon: point.lon, rayon: filtres.rayon }
+          }
           lienDe={lienDe}
           masqueEnHaut={masqueEnHaut}
           masqueEnBas={() => {

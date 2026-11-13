@@ -9,6 +9,7 @@ import {
   schemaReponseAutour,
   schemaReponseLieuxAccessibles,
   schemaReponseLieuxCarte,
+  type ParametresLieuxCarte,
 } from './schemas';
 
 type Options = {
@@ -80,15 +81,27 @@ export function useFicheLieu(cle: string) {
 }
 
 /**
- * Tous les lieux de la carte (D091) : une seule demande, gardée tant que l'application est ouverte.
- * `actif` faux tant que la carte n'est pas chargée : la demande ne ralentit pas son affichage.
+ * Lieux de la carte dans une zone (D094) : autour d'un point (rayon du filtre) ou d'une gare de
+ * destination. `null` tant que la carte n'est pas chargée : la demande ne ralentit pas son affichage.
+ * Les bulles précédentes restent pendant le chargement de la nouvelle zone.
  */
-export function useLieuxCarte(actif: boolean) {
+export function useLieuxCarte(zone: ParametresLieuxCarte | null) {
   const visible = useEcranVisible();
+  const requete =
+    zone === null
+      ? ''
+      : 'gare' in zone
+        ? new URLSearchParams({ gare: zone.gare }).toString()
+        : new URLSearchParams({
+            lat: String(zone.lat),
+            lon: String(zone.lon),
+            rayon: String(zone.rayon),
+          }).toString();
+  const chemin = `/api/carte/lieux?${requete}`;
   return useQuery({
-    queryKey: ['lieux-carte'],
-    enabled: visible && actif,
-    staleTime: Infinity,
-    queryFn: ({ signal }) => lireApi('/api/carte/lieux', schemaReponseLieuxCarte, signal),
+    queryKey: ['lieux-carte', chemin],
+    enabled: visible && zone !== null,
+    placeholderData: keepPreviousData,
+    queryFn: ({ signal }) => lireApi(chemin, schemaReponseLieuxCarte, signal),
   });
 }
