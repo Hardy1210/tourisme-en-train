@@ -11,6 +11,8 @@ export interface LieuNormalise {
   adresse: string | null;
   url: string | null;
   imageUrl: string | null;
+  /** Lien vers l'article Wikipédia (OSM) ; null sinon (D092). */
+  wikipedia: string | null;
   horaires: string | null;
   qualiteTourisme: boolean;
   lon: number;

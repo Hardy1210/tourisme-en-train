@@ -1,0 +1,1 @@
+ALTER TABLE "lieu" ADD COLUMN "wikipedia" text;

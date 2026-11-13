@@ -46,7 +46,11 @@ export async function autour({
 
 /** Tous les lieux de la carte, regroupés en bulles sur le téléphone (D091). */
 export async function lieuxPourCarte(): Promise<ReponseLieuxCarte> {
-  const lignes = await lieuxCarte(parametres.acces.sousCategoriesAiresDeJeux);
+  const { acces } = parametres;
+  const lignes = await lieuxCarte({
+    airesDeJeux: acces.sousCategoriesAiresDeJeux,
+    pauvres: { sources: acces.lieuxPauvresSources, categories: acces.lieuxPauvresCategories },
+  });
   return {
     lieux: lignes.map((l): ReponseLieuxCarte['lieux'][number] => [
       l.cle,

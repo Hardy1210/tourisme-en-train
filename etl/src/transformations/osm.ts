@@ -97,6 +97,18 @@ export function estNotable(tags: Readonly<Record<string, string>>): boolean {
   );
 }
 
+/**
+ * Lien vers l'article Wikipédia d'un tag OSM `wikipedia` (« fr:Château de Bussy-Rabutin ») ; null sans
+ * tag ou si la langue manque (D092). Le tag `wikidata` n'est pas gardé : presque tous les monuments
+ * historiques en ont un, importé en masse, il ne dit rien de l'intérêt du lieu.
+ */
+export function wikipediaDe(tags: Readonly<Record<string, string>>): string | null {
+  const trouve = /^([a-z]{2,3}(?:-[a-z]+)?):(.+)$/.exec(tags.wikipedia?.trim() ?? '');
+  if (!trouve) return null;
+  const [, langue, titre = ''] = trouve;
+  return `https://${langue}.wikipedia.org/wiki/${encodeURIComponent(titre.trim().replaceAll(' ', '_'))}`;
+}
+
 /** Photo : tag `image` s'il est une adresse web, sinon le fichier `wikimedia_commons` (« File:… »). */
 export function imageDe(tags: Readonly<Record<string, string>>): string | null {
   const image = urlValide(tags.image);
@@ -161,6 +173,7 @@ export function lireElementOsm(
       adresse: adresseDe(tags),
       url: urlValide(tags.website ?? tags['contact:website'] ?? tags.url),
       imageUrl: imageDe(tags),
+      wikipedia: wikipediaDe(tags),
       horaires: texteOuNull(tags.opening_hours),
       qualiteTourisme: false,
       lon,

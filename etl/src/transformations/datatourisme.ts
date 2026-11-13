@@ -92,6 +92,7 @@ export function lireLigneDatatourisme(
       adresse: texteOuNull(ligne.Adresse_postale),
       url: siteDesContacts(ligne.Contacts_du_POI),
       imageUrl: null,
+      wikipedia: null,
       horaires: null,
       qualiteTourisme: ligne.Classements_du_POI.includes('Qualité Tourisme'),
       trace: null,

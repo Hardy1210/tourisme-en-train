@@ -1,6 +1,7 @@
 // LE SEUL schéma de config/parametres.json (docs/04-traitement-donnees.md § 2).
 // Importé par l'application et par le traitement des données : aucune autre copie n'existe.
 import { z } from 'zod';
+import { schemaCategorie } from './categories.ts';
 import parametresBruts from '../../../config/parametres.json' with { type: 'json' };
 
 const schemaHeure = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Heure attendue au format HH:MM');
@@ -100,6 +101,12 @@ export const schemaParametres = z
       sousCategoriesAiresDeJeux: z.array(z.string().min(1)),
       /** Sous-catégories non chargées à l'import (aucun écran ne les montre). */
       sousCategoriesRetirees: z.array(z.string().min(1)),
+      /**
+       * Carte : au-delà du rayon à pied de toute gare, un lieu de ces sources et catégories n'apparaît que
+       * s'il a une description, une photo, un label ou un article Wikipédia (D092).
+       */
+      lieuxPauvresSources: z.array(z.string().min(1)),
+      lieuxPauvresCategories: z.array(schemaCategorie),
       /** Carte : rayon (px) dans lequel des lieux se regroupent en une bulle. */
       bullesRayonPx: z.number().int().positive(),
       /** Carte : au-delà de ce zoom, plus de bulles, chaque lieu a son icône. */
