@@ -145,4 +145,6 @@ export const libelleDureeMax = (minutes: number): string =>
   minutes < 60 ? `${minutes} min` : `${minutes / 60} h`;
 
 /** « 2 km ». */
-export const libelleRayon = (metres: number): string => `${metres / 1000} km`;
+/** « 2 km », « 1,5 km ». */
+export const libelleRayon = (metres: number): string =>
+  `${String(metres / 1000).replace('.', ',')} km`;

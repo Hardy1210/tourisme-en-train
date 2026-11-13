@@ -104,7 +104,7 @@ export function Planche({ sombreAuDepart }: { sombreAuDepart: boolean }) {
       <Section titre="Sélecteur et interrupteurs">
         <div className="flex w-full flex-col gap-2">
           <Selecteur
-            libelle="Rayon autour de moi"
+            libelle="Distance autour de vous"
             options={RAYONS}
             valeur={rayon}
             surChangement={setRayon}

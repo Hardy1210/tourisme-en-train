@@ -135,6 +135,7 @@ describe('libellés', () => {
 
   it('écrit le rayon en kilomètres', () => {
     expect(libelleRayon(2000)).toBe('2 km');
+    expect(libelleRayon(1500)).toBe('1,5 km');
   });
 });
 

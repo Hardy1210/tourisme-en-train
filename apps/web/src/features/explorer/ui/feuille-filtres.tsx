@@ -110,7 +110,7 @@ export function FeuilleFiltres({
           </div>
           {!dureeSeulement && (
             <Selecteur
-              libelle="Rayon autour de moi"
+              libelle="Distance autour de vous"
               options={OPTIONS_RAYON}
               valeur={String(filtres.rayon)}
               surChangement={(valeur) => surModification({ rayon: Number(valeur) })}
