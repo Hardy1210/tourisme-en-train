@@ -1,7 +1,8 @@
+import { gunzipSync } from 'node:zlib';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Introuvable, ParametreInvalide, ServiceExterneIndisponible } from './erreurs';
-import { detailErreur, gererRoute, repondre } from './reponse';
+import { detailErreur, gererRoute, repondre, repondreCompresse } from './reponse';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -73,5 +74,26 @@ describe('detailErreur', () => {
       message: 'connexion refusée',
     });
     expect(detailErreur('47.3233')).toBe('Erreur sans détail');
+  });
+});
+
+describe('repondreCompresse', () => {
+  const donnees = { lieux: [['a', 47.3, 5.0, 'patrimoine', []]] };
+
+  it('compresse en gzip quand le navigateur l’accepte, et redonne les mêmes données', async () => {
+    const reponse = repondreCompresse(
+      new Request('http://x', { headers: { 'Accept-Encoding': 'gzip, br' } }),
+      donnees,
+      { publicMaxAgeS: 600 },
+    );
+    expect(reponse.headers.get('content-encoding')).toBe('gzip');
+    const brut = gunzipSync(Buffer.from(await reponse.arrayBuffer())).toString();
+    expect(JSON.parse(brut)).toEqual(donnees);
+  });
+
+  it('sans gzip accepté : JSON en clair', async () => {
+    const reponse = repondreCompresse(new Request('http://x'), donnees, 'aucun');
+    expect(reponse.headers.get('content-encoding')).toBeNull();
+    expect(await reponse.json()).toEqual(donnees);
   });
 });

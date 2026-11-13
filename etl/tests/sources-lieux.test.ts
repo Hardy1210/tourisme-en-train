@@ -9,6 +9,7 @@ import {
 import {
   estNotable,
   imageDe,
+  wikipediaDe,
   lireElementOsm,
   requetesOverpass,
   traceDe,
@@ -72,6 +73,7 @@ describe('DATAtourisme', () => {
         adresse: '1 place de la Libération',
         url: 'https://musees.dijon.fr/',
         imageUrl: null,
+        wikipedia: null,
         horaires: null,
         qualiteTourisme: true,
         lon: 5.04,
@@ -162,6 +164,14 @@ describe('OSM', () => {
     expect(estNotable({ 'ref:mhs': 'PA00112233' })).toBe(true);
     expect(estNotable({ sport: 'swimming' })).toBe(true);
     expect(estNotable({ name: 'Étang du Moulin' })).toBe(false);
+  });
+
+  it('wikipediaDe : lien vers l’article ; sans langue ou sans tag → null (D092)', () => {
+    expect(wikipediaDe({ wikipedia: 'fr:Château de Bussy-Rabutin' })).toBe(
+      'https://fr.wikipedia.org/wiki/Ch%C3%A2teau_de_Bussy-Rabutin',
+    );
+    expect(wikipediaDe({ wikipedia: 'Château de Bussy-Rabutin' })).toBeNull();
+    expect(wikipediaDe({ wikidata: 'Q1069718' })).toBeNull();
   });
 
   it('imageDe : tag image, sinon fichier Wikimedia Commons', () => {

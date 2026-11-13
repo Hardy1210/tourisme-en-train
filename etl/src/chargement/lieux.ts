@@ -22,6 +22,7 @@ export const TABLE_TEMPORAIRE = {
     ['adresse', 'text'],
     ['url', 'text'],
     ['image_url', 'text'],
+    ['wikipedia', 'text'],
     ['horaires', 'text'],
     ['qualite_tourisme', 'boolean'],
     ['lon', 'float8'],
@@ -40,6 +41,7 @@ export const versValeurs = (l: LieuACharger): readonly ValeurCopie[] => [
   l.adresse,
   l.url,
   l.imageUrl,
+  l.wikipedia,
   l.horaires,
   l.qualiteTourisme,
   l.lon,
@@ -102,15 +104,17 @@ export async function fusionnerLieux(
 ): Promise<BilanFusionLieux> {
   const { rowCount } = await client.query(
     `INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, adresse,
-       code_insee, url, image_url, horaires, qualite_tourisme, geom, trace, categories_secondaires)
+       code_insee, url, image_url, wikipedia, horaires, qualite_tourisme, geom, trace,
+       categories_secondaires)
      SELECT $1, id_source, nom, categorie, sous_categorie, description, adresse,
-       code_insee, url, image_url, horaires, qualite_tourisme, geom, trace_geo,
+       code_insee, url, image_url, wikipedia, horaires, qualite_tourisme, geom, trace_geo,
        string_to_array(coalesce(categories_secondaires, ''), ',')
      FROM tmp_lieu WHERE code_insee IS NOT NULL
      ON CONFLICT (source, id_source) DO UPDATE SET
        nom = EXCLUDED.nom, categorie = EXCLUDED.categorie, sous_categorie = EXCLUDED.sous_categorie,
        description = EXCLUDED.description, adresse = EXCLUDED.adresse,
        code_insee = EXCLUDED.code_insee, url = EXCLUDED.url, image_url = EXCLUDED.image_url,
+       wikipedia = EXCLUDED.wikipedia,
        horaires = EXCLUDED.horaires, qualite_tourisme = EXCLUDED.qualite_tourisme,
        geom = EXCLUDED.geom, trace = EXCLUDED.trace,
        categories_secondaires = EXCLUDED.categories_secondaires, maj = now()`,

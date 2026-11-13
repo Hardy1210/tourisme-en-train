@@ -121,6 +121,7 @@ describe('trouverCommunes + fusionnerLieux', () => {
     null,
     null,
     null,
+    null,
     false,
     lon,
     lat,

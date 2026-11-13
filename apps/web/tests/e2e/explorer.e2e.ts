@@ -82,7 +82,7 @@ test.describe('position acceptée', () => {
     await expect(marqueurs(page)).toHaveCount(nombreInitial);
   });
 
-  test('chaque gare montre ses lieux à pied, recomptés selon les catégories (maquette v6)', async ({
+  test('chaque gare donne ses lieux à pied, recomptés selon les catégories (D088)', async ({
     page,
   }) => {
     // Nom de la gare → nombre de lieux à pied, lu dans le libellé de chaque point de destination.
@@ -103,12 +103,6 @@ test.describe('position acceptée', () => {
     await expect(marqueurs(page).first()).toBeAttached();
     const tout = await nombresParGare();
     expect(tout.size).toBeGreaterThan(0);
-
-    // La bulle affiche le même nombre que le libellé.
-    const [nom, nombre] = [...tout][0]!;
-    await expect(
-      page.getByRole('button', { name: new RegExp(`^${nom}, .*, ${nombre} lieux? à pied`) }),
-    ).toContainText(String(nombre));
 
     await page
       .getByRole('group', { name: 'Catégories' })

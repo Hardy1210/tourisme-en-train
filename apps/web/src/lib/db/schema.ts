@@ -190,6 +190,8 @@ export const lieu = pgTable(
     codeInsee: char({ length: 5 }).references(() => commune.codeInsee),
     url: text(),
     imageUrl: text(),
+    // Article Wikipédia (OSM, tag `wikipedia`) : signe d'intérêt pour le tri de la carte (D092).
+    wikipedia: text(),
     horaires: text(),
     periode: text(),
     qualiteTourisme: boolean().notNull().default(false),

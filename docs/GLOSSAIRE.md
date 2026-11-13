@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.20 · **Date** 13/11/2026
+> **Version** 1.21 · **Date** 13/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -33,7 +33,7 @@
 | **Barre du trajet** | Bouton d'une ligne en haut d'Explorer : « Autour de Dijon → Où aller ? » ; le départ ouvre « D'où partez-vous ? », la destination « Où allez-vous ? » (D084) ; sur téléphone, la page « Trajet » (D085) | `BarreTrajet` | — | Puce de localisation (écran Lieux) |
 | **Page « Trajet »** | Sur téléphone, page plein écran avec les champs Départ et Destination, ouverte par la barre du trajet (D085) | `PageTrajet`, `PagePleinEcran` | — | Feuille (sur ordinateur) |
 | **Mode destination** | État d'Explorer quand une destination est choisie : section « Près de la gare de… » en bas, train vers elle, « Filtres » réduit à « Quand ? » (D089) | `sectionPresDe`, `modeDestination` | — | Recherche de destination (le texte tapé) |
-| **Bulle (carte)** | Nombre de lieux à voir à pied depuis une gare de destination, à côté de son point, selon les catégories choisies (D088) | `totalLieux` | — | Point de la gare, icône de lieu |
+| **Bulle (carte)** | Groupe de lieux proches sur la carte, avec leur nombre ; elle se divise en zoomant, jusqu'aux icônes (D092 ; remplace la bulle par gare de D088) | `CoucheLieux`, `COUCHE_BULLES` | — | Point de la gare, icône de lieu |
 | **Niveau d'accès** | Comment rejoindre un lieu depuis la gare, d'après sa distance à pied : « pied » (≤ `acces.rayonPiedM`), « vélo » (≤ `acces.rayonVeloM`), sinon « loin » (D091) | `NiveauAcces`, `niveauAcces` | — | Distance à pied |
 | **Gare hors de la ville** | Gare dont le nom contient « TGV » (`destinations.motGareHorsVille`) : le train n'arrive pas en ville ; elle forme sa propre destination, au nom de la gare, avec « à <commune> » dessous (D049) | `horsVille` | — | Gare de la ville |
 | **Peu de lieux** | Destination de la région avec moins de `destinations.lieuxMinEnTete` (3) lieux à pied des catégories demandées : en fin de liste, jamais supprimée (D050) | `peuDeLieux` | — | Sans lieu (0 : retirée par le filtre des envies) |
@@ -152,3 +152,4 @@
 | 12/11/2026 | 1.18 | Page « Trajet » — D085 |
 | 13/11/2026 | 1.19 | Mode destination, bulle de la carte — D088, D089 |
 | 13/11/2026 | 1.20 | Niveau d'accès — D091 |
+| 13/11/2026 | 1.21 | Bulle (carte) : groupe de lieux — D092 |
