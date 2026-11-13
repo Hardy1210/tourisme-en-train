@@ -10,22 +10,11 @@ type Proprietes = {
   options: readonly OptionSelecteur[];
   valeur: string;
   surChangement: (valeur: string) => void;
-  /** Grisé quand le choix ne s'applique pas ici ; la note dit pourquoi (il reste visible, il existe). */
-  desactive?: boolean;
-  note?: string;
 };
 
 /** Choix d'une option parmi quelques-unes, toutes visibles (rayon, durée maximale). */
-export function Selecteur({
-  libelle,
-  options,
-  valeur,
-  surChangement,
-  desactive = false,
-  note,
-}: Proprietes) {
+export function Selecteur({ libelle, options, valeur, surChangement }: Proprietes) {
   const idLibelle = useId();
-  const idNote = useId();
   return (
     <div className="flex flex-col gap-2">
       <span id={idLibelle} className="text-base font-semibold">
@@ -39,25 +28,18 @@ export function Selecteur({
           if (choix) surChangement(choix);
         }}
         aria-labelledby={idLibelle}
-        aria-describedby={note ? idNote : undefined}
-        disabled={desactive}
         className="grid auto-cols-fr grid-flow-col gap-2"
       >
         {options.map((option) => (
           <ToggleGroup.Item
             key={option.valeur}
             value={option.valeur}
-            className="tabular h-touch cursor-pointer rounded-md border border-puce-border bg-puce-bg text-md font-semibold text-puce-foreground transition-colors hover:bg-surface-sunken disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-puce-bg data-[state=on]:border-selection-border data-[state=on]:bg-selection-bg data-[state=on]:text-selection-foreground"
+            className="tabular h-touch cursor-pointer rounded-md border border-puce-border bg-puce-bg text-md font-semibold text-puce-foreground transition-colors hover:bg-surface-sunken data-[state=on]:border-selection-border data-[state=on]:bg-selection-bg data-[state=on]:text-selection-foreground"
           >
             {option.libelle}
           </ToggleGroup.Item>
         ))}
       </ToggleGroup.Root>
-      {note && (
-        <p id={idNote} className="text-sm text-muted-foreground">
-          {note}
-        </p>
-      )}
     </div>
   );
 }

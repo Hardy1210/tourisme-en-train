@@ -9,8 +9,6 @@ import { Feuille } from '@/components/ui/feuille';
 import { Interrupteur } from '@/components/ui/interrupteur';
 import { Selecteur } from '@/components/ui/selecteur';
 import { parametres } from '@/config/parametres';
-import type { Destination } from '@/features/destinations/schemas';
-import { formaterDuree } from '@/features/destinations/presentation';
 import { cn } from '@/lib/classes';
 import { libelleCourt } from '@/lib/dates/calendrier';
 import { optionsDate } from '../date';
@@ -34,11 +32,6 @@ type Proprietes = {
   surModification: (modifications: Partial<Filtres>) => void;
   /** Écran Lieux : sa route ne connaît que la date et la durée de train. */
   dureeSeulement?: boolean;
-  /**
-   * Destination choisie (Explorer) : distance, temps de train et faisabilité ne filtrent plus rien, ils
-   * restent visibles mais grisés, et leur phrase donne l'information à la place.
-   */
-  destination?: Pick<Destination, 'titre' | 'dureeMin' | 'faisableJournee'> | null;
 };
 
 /**
@@ -51,27 +44,16 @@ export function FeuilleFiltres({
   filtres,
   surModification,
   dureeSeulement = false,
-  destination = null,
 }: Proprietes) {
   const [calendrier, setCalendrier] = useState(false);
   const fenetre = useFenetreHoraires();
   const aujourdhui = lireDateDuJour();
   const options = optionsDate(aujourdhui);
   const date = filtres.date === aujourdhui ? null : filtres.date;
-  // Destination choisie : « Près de la gare de… » suit le périmètre fixe des gares, pas ce filtre.
-  const nomDestination = destination?.titre ?? filtres.recherche;
-  const noteDistance =
-    filtres.destination === null
-      ? null
-      : `Autour de la gare de ${nomDestination} : ${libelleRayon(parametres.rayons.lieuxGareM)} à pied`;
-  const noteDuree =
-    destination === null
-      ? null
-      : `${nomDestination} : ${formaterDuree(destination.dureeMin)} en train direct`;
-  const noteFaisable =
-    destination === null
-      ? null
-      : `${nomDestination} : ${destination.faisableJournee ? 'aller et retour possibles' : "pas d'aller et retour"} dans la journée`;
+  // Destination choisie (Explorer) : on ne cherche plus où aller, seul « Quand ? » sert encore. Distance,
+  // temps de train et faisabilité disparaissent, comme dans les applications de trajet ; ils reviennent
+  // quand la destination est effacée. « Réinitialiser » ne remet alors à zéro que la date.
+  const modeDestination = !dureeSeulement && filtres.destination !== null;
   const dateDuCalendrier = date !== null && !options.some((o) => o.date === date);
 
   const changerOuverture = (valeur: boolean) => {
@@ -130,31 +112,28 @@ export function FeuilleFiltres({
               />
             </div>
           </div>
-          {!dureeSeulement && (
+          {!dureeSeulement && !modeDestination && (
             <Selecteur
               libelle="Distance autour de vous"
               options={OPTIONS_RAYON}
               valeur={String(filtres.rayon)}
               surChangement={(valeur) => surModification({ rayon: Number(valeur) })}
-              desactive={noteDistance !== null}
-              note={noteDistance ?? undefined}
             />
           )}
-          <Selecteur
-            libelle="Temps de train maximum"
-            options={OPTIONS_DUREE}
-            valeur={String(filtres.dureeMax)}
-            surChangement={(valeur) => surModification({ dureeMax: Number(valeur) })}
-            desactive={noteDuree !== null}
-            note={noteDuree ?? undefined}
-          />
-          {!dureeSeulement && (
+          {!modeDestination && (
+            <Selecteur
+              libelle="Temps de train maximum"
+              options={OPTIONS_DUREE}
+              valeur={String(filtres.dureeMax)}
+              surChangement={(valeur) => surModification({ dureeMax: Number(valeur) })}
+            />
+          )}
+          {!dureeSeulement && !modeDestination && (
             <div className="flex flex-col divide-y">
               <Interrupteur
                 libelle="Faisable dans la journée"
-                description={noteFaisable ?? 'Aller et retour le même jour'}
+                description="Aller et retour le même jour"
                 actif={filtres.faisable}
-                desactive={noteFaisable !== null}
                 surChangement={(faisable) => surModification({ faisable })}
               />
               <Interrupteur
@@ -170,13 +149,17 @@ export function FeuilleFiltres({
               variante="secondaire"
               className="flex-1"
               onClick={() =>
-                surModification({
-                  categories: FILTRES_PAR_DEFAUT.categories,
-                  rayon: FILTRES_PAR_DEFAUT.rayon,
-                  dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
-                  faisable: FILTRES_PAR_DEFAUT.faisable,
-                  date: FILTRES_PAR_DEFAUT.date,
-                })
+                surModification(
+                  modeDestination
+                    ? { date: FILTRES_PAR_DEFAUT.date }
+                    : {
+                        categories: FILTRES_PAR_DEFAUT.categories,
+                        rayon: FILTRES_PAR_DEFAUT.rayon,
+                        dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
+                        faisable: FILTRES_PAR_DEFAUT.faisable,
+                        date: FILTRES_PAR_DEFAUT.date,
+                      },
+                )
               }
             >
               Réinitialiser

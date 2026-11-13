@@ -88,6 +88,10 @@ function compteDate(filtres: Filtres, dateDuJour?: string): number {
 
 /** Nombre affiché sur le bouton « Filtres » : ce qui s'écarte du défaut, date comprise. */
 export function nombreFiltres(filtres: Filtres, dateDuJour?: string): number {
+  // Destination choisie : « Filtres » ne montre que la date, le bouton ne compte pas ce qui est caché.
+  if (filtres.destination !== null) {
+    return filtres.categories.length + compteDate(filtres, dateDuJour);
+  }
   return (
     filtres.categories.length +
     (filtres.rayon === FILTRES_PAR_DEFAUT.rayon ? 0 : 1) +

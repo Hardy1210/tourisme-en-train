@@ -97,6 +97,21 @@ describe('ecrireFiltres', () => {
 });
 
 describe('nombreFiltres', () => {
+  it('destination choisie : ne compte que les catégories et la date, pas les filtres cachés', () => {
+    const filtres = {
+      ...FILTRES_PAR_DEFAUT,
+      categories: ['enfants' as const],
+      rayon: 5000,
+      dureeMax: 30,
+      faisable: true,
+      date: '2026-11-14',
+    };
+    expect(nombreFiltres(filtres, '2026-11-12')).toBe(5);
+    expect(
+      nombreFiltres({ ...filtres, recherche: 'Beaune', destination: '87713545' }, '2026-11-12'),
+    ).toBe(2);
+  });
+
   it('ne compte rien par défaut', () => {
     expect(nombreFiltres(FILTRES_PAR_DEFAUT, '2026-11-12')).toBe(0);
   });

@@ -1,12 +1,11 @@
 'use client';
 
 import { dateDuJour } from '@tourisme/commun';
-import { useEffect, useRef, useState, type ComponentProps, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { cn } from '@/lib/classes';
 import { nombreFiltres } from '../filtres';
-import { useListeDestinations } from '../liste-destinations';
 import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
 import { usePageTrajet } from '../use-page-trajet';
@@ -118,22 +117,12 @@ export function EcranExplorer() {
         />
       )}
 
-      {depart.etat === 'pret' ? (
-        <FiltresAvecDestination
-          gareUic={depart.gare.uic}
-          ouverte={feuilleFiltres}
-          surChangement={setFeuilleFiltres}
-          filtres={filtres}
-          surModification={changer}
-        />
-      ) : (
-        <FeuilleFiltres
-          ouverte={feuilleFiltres}
-          surChangement={setFeuilleFiltres}
-          filtres={filtres}
-          surModification={changer}
-        />
-      )}
+      <FeuilleFiltres
+        ouverte={feuilleFiltres}
+        surChangement={setFeuilleFiltres}
+        filtres={filtres}
+        surModification={changer}
+      />
       <FeuilleChoixDepart choix={choix} />
       <PageTrajet
         trajet={trajet}
@@ -144,19 +133,4 @@ export function EcranExplorer() {
       />
     </div>
   );
-}
-
-/**
- * « Filtres » avec la destination choisie, lue dans la liste déjà chargée (même requête que les
- * résultats : aucune demande de plus). Seulement quand le départ est connu.
- */
-function FiltresAvecDestination({
-  gareUic,
-  ...proprietes
-}: { gareUic: string } & Omit<ComponentProps<typeof FeuilleFiltres>, 'destination'>) {
-  const { requete } = useListeDestinations(gareUic, proprietes.filtres);
-  const uic = proprietes.filtres.destination;
-  const destination =
-    uic === null ? null : (requete.data?.destinations.find((d) => d.gare.uic === uic) ?? null);
-  return <FeuilleFiltres {...proprietes} destination={destination} />;
 }
