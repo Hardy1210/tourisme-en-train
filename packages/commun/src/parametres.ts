@@ -113,6 +113,11 @@ export const schemaParametres = z
       bullesRayonPx: z.number().int().positive(),
       /** Carte : au-delà de ce zoom, plus de bulles, chaque lieu a son icône. */
       bullesZoomMax: z.number().positive(),
+      /**
+       * Carte : décalage [droite, bas] des bulles (cercle et nombre), pour que le point d'une gare ne cache
+       * pas leur nombre ; les icônes des lieux restent à leur place exacte (Hardy, 13/11).
+       */
+      bullesDecalagePx: z.tuple([z.number(), z.number()]),
     }),
     voiture: schemaMode,
     rail: z.strictObject({ coefDetour: z.number().min(1) }),

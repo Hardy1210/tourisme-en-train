@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.22 · **Date** 13/11/2026
+> **Version** 1.23 · **Date** 14/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -109,8 +109,9 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | `sousCategoriesAiresDeJeux` | aire de jeux | Sous-catégories soumises à `rayonAiresDeJeuxM` | — |
 | `lieuxPauvresSources`, `lieuxPauvresCategories` | osm ; patrimoine | Carte : loin de toute gare, un lieu de ces sources et catégories sans description, photo, label ni article Wikipédia n'est pas montré (il reste en base) | 1 274 lieux retirés de la carte le 13/11 (« Ruines de fondations », « Ancien lavoir », « Château » sans nom…) ; la carte était saturée (D092) |
 | `lieuxPauvresToujoursGardes` | musée, abbaye | Sous-catégories jamais retirées par ce tri | Presque toujours de vraies visites, peu nombreuses (74 remis le 13/11) |
-| `bullesRayonPx` | 45 | Carte : distance (px) sous laquelle des lieux se regroupent en une bulle | Réglé à l'œil par Hardy sur iPhone (13/11) : à 40 px et zoom 11, des icônes s'empilaient |
-| `bullesZoomMax` | 12 | Carte : au-delà, plus de bulles, chaque lieu a son icône | Idem |
+| `bullesRayonPx` | 37 | Carte : distance (px) sous laquelle des lieux se regroupent en une bulle ; plus petit = les bulles se divisent plus tôt | Réglé à l'œil par Hardy sur iPhone (13/11) |
+| `bullesZoomMax` | 13 | Carte : au-delà, plus de bulles, chaque lieu a son icône ; plus grand = les bulles restent plus longtemps | Idem |
+| `bullesDecalagePx` | [20, -5] | Carte : décalage [droite, bas] des bulles (cercle et nombre), pour que le point d'une gare ne cache pas leur nombre ; les icônes restent à leur place exacte | Réglé par Hardy sur iPhone (14/11) ; nombres négatifs = gauche, haut |
 | `sousCategoriesMasquees` | piscine, centre aquatique | Sous-catégories **gardées en base** mais cachées de tous les écrans (`lieu.masque`, calculé à l'import : carte, « Près de vous », liens aux gares) ; changer la liste recharge la source | Cachées « pour l'instant » (Hardy, 13/11). **On ne supprime jamais un lieu de la base, on choisit ce qu'on montre** (D093). Une correction manuelle passe avant (§ 4.5) |
 
 Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`dureeMin`, `dureeVeloDepuisDistanceMin`, `niveauAcces`), testées en paires ; l'import applique la même formule en SQL (`rattachements.sql`), avec les mêmes paramètres.
@@ -421,3 +422,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 13/11/2026 | 1.20 | § 2 : section `acces` (rayon à pied 2 km, vélo, aires de jeux, sous-catégories retirées), `marche`, `velo` et `rayons.lieuxGareM` déplacés ; § 4.5 : action `inclure` et marche à suivre ; § 4.6 : rayon des aires de jeux — D091 |
 | 13/11/2026 | 1.21 | § 2 : `acces.lieuxPauvres*`, `bullesRayonPx`, `bullesZoomMax` ; import OSM : tag `wikipedia` — D092 |
 | 13/11/2026 | 1.22 | § 2 : `sousCategoriesRetirees` devient `sousCategoriesMasquees` (gardées en base, `lieu.masque`) — D093 |
+| 14/11/2026 | 1.23 | § 2 : `bullesRayonPx` 37, `bullesZoomMax` 13, `bullesDecalagePx` — D094 |
