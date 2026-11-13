@@ -237,6 +237,8 @@ export function CarteExplorer({
             fitBoundsOptions: { padding: MARGE_PX, maxZoom: 12 },
           }}
           attributionControl={false}
+          // Sans fondu des textes : le nombre d'une bulle part avec elle quand on zoome (Hardy, 13/11).
+          fadeDuration={0}
           interactiveLayerIds={couleursBulles ? [COUCHE_BULLES, COUCHE_ICONES] : []}
           onClick={(evenement) => void toucher(evenement)}
           onLoad={(evenement) => {
