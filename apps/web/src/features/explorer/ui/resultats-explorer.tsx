@@ -9,7 +9,7 @@ import { SectionDestinations } from '@/features/destinations/ui/section-destinat
 import type { Destination } from '@/features/destinations/schemas';
 import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
 import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
-import { useLieuxAutour } from '@/features/lieux/hooks';
+import { useLieuxAutour, useLieuxGare } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
 import { suffixeDate } from '../date';
@@ -20,6 +20,7 @@ import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from 
 import { TEXTES_TRAJET } from '../contenu-trajet';
 import { useDefilementVersDestination } from '../defilement-destination';
 import { useListeDestinations } from '../liste-destinations';
+import { sectionPresDe } from '../pres-de';
 
 const AUCUNE_DESTINATION: readonly Destination[] = [];
 
@@ -37,7 +38,7 @@ type Proprietes = {
   demandeDefilement: number;
 };
 
-/** « Votre gare », « À deux pas de vous », « En train direct » : tout suit les filtres de l'URL. */
+/** « Votre gare », « Près de vous », « En train direct » : tout suit les filtres de l'URL. */
 export function ResultatsExplorer({
   depart,
   filtres,
@@ -54,11 +55,47 @@ export function ResultatsExplorer({
   const [carteTouchee, setCarteTouchee] = useState(0);
   const { gare, point, origine } = depart;
   const plusProche = plusProcheDifferente(depart);
-  const lieux = useLieuxAutour({ point, rayon: filtres.rayon, categories: filtres.categories });
   // Liste partagée avec la feuille « Où allez-vous ? » ; `liste` suit aussi la recherche (D084).
   const { requete: destinations, avantRecherche, liste } = useListeDestinations(gare.uic, filtres);
+  const destinationChoisie =
+    filtres.destination === null
+      ? undefined
+      : avantRecherche?.find((d) => d.gare.uic === filtres.destination);
+  const presDe = sectionPresDe({
+    origine,
+    gareDepart: gare.nom,
+    destination: destinationChoisie
+      ? { uic: destinationChoisie.gare.uic, gare: destinationChoisie.gare.nom }
+      : null,
+  });
+  const autourDeMoi = presDe.autour === 'depart';
+  const lieuxDepart = useLieuxAutour({
+    point,
+    rayon: filtres.rayon,
+    categories: filtres.categories,
+  });
+  // Destination choisie : ses lieux à pied (périmètre fixe des gares), dans la liste et sur la carte.
+  const lieuxDestination = useLieuxGare(
+    presDe.autour === 'destination' ? presDe.uic : '',
+    presDe.autour === 'destination' && destinationChoisie?.lieuxCharges === true,
+    filtres.categories,
+  );
+  const lieux = autourDeMoi ? lieuxDepart : lieuxDestination;
   const rechercheActive = filtres.recherche !== '';
   useDefilementVersDestination(feuille, demandeDefilement, rechercheActive, liste);
+
+  // Destination hors région : pas de lieux chargés, donc pas de section en bas.
+  const avecSection = autourDeMoi || destinationChoisie?.lieuxCharges === true;
+  const sectionLieux = avecSection && (
+    <SectionAPied
+      titre={presDe.titre}
+      rayonLibelle={libelleRayon(autourDeMoi ? filtres.rayon : parametres.rayons.lieuxGareM)}
+      lieux={lieux.data?.lieux}
+      chargement={lieux.isPending}
+      erreur={lieux.isError}
+      surReessai={() => void lieux.refetch()}
+    />
+  );
 
   const lienDe = (destination: Destination) => {
     const suite = new URLSearchParams({ depuis: gare.uic });
@@ -110,7 +147,14 @@ export function ResultatsExplorer({
               distanceM={gare.distanceM}
               dureeMarcheMin={gare.dureeMarcheMin}
               dureeVeloMin={gare.dureeVeloMin}
-              prochainDepart={avantRecherche ? prochainTrainDirect(avantRecherche) : null}
+              prochainDepart={
+                destinationChoisie
+                  ? (prochainTrainDirect([destinationChoisie]) ??
+                    TEXTES_TRAJET.plusDeTrain(destinationChoisie.titre, filtres.date !== null))
+                  : avantRecherche
+                    ? prochainTrainDirect(avantRecherche)
+                    : null
+              }
               surChangement={surChangementGare}
               plusProche={
                 plusProche && {
@@ -120,14 +164,7 @@ export function ResultatsExplorer({
                 }
               }
             />
-            <SectionAPied
-              titre={origine === 'position' ? 'À deux pas de vous' : 'À deux pas de la gare'}
-              rayonLibelle={libelleRayon(filtres.rayon)}
-              lieux={lieux.data?.lieux}
-              chargement={lieux.isPending}
-              erreur={lieux.isError}
-              surReessai={() => void lieux.refetch()}
-            />
+            {presDe.emplacement === 'haut' && sectionLieux}
             <SectionDestinations
               gareNom={gare.nom}
               suffixeDate={suffixeDate(filtres.date, dateDuJour())}
@@ -173,6 +210,7 @@ export function ResultatsExplorer({
                   : null
               }
             />
+            {presDe.emplacement === 'bas' && sectionLieux}
           </div>
         </FeuilleResultats>
       </div>

@@ -50,7 +50,7 @@ type Proprietes = {
   surReessai: () => void;
 };
 
-/** « À deux pas de vous » : tous les lieux à pied, sans le tri propre à l'onglet Lieux. */
+/** « Près de vous » ou « Près de la gare de… » (maquette v6) : tous les lieux à pied, sans le tri propre à l'onglet Lieux. */
 export function SectionAPied({
   titre,
   rayonLibelle,

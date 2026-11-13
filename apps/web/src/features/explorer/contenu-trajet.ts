@@ -2,6 +2,9 @@
 // corriger un texte : la logique (`recherche-destination.ts`) et l'écran n'en contiennent aucun.
 
 export const TEXTES_TRAJET = {
+  /** Carte « Votre gare », destination choisie sans train restant : « Prochain départ direct ── aucun aujourd'hui → Beaune ». */
+  plusDeTrain: (destination: string, autreJour: boolean) =>
+    `aucun ${autreJour ? 'ce jour-là' : "aujourd'hui"} → ${destination}`,
   /** Partie destination de la barre, sans recherche. */
   ouAller: 'Où aller ?',
   /** Nom accessible de la barre : « Trajet : Autour de Dijon, vers Où aller ? ». */

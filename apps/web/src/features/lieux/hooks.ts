@@ -29,9 +29,13 @@ export function useLieuxAutour({ point, rayon, categories }: Options) {
   });
 }
 
-/** Lieux à pied de la gare d'arrivée ; rien à demander hors région (`lieuxCharges` faux). */
-export function useLieuxGare(uic: string, actif: boolean) {
-  const chemin = `/api/destinations/${uic}/lieux`;
+/**
+ * Lieux à pied de la gare d'arrivée ; rien à demander hors région (`lieuxCharges` faux). Avec des
+ * catégories : seulement celles-là (section « Près de la gare de… » d'Explorer).
+ */
+export function useLieuxGare(uic: string, actif: boolean, categories: readonly Categorie[] = []) {
+  const suite = categories.length > 0 ? `?categories=${categories.join(',')}` : '';
+  const chemin = `/api/destinations/${uic}/lieux${suite}`;
   return useQuery({
     queryKey: ['lieux-gare', chemin],
     enabled: actif,

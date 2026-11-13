@@ -88,6 +88,10 @@ function compteDate(filtres: Filtres, dateDuJour?: string): number {
 
 /** Nombre affiché sur le bouton « Filtres » : ce qui s'écarte du défaut, date comprise. */
 export function nombreFiltres(filtres: Filtres, dateDuJour?: string): number {
+  // Destination choisie : « Filtres » ne montre que la date, le bouton ne compte pas ce qui est caché.
+  if (filtres.destination !== null) {
+    return filtres.categories.length + compteDate(filtres, dateDuJour);
+  }
   return (
     filtres.categories.length +
     (filtres.rayon === FILTRES_PAR_DEFAUT.rayon ? 0 : 1) +
@@ -145,4 +149,6 @@ export const libelleDureeMax = (minutes: number): string =>
   minutes < 60 ? `${minutes} min` : `${minutes / 60} h`;
 
 /** « 2 km ». */
-export const libelleRayon = (metres: number): string => `${metres / 1000} km`;
+/** « 2 km », « 1,5 km ». */
+export const libelleRayon = (metres: number): string =>
+  `${String(metres / 1000).replace('.', ',')} km`;
