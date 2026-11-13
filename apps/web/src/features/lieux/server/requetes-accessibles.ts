@@ -7,7 +7,7 @@ import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-// Piscines : plus chargées en base (acces.sousCategoriesRetirees, D091), rien à filtrer ici.
+// Lieux masqués (piscines…) : jamais dans `lieu_gare` (D093), rien à filtrer ici.
 const { sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
 
 const liste = (valeurs: readonly string[]) =>

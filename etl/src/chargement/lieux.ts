@@ -9,7 +9,7 @@ import { parametres } from '../config';
 import { aucune, auMoins, type Controle } from '../controles/base';
 import type { ValeurCopie } from './base';
 import { raccorderTroncons } from './troncons';
-import type { LieuACharger, RaisonEcart } from '../transformations/lieux';
+import type { LieuMasquable, RaisonEcart } from '../transformations/lieux';
 
 export const TABLE_TEMPORAIRE = {
   nom: 'tmp_lieu',
@@ -29,10 +29,11 @@ export const TABLE_TEMPORAIRE = {
     ['lat', 'float8'],
     ['trace', 'text'],
     ['categories_secondaires', 'text'],
+    ['masque', 'boolean'],
   ],
 } as const;
 
-export const versValeurs = (l: LieuACharger): readonly ValeurCopie[] => [
+export const versValeurs = (l: LieuMasquable): readonly ValeurCopie[] => [
   l.idSource,
   l.nom,
   l.categorie,
@@ -48,6 +49,7 @@ export const versValeurs = (l: LieuACharger): readonly ValeurCopie[] => [
   l.lat,
   l.trace,
   l.categoriesSecondaires.join(','),
+  l.masque,
 ];
 
 /** Point du lieu, puis commune dont le contour le contient (seules les communes de la région en ont un). */
@@ -105,10 +107,10 @@ export async function fusionnerLieux(
   const { rowCount } = await client.query(
     `INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, description, adresse,
        code_insee, url, image_url, wikipedia, horaires, qualite_tourisme, geom, trace,
-       categories_secondaires)
+       categories_secondaires, masque)
      SELECT $1, id_source, nom, categorie, sous_categorie, description, adresse,
        code_insee, url, image_url, wikipedia, horaires, qualite_tourisme, geom, trace_geo,
-       string_to_array(coalesce(categories_secondaires, ''), ',')
+       string_to_array(coalesce(categories_secondaires, ''), ','), coalesce(masque, false)
      FROM tmp_lieu WHERE code_insee IS NOT NULL
      ON CONFLICT (source, id_source) DO UPDATE SET
        nom = EXCLUDED.nom, categorie = EXCLUDED.categorie, sous_categorie = EXCLUDED.sous_categorie,
@@ -117,7 +119,8 @@ export async function fusionnerLieux(
        wikipedia = EXCLUDED.wikipedia,
        horaires = EXCLUDED.horaires, qualite_tourisme = EXCLUDED.qualite_tourisme,
        geom = EXCLUDED.geom, trace = EXCLUDED.trace,
-       categories_secondaires = EXCLUDED.categories_secondaires, maj = now()`,
+       categories_secondaires = EXCLUDED.categories_secondaires, masque = EXCLUDED.masque,
+       maj = now()`,
     [source],
   );
   const supprimees = await client.query(

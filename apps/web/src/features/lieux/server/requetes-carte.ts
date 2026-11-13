@@ -41,7 +41,7 @@ export async function lieuxCarte(options: {
            round(ST_Y(l.geom::geometry)::numeric, 5)::float8 AS lat,
            round(ST_X(l.geom::geometry)::numeric, 5)::float8 AS lon
     FROM lieu l
-    WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
+    WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville AND NOT l.masque
       AND (coalesce(l.sous_categorie, '') NOT IN (${liste(options.airesDeJeux)}) OR ${relie})
       AND NOT (l.source IN (${liste(options.pauvres.sources)})
                AND l.categorie IN (${liste(options.pauvres.categories)})

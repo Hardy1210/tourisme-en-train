@@ -27,14 +27,14 @@ import {
   categoriesSecondaires,
   type RegleSecondaire,
 } from '../transformations/categories-secondaires';
-import { LIBELLES_ECART, type LieuACharger } from '../transformations/lieux';
+import { LIBELLES_ECART, type LieuMasquable } from '../transformations/lieux';
 import { motifQuiExclut, type MotifExclu } from '../transformations/noms-exclus';
 import { lireReglesSecondaires } from '../chargement/categories-secondaires';
 import { lireCorrections } from '../chargement/corrections';
 import {
   corrigerLieu,
   inclusionsDe,
-  retireParSousCategorie,
+  masqueParSousCategorie,
   type CorrectionLieu,
   type Inclusion,
 } from '../transformations/corrections';
@@ -53,7 +53,7 @@ export function empreinteLieux(
   nomsExclus: readonly MotifExclu[] = [],
   secondaires: readonly RegleSecondaire[] = [],
   corrections: readonly CorrectionLieu[] = [],
-  sousCategoriesRetirees: readonly string[] = [],
+  sousCategoriesMasquees: readonly string[] = [],
 ): string {
   return (
     createHash('sha256')
@@ -62,8 +62,8 @@ export function empreinteLieux(
       .update(JSON.stringify(nomsExclus))
       .update(JSON.stringify(secondaires))
       .update(JSON.stringify(corrections))
-      // Changer la liste des sous-catégories retirées doit recharger la source (D091).
-      .update(JSON.stringify(sousCategoriesRetirees))
+      // Changer la liste des sous-catégories masquées doit recharger la source (D093).
+      .update(JSON.stringify(sousCategoriesMasquees))
       .digest('hex')
   );
 }
@@ -100,7 +100,7 @@ export async function chargerLieux(options: {
     nomsExclus,
     secondaires,
     toutesCorrections,
-    parametres.acces.sousCategoriesRetirees,
+    parametres.acces.sousCategoriesMasquees,
   );
   if (estInchange(empreinte, connue, options.force)) return 'IGNORE';
 
@@ -108,7 +108,7 @@ export async function chargerLieux(options: {
   const compte = nouveauCompte();
   const lus = new Set<string>();
   const exclusParNom: LieuExclu[] = [];
-  async function* lieux(): AsyncGenerator<LieuACharger> {
+  async function* lieux(): AsyncGenerator<LieuMasquable> {
     const descriptionMax = parametres.lieux.descriptionMaxCaracteres;
     for await (const resultat of options.lire(index, descriptionMax, inclusion)) {
       if (resultat.type === 'ecarte') {
@@ -144,13 +144,13 @@ export async function chargerLieux(options: {
           compter(compte, 'correction', resultat.nonClassees);
           continue;
         }
-        const { sousCategoriesRetirees } = parametres.acces;
-        if (retireParSousCategorie(corrige.sousCategorie, sousCategoriesRetirees, correction)) {
-          compter(compte, 'sous_categorie_retiree', resultat.nonClassees);
-          continue;
-        }
+        const { sousCategoriesMasquees } = parametres.acces;
         compter(compte, null, resultat.nonClassees);
-        yield corrige;
+        // Jamais écarté : un lieu masqué reste en base, caché des écrans (D093).
+        yield {
+          ...corrige,
+          masque: masqueParSousCategorie(corrige.sousCategorie, sousCategoriesMasquees, correction),
+        };
       }
     }
   }

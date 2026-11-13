@@ -207,6 +207,9 @@ export const lieu = pgTable(
     // Fiche décrivant une ville entière : gardée en base, jamais listée (D057), recalculée par
     // `pnpm etl rattachements`.
     ficheVille: boolean('fiche_ville').notNull().default(false),
+    // Gardé en base mais caché de tous les écrans (`acces.sousCategoriesMasquees`, ex. piscines), calculé
+    // à l'import ; une correction manuelle passe avant (D093).
+    masque: boolean().notNull().default(false),
     // Le lieu apparaît aussi sous ces catégories quand on filtre ; sa catégorie reste `categorie` (D060).
     categoriesSecondaires: text('categories_secondaires')
       .array()

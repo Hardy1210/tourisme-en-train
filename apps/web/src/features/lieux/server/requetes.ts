@@ -25,7 +25,7 @@ export type LieuAutourBrut = z.infer<typeof schemaLigne>;
 /**
  * Lieux à moins de `rayonVolOiseauM` d'un point, les plus proches d'abord. Doublons et membres d'un
  * site ignorés (un site apparaît une fois, par son représentant : docs/03 § 3.6). Aires de jeux : seulement
- * à `airesDeJeux.rayonVolOiseauM` au plus du point (D091).
+ * à `airesDeJeux.rayonVolOiseauM` au plus du point (D091). Lieux masqués jamais montrés (D093).
  */
 export async function lieuxAutour(options: {
   lat: number;
@@ -45,7 +45,7 @@ export async function lieuxAutour(options: {
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            ST_Distance(l.geom, ${point}) AS vol_oiseau_m, count(*) OVER () AS total
     FROM lieu l
-    WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville
+    WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville AND NOT l.masque
       AND ${filtreCategories(options.categories)}
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})
       AND (coalesce(l.sous_categorie, '') NOT IN (${aires})
