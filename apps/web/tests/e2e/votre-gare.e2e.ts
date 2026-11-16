@@ -13,7 +13,8 @@ test.beforeEach(async ({ context, baseURL }) => {
   );
 });
 
-const carteVotreGare = (page: Page) => page.getByRole('region', { name: /Dijon/ }).first();
+// La carte est nommée par son titre, le nom de la gare (`aria-labelledby="votre-gare"`).
+const carteVotreGare = (page: Page) => page.locator('[aria-labelledby="votre-gare"]');
 
 test.describe('à côté de la gare', () => {
   test.use({ geolocation: { latitude: 47.3233, longitude: 5.0272 }, permissions: ['geolocation'] });
@@ -37,7 +38,8 @@ test.describe('loin de la gare', () => {
     await page.goto(ECRAN);
     const carte = carteVotreGare(page);
     await expect(carte).toContainText(/\d+,\d km/);
-    await expect(carte).not.toContainText('min à pied');
+    // Avant D096 : « 🚲 14 min · 3,6 km », le vélo n'étant qu'une icône. Aucune durée ne doit rester.
+    await expect(carte).not.toContainText(/\d+ min/);
     await expect(carte).not.toContainText(/vélo/i);
     await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });
