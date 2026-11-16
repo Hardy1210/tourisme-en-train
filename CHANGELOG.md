@@ -7,6 +7,8 @@
 
 ## [Non publié]
 
+## [0.2.0] — 16/11/2026
+
 ### Ajouté
 - La carte d'Explorer montre les lieux à visiter autour de vous (à la distance choisie dans « Filtres ») et autour de chaque gare où vous pouvez aller en train direct : regroupés en bulles avec leur nombre, qui se divisent quand on zoome, jusqu'à l'icône de chaque lieu. Les catégories choisies filtrent la carte.
 - Recherche de destination : en haut d'Explorer, « Autour de Dijon → Où aller ? » : touchez « Où aller ? » pour chercher. Tapez « beau » ou « besancon », et la liste comme la carte ne montrent plus que ces destinations, sans changer la gare de départ. Sur téléphone, départ et destination se choisissent dans une page plein écran, clavier prêt, avec les destinations les plus proches en train.
