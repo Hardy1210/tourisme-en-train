@@ -265,6 +265,7 @@ describe('/api/mobilites/[uic]', () => {
   it('Dijon-Ville : triés par type puis distance, durée de marche depuis la distance à pied', async () => {
     const reponse = await appeler(mobilites, `/api/mobilites/${DIJON}`, { uic: DIJON });
     const { mobilites: liste } = schemaReponseMobilites.parse(reponse.corps);
+    // Le parking vélo d'exemple de Dijon-Ville n'est pas un transport sur place (D097) : absent.
     expect(liste.map((m) => m.type)).toEqual(['BUS', 'TRAM', 'VELO']);
     expect(liste[0]).toMatchObject({ distanceM: 450, dureeMarcheMin: 6, lignes: ['L3'] });
     expect(liste.find((m) => m.type === 'VELO')?.lignes).toEqual([]);

@@ -31,6 +31,8 @@ export const schemaGareProche = z.object({
   dureeVeloMin: z.number().int(),
   dureeVoitureMin: z.number().int(),
   dansRegion: z.boolean(),
+  /** Un parking vélo OSM à `acces.rayonParkingVeloM` de la gare au plus (D097). */
+  parkingVelo: z.boolean(),
 });
 
 export const schemaReponseGaresProches = z.object({

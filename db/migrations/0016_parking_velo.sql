@@ -1,0 +1,2 @@
+ALTER TABLE "mobilite_locale" DROP CONSTRAINT "mobilite_locale_type_check";--> statement-breakpoint
+ALTER TABLE "mobilite_locale" ADD CONSTRAINT "mobilite_locale_type_check" CHECK ("mobilite_locale"."type" IN ('BUS', 'TRAM', 'CAR', 'VELO', 'TROTTINETTE', 'AUTRE', 'PARKING_VELO'));

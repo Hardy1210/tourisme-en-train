@@ -35,6 +35,7 @@ export async function garesProches(
       dureeVeloMin: dureeVeloMin(g.distance_m),
       dureeVoitureMin: dureeVoitureMin(g.distance_m),
       dansRegion: g.dans_region,
+      parkingVelo: g.parking_velo,
     })),
   };
 }

@@ -77,7 +77,7 @@ export function requetesOverpass(
       );
     if (!couverte) filtres.add(filtreDe(regle));
   }
-  const aire = `area["boundary"="administrative"]["admin_level"="4"]["ref:INSEE"=${guillemets(codeInseeRegion)}]->.region;`;
+  const aire = aireRegion(codeInseeRegion);
   return [...filtres].sort().map((filtre) => ({
     filtre,
     requete: [
@@ -87,6 +87,50 @@ export function requetesOverpass(
       filtre.startsWith('way') ? 'out geom tags;' : 'out center tags;',
     ].join('\n'),
   }));
+}
+
+/** Zone de la région (`ref:INSEE` de la région, parametres.json), nommée `.region`. */
+const aireRegion = (codeInseeRegion: string): string =>
+  `area["boundary"="administrative"]["admin_level"="4"]["ref:INSEE"=${guillemets(codeInseeRegion)}]->.region;`;
+
+/** Filtre OSM des parkings vélo (D097), sans nom exigé : la plupart n'en ont pas. */
+export const FILTRE_PARKING_VELO = '["amenity"="bicycle_parking"]';
+
+/**
+ * Requête des parkings vélo de la région (D097) : une partie de plus de l'extraction OSM, écrite dans son
+ * propre fichier brut, car ce ne sont pas des lieux. Rattachés ensuite aux gares (`parkings-velo.sql`).
+ */
+export function requeteParkingsVelo(codeInseeRegion: string, delaiS: number): string {
+  return [
+    `[out:json][timeout:${delaiS}];`,
+    aireRegion(codeInseeRegion),
+    `nwr${FILTRE_PARKING_VELO}(area.region);`,
+    'out center tags;',
+  ].join('\n');
+}
+
+export interface ParkingVelo {
+  idSource: string;
+  nom: string;
+  lon: number;
+  lat: number;
+}
+
+/** Nom affiché d'un parking sans nom dans OSM (`mobilite_locale.nom` est obligatoire). */
+export const NOM_PARKING_VELO = 'Parking vélo';
+
+/** Un parking vélo d'un élément Overpass ; null sans position ou si ce n'en est pas un. */
+export function lireParkingVelo(element: ElementOsm): ParkingVelo | null {
+  if (element.tags.amenity !== 'bicycle_parking') return null;
+  const lat = element.lat ?? element.center?.lat;
+  const lon = element.lon ?? element.center?.lon;
+  if (lat === undefined || lon === undefined) return null;
+  return {
+    idSource: `${element.type}/${element.id}`,
+    nom: texteOuNull(element.tags.name) ?? NOM_PARKING_VELO,
+    lon,
+    lat,
+  };
 }
 
 /** Signe de sortie (règles `notable`) : lien encyclopédique, Monument historique, tourisme, loisirs, baignade. */

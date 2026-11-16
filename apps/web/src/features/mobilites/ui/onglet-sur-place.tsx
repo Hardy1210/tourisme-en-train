@@ -16,6 +16,8 @@ const APPARENCE: Record<TypeMobilite, { libelle: string; Icone: LucideIcon }> = 
   VELO: { libelle: 'Vélos', Icone: Bike },
   TROTTINETTE: { libelle: 'Trottinettes', Icone: Zap },
   AUTRE: { libelle: 'Autres', Icone: MapPin },
+  // Jamais renvoyés par /api/mobilites (D097) : absents de l'ordre d'affichage.
+  PARKING_VELO: { libelle: 'Parkings vélo', Icone: Bike },
 };
 
 const ORDRE: readonly TypeMobilite[] = ['TRAM', 'BUS', 'CAR', 'VELO', 'TROTTINETTE', 'AUTRE'];

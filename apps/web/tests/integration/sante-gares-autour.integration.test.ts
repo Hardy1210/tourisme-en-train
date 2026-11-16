@@ -75,6 +75,15 @@ describe('/api/gares/proches', () => {
     expect(gares[0]?.dureeVeloMin).toBe(4);
   });
 
+  it('parking vélo (D097) : Dijon-Ville en a un dans l’échantillon, les autres gares non', async () => {
+    const reponse = await appeler(garesProches, `/api/gares/proches?${DARCY}`);
+    const { gares } = schemaReponseGaresProches.parse(reponse.corps);
+    expect(gares.find((g) => g.nom === 'Dijon-Ville')?.parkingVelo).toBe(true);
+    const autres = gares.filter((g) => g.nom !== 'Dijon-Ville');
+    expect(autres.length).toBeGreaterThan(0);
+    expect(autres.every((g) => !g.parkingVelo)).toBe(true);
+  });
+
   it('limite 10 acceptée, 11 refusée', async () => {
     expect((await appeler(garesProches, `/api/gares/proches?${DARCY}&limite=10`)).statut).toBe(200);
     const refus = await appeler(garesProches, `/api/gares/proches?${DARCY}&limite=11`);

@@ -84,12 +84,12 @@ export function controlesTransportLocal(reseauxCharges: number) {
     auMoins('Réseaux chargés', `SELECT ${Number(reseauxCharges)}::int AS n`, 1),
     aucune(
       'Arrêts au-delà du rayon à pied',
-      'SELECT count(*)::int AS n FROM mobilite_locale WHERE distance_m > $1::int + 1',
+      "SELECT count(*)::int AS n FROM mobilite_locale WHERE type <> 'PARKING_VELO' AND distance_m > $1::int + 1",
       [parametres.rayons.mobiliteM],
     ),
     aucune(
       'Arrêts sans ligne (bus, tram, car)',
-      "SELECT count(*)::int AS n FROM mobilite_locale WHERE type <> 'VELO' AND coalesce(cardinality(lignes), 0) = 0",
+      "SELECT count(*)::int AS n FROM mobilite_locale WHERE type NOT IN ('VELO', 'PARKING_VELO') AND coalesce(cardinality(lignes), 0) = 0",
     ),
     aucune(
       'Réseaux sans aucun arrêt près d’une gare de la région',
@@ -143,7 +143,7 @@ export async function chargerTransportLocalDans(
   if (echecsBloquants(controles).length > 0) throw new ErreurControles(controles);
   const { rows } = await client.query<{ source: string; arrets: number; gares: number }>(
     `SELECT source, count(DISTINCT id_source)::int AS arrets, count(DISTINCT gare_id)::int AS gares
-     FROM mobilite_locale GROUP BY source ORDER BY source`,
+     FROM mobilite_locale WHERE type <> 'PARKING_VELO' GROUP BY source ORDER BY source`,
   );
   return { lignes, controles, parReseau: rows };
 }

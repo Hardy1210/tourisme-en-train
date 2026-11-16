@@ -1,6 +1,11 @@
 // Trajet de l'utilisateur à sa gare de départ (D096). Fonctions pures : aucune base, aucun réseau.
 import { parametres } from '@/config/parametres';
-import { distanceMarcheM, dureeMarcheMin } from '@/lib/geo/distances';
+import {
+  distanceMarcheM,
+  distanceParcourueM,
+  dureeMarcheMin,
+  dureeVeloMin,
+} from '@/lib/geo/distances';
 import { formaterDistance } from '@/lib/geo/formats';
 
 /**
@@ -17,10 +22,21 @@ export function accesGare(volOiseauM: number): { dureeMarcheMin: number | null; 
   };
 }
 
-/** Texte court des listes de gares proches : « 27 min à pied » ou « 3,2 km ». */
-export function texteAccesGare(volOiseauM: number): string {
+/**
+ * Texte court des listes de gares proches : « 27 min à pied », sinon « ≈ 17 min à vélo » si la gare a un
+ * parking vélo, la preuve qu'on peut y laisser le sien (D097), jusqu'à `acces.rayonVeloM` avec le détour ;
+ * sinon la distance. `aVelo` : la ligne affiche aussi « Parking vélo à la gare ».
+ */
+export function accesGareProche(
+  volOiseauM: number,
+  parkingVelo: boolean,
+): { texte: string; aVelo: boolean } {
   const { dureeMarcheMin: minutes, distance } = accesGare(volOiseauM);
-  return minutes === null ? distance : `${minutes} min à pied`;
+  if (minutes !== null) return { texte: `${minutes} min à pied`, aVelo: false };
+  if (parkingVelo && distanceParcourueM(volOiseauM, 'velo') <= parametres.acces.rayonVeloM) {
+    return { texte: `≈ ${dureeVeloMin(volOiseauM)} min à vélo`, aVelo: true };
+  }
+  return { texte: distance, aVelo: false };
 }
 
 /** Applications de cartes proposées (D096) : Plans n'existe que sur iPhone. */

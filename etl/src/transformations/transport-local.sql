@@ -34,7 +34,8 @@ GROUP BY q.source, lower(unaccent(q.nom)), q.groupe;
 CREATE INDEX ON tmp_arret_groupe USING gist (geom);
 
 -- @vider
-DELETE FROM mobilite_locale;
+-- Les parkings vélo viennent de l'extraction OSM (`parkings-velo.sql`, D097) : ils restent.
+DELETE FROM mobilite_locale WHERE type <> 'PARKING_VELO';
 
 -- @inserer
 -- Distance à pied = vol d'oiseau × coef_detour, gardée si ≤ :rayon_m (D046, comme D043).

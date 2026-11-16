@@ -1,6 +1,7 @@
 // Commande `pnpm etl osm` (docs/02-sources-donnees.md § 2.4, D041) : une requête Overpass par règle
-// OSM de `categories.csv`, réunies dans `overpass.json` → lieux classés de la région.
-// Après `regles` et `contours`.
+// OSM de `categories.csv`, réunies dans `overpass.json` → lieux classés de la région. Une requête de
+// plus, les parkings vélo, dans `parkings-velo.json` → rattachés aux gares (D097).
+// Après `regles`, `contours` et `gares`.
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { journal, trouverSource } from '@tourisme/commun';
@@ -9,11 +10,16 @@ import { executerSource } from '../chargement/execution';
 import { lireRegles } from '../chargement/regles';
 import { lireConfig, parametres, resoudreDossierDonnees } from '../config';
 import { creerPool } from '../db';
+import { chargerParkingsVelo } from '../chargement/parkings-velo';
 import {
+  FILTRE_PARKING_VELO,
   lireElementOsm,
+  lireParkingVelo,
+  requeteParkingsVelo,
   requetesOverpass,
   schemaElementOsm,
   schemaReponseOverpass,
+  type ParkingVelo,
 } from '../transformations/osm';
 import {
   avecReessais,
@@ -33,6 +39,20 @@ const DELAI_OVERPASS_S = 180;
 /** Serveur saturé ou requête interrompue : 6 tentatives, attentes de 30 s à 8 min. */
 const REESSAIS = { tentatives: 6, premiereAttenteMs: 30_000 };
 
+/** Fichiers bruts de l'extraction : les lieux, et à part les parkings vélo, qui ne sont pas des lieux. */
+const FICHIER_LIEUX = 'overpass.json';
+const FICHIER_PARKINGS = 'parkings-velo.json';
+
+/** Parkings vélo du fichier brut ; un élément illisible ou sans position est ignoré. */
+async function lireParkings(chemin: string): Promise<ParkingVelo[]> {
+  const { elements } = schemaReponseOverpass.parse(JSON.parse(await readFile(chemin, 'utf8')));
+  return elements.flatMap((brut) => {
+    const element = schemaElementOsm.safeParse(brut);
+    const parking = element.success ? lireParkingVelo(element.data) : null;
+    return parking ? [parking] : [];
+  });
+}
+
 /** Réponse interrompue par le serveur (délai, mémoire) : à refaire, jamais à charger telle quelle. */
 class ReponseIncomplete extends Error {}
 
@@ -40,11 +60,13 @@ class ReponseIncomplete extends Error {}
 async function telechargerOsm(
   dossierDonnees: string,
   requetes: readonly { filtre: string; requete: string }[],
+  nomFichier: string,
 ): Promise<FichierBrut> {
   const url = trouverSource('osm').telechargement;
   if (!url) throw new Error('Adresse de téléchargement absente de config/sources.json (osm)');
-  const chemin = cheminFichierBrut(dossierDonnees, 'osm', 'overpass.json');
-  const dossierParties = path.join(path.dirname(chemin), 'parties');
+  const chemin = cheminFichierBrut(dossierDonnees, 'osm', nomFichier);
+  // Un dossier de parties par fichier : les parties d'un fichier n'écrasent pas celles de l'autre.
+  const dossierParties = path.join(path.dirname(chemin), `parties-${path.parse(nomFichier).name}`);
   await mkdir(dossierParties, { recursive: true });
 
   const elements = new Map<string, unknown>();
@@ -107,12 +129,10 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
     await executerSource({ pool, dossierDonnees }, 'osm', async (suivi) => {
       const client = await pool.connect();
       const regles = await lireRegles(client, 'osm').finally(() => client.release());
+      const horsLigne = (nomFichier: string) =>
+        obtenirFichier(trouverSource('osm'), { dossierDonnees, nomFichier, horsLigne: true });
       const fichier = options.horsLigne
-        ? await obtenirFichier(trouverSource('osm'), {
-            dossierDonnees,
-            nomFichier: 'overpass.json',
-            horsLigne: true,
-          })
+        ? await horsLigne(FICHIER_LIEUX)
         : await telechargerOsm(
             dossierDonnees,
             requetesOverpass(
@@ -121,9 +141,22 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
               DELAI_OVERPASS_S,
               parametres.lieux.enLongueurOsm,
             ),
+            FICHIER_LIEUX,
           );
-      suivi.fichier = { nom: 'overpass.json', ...fichier };
-      return chargerLieux({
+      const fichierParkings = options.horsLigne
+        ? await horsLigne(FICHIER_PARKINGS)
+        : await telechargerOsm(
+            dossierDonnees,
+            [
+              {
+                filtre: FILTRE_PARKING_VELO,
+                requete: requeteParkingsVelo(parametres.region.codeInsee, DELAI_OVERPASS_S),
+              },
+            ],
+            FICHIER_PARKINGS,
+          );
+      suivi.fichier = { nom: FICHIER_LIEUX, ...fichier };
+      const statut = await chargerLieux({
         pool,
         dossierDonnees,
         source: 'osm',
@@ -144,6 +177,14 @@ export async function traiterOsm(options: { force: boolean; horsLigne: boolean }
           }
         },
       });
+      // Parkings vélo : rechargés à chaque passage, même si les lieux n'ont pas changé (D097).
+      const parkings = await lireParkings(fichierParkings.chemin);
+      const bilan = await chargerParkingsVelo(pool, parkings);
+      suivi.controles = [...(suivi.controles ?? []), ...bilan.controles];
+      suivi.remarques.push(
+        `Parkings vélo : ${parkings.length} lus, ${bilan.lignes} couples parking-gare, ${bilan.gares} gares`,
+      );
+      return statut;
     });
   } finally {
     await pool.end();

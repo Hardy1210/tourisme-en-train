@@ -14,6 +14,7 @@ const schemaLigne = z.object({
   dans_region: z.boolean(),
   trains_par_destination: z.coerce.number(),
   destinations: z.array(z.string()),
+  parking_velo: z.boolean(),
 });
 
 export type GareProcheBrute = z.infer<typeof schemaLigne>;
@@ -33,7 +34,10 @@ export async function garesAutourDuPoint(
   const { rows } = await db.execute(sql`
     SELECT g.uic, g.nom, c.nom AS commune, ST_Y(g.geom::geometry) AS lat, ST_X(g.geom::geometry) AS lon,
            ST_Distance(g.geom, ${point}) AS distance_m, g.dans_region,
-           d.trains_par_destination, d.destinations
+           d.trains_par_destination, d.destinations,
+           -- Parkings vélo rattachés à la gare par l'extraction OSM, au rayon acces.rayonParkingVeloM (D097).
+           EXISTS (SELECT 1 FROM mobilite_locale m
+                   WHERE m.gare_id = g.id AND m.type = 'PARKING_VELO') AS parking_velo
     FROM gare g LEFT JOIN commune c ON c.code_insee = g.code_insee
     CROSS JOIN LATERAL (
       SELECT coalesce(sum(l.nb_trains), 0) AS trains_par_destination,

@@ -125,7 +125,9 @@ SELECT g.id, m.type, m.nom, m.lignes, 'Réseau exemple', 'echantillon', m.id_sou
 FROM (VALUES
   ('TRAM', 'Exemple - Arrêt Gare',      ARRAY['T1', 'T2'], 'ECH_M1', 80,  5.0280, 47.3235),
   ('BUS',  'Exemple - Arrêt Darcy',     ARRAY['L3'],       'ECH_M2', 450, 5.0330, 47.3225),
-  ('VELO', 'Exemple - Station vélos',   NULL,              'ECH_M3', 120, 5.0285, 47.3240)
+  ('VELO', 'Exemple - Station vélos',   NULL,              'ECH_M3', 120, 5.0285, 47.3240),
+  -- Parking vélo d'exemple (D097) : Dijon-Ville en a un, les autres gares d'exemple non.
+  ('PARKING_VELO', 'Exemple - Parking vélo', NULL,         'ECH_M4', 60,  5.0275, 47.3236)
 ) AS m (type, nom, lignes, id_source, distance_m, lon, lat)
 JOIN gare g ON g.uic = 'EX000001';
 
