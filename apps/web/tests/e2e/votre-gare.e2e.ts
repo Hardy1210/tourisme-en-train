@@ -34,6 +34,8 @@ test.describe('à côté de la gare', () => {
 test.describe('loin de la gare', () => {
   test.use({ geolocation: { latitude: 47.36, longitude: 5.08 }, permissions: ['geolocation'] });
 
+  // Limite de D097 : Dijon-Ville a un parking vélo dans l'échantillon, mais elle est à 5,7 km à vol d'oiseau,
+  // plus de 6 km à vélo avec le détour : la distance seule.
   test('la distance seule, ni durée à pied, ni vélo', async ({ page }) => {
     await page.goto(ECRAN);
     const carte = carteVotreGare(page);
@@ -128,5 +130,17 @@ test.describe('gares proches, à 3 km de Dijon-Ville', () => {
     const autre = liste.getByRole('button', { name: /^Dijon-Porte-Neuve/ });
     await expect(autre).toContainText(/\d+,\d km/);
     await expect(autre).not.toContainText(/vélo/i);
+  });
+
+  // Même règle dans « Votre gare » : la même gare ne s'affiche pas de deux façons (D097).
+  test('« Votre gare » Dijon-Ville : « ≈ N min à vélo » et « Parking vélo à la gare »', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    const carte = carteVotreGare(page);
+    await expect(carte).toContainText('Dijon-Ville');
+    await expect(carte).toContainText(/≈ \d+ min à vélo/);
+    await expect(carte).toContainText('Parking vélo à la gare');
+    await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });
 });

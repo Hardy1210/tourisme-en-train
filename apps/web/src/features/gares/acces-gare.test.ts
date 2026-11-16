@@ -4,16 +4,41 @@ import { accesGare, accesGareProche, lienItineraire } from './acces-gare';
 // Paramètres du dépôt (`acces`, D091) : marche 4,5 km/h, détour 1,3, à pied jusqu'à 2 000 m mesurés avec le
 // détour, soit 1 538 m à vol d'oiseau.
 describe('accesGare : trajet de l’utilisateur à sa gare de départ (D096)', () => {
-  it('à 1 538 m à vol d’oiseau (2 000 m à pied) : la durée à pied', () => {
-    expect(accesGare(1538)).toEqual({ dureeMarcheMin: 27, distance: '1,5 km' });
+  it('à 1 538 m à vol d’oiseau (2 000 m à pied) : la durée à pied, même avec un parking vélo', () => {
+    const attendu = { dureeMarcheMin: 27, dureeVeloMin: null, distance: '1,5 km' };
+    expect(accesGare(1538, false)).toEqual(attendu);
+    expect(accesGare(1538, true)).toEqual(attendu);
   });
 
-  it('à 1 540 m (plus de 2 000 m à pied) : la distance seule, sans durée', () => {
-    expect(accesGare(1540)).toEqual({ dureeMarcheMin: null, distance: '1,5 km' });
+  it('à 1 540 m (plus de 2 000 m à pied), sans parking vélo : la distance seule, sans durée', () => {
+    expect(accesGare(1540, false)).toEqual({
+      dureeMarcheMin: null,
+      dureeVeloMin: null,
+      distance: '1,5 km',
+    });
   });
 
-  it('loin : la distance seule, jamais une durée à vélo', () => {
-    expect(accesGare(3200)).toEqual({ dureeMarcheMin: null, distance: '3,2 km' });
+  // D097 : la même règle que les gares proches, pour que la même gare ne s'affiche pas de deux façons.
+  it('entre 2 et 6 km avec un parking vélo : la durée à vélo ; sans parking, aucune', () => {
+    expect(accesGare(3200, true)).toEqual({
+      dureeMarcheMin: null,
+      dureeVeloMin: 17,
+      distance: '3,2 km',
+    });
+    expect(accesGare(3200, false)).toEqual({
+      dureeMarcheMin: null,
+      dureeVeloMin: null,
+      distance: '3,2 km',
+    });
+  });
+
+  it('plus de 6 000 m à vélo avec le détour : la distance seule, même avec un parking', () => {
+    expect(accesGare(4615, true).dureeVeloMin).toBe(24);
+    expect(accesGare(4616, true)).toEqual({
+      dureeMarcheMin: null,
+      dureeVeloMin: null,
+      distance: '4,6 km',
+    });
   });
 });
 
