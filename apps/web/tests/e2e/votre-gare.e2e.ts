@@ -45,6 +45,37 @@ test.describe('loin de la gare', () => {
   });
 });
 
+// Gare choisie à la main (`?gare=`) : pas de distance, mais il faut toujours y aller. Le lien ne porte que la
+// gare (Beaune dans l'échantillon) : l'application de cartes part de sa propre position, même si Wagoo n'a
+// pas eu l'accord pour la sienne (règle 5).
+const BEAUNE = '/?gare=EX000002&date=2026-11-18';
+
+async function attendreLienVersBeaune(page: Page) {
+  const carte = carteVotreGare(page);
+  await expect(carte).toContainText('Beaune');
+  await expect(carte).not.toContainText(/\d+ min à pied|\d+,\d km|vélo/i);
+  const lien = carte.getByRole('link', { name: 'Voir l’itinéraire' });
+  const adresse = new URL((await lien.getAttribute('href')) ?? '');
+  expect(adresse.searchParams.get('destination')).toMatch(/^47\.02\d*,4\.84\d*$/);
+  expect([...adresse.searchParams.keys()].sort()).toEqual(['api', 'destination']);
+}
+
+test.describe('gare choisie à la main, position acceptée', () => {
+  test.use({ geolocation: { latitude: 47.3233, longitude: 5.0272 }, permissions: ['geolocation'] });
+
+  test('lien d’itinéraire vers la gare choisie, sans distance', async ({ page }) => {
+    await page.goto(BEAUNE);
+    await attendreLienVersBeaune(page);
+  });
+});
+
+test.describe('gare choisie à la main, position refusée', () => {
+  test('lien d’itinéraire quand même, la gare seule en destination', async ({ page }) => {
+    await page.goto(BEAUNE);
+    await attendreLienVersBeaune(page);
+  });
+});
+
 test.describe('sur iPhone', () => {
   // Signature d'un iPhone : Chromium seul est installé pour les parcours, la signature suffit (D083).
   test.use({
