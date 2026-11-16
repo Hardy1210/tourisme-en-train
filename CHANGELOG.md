@@ -7,6 +7,9 @@
 
 ## [Non publié]
 
+### Modifié
+- « Votre gare » ne parle plus de vélo : la durée à pied si la gare est proche, sinon la distance, et un lien « Voir l’itinéraire » qui ouvre Plans sur iPhone ou Google Maps, avec la gare pour destination. Les listes de gares proches donnent aussi la durée à pied ou la distance.
+
 ## [0.2.0] — 16/11/2026
 
 ### Ajouté
