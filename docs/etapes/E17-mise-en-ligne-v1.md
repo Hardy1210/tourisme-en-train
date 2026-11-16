@@ -94,3 +94,4 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 - 07/11/2026 : les mises à jour suivent la procédure d'`infra/README.md` (« mets en ligne ») — D077.
 - 07/11/2026 : phase 1 terminée, panneau Coolify en HTTPS et ports limités à `localhost` (`infra/README.md`) — D076.
 - 07/11/2026 : mise en ligne sur OVH, 12 242 lieux et 268 025 liaisons retrouvés sur le VPS ; avancement et critères mis à jour — D076.
+- 16/11/2026 : version 0.2.0 en ligne (code, migrations 0014–0015, données restaurées : 12 242 lieux, 268 025 liaisons, comptages identiques au poste) ; aide-mémoire « mettre en ligne seul » en tête d'`infra/README.md` (#125) — D080, D095.
