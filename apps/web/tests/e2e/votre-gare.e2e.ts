@@ -44,3 +44,31 @@ test.describe('loin de la gare', () => {
     await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });
 });
+
+test.describe('sur iPhone', () => {
+  // Signature d'un iPhone : Chromium seul est installé pour les parcours, la signature suffit (D083).
+  test.use({
+    geolocation: { latitude: 47.3233, longitude: 5.0272 },
+    permissions: ['geolocation'],
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+  });
+
+  test('« Voir l’itinéraire » propose Plans ou Google Maps, la gare seule en destination', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    await carteVotreGare(page).getByRole('button', { name: 'Voir l’itinéraire' }).click();
+    const choix = page.getByRole('dialog', { name: 'Ouvrir l’itinéraire avec' });
+    await expect(choix).toBeVisible();
+    const plans = new URL(
+      (await choix.getByRole('link', { name: /Plans/ }).getAttribute('href')) ?? '',
+    );
+    expect(plans.origin).toBe('https://maps.apple.com');
+    expect(plans.searchParams.get('daddr')).toMatch(/^47\.\d+,5\.\d+$/);
+    const google = new URL(
+      (await choix.getByRole('link', { name: /Google Maps/ }).getAttribute('href')) ?? '',
+    );
+    expect(google.searchParams.get('destination')).toBe(plans.searchParams.get('daddr'));
+  });
+});

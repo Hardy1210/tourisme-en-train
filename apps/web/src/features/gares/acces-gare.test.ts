@@ -30,15 +30,15 @@ describe('texteAccesGare : listes de gares proches', () => {
 describe('lienItineraire : la gare seule, jamais la position (règle 5)', () => {
   const gare = { lat: 47.32319, lon: 5.02731 };
 
-  it('sur iPhone : Plans, avec la gare en destination', () => {
-    const lien = new URL(lienItineraire(gare, true));
+  it('Plans : la gare en destination', () => {
+    const lien = new URL(lienItineraire(gare, 'plans'));
     expect(lien.origin).toBe('https://maps.apple.com');
     expect(lien.searchParams.get('daddr')).toBe('47.32319,5.02731');
     expect([...lien.searchParams.keys()]).toEqual(['daddr']);
   });
 
-  it('ailleurs : Google Maps, avec la gare en destination', () => {
-    const lien = new URL(lienItineraire(gare, false));
+  it('Google Maps : la gare en destination', () => {
+    const lien = new URL(lienItineraire(gare, 'google'));
     expect(lien.origin).toBe('https://www.google.com');
     expect(lien.pathname).toBe('/maps/dir/');
     expect(lien.searchParams.get('destination')).toBe('47.32319,5.02731');

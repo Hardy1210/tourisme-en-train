@@ -1,10 +1,10 @@
-import { ArrowUpRight, Footprints, TrainFront } from 'lucide-react';
+import { Footprints, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
-import { useAppareil } from '@/features/localisation/ui/use-appareil';
 import { formaterDistance } from '@/lib/geo/formats';
 
-import { accesGare, lienItineraire } from '../acces-gare';
+import { accesGare } from '../acces-gare';
+import { LienItineraire } from './lien-itineraire';
 
 type Proprietes = {
   nom: string;
@@ -28,7 +28,6 @@ export function CarteVotreGare({
   surChangement,
   plusProche,
 }: Proprietes) {
-  const appareil = useAppareil();
   const acces = distanceM === null ? null : accesGare(distanceM);
   return (
     <Carte className="gap-3.5" aria-labelledby="votre-gare">
@@ -60,16 +59,7 @@ export function CarteVotreGare({
                 acces?.distance
               )}
             </span>
-            {/* La gare seule en destination : le téléphone part de sa propre position (règle 5). */}
-            <a
-              href={lienItineraire(coordonnees, appareil.startsWith('iphone'))}
-              target="_blank"
-              rel="noopener"
-              className="flex items-center gap-0.5 text-sm font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline"
-            >
-              Voir l’itinéraire
-              <ArrowUpRight aria-hidden="true" className="size-4" />
-            </a>
+            <LienItineraire gare={coordonnees} />
           </div>
         )}
       </div>
