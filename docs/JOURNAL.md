@@ -32,6 +32,9 @@
 - **Mise en ligne de la 0.2.0** avec Hardy : sauvegarde (`avant.dump`, 18 Mo), Redeploy (migrations 0014–0015), contrôle 0 ; export local (empreinte `6023b16a…`), `scp`, deuxième sauvegarde (`avant-donnees.dump`), restauration, comptages identiques au poste (12 242 lieux, 268 025 liaisons…), Redeploy, contrôle 0, iPhone ✅ ; étiquette `v0.2.0`
 - #125 : aide-mémoire « mettre en ligne seul » en tête d'`infra/README.md` (quel cas, étapes A → E, pièges vus)
 - #126 ouverte : « Votre gare » sans durée à vélo (à pied ou distance), « Voir l’itinéraire » (gare seule en destination), feuille Plans / Google Maps sur iPhone (D096)
+- #127 : sauvegarde de session fusionnée
+- Essai de #126 par Hardy (soir) : feuille Plans / Google Maps ✅. Il ne voyait que « Voir l’itinéraire » : depuis sa position, la gare proposée (Dijon) n'est pas la plus proche (Dijon Porte Neuve), donc la durée à pied s'affichait déjà avant (D064). Le changement se voit dans « Gares proches » (page Trajet) : « X min à pied » ou la distance au lieu de « X min à vélo ». En touchant « Partir de Dijon Porte Neuve », la gare devient choisie à la main : ni distance ni lien (question ouverte)
+- Logos de Plans et Google Maps : marques déposées, règles d'usage publiées par Apple et Google ; pas de réponse « autorisé » sans les avoir lues. Conseil : garder les icônes génériques ; lecture des règles proposée à Hardy
 **Décisions :** D095, D096
 **Problèmes rencontrés :**
 - Un premier passage de mesure donnait 18–21 s avant correction ; la médiane de 5 passages donne 10,3 s : chiffre corrigé auprès de Hardy (L65)
@@ -41,7 +44,7 @@
 - Même adresse de tunnel après un nouveau build : l'iPhone garde l'ancienne version (service worker) ; une adresse neuve à chaque build
 - Ordinateur de Hardy : position estimée hors région → « Wagoo arrive bientôt » ; serveurs vérifiés (Dijon trouvée, `dansRegion` vrai), reproduit avec une position à Paris
 - Alerte Dependabot de MapLibre présentée comme nouvelle alors qu'elle était tranchée (D065) ; corrigé
-**À valider par Hardy :** #126 sur l'iPhone ; lien d'itinéraire aussi avec une gare choisie à la main ; logos officiels ou icônes génériques
+**À valider par Hardy :** fusion de #126 ; lien d'itinéraire aussi avec une gare choisie à la main ; logos officiels (après lecture des règles de marque) ou icônes génériques
 **Prochaine action :** `CLAUDE.md` § 9
 **Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (580) · intégration ✅ (182) · parcours : 212 sur 215 sur #126, échecs = touchers de carte instables aussi sur `main`
 **Commit :** `690c0c1` (#126, ouverte) ; `main` : `6e0a1c9`
