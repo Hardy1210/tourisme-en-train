@@ -1,6 +1,6 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.6 · **Date** 10/11/2026
+> **Version** 1.7 · **Date** 16/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
 > **Document de référence pour :** comment exploiter la production. Comment mettre en ligne chaque mise à jour : section dédiée ci-dessous.
@@ -28,6 +28,63 @@
 **Domaine, sur le service `web` uniquement :** protocole `https`, hôte `wagoo.hardylino.com`, port `3000`, soit `https://wagoo.hardylino.com:3000` dans Coolify. Ce port est celui du conteneur : le public passe par le 443, et `URL_APP` s'écrit sans port.
 
 **`migrer` à l'état `Exited (0)` est normal :** `restart: 'no'` l'exclut déjà du calcul de santé de Coolify. Ne pas ajouter `exclude_from_hc`, que `docker compose` refuse en local.
+
+## Aide-mémoire : mettre en ligne seul
+Résumé pour le faire sans Claude Code. Le détail et les cas rares sont dans la section suivante (§ 1 à § 7). Essayé en entier le 16/11 pour la 0.2.0 (code, 2 migrations et données).
+
+### Quel cas ?
+| Ce qui change | Étapes | Durée |
+|---|---|---|
+| **Documents seuls** (`*.md`, `docs/`) | A | 1 min |
+| **Design, textes, fonctionnalité sans migration** (le plus fréquent) | A → B → C | ≈ 10 min |
+| **Migration** (fichier nouveau dans `db/migrations/`) | A → D → B → C | ≈ 15 min |
+| **Nouvelles données** (traitement des données relancé en local) | après le code dont elles dépendent : E → B → C | ≈ 20 min |
+
+Plusieurs cas à la fois : on les enchaîne dans l'ordre du tableau, comme le 16/11 (A → D → B → C, puis E → B → C).
+
+### A. Fusionner (GitHub)
+La pull request est vérifiée (`pnpm verifier`, `pnpm test:integration`, `pnpm test:e2e`) et, si elle change ce qu'on voit, essayée sur le téléphone. Puis : cocher *bypass rules* → *Squash and merge* → *Confirm*. Avant une mise en ligne, relire « Non publié » dans `CHANGELOG.md` et choisir le numéro (§ 2, étape 7 bis).
+
+### B. Redeploy (Coolify)
+Ressource Wagoo → **Redeploy** → attendre *Finished* (≈ 3 min) → le commit affiché doit être celui de la fusion.
+
+### C. Contrôler
+Sur le poste : `infra/scripts/controler-production.sh https://wagoo.hardylino.com` → « Tous les contrôles sont bons », code retour 0 ; `/api/sante` donne la `version` attendue. Puis fermer et rouvrir l'application sur l'iPhone, et regarder la nouveauté.
+
+### D. Sauvegarder la base (VPS, avant une migration)
+```bash
+ssh ubuntu@<adresse-du-vps>
+DB=$(sudo docker ps --filter ancestor=postgis/postgis:16-3.4 --format '{{.Names}}'); echo "$DB"
+sudo docker exec "$DB" sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > avant.dump
+```
+puis, **seule sur sa ligne** : `ls -lh avant.dump` (≈ 18 Mo le 16/11, jamais 0).
+
+### E. Remplacer les données
+**Poste**, depuis la racine du dépôt :
+```bash
+infra/scripts/exporter-base.sh ~/tourisme.dump
+sha256sum ~/tourisme.dump
+docker exec -i tourisme-en-train-db-1 sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -x' < infra/scripts/compter-lignes.sql
+scp ~/tourisme.dump infra/scripts/restaurer-base.sh infra/scripts/compter-lignes.sql ubuntu@<adresse-du-vps>:
+```
+Noter l'empreinte et les chiffres. **VPS**, une commande à la fois :
+```bash
+DB=$(sudo docker ps --filter ancestor=postgis/postgis:16-3.4 --format '{{.Names}}'); echo "$DB"
+sha256sum tourisme.dump
+sudo docker exec "$DB" sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > avant-donnees.dump
+ls -lh avant-donnees.dump
+sudo sh restaurer-base.sh "$DB" tourisme.dump --oui
+sudo docker exec -i "$DB" sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -x' < compter-lignes.sql
+```
+L'empreinte et les chiffres doivent être **exactement** ceux du poste ; sinon, ne pas restaurer, ou restaurer `avant-donnees.dump`. Puis B et C. Une fois l'iPhone essayé : `rm tourisme.dump restaurer-base.sh compter-lignes.sql avant.dump` sur le VPS, `rm ~/tourisme.dump` sur le poste ; garder `avant-donnees.dump` quelques jours.
+
+### Pièges vus le 16/11
+- **`db-xxxxxxxx-AAAAMMJJ…` affiché par `echo "$DB"` est le nom du conteneur, pas un mot de passe.** Il doit y en avoir un seul.
+- **Ce nom change à chaque Redeploy** : refaire la ligne `DB=$(…)` après chaque Redeploy, et dans chaque nouveau terminal.
+- **Une commande dont la sortie va dans un fichier (`> avant.dump`) n'affiche rien** : c'est normal. Taper `ls -lh` seul ensuite ; collé avec la commande précédente, il peut ne pas s'exécuter.
+- **`sudo`** devant `docker` et `sh` sur le VPS (sinon `permission denied`).
+- **Le ménage** (`rm`) ne touche que des copies dans le dossier personnel : l'application n'utilise que la base du conteneur.
+- **Retour en arrière : § 6.** Code → bouton **Revert** de la PR sur GitHub, puis A → B → C (jamais le *Rollback* de Coolify, jamais essayé) ; avec une migration, restaurer aussi `avant.dump` ; données → restaurer `avant-donnees.dump` comme en E, puis B → C.
 
 ## Mettre en ligne une mise à jour
 **Déclencheur :** Hardy écrit **« mets en ligne »**. Claude Code déroule cette procédure dans l'ordre, une étape à la fois, et donne à Hardy la commande ou le clic exact au moment voulu. Cette phrase vaut accord pour la branche, le commit, le push et la pull request. **Jamais de mot de passe dans une conversation.**
@@ -192,3 +249,4 @@ Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. 
 | 07/11/2026 | 1.4 | Procédure complète de mise en ligne, script de contrôle, comptage des lignes — D077 |
 | 07/11/2026 | 1.5 | Changements de structure, essai avant fusion, réglages Coolify confirmés — D078 |
 | 10/11/2026 | 1.6 | § 2 : relecture du CHANGELOG, numéro et étiquette de version — D080 |
+| 16/11/2026 | 1.7 | Aide-mémoire pour mettre en ligne seul : quel cas, étapes A → E, pièges vus pendant la mise en ligne de la 0.2.0 |
