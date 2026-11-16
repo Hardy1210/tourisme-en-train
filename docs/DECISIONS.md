@@ -1038,6 +1038,7 @@
 - **Mesures (16/11, base locale, Dijon, 101 gares de destination ; navigateur qui imite un iPhone) :**
   - `/api/carte/lieux` : 750 à 1 100 ms, dont 641 ms de compilation JIT de PostgreSQL sur 727 (`EXPLAIN ANALYZE`) ; sans JIT, 58 ms. Point seul : 18 ms ; gares seules : 84 ms.
   - Demande des lieux partie après toutes les tuiles et les icônes : réponse reçue à 3,7–4,7 s (PC), 18–21 s (processeur ralenti ×4, 4G). Après correction : 1,0–1,2 s et 3,9–4,9 s (un passage froid et un chaud par cas).
+  - **Comparaison de référence** (deux versions construites côte à côte, 5 chargements froids alternés, médiane) : requête côté serveur 489 → 50 ms ; lieux reçus 3,98 → 1,11 s sans ralentissement, 10,3 → 4,6 s processeur ×4 + 4G. Les premiers chiffres ci-dessus ne reposaient que sur un passage (L65).
 - **Décision :**
   1. Connexions de l'application avec `jit=off` (`options` du pool, `lib/db/client.ts`) : aucune migration, l'ETL n'est pas touché. Retour en arrière : retirer `options`.
   2. `useLieuxCarte` appelé dans `resultats-explorer.tsx` (chargé tout de suite) et non plus dans la carte (chargée à part) : la demande part dès que la liste des destinations est connue, une seule fois. Seul l'affichage des bulles attend la carte.
