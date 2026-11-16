@@ -68,3 +68,4 @@
 | 14/11/2026 | 1.72 | § 9 : #120 et #121 fusionnées ; priorité : performance de la carte |
 | 16/11/2026 | 1.73 | § 9 : sauvegarde, 0.2.0 en ligne, #126 ouverte (D096), nouvelle adresse de tunnel après chaque build ; § 8 : E17 0.2.0 |
 | 16/11/2026 | 1.74 | § 9 : sauvegarde du soir, feuille de #126 essayée sur l'iPhone, conseils sur le lien avec une gare choisie à la main et sur les logos |
+| 16/11/2026 | 1.75 | § 9 : #126 fusionnée, lien d'itinéraire même sans position, PR 2 vélo par l'extraction OSM existante avec migration `PARKING_VELO` |
