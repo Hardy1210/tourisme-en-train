@@ -3,29 +3,15 @@
 // Lien repliable « Comment autoriser la localisation ? » (D083) : ouvert tout seul quand une nouvelle
 // demande a encore été refusée. Textes : `contenu-guidage.ts` ; choix de l'appareil : `appareil.ts`.
 import { ChevronDown } from 'lucide-react';
-import { useState, useSyncExternalStore } from 'react';
+import { useState } from 'react';
 
 import { Bandeau } from '@/components/ui/bandeau';
 
-import { reconnaitreAppareil } from '../appareil';
-import { type Appareil, GUIDES_LOCALISATION, LIBELLES_GUIDAGE } from '../contenu-guidage';
-
-const sansAbonnement = () => () => {};
-
-/** Lu dans le navigateur seulement ; « inconnu » au rendu serveur (texte générique). */
-function lireAppareil(): Appareil {
-  const installee =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    (navigator as Navigator & { standalone?: boolean }).standalone === true;
-  return reconnaitreAppareil({
-    userAgent: navigator.userAgent,
-    installee,
-    tactile: navigator.maxTouchPoints > 1,
-  });
-}
+import { GUIDES_LOCALISATION, LIBELLES_GUIDAGE } from '../contenu-guidage';
+import { useAppareil } from './use-appareil';
 
 export function GuidageLocalisation({ bloquee }: { bloquee: boolean }) {
-  const appareil = useSyncExternalStore(sansAbonnement, lireAppareil, () => 'inconnu' as const);
+  const appareil = useAppareil();
   // null : la personne n'a pas encore touché le lien ; ouvert si la localisation reste bloquée.
   const [choix, setChoix] = useState<boolean | null>(null);
   const ouvert = choix ?? bloquee;

@@ -141,6 +141,10 @@
   "billetterie": {
     "url": "https://www.sncf-connect.com"
   },
+  "itineraire": {
+    "apple": "https://maps.apple.com/",
+    "google": "https://www.google.com/maps/dir/"
+  },
   "prix": {
     "aCalibrer": false,
     "source": "SNCF — Tarifs TGV INOUI et OUIGO (ODbL), tarifs INOUI au 01/04/2026 ; TGV : Tarif Normal, TER et Intercités : Tarif Réglementé (D048)",

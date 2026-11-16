@@ -163,7 +163,7 @@ export function ResultatsExplorer({
               nom={gare.nom}
               distanceM={gare.distanceM}
               dureeMarcheMin={gare.dureeMarcheMin}
-              dureeVeloMin={gare.dureeVeloMin}
+              coordonnees={{ lat: gare.lat, lon: gare.lon }}
               prochainDepart={
                 destinationChoisie
                   ? (prochainTrainDirect([destinationChoisie]) ??

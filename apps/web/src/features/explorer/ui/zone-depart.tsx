@@ -6,6 +6,7 @@ import { Building2, LocateFixed, TrainFront } from 'lucide-react';
 
 import { Bandeau } from '@/components/ui/bandeau';
 import { parametres } from '@/config/parametres';
+import { texteAccesGare } from '@/features/gares/acces-gare';
 import { useRechercheVille } from '@/features/localisation/hooks';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
@@ -55,7 +56,7 @@ export function ZoneDepart({ texte, choix, surMaPosition, surGare, surPoint }: P
                   <TrainFront aria-hidden="true" className="size-5.5 flex-none text-primary" />
                   <span className="min-w-0 flex-1 text-base font-medium">{gare.nom}</span>
                   <span className="tabular text-sm text-muted-foreground">
-                    {gare.dureeVeloMin} min à vélo
+                    {texteAccesGare(gare.distanceM)}
                   </span>
                 </button>
               </li>
