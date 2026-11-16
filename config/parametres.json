@@ -39,6 +39,7 @@
   "acces": {
     "rayonPiedM": 2000,
     "rayonVeloM": 6000,
+    "rayonParkingVeloM": 200,
     "vitessePiedKmH": 4.5,
     "vitesseVeloKmH": 15,
     "coefDetour": 1.3,

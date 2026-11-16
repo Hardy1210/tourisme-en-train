@@ -2,7 +2,7 @@
 
 import { LocateFixed, TrainFront } from 'lucide-react';
 import { Feuille } from '@/components/ui/feuille';
-import { texteAccesGare } from '@/features/gares/acces-gare';
+import { LigneGareProche } from '@/features/gares/ui/ligne-gare-proche';
 import type { GareProche } from '@/features/gares/schemas';
 import { RechercheVille } from './recherche-ville';
 
@@ -50,10 +50,7 @@ export function ChoixDepart({
                   className={CLASSES_LIGNE}
                 >
                   <TrainFront aria-hidden="true" className="size-5.5 flex-none text-primary" />
-                  <span className="min-w-0 flex-1 text-base font-medium">{gare.nom}</span>
-                  <span className="tabular text-sm text-muted-foreground">
-                    {texteAccesGare(gare.distanceM)}
-                  </span>
+                  <LigneGareProche gare={gare} />
                 </button>
               </li>
             ))}

@@ -7,6 +7,9 @@
 
 ## [Non publié]
 
+### Ajouté
+- Dans la liste des gares proches, une gare avec un parking vélo juste devant affiche le temps à vélo pour y aller, avec « Parking vélo à la gare » sous son nom ; les autres gardent le temps à pied ou la distance.
+
 ### Modifié
 - « Votre gare » ne parle plus de vélo : la durée à pied si la gare est proche, sinon la distance, et un lien « Voir l’itinéraire » avec la gare pour destination : sur iPhone, il propose d’ouvrir Plans ou Google Maps ; ailleurs, il ouvre Google Maps. Les listes de gares proches donnent aussi la durée à pied ou la distance.
 - « Voir l’itinéraire » apparaît aussi quand vous choisissez votre gare vous-même, ou sans avoir partagé votre position : l’application de cartes du téléphone part de là où vous êtes.

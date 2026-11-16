@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.21 · **Date** 13/11/2026
+> **Version** 1.22 · **Date** 16/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -74,7 +74,8 @@
 | **Fréquence** | Nombre de trains directs dans la journée (trains en jumelage comptés une fois) | `nbTrains` | `nb_trains` | — |
 | **Mobilité locale** | Moyen de transport à l'arrivée : arrêt de bus, arrêt de tram, station de vélos ou de trottinettes | `MobiliteLocale` | table `mobilite_locale` | Train |
 | **Car régional** | Ligne de car interurbain (Mobigo) desservant une gare : **transport sur place** (type `CAR`), jamais un trajet vers la destination, qui se fait en train (D046) | `'CAR'` | `mobilite_locale.type` | Car SNCF (exclu des trajets, E03) |
-| **Type de mobilité** | `BUS`, `TRAM`, `VELO`, `TROTTINETTE`, `AUTRE` | `TypeMobilite` | `type` | — |
+| **Type de mobilité** | `BUS`, `TRAM`, `CAR`, `VELO`, `TROTTINETTE`, `AUTRE`, `PARKING_VELO` | `TypeMobilite` | `type` | — |
+| **Parking vélo** | Emplacement OpenStreetMap (`amenity=bicycle_parking`) à `acces.rayonParkingVeloM` d'une gare au plus : la preuve qu'on peut y laisser son vélo, seule raison d'afficher une durée à vélo vers sa gare de départ (D097). Pas un transport sur place | `parkingVelo`, `'PARKING_VELO'` | `mobilite_locale.type` | Station de vélos en libre-service (`VELO`) |
 | **Vélos disponibles** | Nombre de vélos libres en direct dans une station (GBFS), jamais stocké | `velosDisponibles` | — | Station (emplacement, stocké) |
 | **Début du week-end** | Samedi à venir, ou aujourd'hui si on est samedi ou dimanche | `debutDuWeekEnd` | — | — |
 | **Partage** | Copie ou envoi du lien de la page (filtres et destination inclus dans l'URL) | `partager` | — | Favori |
@@ -153,3 +154,4 @@
 | 13/11/2026 | 1.19 | Mode destination, bulle de la carte — D088, D089 |
 | 13/11/2026 | 1.20 | Niveau d'accès — D091 |
 | 13/11/2026 | 1.21 | Bulle (carte) : groupe de lieux — D092 |
+| 16/11/2026 | 1.22 | Parking vélo ; type de mobilité `PARKING_VELO` (et `CAR`, oublié) — D097 |

@@ -18,7 +18,16 @@ export const schemaTypeTrain = z.enum(TYPES_TRAIN);
 export type TypeTrain = z.infer<typeof schemaTypeTrain>;
 
 /** `CAR` : cars régionaux (Mobigo), pour se déplacer sur place (D046). */
-export const TYPES_MOBILITE = ['BUS', 'TRAM', 'CAR', 'VELO', 'TROTTINETTE', 'AUTRE'] as const;
+export const TYPES_MOBILITE = [
+  'BUS',
+  'TRAM',
+  'CAR',
+  'VELO',
+  'TROTTINETTE',
+  'AUTRE',
+  /** Parking vélo OpenStreetMap près d'une gare de la région : preuve qu'on peut y laisser son vélo (D097). */
+  'PARKING_VELO',
+] as const;
 export const schemaTypeMobilite = z.enum(TYPES_MOBILITE);
 export type TypeMobilite = z.infer<typeof schemaTypeMobilite>;
 

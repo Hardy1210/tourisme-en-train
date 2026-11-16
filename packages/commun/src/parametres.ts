@@ -93,6 +93,8 @@ export const schemaParametres = z
     acces: z.strictObject({
       rayonPiedM: schemaDistanceM,
       rayonVeloM: schemaDistanceM,
+      /** Parking vélo rattaché à une gare à ce rayon au plus, à vol d'oiseau : on laisse son vélo devant la gare (D097). */
+      rayonParkingVeloM: schemaDistanceM,
       vitessePiedKmH: z.number().positive(),
       vitesseVeloKmH: z.number().positive(),
       coefDetour: z.number().min(1),
@@ -270,6 +272,10 @@ export const schemaParametres = z
   .refine((p) => p.acces.rayonPiedM < p.acces.rayonVeloM, {
     message: 'Le rayon à vélo doit dépasser le rayon à pied.',
     path: ['acces', 'rayonVeloM'],
+  })
+  .refine((p) => p.acces.rayonParkingVeloM < p.acces.rayonPiedM, {
+    message: 'Le rayon des parkings vélo doit rester sous le rayon à pied.',
+    path: ['acces', 'rayonParkingVeloM'],
   })
   .refine((p) => p.rayons.autourDeMoiOptionsM.includes(p.rayons.autourDeMoiDefautM), {
     message: 'Le rayon « autour de moi » par défaut doit faire partie des options.',
