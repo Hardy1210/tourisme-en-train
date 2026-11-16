@@ -82,7 +82,8 @@ export function useFicheLieu(cle: string) {
 
 /**
  * Lieux de la carte dans une zone (D094) : autour d'un point (rayon du filtre) et/ou autour de gares de
- * destination. `null` tant que la carte n'est pas chargée : la demande ne ralentit pas son affichage.
+ * destination. `null` tant que la zone n'est pas connue (liste des destinations en chargement). Demandés
+ * sans attendre la carte (D095) : 22 Ko, arrivés pendant qu'elle se charge.
  * Les bulles précédentes restent pendant le chargement de la nouvelle zone.
  */
 export function useLieuxCarte(zone: ParametresLieuxCarte | null) {

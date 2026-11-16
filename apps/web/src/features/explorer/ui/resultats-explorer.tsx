@@ -9,7 +9,7 @@ import { SectionDestinations } from '@/features/destinations/ui/section-destinat
 import type { Destination } from '@/features/destinations/schemas';
 import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
 import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
-import { useLieuxAutour, useLieuxGare } from '@/features/lieux/hooks';
+import { useLieuxAutour, useLieuxCarte, useLieuxGare } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
 import { suffixeDate } from '../date';
@@ -81,6 +81,21 @@ export function ResultatsExplorer({
     filtres.categories,
   );
   const lieux = autourDeMoi ? lieuxDepart : lieuxDestination;
+  // Lieux des bulles, demandés ici et non dans la carte (D095) : ils arrivent pendant qu'elle se charge.
+  // Destination choisie : ses lieux. Sinon : autour de toi (ou de la gare de départ), et autour de chaque
+  // gare de destination affichée (D094), une fois la liste connue : une seule demande.
+  const lieuxCarte = useLieuxCarte(
+    presDe.autour === 'destination'
+      ? { gares: [presDe.uic] }
+      : liste === undefined
+        ? null
+        : {
+            lat: point.lat,
+            lon: point.lon,
+            rayon: filtres.rayon,
+            gares: liste.map((d) => d.gare.uic),
+          },
+  );
   const rechercheActive = filtres.recherche !== '';
   useDefilementVersDestination(feuille, demandeDefilement, rechercheActive, liste);
 
@@ -119,18 +134,7 @@ export function ResultatsExplorer({
           carteTouchee={carteTouchee}
           lieux={lieux.data?.lieux ?? []}
           categories={filtres.categories}
-          zoneLieux={
-            // Destination choisie : ses lieux. Sinon : autour de toi (ou de la gare de départ), et autour
-            // de chaque gare de destination affichée, pour que la carte montre leur intérêt (D094).
-            presDe.autour === 'destination'
-              ? { gares: [presDe.uic] }
-              : {
-                  lat: point.lat,
-                  lon: point.lon,
-                  rayon: filtres.rayon,
-                  gares: (liste ?? AUCUNE_DESTINATION).map((d) => d.gare.uic),
-                }
-          }
+          lieuxCarte={lieuxCarte.data?.lieux}
           lienDe={lienDe}
           masqueEnHaut={masqueEnHaut}
           masqueEnBas={() => {

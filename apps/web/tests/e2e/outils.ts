@@ -2,7 +2,7 @@
 import type { BrowserContext } from '@playwright/test';
 import { sources } from '@tourisme/commun';
 
-const ADRESSE_FOND_CARTE = sources.sources.find((s) => s.code === 'fond_carte')?.api;
+export const ADRESSE_FOND_CARTE = sources.sources.find((s) => s.code === 'fond_carte')?.api;
 const STYLE_VIDE: object = { version: 8, sources: {}, layers: [] };
 
 export async function couperLeReseau(

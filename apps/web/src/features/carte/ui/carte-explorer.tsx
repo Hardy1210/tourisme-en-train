@@ -8,8 +8,7 @@ import Map, { type MapLayerMouseEvent, type MapRef } from 'react-map-gl/maplibre
 import { parametres } from '@/config/parametres';
 import { formaterDuree } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
-import { useLieuxCarte } from '@/features/lieux/hooks';
-import type { LieuResume, ParametresLieuxCarte } from '@/features/lieux/schemas';
+import type { LieuResume, ReponseLieuxCarte } from '@/features/lieux/schemas';
 import { useArretsTrain } from '@/features/trains/hooks';
 import {
   centreDestination,
@@ -47,8 +46,8 @@ export type ProprietesCarte = {
   lieux: readonly LieuResume[];
   /** Catégories choisies : filtrent les bulles et les icônes des lieux (D091). */
   categories: readonly Categorie[];
-  /** Zone des lieux de la carte : autour de la position ou de la gare de départ, ou de la destination (D094). */
-  zoneLieux: ParametresLieuxCarte;
+  /** Lieux des bulles (D094), demandés sans attendre la carte (D095) ; undefined pendant le chargement. */
+  lieuxCarte: ReponseLieuxCarte['lieux'] | undefined;
   lienDe: (destination: Destination) => string;
   /** Hauteur en pixels cachée en bas par la feuille de résultats, pour cadrer dans ce qui reste. */
   masqueEnBas: () => number;
@@ -74,7 +73,7 @@ export function CarteExplorer({
   destinationCherchee,
   lieux,
   categories,
-  zoneLieux,
+  lieuxCarte,
   lienDe,
   masqueEnBas,
   masqueEnHaut,
@@ -93,7 +92,6 @@ export function CarteExplorer({
     texteBulle: string;
     halo: string;
   } | null>(null);
-  const tousLesLieux = useLieuxCarte(couleursBulles === null ? null : zoneLieux);
 
   const [derniereCarteTouchee, setDerniereCarteTouchee] = useState(carteTouchee);
   if (carteTouchee !== derniereCarteTouchee) {
@@ -260,12 +258,8 @@ export function CarteExplorer({
           }}
         >
           {/* Avant les couches des gares : leurs étiquettes restent au-dessus des bulles. */}
-          {couleursBulles && tousLesLieux.data && (
-            <CoucheLieux
-              lieux={tousLesLieux.data.lieux}
-              categories={categories}
-              couleurs={couleursBulles}
-            />
+          {couleursBulles && lieuxCarte && (
+            <CoucheLieux lieux={lieuxCarte} categories={categories} couleurs={couleursBulles} />
           )}
           <CouchesCarte
             segments={segments}
