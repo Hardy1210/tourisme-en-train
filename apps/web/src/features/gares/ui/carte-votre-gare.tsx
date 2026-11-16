@@ -42,38 +42,37 @@ export function CarteVotreGare({
             {nom}
           </h2>
         </div>
-        {distanceM !== null && plusProche !== null && dureeMarcheMin !== null ? (
-          <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
-            <Footprints aria-hidden="true" className="size-4" />
-            {dureeMarcheMin} min à pied · {formaterDistance(distanceM)}
-          </span>
-        ) : (
-          acces && (
+        {distanceM !== null && (
+          // Sous la distance, dans la hauteur du titre : la carte ne grandit pas, la feuille non plus.
+          <div className="flex flex-none flex-col items-end gap-0.5">
             <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
-              {acces.dureeMarcheMin !== null ? (
+              {plusProche !== null && dureeMarcheMin !== null ? (
+                <>
+                  <Footprints aria-hidden="true" className="size-4" />
+                  {dureeMarcheMin} min à pied · {formaterDistance(distanceM)}
+                </>
+              ) : acces?.dureeMarcheMin != null ? (
                 <>
                   <Footprints aria-hidden="true" className="size-4" />
                   {acces.dureeMarcheMin} min à pied · {acces.distance}
                 </>
               ) : (
-                acces.distance
+                acces?.distance
               )}
             </span>
-          )
+            {/* La gare seule en destination : le téléphone part de sa propre position (règle 5). */}
+            <a
+              href={lienItineraire(coordonnees, appareil.startsWith('iphone'))}
+              target="_blank"
+              rel="noopener"
+              className="flex items-center gap-0.5 text-sm font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline"
+            >
+              Voir l’itinéraire
+              <ArrowUpRight aria-hidden="true" className="size-4" />
+            </a>
+          </div>
         )}
       </div>
-      {distanceM !== null && (
-        // La gare seule en destination : le téléphone part de sa propre position (règle 5).
-        <a
-          href={lienItineraire(coordonnees, appareil.startsWith('iphone'))}
-          target="_blank"
-          rel="noopener"
-          className="flex items-center gap-1 self-start text-sm font-medium text-primary underline-offset-4 hover:underline"
-        >
-          Voir l’itinéraire
-          <ArrowUpRight aria-hidden="true" className="size-4" />
-        </a>
-      )}
       {prochainDepart !== null && (
         <p className="flex items-center gap-2.5 rounded-md bg-primary-soft px-3 py-2.5 text-primary-soft-foreground">
           <span className="text-sm">Prochain départ direct</span>
