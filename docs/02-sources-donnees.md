@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.15 · **Date** 10/11/2026
+> **Version** 1.16 · **Date** 16/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -108,7 +108,8 @@
 - **Service partagé, parfois saturé :** réponse 502 « file d'attente pleine » ou réponse interrompue (`remark`) → nouvelles tentatives de la requête concernée, en doublant l'attente (`04` § 4.4) ; jamais de chargement partiel. Les miroirs essayés le 01/11 (private.coffee, kumi.systems) n'ont pas fait mieux.
 - **Au 01/11 :** 16 requêtes (≈ 17 min, serveur saturé), 14 014 éléments → **8 310 lieux** ; 106 plans d'eau gardés sur 3 035, dont le lac des Settons ; 135 photos.
 - **Licence :** **ODbL** — attribution « © les contributeurs d'OpenStreetMap » obligatoire.
-- **Table cible :** `lieu` (source `osm`).
+- **Parkings vélo (D097) :** une requête de plus dans la même extraction, `amenity=bicycle_parking` sans nom exigé, écrite à part dans `data/brut/osm/parkings-velo.json` (ce ne sont pas des lieux). Le 16/11 : 5 136 parkings dans la région, **122 gares sur 196** en ont un à 200 m au plus.
+- **Table cible :** `lieu` (source `osm`) ; parkings vélo dans `mobilite_locale` (type `PARKING_VELO`).
 
 ### 2.5 `transport_local` — Mobilités locales (P0)
 - **Où :** transport.data.gouv.fr — jeux GTFS des réseaux urbains de la région et flux GBFS des services de vélos / trottinettes.
@@ -254,3 +255,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 06/11/2026 | 1.13 | `facteurs_co2` : licence relue, réutilisation non commerciale — D075 |
 | 06/11/2026 | 1.14 | § 4.1 : ce que recouvre le facteur voiture — D075 |
 | 10/11/2026 | 1.15 | § 3.1 : recherche par texte limitée aux communes — D081 |
+| 16/11/2026 | 1.16 | § 2.4 : parkings vélo dans la même extraction, fichier à part — D097 |

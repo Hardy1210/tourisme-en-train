@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.25 · **Date** 14/11/2026
+> **Version** 1.26 · **Date** 16/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -73,10 +73,11 @@ Utilisée par la supervision et le déploiement.
 | `limite` | entier 1–10 | `parametres.limites.gares` |
 ```ts
 { gares: Array<{ uic: string; nom: string; commune: string | null; lat: number; lon: number; distanceM: number;
-                 dureeMarcheMin: number; dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean }>,
+                 dureeMarcheMin: number; dureeVeloMin: number; dureeVoitureMin: number; dansRegion: boolean;
+                 parkingVelo: boolean }>,
   uicConseille: string | null }
 ```
-`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à `gareConseillee.distanceMaxM` au plus a aujourd'hui au moins `gareConseillee.ratioTrainsMin` fois plus de trains **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. Cache : aucun (position).
+`gares` : les plus proches d'abord. `uicConseille` : gare de départ proposée par défaut (D064) : la plus proche, sauf si une gare de la région à `gareConseillee.distanceMaxM` au plus a aujourd'hui au moins `gareConseillee.ratioTrainsMin` fois plus de trains **et** dessert aujourd'hui au moins toutes ses destinations. Elle figure toujours dans `gares`. `parkingVelo` : un parking vélo OSM à `acces.rayonParkingVeloM` de la gare au plus (D097) ; la seule raison d'afficher une durée à vélo vers la gare. Cache : aucun (position).
 
 ### 3.3 `GET /api/autour?lat&lon&rayon&categories`
 `categories` retient aussi les lieux dont c'est la catégorie secondaire (D060), comme toutes les routes de lieux. Sans `categories`, aucun filtre. Aires de jeux (`acces.sousCategoriesAiresDeJeux`) : seulement à `acces.rayonAiresDeJeuxM` au plus du point, quel que soit `rayon` (D091). La position n'est jamais enregistrée (règle 5).
@@ -348,3 +349,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 13/11/2026 | 1.23 | § 3.3 : aires de jeux à 1 km au plus ; § 3.6 : rayon maximum `acces.rayonPiedM` (2 km) — D091 |
 | 13/11/2026 | 1.24 | § 3.3 bis : `/api/carte/lieux` — D091, D092 |
 | 14/11/2026 | 1.25 | § 3.3 bis : `/api/carte/lieux` par zone (point et/ou gares) — D094 |
+| 16/11/2026 | 1.26 | § 3.2 : `parkingVelo` ; `/api/mobilites` sans les parkings vélo — D097 |

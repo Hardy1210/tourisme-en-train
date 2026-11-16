@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.19 · **Date** 13/11/2026
+> **Version** 1.20 · **Date** 16/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -164,7 +164,7 @@ erDiagram
 | `categorie_regle` | Règles de classement des lieux | Fichier versionné, chargé par l'ETL | P0 |
 | `lieu_gare` | Lieux à distance de marche de chaque gare | ETL (calcul) | P0 |
 | `gare_stats` | Nombre de lieux par catégorie autour de chaque gare | ETL (calcul) | P0 |
-| `mobilite_locale` | Arrêts bus/tram, stations vélos près des gares | ETL `transport_local` | P0 |
+| `mobilite_locale` | Arrêts bus/tram, stations vélos près des gares ; parkings vélo (D097) | ETL `transport_local` ; parkings : ETL `osm` | P0 |
 | `source_donnees` | Métadonnées et licences des sources | ETL | P0 |
 | `execution_etl` | Journal des exécutions de l'ETL | ETL | P0 |
 | `ligne_ferroviaire` | Tracés des lignes | ETL `lignes` | P1 |
@@ -339,7 +339,7 @@ Index : (`gare_id`, `distance_m`).
 |---|---|---|---|
 | `id` | bigint | PK, identity | |
 | `gare_id` | integer | NN, FK → gare | Gare de la région à moins de `rayons.mobiliteM` **à pied** ; une ligne par couple (arrêt, gare) : un arrêt entre deux gares apparaît pour les deux (D046) |
-| `type` | text | NN, CHECK in (`BUS`,`TRAM`,`CAR`,`VELO`,`TROTTINETTE`,`AUTRE`) | `CAR` : cars régionaux Mobigo (D046) ; `TRAM` si une ligne de tram dessert l'arrêt |
+| `type` | text | NN, CHECK in (`BUS`,`TRAM`,`CAR`,`VELO`,`TROTTINETTE`,`AUTRE`,`PARKING_VELO`) | `CAR` : cars régionaux Mobigo (D046) ; `TRAM` si une ligne de tram dessert l'arrêt ; `PARKING_VELO` : parking vélo OSM à `acces.rayonParkingVeloM` **à vol d'oiseau** de la gare au plus, chargé par l'ETL `osm`, jamais renvoyé par `/api/mobilites` (D097, migration 0016) |
 | `nom` | text | NN | Nom de l'arrêt ou de la station |
 | `lignes` | text[] | | Numéros de lignes (bus/tram) |
 | `operateur` | text | | Producteur du réseau (`source_donnees.producteur`) |
@@ -492,3 +492,4 @@ ORDER BY a.depart_s;
 | 13/11/2026 | 1.17 | `lieu_gare` : rayon `acces.rayonPiedM` (2 km), aires de jeux à 1 km — D091 |
 | 13/11/2026 | 1.18 | `lieu.wikipedia` — D092 |
 | 13/11/2026 | 1.19 | `lieu.masque` — D093 |
+| 16/11/2026 | 1.20 | § 3.10 : type `PARKING_VELO` (migration 0016) — D097 |

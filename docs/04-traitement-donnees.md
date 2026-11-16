@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.23 · **Date** 14/11/2026
+> **Version** 1.24 · **Date** 16/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -44,7 +44,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
   "acces": {
-    "rayonPiedM": 2000, "rayonVeloM": 6000, "vitessePiedKmH": 4.5, "vitesseVeloKmH": 15, "coefDetour": 1.3,
+    "rayonPiedM": 2000, "rayonVeloM": 6000, "rayonParkingVeloM": 200, "vitessePiedKmH": 4.5, "vitesseVeloKmH": 15, "coefDetour": 1.3,
     "rayonAiresDeJeuxM": 1000, "sousCategoriesAiresDeJeux": ["aire de jeux"],
     "sousCategoriesMasquees": ["piscine", "centre aquatique"]
   },
@@ -102,6 +102,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 |---|---|---|---|
 | `rayonPiedM` | 2000 | Lieux « à pied » d'une gare (`lieu_gare`), nombres par gare, « Près de la gare de… » | Choix de Hardy (13/11) : ≈ 27 min à 4,5 km/h, affiché « ≈ 30 min » ; 1 500 m cachait des lieux proches (testeur : Mâlain) |
 | `rayonVeloM` | 6000 | Limite « à vélo » (carte, textes d'accès, à venir) ; doit dépasser `rayonPiedM` | ≈ 24 min à 15 km/h ; 4 858 lieux à 6 km ou moins d'une gare desservie (mesure du 13/11) |
+| `rayonParkingVeloM` | 200 | Un parking vélo OSM est rattaché à une gare à ce rayon au plus, **à vol d'oiseau** ; doit rester sous `rayonPiedM` | On laisse son vélo devant la gare, pas à 20 min à pied. Le 16/11 : 111 gares sur 196 à 100 m, **122 à 200 m**, 136 à 500 m, 165 à 2 km (D097) |
 | `vitessePiedKmH` | 4,5 | Toutes les durées à pied de l'application | Inchangée (ancienne `marche.vitesseKmH`) pour ne pas changer les temps affichés |
 | `vitesseVeloKmH` | 15 | Durées à vélo | Inchangée (ancienne `velo.vitesseKmH`) |
 | `coefDetour` | 1,3 | Distance à pied ou à vélo = vol d'oiseau × ce coefficient (rues qui ne vont pas tout droit) | Inchangé (ancien `marche.coefDetour` et `velo.coefDetour`, même valeur) |
@@ -345,11 +346,18 @@ Commande `pnpm etl transport_local [--hors-ligne]` (D046) : réseaux lus dans `c
 2. **GTFS** (dans le ZIP) : arrêts (pas les stations parentes) desservis par au moins une ligne (`stop_times` → `trips` → `routes`) ; ligne de tram (`route_type` 0) → `TRAM`, sinon le type du réseau (`BUS`, ou `CAR` pour Mobigo) ; **transport à la demande exclu** (`route_type` 715, D020) ; numéros de ligne triés (2 avant 10) ; nom nettoyé (tiret final de Mobigo).
 3. **GBFS** : stations de `station_information.json` (nom texte ou traduit), type `VELO`, `id_source` = `station_id`.
 4. **Quais** (SQL) : arrêts d'un même réseau de même nom (sans accents ni majuscules), de proche en proche à moins de `mobilite.regroupementQuaisM` → un arrêt (plus petit identifiant, lignes réunies, centre des quais).
-5. **Une ligne par couple (arrêt, gare de la région)** à moins de `rayons.mobiliteM` **à pied** (vol d'oiseau × `acces.coefDetour`) ; `mobilite_locale` remplacée en entier dans une transaction.
+5. **Une ligne par couple (arrêt, gare de la région)** à moins de `rayons.mobiliteM` **à pied** (vol d'oiseau × `acces.coefDetour`) ; `mobilite_locale` remplacée dans une transaction, **sauf les parkings vélo** (§ 4.7 bis).
 
-**Contrôles** : au moins un réseau chargé ; aucun arrêt au-delà du rayon à pied ; aucun arrêt de bus, tram ou car sans ligne ; réseau sans arrêt près d'une gare (avertissement). **Tests en paires** : deux quais « République » à 30 m → un arrêt / deux noms différents → deux ; 790 m à pied gardé / 810 m écarté ; tram → `TRAM` / bus seul → type du réseau ; transport à la demande écarté ; licence reconnue / non reconnue.
+**Contrôles** : au moins un réseau chargé ; aucun arrêt au-delà du rayon à pied ; aucun arrêt de bus, tram ou car sans ligne (parkings et stations vélo exclus) ; réseau sans arrêt près d'une gare (avertissement). **Tests en paires** : deux quais « République » à 30 m → un arrêt / deux noms différents → deux ; 790 m à pied gardé / 810 m écarté ; tram → `TRAM` / bus seul → type du réseau ; transport à la demande écarté ; licence reconnue / non reconnue.
 
 Au 02/11 : 16 réseaux, **553 couples arrêt-gare**, 122 gares de la région sur 196 avec au moins un transport (Mobigo : 84 gares) ; Dijon : tram T1, T2 et 13 arrêts de bus.
+
+### 4.7 bis Parkings vélo (D097)
+Avec `pnpm etl osm` : une requête Overpass de plus (`amenity=bicycle_parking`, sans nom exigé, centre des surfaces), dans `data/brut/osm/parkings-velo.json` ; `--hors-ligne` relit ce fichier. Rechargés à chaque passage, même si les lieux n'ont pas changé.
+1. **Lecture** : `type/id`, nom OSM ou « Parking vélo », position (point ou centre) ; un élément sans position est ignoré.
+2. **Une ligne par couple (parking, gare de la région)** à `acces.rayonParkingVeloM` au plus **à vol d'oiseau** ; `distance_m` = vol d'oiseau × `acces.coefDetour`, comme les autres lignes. Dans une transaction, seules les lignes `PARKING_VELO` sont remplacées ; `transport_local` ne les efface pas.
+
+**Contrôles** : aucun parking au-delà du rayon ; aucun parking rattaché à une gare hors région. **Tests en paires** : 190 m gardé / 210 m écarté ; gare hors région écartée ; un nouveau chargement remplace l'ancien ; `transport_local` laisse les parkings.
 
 ### 4.8 Lignes et aménagements cyclables (P1, reporté après le P0, D046)
 Chargement direct des géométries filtrées sur l'emprise régionale. Pas de rattachement : l'application interroge par distance au moment de la demande.
@@ -423,3 +431,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 13/11/2026 | 1.21 | § 2 : `acces.lieuxPauvres*`, `bullesRayonPx`, `bullesZoomMax` ; import OSM : tag `wikipedia` — D092 |
 | 13/11/2026 | 1.22 | § 2 : `sousCategoriesRetirees` devient `sousCategoriesMasquees` (gardées en base, `lieu.masque`) — D093 |
 | 14/11/2026 | 1.23 | § 2 : `bullesRayonPx` 37, `bullesZoomMax` 13, `bullesDecalagePx` — D094 |
+| 16/11/2026 | 1.24 | § 2 : `acces.rayonParkingVeloM` ; § 4.7 : parkings vélo épargnés ; § 4.7 bis : parkings vélo — D097 |
