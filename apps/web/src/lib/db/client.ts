@@ -12,9 +12,15 @@ import * as schema from './schema';
 // En développement, le rechargement à chaud réévalue ce module : un seul pool, gardé sur globalThis.
 const globalDev = globalThis as typeof globalThis & { poolBdd?: pg.Pool };
 // Délai de connexion borné : base arrêtée → erreur (503 de /api/sante) au lieu d'une attente sans fin.
+// JIT coupé (D095) : nos requêtes sont courtes, et sa compilation coûtait 641 ms sur 727 à la requête des
+// lieux de la carte. Retour en arrière : retirer `options`.
 const pool =
   globalDev.poolBdd ??
-  new pg.Pool({ connectionString: env.BDD_URL_APP, connectionTimeoutMillis: 5000 });
+  new pg.Pool({
+    connectionString: env.BDD_URL_APP,
+    connectionTimeoutMillis: 5000,
+    options: '-c jit=off',
+  });
 if (env.NODE_ENV !== 'production') globalDev.poolBdd = pool;
 
 // Une connexion au repos perdue (base redémarrée) : sans ce gestionnaire, une erreur non gérée, imprimée

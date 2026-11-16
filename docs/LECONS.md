@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.14 · **Date** 14/11/2026
+> **Version** 1.15 · **Date** 16/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -425,6 +425,40 @@
 - *Où sont passés les lieux retirés ?* Toujours en base ; un lieu signalé se remet avec une ligne `inclure` (L58).
 - *Comment choisissez-vous les lieux ?* Règles chiffrées et réglables : distance à pied, fiche non vide ou article Wikipédia loin des gares (L59).
 
+## Performance de la carte (à défendre à la soutenance, 16/11)
+
+### L63 — Avant d'optimiser une requête lente, lire son plan d'exécution
+- **Problème :** la requête des lieux de la carte prenait environ 0,5 à 1 s, alors que ses deux moitiés seules prenaient 18 ms et 84 ms.
+- **Cause :** `EXPLAIN ANALYZE` montrait 641 ms sur 727 passés à la **compilation JIT** de PostgreSQL. Le JIT se déclenche sur le coût *estimé* de la requête (ici 523 000, au-dessus du seuil de 500 000), pas sur sa durée réelle.
+- **Solution :** JIT coupé pour les connexions de l'application, en une ligne (`options: '-c jit=off'`), sans migration et facile à annuler. Résultat : 50 ms en médiane au lieu de 489.
+- **À retenir :** on ne réécrit pas une requête avant d'avoir lu où part le temps. Le JIT aide les longues requêtes d'analyse, pas les petites requêtes d'une application web.
+- **Origine :** D095, #123.
+
+### L64 — Une précaution juste hier peut devenir le frein d'aujourd'hui
+- **Problème :** les bulles arrivaient après toutes les tuiles de la carte.
+- **Cause :** en #114 (L60), on attendait exprès la fin du chargement de la carte, parce que la demande portait alors sur **tous** les lieux de la région. Depuis D094, la réponse ne fait plus que 22 Ko, mais l'attente était restée.
+- **Solution :** demander les lieux dès que la liste des destinations est connue, pendant que la carte se charge. Seul l'affichage des bulles attend la carte.
+- **À retenir :** quand une donnée change de taille ou de rôle, relire les précautions prises pour l'ancienne version. Le commentaire du code disait la raison, et c'est ce qui a permis de voir qu'elle ne tenait plus.
+- **Origine :** D094, D095.
+
+### L65 — Une mesure de vitesse se compare dans les mêmes conditions, plusieurs fois
+- **Problème :** un premier passage donnait 18 à 21 s avant la correction sur un téléphone simulé ; la médiane de 5 passages donne 10,3 s.
+- **Solution :** les deux versions construites côte à côte (deux copies, deux ports), chargées à tour de rôle, 5 fois chacune, avec la même position et le même ralentissement ; on garde la médiane, avec le minimum et le maximum.
+- **À retenir :** un seul chiffre de vitesse trompe, dans un sens comme dans l'autre. Annoncer la médiane et dire comment elle a été mesurée.
+- **Origine :** D095.
+
+### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
+| Mesure | Avant | Après | Gain |
+|---|---|---|---|
+| Requête des lieux de la carte, côté serveur (10 appels, médiane) | 489 ms | 50 ms | ≈ 10 fois plus rapide |
+| Lieux reçus, navigateur sans ralentissement (5 chargements, médiane) | 3,98 s | 1,11 s | − 72 % |
+| Lieux reçus, téléphone lent simulé, processeur ×4 + 4G (5 chargements, médiane) | 10,3 s | 4,6 s | − 55 % |
+
+*Navigateur qui imite un iPhone 13, chargements à froid. Ce ne sont pas des mesures sur un vrai téléphone. La liste des destinations, elle, arrive au même moment avant et après (0,7–0,8 s et 3,0 s) : le gain vient bien de la carte.*
+
+- *Pourquoi la carte était-elle lente ?* Deux causes mesurées : la base compilait la requête au lieu de l'exécuter (L63), et l'application attendait toute la carte avant de demander les lieux (L64).
+- *Comment savez-vous que c'est mieux ?* Les deux versions mesurées côte à côte, 5 fois, médiane (L65) ; deux tests écrits avant la correction, qui échouaient avant et passent après.
+
 ## Dossier CO₂ pour la soutenance (relevé du 06/11/2026)
 
 Lecture de pages, pas un avis juridique. À relire avant la soutenance : ces pages peuvent changer.
@@ -481,3 +515,4 @@ Valeurs en g CO₂e/km.
 | 07/11/2026 | 1.12 | L53 (contrôle à zéro et témoin) |
 | 11/11/2026 | 1.13 | L54, L55 (exemple inventé qui fuit, test instable lancé sans son changement) |
 | 14/11/2026 | 1.14 | L56 → L62 et questions du jury sur la carte (périmètre qui cache, saturation, cacher n'est pas supprimer, signe d'intérêt, poids du code, filtre visible, réglages sur le téléphone) |
+| 16/11/2026 | 1.15 | L63 → L65 et chiffres de la performance de la carte (plan d'exécution et JIT, précaution devenue frein, mesure comparée) |
