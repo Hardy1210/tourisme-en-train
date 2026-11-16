@@ -23,6 +23,7 @@
 - Dans la fiche destination, les TER qui partent et arrivent en Bourgogne-Franche-Comté s'appellent « TER Mobigo », comme sur SNCF Connect. Les autres restent « TER ».
 
 ### Corrigé
+- La carte d'Explorer montre ses bulles bien plus vite : les lieux sont demandés pendant que la carte se charge, et la base les trouve en quelques dizaines de millisecondes au lieu d'environ une seconde.
 - Sur la carte, le nombre d'une bulle part en même temps qu'elle quand on zoome, sans retard.
 - Sur téléphone, quand le clavier monte dans une page plein écran, l'écran du dessous ne se voit plus, même un instant, à la place du clavier.
 - En cherchant une destination, les résultats sont triés par temps de trajet : en tapant « b », Besançon Franche-Comté TGV (26 min) passe avant Paris (1 h 36).
