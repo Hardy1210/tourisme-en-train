@@ -41,9 +41,10 @@ export function CarteVotreGare({
             {nom}
           </h2>
         </div>
-        {distanceM !== null && (
-          // Sous la distance, dans la hauteur du titre : la carte ne grandit pas, la feuille non plus.
-          <div className="flex flex-none flex-col items-end gap-0.5">
+        {/* Sous la distance, dans la hauteur du titre : la carte ne grandit pas, la feuille non plus. Le lien
+            reste sans distance (gare choisie à la main, position refusée) : il faut toujours y aller. */}
+        <div className="flex flex-none flex-col items-end gap-0.5">
+          {distanceM !== null && (
             <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
               {plusProche !== null && dureeMarcheMin !== null ? (
                 <>
@@ -59,9 +60,9 @@ export function CarteVotreGare({
                 acces?.distance
               )}
             </span>
-            <LienItineraire gare={coordonnees} />
-          </div>
-        )}
+          )}
+          <LienItineraire gare={coordonnees} />
+        </div>
       </div>
       {prochainDepart !== null && (
         <p className="flex items-center gap-2.5 rounded-md bg-primary-soft px-3 py-2.5 text-primary-soft-foreground">
