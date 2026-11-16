@@ -89,3 +89,5 @@ Voir `_MODELE.md`.
 - 13/11/2026 : bulle du nombre de lieux sur chaque gare (D088, #110) ; « Près de vous » et mode destination (D089, #111) ; suite de la carte décidée après l'audit des lieux hors périmètre (D090).
 - 13/11/2026 (soir) : section `acces` (D091, #113) ; carte de tous les lieux en bulles, tri, Wikipédia (D092, #114 ouverte) ; suite : piscines, cercles, vélo prouvé (`A-FAIRE`).
 - 14/11/2026 : piscines masquées (D093, #116), nombres sans fondu (#117), carte par zone et bulles décalées (D094, #118 ouverte).
+- 16/11/2026 : « Votre gare » sans vélo sans preuve, « Voir l’itinéraire » (D096, #126, #130) ; parkings vélo OSM dans les gares proches (D097, #131) ; audit des parcours instables (3 causes, `A-FAIRE` § 1).
+- 17/11/2026 (nuit) : « Votre gare » suit la règle des gares proches (#132 ouverte) ; Next.js 16.4.5 (D098, #133 ouverte, régression à expliquer).

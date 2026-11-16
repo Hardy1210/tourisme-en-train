@@ -69,3 +69,4 @@
 | 16/11/2026 | 1.73 | § 9 : sauvegarde, 0.2.0 en ligne, #126 ouverte (D096), nouvelle adresse de tunnel après chaque build ; § 8 : E17 0.2.0 |
 | 16/11/2026 | 1.74 | § 9 : sauvegarde du soir, feuille de #126 essayée sur l'iPhone, conseils sur le lien avec une gare choisie à la main et sur les logos |
 | 16/11/2026 | 1.75 | § 9 : #126 fusionnée, lien d'itinéraire même sans position, PR 2 vélo par l'extraction OSM existante avec migration `PARKING_VELO` |
+| 17/11/2026 | 1.76 | § 9 : sauvegarde de la nuit du 16 au 17/11 (#131 sur `main`, #132 et #133 ouvertes, audit des parcours, plan du 17/11) |

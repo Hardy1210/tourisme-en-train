@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.15 · **Date** 16/11/2026
+> **Version** 1.16 · **Date** 17/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -447,6 +447,24 @@
 - **À retenir :** un seul chiffre de vitesse trompe, dans un sens comme dans l'autre. Annoncer la médiane et dire comment elle a été mesurée.
 - **Origine :** D095.
 
+### L66 — Une faille de sécurité se lit à la source, pas seulement dans `pnpm audit`
+- **Problème :** `pnpm audit` et Dependabot ne connaissaient qu'une faille corrigée par Next.js 16.4.5 ; l'article officiel en listait 7, dont une classée plus grave.
+- **Solution :** lire l'article de sécurité de l'éditeur et les avis de son dépôt, puis, pour chaque faille, chercher dans notre code ce qu'elle exige (fonction, réglage, type de route).
+- **À retenir :** une base d'alertes a du retard. Avant de dire « nous ne sommes pas touchés », lister toutes les failles et prouver l'absence de chaque condition dans le code.
+- **Origine :** D098.
+
+### L67 — Un commit poussé après la fusion d'une PR n'arrive jamais sur `main`
+- **Problème :** trois commits poussés sur la branche de sauvegarde après sa fusion (fusion « squash ») sont restés hors de `main`, sans aucun message d'erreur.
+- **Solution :** vérifier l'état de la PR (`gh pr view <n> --json state`) avant de pousser sur sa branche ; si elle est fusionnée, nouvelle branche depuis `main`.
+- **À retenir :** un `git push` réussi ne dit pas que le travail arrivera quelque part. Vérifier où il va.
+- **Origine :** sauvegarde du 17/11.
+
+### L68 — Un test « parfois rouge » se reproduit en ralentissant le processeur
+- **Problème :** des parcours échouaient 1 fois sur 5 sous la charge, jamais seuls.
+- **Solution :** rejouer le geste du test dans un navigateur au processeur ralenti ×4 : l'échec devient systématique (6 sur 6), et la trace montre la cause (épingle recouverte, vue provisoire, navigation retardée).
+- **À retenir :** pour un défaut qui dépend du temps, rendre la machine lente et mesurer ce que voit l'écran ; un délai de test plus long cache le défaut que l'utilisateur, lui, verra sur un téléphone lent.
+- **Origine :** audit du 16/11 (`A-FAIRE` § 1).
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -516,3 +534,4 @@ Valeurs en g CO₂e/km.
 | 11/11/2026 | 1.13 | L54, L55 (exemple inventé qui fuit, test instable lancé sans son changement) |
 | 14/11/2026 | 1.14 | L56 → L62 et questions du jury sur la carte (périmètre qui cache, saturation, cacher n'est pas supprimer, signe d'intérêt, poids du code, filtre visible, réglages sur le téléphone) |
 | 16/11/2026 | 1.15 | L63 → L65 et chiffres de la performance de la carte (plan d'exécution et JIT, précaution devenue frein, mesure comparée) |
+| 17/11/2026 | 1.16 | L66 → L68 (failles lues à la source, commit après fusion, test lent reproduit en ralentissant le processeur) |

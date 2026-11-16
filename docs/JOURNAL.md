@@ -24,6 +24,28 @@
 
 ---
 
+## 16–17/11/2026 (nuit) — Étape E11 — itinéraire sans position, parkings vélo (D097), audit des parcours, Next.js 16.4.5 (D098)
+**Fait :**
+- Tunnel d'essai de #126 ; #126 puis #130 fusionnées : « Voir l’itinéraire » dès qu'une gare de départ est connue, même choisie à la main ou sans position (test d'abord, 4 cas rouges puis verts) ; icônes génériques confirmées
+- Comptage des parkings vélo OSM par la requête de l'extraction (une seule partie téléchargée, rien en base) : 5 136 parkings, 196 gares : 111 à 100 m, **122 à 200 m**, 136 à 500 m, 165 à 2 km ; Hardy choisit 200 m
+- #131 (fusionnée) : `acces.rayonParkingVeloM`, migration 0016 `PARKING_VELO`, requête de plus dans `pnpm etl osm` (fichier `parkings-velo.json`), rattachement SQL, `parkingVelo` dans `/api/gares/proches`, « ≈ N min à vélo » + « Parking vélo à la gare » dans les gares proches ; portes sœurs : `transport_local` vidait toute la table et un contrôle aurait bloqué, `/api/mobilites` ne renvoie pas les parkings (test qui échoue sans le filtre, vérifié)
+- Base locale : 0016 appliquée, parkings chargés hors ligne : 277 couples, 122 gares, contrôles ✅, lieux et transports inchangés
+- #132 (ouverte) : « Votre gare » suit la même règle (demande de Hardy), une seule fonction `accesGare(volOiseauM, parkingVelo)`
+- Audit des parcours instables (`A-FAIRE` § 1) : 3 causes, chacune test fragile et défaut de l'app : A épingle recouverte (cadrage non refait en plein écran), B vue provisoire avant le cadrage, C « Voir la sortie » retardée par le démarrage de la carte ; plan C, A, B
+- Next.js : 7 failles corrigées par 16.4.5 (article du 03/11), Wagoo exposé à aucune ; #133 ouverte (16.4.5 seul, image Docker ✅), **régression** : `/api/carte/lieux` demandée 2 fois ; image de `main` (16.4.1) construite deux fois sans l'avertissement : déploiement du 17/11 sans risque
+**Décisions :** D097 (point 4 modifié dans #132), D098 (dans #133)
+**Problèmes rencontrés :**
+- Trois commits de la sauvegarde poussés après la fusion de #128 : absents de `main`, retrouvés et repris dans cette sauvegarde (L67)
+- #131 fusionnée quelques minutes après son ouverture : le complément « Votre gare » est parti dans #132
+- Première analyse de sécurité fausse : `pnpm audit` et Dependabot ne connaissaient qu'une des 7 failles ; corrigée par Hardy (L66)
+- Premier `next build` arrêté par `SecurityFatalError` (16.4.1), réussi au second ; sans effet sur l'image Docker
+**À valider par Hardy :** essai iPhone de #131 et #132 ; plan de l'audit ; cause du doublon de #133 puis choix ; fermer #129
+**Prochaine action :** `CLAUDE.md` § 9
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (586, `main`) · intégration ✅ (187) · parcours : `main` + #131 : 221/222, #132 : 223/224 (échec : `carte-cadrage:25`, cause B) ; #133 : 219/222 (cause B + régression)
+**Commit :** `main` : `2e3a6f9` ; #132 `b800830` ; #133 `3e9d135`
+
+---
+
 ## 16/11/2026 — Étapes E11 et E17 — carte rapide (D095), 0.2.0 en ligne, « Voir l’itinéraire » (D096)
 **Fait :**
 - Mesures de la carte (navigateur qui imite un iPhone, Dijon, 101 gares) : 641 ms sur 727 de la requête des lieux partaient dans la compilation JIT de PostgreSQL ; les lieux n'étaient demandés qu'après toutes les tuiles
