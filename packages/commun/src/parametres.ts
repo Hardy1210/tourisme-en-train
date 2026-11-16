@@ -229,6 +229,11 @@ export const schemaParametres = z
     }),
     /** Lien du bouton « Acheter mon billet » (D063). */
     billetterie: z.strictObject({ url: z.url({ protocol: /^https$/ }) }),
+    /** « Voir l'itinéraire » vers la gare de départ (D096) : Plans sur iPhone, Google Maps ailleurs. */
+    itineraire: z.strictObject({
+      apple: z.url({ protocol: /^https$/ }),
+      google: z.url({ protocol: /^https$/ }),
+    }),
     prix: z
       .strictObject({
         aCalibrer: z.boolean(),

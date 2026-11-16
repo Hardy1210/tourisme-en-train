@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.25 · **Date** 14/11/2026
+> **Version** 1.26 · **Date** 16/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -55,7 +55,7 @@
    - **Étiquettes « Beaune 22 min » :** affichées pour les 5 destinations avec le plus de trains (D062), au survol et pour la destination sélectionnée ; les autres gares restent des points. Collisions gérées par MapLibre.
    - **Survol croisé (desktop) :** survoler une carte de destination met la gare en évidence sur la carte, et inversement.
 4. **Feuille de résultats (glissante, par-dessus la carte)** :
-   - **a. Votre gare** : nom, distance, durée vélo ; prochain départ direct (destination choisie : le prochain train **vers elle**, ou « aucun aujourd'hui → Beaune ») ; « Changer de gare ». Si la gare proposée n'est pas la plus proche (D064) : temps à pied jusqu'à elle, gare la plus proche, et bouton pour y revenir d'un geste.
+   - **a. Votre gare** : nom ; durée à pied si la gare est à `acces.rayonPiedM` au plus, sinon la distance seule, jamais de durée à vélo, et « Voir l’itinéraire » sous la distance, sur iPhone une feuille « Ouvrir l’itinéraire avec » (Plans ou Google Maps), ailleurs Google Maps directement, la gare seule en destination (D096) ; prochain départ direct (destination choisie : le prochain train **vers elle**, ou « aucun aujourd'hui → Beaune ») ; « Changer de gare ». Si la gare proposée n'est pas la plus proche (D064) : temps à pied jusqu'à elle, gare la plus proche, et bouton pour y revenir d'un geste.
    - **b. Près de vous** (maquette v6) : lieux à pied, cartes horizontales (image ou illustration de catégorie, nom, puce, « 🚶 8 min · 650 m »), « à moins de <distance> » à droite du titre. Titre : « Près de vous » (position) ou « Près de la gare de <départ> » (gare ou ville choisie), autour de ce point, rayon du filtre « Distance autour de vous ». **Destination choisie** : la section passe **après** la liste (c), « Près de la gare de <destination> », lieux du périmètre fixe des gares (`acces.rayonPiedM`, 2 km, D091) dans les catégories choisies, aussi sur la carte ; pas de section pour une destination hors région.
    - **c. En train direct depuis <gare>** : cartes de destination triées par **durée de train** : nom, durée, trains/jour, premier départ et dernier retour, compteurs par catégorie sélectionnée, « ✓ Faisable dans la journée » **ou** « 🌙 Retour tôt, plutôt sur 2 jours » (P1), CO₂ économisé, prochain train « 10:12 → 10:34 », prix estimé **uniquement s'il est calibré** (sinon la ligne disparaît, sans espace vide), bouton `action` « Voir la sortie ».
 5. **Écran Lieux** (maquette `Explorer Mobile v3`, D067) : même en-tête qu'Explorer sur fond de marque (gare, catégories, « Filtres » réduit à la date et au temps de train, D086) ; titre « Lieux à visiter » et nombre de lieux ; cartes : illustration de catégorie, catégorie, nom, gare et temps de train, temps et distance à pied, badge Qualité Tourisme ; « Voir plus » (D056) ; états : chargement, sans position, hors région, aucun résultat (« Tout afficher »), date hors horaires, erreur. La gare choisie et la date suivent entre Explorer et Lieux, et chaque écran retrouve ses filtres au retour (D070). Grand écran (`Explorer Desktop v3`) : contrôles dans le panneau de gauche, titre et grille de cartes à droite. Une colonne de cartes sur mobile, autant que la largeur en permet sur grand écran.
@@ -186,3 +186,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 13/11/2026 | 1.23 | § 3 carte : tous les lieux en bulles qui se divisent au zoom, puis icônes ; la bulle par gare (D088) passe dans la mini-fiche — D091, D092 |
 | 14/11/2026 | 1.24 | § 3 carte : lieux autour de soi (rayon du filtre) et de chaque gare de destination, bulles décalées — D094 |
 | 14/11/2026 | 1.25 | § 3 carte : bulles à la couleur de la marque, nombre clair |
+| 16/11/2026 | 1.26 | § Explorer : « Votre gare » sans durée à vélo, « Voir l’itinéraire » ; listes de gares proches : à pied ou distance — D096 |

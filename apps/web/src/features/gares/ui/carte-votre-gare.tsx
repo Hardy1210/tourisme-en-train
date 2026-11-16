@@ -1,13 +1,17 @@
-import { Bike, Footprints, TrainFront } from 'lucide-react';
+import { Footprints, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
 import { formaterDistance } from '@/lib/geo/formats';
+
+import { accesGare } from '../acces-gare';
+import { LienItineraire } from './lien-itineraire';
 
 type Proprietes = {
   nom: string;
   distanceM: number | null;
   dureeMarcheMin: number | null;
-  dureeVeloMin: number | null;
+  /** Coordonnées de la gare : seule destination du lien « Voir l’itinéraire » (D096). */
+  coordonnees: { lat: number; lon: number };
   /** « 10:12 → Beaune » ; null tant qu'on ne le connaît pas ou s'il n'y en a plus. */
   prochainDepart: string | null;
   surChangement: () => void;
@@ -19,11 +23,12 @@ export function CarteVotreGare({
   nom,
   distanceM,
   dureeMarcheMin,
-  dureeVeloMin,
+  coordonnees,
   prochainDepart,
   surChangement,
   plusProche,
 }: Proprietes) {
+  const acces = distanceM === null ? null : accesGare(distanceM);
   return (
     <Carte className="gap-3.5" aria-labelledby="votre-gare">
       <div className="flex items-center gap-3">
@@ -36,19 +41,26 @@ export function CarteVotreGare({
             {nom}
           </h2>
         </div>
-        {distanceM !== null && plusProche !== null && dureeMarcheMin !== null ? (
-          <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
-            <Footprints aria-hidden="true" className="size-4" />
-            {dureeMarcheMin} min à pied · {formaterDistance(distanceM)}
-          </span>
-        ) : (
-          distanceM !== null &&
-          dureeVeloMin !== null && (
+        {distanceM !== null && (
+          // Sous la distance, dans la hauteur du titre : la carte ne grandit pas, la feuille non plus.
+          <div className="flex flex-none flex-col items-end gap-0.5">
             <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
-              <Bike aria-hidden="true" className="size-4 text-transit" />
-              {dureeVeloMin} min · {formaterDistance(distanceM)}
+              {plusProche !== null && dureeMarcheMin !== null ? (
+                <>
+                  <Footprints aria-hidden="true" className="size-4" />
+                  {dureeMarcheMin} min à pied · {formaterDistance(distanceM)}
+                </>
+              ) : acces?.dureeMarcheMin != null ? (
+                <>
+                  <Footprints aria-hidden="true" className="size-4" />
+                  {acces.dureeMarcheMin} min à pied · {acces.distance}
+                </>
+              ) : (
+                acces?.distance
+              )}
             </span>
-          )
+            <LienItineraire gare={coordonnees} />
+          </div>
         )}
       </div>
       {prochainDepart !== null && (
