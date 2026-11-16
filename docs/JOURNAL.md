@@ -24,6 +24,30 @@
 
 ---
 
+## 16/11/2026 — Étapes E11 et E17 — carte rapide (D095), 0.2.0 en ligne, « Voir l’itinéraire » (D096)
+**Fait :**
+- Mesures de la carte (navigateur qui imite un iPhone, Dijon, 101 gares) : 641 ms sur 727 de la requête des lieux partaient dans la compilation JIT de PostgreSQL ; les lieux n'étaient demandés qu'après toutes les tuiles
+- #123 : JIT coupé pour l'application, lieux demandés sans attendre la carte (D095). Comparaison de référence (5 chargements alternés, médiane) : requête 489 → 50 ms ; lieux reçus 3,98 → 1,11 s (PC), 10,3 → 4,6 s (processeur ×4 + 4G). Leçons L63 → L65 et chiffres pour le jury
+- #124 : version 0.2.0 (`apps/web/package.json`, renvoyée par `/api/sante`)
+- **Mise en ligne de la 0.2.0** avec Hardy : sauvegarde (`avant.dump`, 18 Mo), Redeploy (migrations 0014–0015), contrôle 0 ; export local (empreinte `6023b16a…`), `scp`, deuxième sauvegarde (`avant-donnees.dump`), restauration, comptages identiques au poste (12 242 lieux, 268 025 liaisons…), Redeploy, contrôle 0, iPhone ✅ ; étiquette `v0.2.0`
+- #125 : aide-mémoire « mettre en ligne seul » en tête d'`infra/README.md` (quel cas, étapes A → E, pièges vus)
+- #126 ouverte : « Votre gare » sans durée à vélo (à pied ou distance), « Voir l’itinéraire » (gare seule en destination), feuille Plans / Google Maps sur iPhone (D096)
+**Décisions :** D095, D096
+**Problèmes rencontrés :**
+- Un premier passage de mesure donnait 18–21 s avant correction ; la médiane de 5 passages donne 10,3 s : chiffre corrigé auprès de Hardy (L65)
+- Essai de l'image : `migrer` a échoué au premier lancement sur un volume neuf (base qui redémarre après son initialisation) ; reporté dans `A-FAIRE` § 3
+- Test de « Votre gare » d'abord écrit sur la mauvaise zone (`/Dijon/` attrapait « En train direct depuis Dijon-Ville ») : il échouait sur `main` pour une mauvaise raison ; corrigé et revérifié sur `main`
+- Lien d'itinéraire sur une ligne à part : feuille plus haute, carte recadrée, `explorer.e2e.ts:178` 3 échecs sur 4 ; lien déplacé sous la distance
+- Même adresse de tunnel après un nouveau build : l'iPhone garde l'ancienne version (service worker) ; une adresse neuve à chaque build
+- Ordinateur de Hardy : position estimée hors région → « Wagoo arrive bientôt » ; serveurs vérifiés (Dijon trouvée, `dansRegion` vrai), reproduit avec une position à Paris
+- Alerte Dependabot de MapLibre présentée comme nouvelle alors qu'elle était tranchée (D065) ; corrigé
+**À valider par Hardy :** #126 sur l'iPhone ; lien d'itinéraire aussi avec une gare choisie à la main ; logos officiels ou icônes génériques
+**Prochaine action :** `CLAUDE.md` § 9
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (580) · intégration ✅ (182) · parcours : 212 sur 215 sur #126, échecs = touchers de carte instables aussi sur `main`
+**Commit :** `690c0c1` (#126, ouverte) ; `main` : `6e0a1c9`
+
+---
+
 ## 12/11/2026 (nuit) — Étape E11 — parcours des filtres (F05), cadrage de la carte (D087)
 **Fait :**
 - #104 : idées de la maquette v6 notées dans `A-FAIRE` (nombre de lieux par gare, section « À deux pas » en 4 situations, « Distance à pied ») ; reportés : icônes au zoom libre, Dijon-Ville par défaut sans position
