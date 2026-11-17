@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.17 · **Date** 17/11/2026
+> **Version** 1.18 · **Date** 17/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -471,6 +471,42 @@
 - **À retenir :** un comptage (« 2 demandes au lieu d'une ») décrit un symptôme, pas une cause. Avant de dire « rien de visible », regarder ce que l'utilisateur reçoit. Et un test qui appelle la route directement ne voit pas ce que le serveur change autour d'elle.
 - **Origine :** #133, 17/11 (D098).
 
+### L70 — Compter ce qu'une source apporte vraiment avant de la choisir
+- **Problème :** on avait 126 photos en base, et l'on supposait que DATAtourisme en fournissait beaucoup ; or le CSV régional n'en contient aucune.
+- **Solution :** étude chiffrée avant tout code : pour chaque lieu montré, chercher les candidats de chaque source (tags OSM, article Wikipédia, fiche Wikidata, export national DATAtourisme), puis compter ce qui reste après les règles (crédit lisible, droits valides, filtre). Résultat : 3 340 lieux sur 11 180 (30 %), 40 % près des gares ; Wikipédia et Wikidata apportent la plupart des photos, DATAtourisme complète (603).
+- **À retenir :** une source « qui a des photos » ne dit pas combien de **nos** lieux en auront. On compte sur nos données, avec nos règles, puis on décide.
+- **Origine :** étude des photos du 17/11 (D100).
+
+### L71 — Une photo réutilisée vient avec son auteur, sa licence et ses dates
+- **Problème :** une image libre n'est réutilisable qu'avec son crédit ; certaines photos DATAtourisme ont même une date de fin de droits (34 de nos fiches n'avaient que des photos expirées).
+- **Solution :** ne garder une photo que si l'auteur et la licence se lisent **automatiquement** (Commons : `Artist`, `LicenseShortName` ; DATAtourisme : `credits`), et vérifier les dates de droits **à l'affichage**, avec la date du jour, pour qu'une photo expirée disparaisse même entre deux chargements.
+- **À retenir :** sans crédit lisible, pas de photo. Un droit qui expire se vérifie au moment où l'on montre, pas seulement au moment où l'on charge.
+- **Origine :** D100, FAQ et CGU de DATAtourisme.
+
+### L72 — Demander la vignette à la source, et mesurer avant d'ajouter un optimiseur
+- **Problème :** les originaux DATAtourisme pèsent environ 1,5 Mo (jusqu'à 4,3 Mo) : impossible sur un téléphone en 4G. L'optimiseur d'images de Next.js semblait la solution évidente.
+- **Solution :** les deux sources savent réduire elles-mêmes : Commons (vignette à la largeur demandée, ≈ 31 Ko en 320 px) et Tourinsoft (`?width=800` : 3,4 Mo → 138 Ko). On garde seulement l'adresse de la vignette, en `<img>` simple. L'optimiseur attend des mesures : il ouvrirait une famille de failles (D098), chargerait le VPS et perdrait son cache à chaque Redeploy.
+- **À retenir :** avant d'ajouter un outil, regarder ce que la source sait déjà faire, et mesurer le besoin.
+- **Origine :** D101.
+
+### L73 — Interroger une API publique poliment, lire un gros fichier sans le décompresser
+- **Problème :** Wikimedia a répondu « trop de requêtes » (429) ; l'export national DATAtourisme fait 1,9 Go compressés (14,2 Go en clair) et son téléchargement s'est coupé à 312 Mo.
+- **Solution :** une seconde entre deux appels, le délai `Retry-After` respecté, des requêtes groupées par 50 ; un nom de client explicite, sans donnée personnelle. Reprise du téléchargement (`curl -C -`) ; lecture **en continu** dans le zip, ligne par ligne, en ne gardant que nos fiches (4 passages d'environ 2,5 min).
+- **À retenir :** une API gratuite reste partagée : on la ménage. Un fichier énorme se lit en flux, pas en mémoire.
+- **Origine :** étude des photos du 17/11.
+
+### L74 — Vérifier ce que fait un mécanisme existant avant de le réutiliser
+- **Problème :** pour cacher les lieux « Croix » ou « Lieu de parachutage », le fichier `noms_exclus.csv` semblait tout prêt ; mais un nom exclu **n'est pas chargé en base**, ce qui contredit la règle « on ne supprime jamais un lieu » (D093).
+- **Solution :** lire le code du mécanisme (`etl/src/sources/lieux.ts`) avant de proposer de s'en servir ; utiliser le masquage (`lieu.masque`).
+- **À retenir :** un outil qui « fait presque la même chose » peut faire autre chose. On lit son code avant de le réutiliser.
+- **Origine :** D101.
+
+### L75 — Un paramètre se mesure sur le trajet qu'il sert
+- **Problème :** Hardy mesurait ×1,17 entre le vol d'oiseau et la route chez lui ; le code utilisait 1,3.
+- **Solution :** 22 trajets réels autour de Dijon, séparés par usage : commune → gare (médiane ×1,22) et gare → lieu à pied (médiane ×1,32). Les deux valeurs sont justes, chacune pour son trajet ; 1,3 est gardé pour l'usage principal (les lieux autour des gares), deux coefficients après la soutenance.
+- **À retenir :** une seule mesure, même juste, ne vaut que pour son type de trajet. Mesurer par usage avant de changer une constante qui touche les données.
+- **Origine :** D102.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -542,3 +578,4 @@ Valeurs en g CO₂e/km.
 | 16/11/2026 | 1.15 | L63 → L65 et chiffres de la performance de la carte (plan d'exécution et JIT, précaution devenue frein, mesure comparée) |
 | 17/11/2026 | 1.16 | L66 → L68 (failles lues à la source, commit après fusion, test lent reproduit en ralentissant le processeur) |
 | 17/11/2026 | 1.17 | L69 (symptôme anodin, lire ce que le navigateur reçoit) |
+| 17/11/2026 | 1.18 | L70 → L75 (couverture d'une source, crédit et droits des photos, vignette à la source, API publique et gros fichier, mécanisme existant, paramètre mesuré par usage) |
