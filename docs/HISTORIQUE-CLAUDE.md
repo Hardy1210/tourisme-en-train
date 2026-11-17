@@ -71,3 +71,4 @@
 | 16/11/2026 | 1.75 | § 9 : #126 fusionnée, lien d'itinéraire même sans position, PR 2 vélo par l'extraction OSM existante avec migration `PARKING_VELO` |
 | 17/11/2026 | 1.76 | § 9 : sauvegarde de la nuit du 16 au 17/11 (#131 sur `main`, #132 et #133 ouvertes, audit des parcours, plan du 17/11) |
 | 17/11/2026 | 1.77 | § 8 et § 9 : 0.3.0 et 0.3.1 en ligne, règle unique du trajet vers la gare, étude du coefficient de détour en prochaine action, format des commandes données à Hardy |
+| 17/11/2026 | 1.78 | § 8 et § 9 : priorités jusqu'à la soutenance (D099), études photos et coefficient de détour le 18/11 |
