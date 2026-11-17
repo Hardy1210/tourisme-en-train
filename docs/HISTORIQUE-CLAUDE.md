@@ -72,3 +72,4 @@
 | 17/11/2026 | 1.76 | § 9 : sauvegarde de la nuit du 16 au 17/11 (#131 sur `main`, #132 et #133 ouvertes, audit des parcours, plan du 17/11) |
 | 17/11/2026 | 1.77 | § 8 et § 9 : 0.3.0 et 0.3.1 en ligne, règle unique du trajet vers la gare, étude du coefficient de détour en prochaine action, format des commandes données à Hardy |
 | 17/11/2026 | 1.78 | § 8 et § 9 : priorités jusqu'à la soutenance (D099), études photos et coefficient de détour le 18/11 |
+| 17/11/2026 | 1.79 | § 9 : étude des photos faite (D100, #139), planche de contrôle, décisions en attente, service d'itinéraire proposé |
