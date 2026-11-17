@@ -567,7 +567,7 @@ test.describe('gare proposée qui n’est pas la plus proche (D064)', () => {
   test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
   test.use({ geolocation: { latitude: 47.343, longitude: 5.003 }, permissions: ['geolocation'] });
 
-  test('dit le temps à pied, montre la plus proche, et y revient d’un geste', async ({ page }) => {
+  test('montre la plus proche, et y revient d’un geste', async ({ page }) => {
     // La route choisit sur les trains du jour réel, absents de l'échantillon : réponse simulée.
     await page.route('**/api/gares/proches*', async (requete) => {
       const reponse = await requete.fetch();
@@ -576,7 +576,8 @@ test.describe('gare proposée qui n’est pas la plus proche (D064)', () => {
     });
     await page.goto(ECRAN);
     await expect(titreDestinations(page)).toBeVisible();
-    await expect(page.getByText(/min à pied ·/).first()).toBeVisible();
+    // À ≈ 2,9 km : plus jamais de minutes à pied au-delà de `acces.rayonPiedM` (essai iPhone du 17/11, D097).
+    await expect(page.locator('[aria-labelledby="votre-gare"]')).not.toContainText(/min à pied/);
     await expect(page.getByText(/Gare la plus proche/)).toContainText('Dijon-Porte-Neuve');
 
     await page.getByRole('button', { name: 'Partir de Dijon-Porte-Neuve' }).click();

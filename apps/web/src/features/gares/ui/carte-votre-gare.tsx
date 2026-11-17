@@ -1,15 +1,13 @@
 import { Bike, Footprints, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
-import { formaterDistance } from '@/lib/geo/formats';
 
-import { accesGare } from '../acces-gare';
+import { accesGare, accesGareProche } from '../acces-gare';
 import { LienItineraire } from './lien-itineraire';
 
 type Proprietes = {
   nom: string;
   distanceM: number | null;
-  dureeMarcheMin: number | null;
   /** Un parking vélo à la gare : seule preuve d'une durée à vélo (D097). */
   parkingVelo: boolean;
   /** Coordonnées de la gare : seule destination du lien « Voir l’itinéraire » (D096). */
@@ -17,14 +15,16 @@ type Proprietes = {
   /** « 10:12 → Beaune » ; null tant qu'on ne le connaît pas ou s'il n'y en a plus. */
   prochainDepart: string | null;
   surChangement: () => void;
-  /** Quand la gare proposée n'est pas la plus proche (D064) : le dire, et y revenir d'un geste. */
-  plusProche: { nom: string; dureeMarcheMin: number; surChoix: () => void } | null;
+  /**
+   * Quand la gare proposée n'est pas la plus proche (D064) : le dire, et y revenir d'un geste. Son trajet suit
+   * la même règle que partout (D097) : à pied, à vélo avec un parking, ou la distance.
+   */
+  plusProche: { nom: string; distanceM: number; parkingVelo: boolean; surChoix: () => void } | null;
 };
 
 export function CarteVotreGare({
   nom,
   distanceM,
-  dureeMarcheMin,
   parkingVelo,
   coordonnees,
   prochainDepart,
@@ -32,7 +32,8 @@ export function CarteVotreGare({
   plusProche,
 }: Proprietes) {
   const acces = distanceM === null ? null : accesGare(distanceM, parkingVelo);
-  const aVelo = plusProche === null && acces?.dureeVeloMin != null;
+  // Une seule règle, que la gare proposée soit la plus proche ou non (essai iPhone du 17/11, D097).
+  const aVelo = acces?.dureeVeloMin != null;
   return (
     <Carte className="gap-3.5" aria-labelledby="votre-gare">
       <div className="flex items-center gap-3">
@@ -51,12 +52,7 @@ export function CarteVotreGare({
         <div className="flex flex-none flex-col items-end gap-0.5">
           {distanceM !== null && (
             <span className="tabular flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
-              {plusProche !== null && dureeMarcheMin !== null ? (
-                <>
-                  <Footprints aria-hidden="true" className="size-4" />
-                  {dureeMarcheMin} min à pied · {formaterDistance(distanceM)}
-                </>
-              ) : acces?.dureeMarcheMin != null ? (
+              {acces?.dureeMarcheMin != null ? (
                 <>
                   <Footprints aria-hidden="true" className="size-4" />
                   {acces.dureeMarcheMin} min à pied · {acces.distance}
@@ -92,8 +88,8 @@ export function CarteVotreGare({
           <p className="tabular text-sm text-muted-foreground">
             Gare la plus proche :{' '}
             <strong className="font-semibold text-foreground">{plusProche.nom}</strong>,{' '}
-            {plusProche.dureeMarcheMin} min à pied. Celle-ci a plus de trains, sans perdre de
-            destination.
+            {accesGareProche(plusProche.distanceM, plusProche.parkingVelo).texte}. Celle-ci a plus
+            de trains, sans perdre de destination.
           </p>
           <Bouton variante="secondaire" onClick={plusProche.surChoix}>
             Partir de {plusProche.nom}
