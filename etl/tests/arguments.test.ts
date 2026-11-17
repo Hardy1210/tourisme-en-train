@@ -20,6 +20,11 @@ describe('lireArguments', () => {
     expect(lireArguments(['all'])).toMatchObject({ type: 'execution', cibles: SOURCES });
   });
 
+  it('« photos » vient après « rattachements » : la photo d’un doublon sert au lieu qu’il double (D100)', () => {
+    expect(SOURCES.indexOf('photos')).toBeGreaterThan(SOURCES.indexOf('rattachements'));
+    expect(lireArguments(['photos'])).toMatchObject({ type: 'execution', cibles: ['photos'] });
+  });
+
   it('lit --force et --hors-ligne', () => {
     expect(lireArguments(['gtfs_sncf', '--force', '--hors-ligne'])).toMatchObject({
       force: true,

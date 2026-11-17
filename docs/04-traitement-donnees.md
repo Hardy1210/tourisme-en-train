@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.24 · **Date** 16/11/2026
+> **Version** 1.25 · **Date** 17/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -39,7 +39,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   "destinations": { "lieuxMinEnTete": 3, "motGareHorsVille": "TGV" },
   "controles": {
     "communesFranceMin": 34000, "garesFranceMin": 2500, "garesRegionMin": 100, "rapprochementGtfsMinPct": 90,
-    "contoursRegionMin": 3000, "lieuxSourceMin": 1000
+    "contoursRegionMin": 3000, "lieuxSourceMin": 1000, "photosMin": 2000
   },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
@@ -115,6 +115,20 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | `bullesDecalagePx` | [20, -5] | Carte : décalage [droite, bas] des bulles (cercle et nombre), pour que le point d'une gare ne cache pas leur nombre ; les icônes restent à leur place exacte | Réglé par Hardy sur iPhone (14/11) ; nombres négatifs = gauche, haut |
 | `sousCategoriesMasquees` | piscine, centre aquatique | Sous-catégories **gardées en base** mais cachées de tous les écrans (`lieu.masque`, calculé à l'import : carte, « Près de vous », liens aux gares) ; changer la liste recharge la source | Cachées « pour l'instant » (Hardy, 13/11). **On ne supprime jamais un lieu de la base, on choisit ce qu'on montre** (D093). Une correction manuelle passe avant (§ 4.5) |
 
+**Section `photos` (D100, D101)** : une photo par lieu, `pnpm etl photos` (§ 4.6 bis). Les motifs se comparent sans majuscules, accents ni ponctuation.
+
+| Paramètre | Valeur | Ce qu'il règle | Pourquoi cette valeur |
+|---|---|---|---|
+| `largeurPetitePx`, `largeurGrandePx` | 400, 800 | Largeur des deux vignettes gardées (cartes et mini-fiche ; fiche lieu) | Décision de Hardy (≈ 800 px) ; Commons ne sert que des tailles standard : 400 → 500 px, 800 → 960 px (17/11) ; Commons 320 px ≈ 31 Ko, Tourinsoft 800 px ≈ 138 Ko au lieu de 3,4 Mo (mesures du 17/11) |
+| `extensionsImages` | jpg, jpeg, png, webp, gif | Seuls ces formats sont des photos (SVG, PDF, TIFF écartés) | Formats affichés par tous les navigateurs |
+| `motifsFichiersExclus` | blason, carte, map, logo, locator | Nom de fichier qui en contient un : photo écartée | Décision de Hardy (17/11) : 16 lieux touchés, 12 perdent leur photo, quelques faux positifs acceptés |
+| `motifsCartesPostales` | postcard, carte postale… | Nom ou **catégorie Commons** qui en contient un : carte postale ancienne écartée | Planche du 17/11 (n° 11) ; 20 photos sur 2 675 |
+| `licencesLibres`, `motifsLicencesRefusees` | cc by, cc0, public domain, fal… ; nc, nd | Licence libre si elle commence par un préfixe et ne contient aucun mot refusé (« CC BY-NC ») | Seules les licences libres permettent l'affichage ; crédit obligatoire (D100) |
+| `auteursVides` | unknown, inconnu, anonyme… | Auteur considéré comme illisible : pas de photo | Sans crédit lisible, pas de photo (D100) |
+| `api.taillePaquet`, `api.pauseMs`, `api.tentatives` | 50, 1000, 6 | Appels à Wikimedia : 50 titres par appel (leur maximum), une seconde entre deux appels, 6 tentatives si le serveur demande d'attendre | Politique d'usage de Wikimedia ; réponses 429 vues le 17/11 sans pause (L73) |
+
+Contrôle : `controles.photosMin` (2000) lieux avec une photo, bloquant (3 340 le 17/11) : en dessous, une API a mal répondu et les photos précédentes restent.
+
 Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`dureeMin`, `dureeVeloDepuisDistanceMin`, `niveauAcces`), testées en paires ; l'import applique la même formule en SQL (`rattachements.sql`), avec les mêmes paramètres.
 
 - Les valeurs `null` (D031) — toutes renseignées le 03/11/2026 (D048) ; la règle reste pour une région ou une source future :
@@ -148,13 +162,14 @@ Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`d
 | 8 | `lieux_culturels` | Charge les lieux culturels (P1) | 1 ter, 5 | après le P0 |
 | 9 | `festivals` | Charge les festivals (P1) | 1 ter, 5 | après le P0 |
 | 10 | `rattachements` | Doublons, sites, `lieu_gare`, `gare_stats` (Qualité Tourisme déjà lu dans DATAtourisme) | 2, 6–9 | E06 |
+| 10 bis | `photos` | Une photo par lieu (`photo_lieu`) : Wikimedia, puis DATAtourisme (export national) | 1, 6–10 | D100 |
 | 11 | `transport_local` | Charge `mobilite_locale` | 2 | E07 |
 | 12 | `lignes` | Charge `ligne_ferroviaire` (P1) | — | E07 |
 | 13 | `cyclable` | Charge `amenagement_cyclable` (P1) | — | E07 |
 
 Option `--hors-ligne` : n'essaie pas de télécharger, utilise les fichiers de `data/brut/` (démo, E16).
 
-**Fréquence :** `osm` **une fois par semaine au plus** (service public Overpass, pas fait pour un usage automatique fréquent) ; entre deux extractions, `pnpm etl osm --hors-ligne` relit `data/brut/osm/overpass.json`. Les autres sources peuvent être rechargées chaque nuit (`07` § 5, D041).
+**Fréquence :** `photos` **une fois par mois** (l'export national DATAtourisme, 1,9 Go, est publié chaque mois ; Wikimedia : ≈ 200 appels espacés) ; entre deux, `pnpm etl photos --hors-ligne` relit les réponses gardées. `osm` **une fois par semaine au plus** (service public Overpass, pas fait pour un usage automatique fréquent) ; entre deux extractions, `pnpm etl osm --hors-ligne` relit `data/brut/osm/overpass.json`. Les autres sources peuvent être rechargées chaque nuit (`07` § 5, D041).
 
 ---
 
@@ -340,6 +355,26 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
 
 Au 02/11 (après D044, D045 et la relecture de Hardy : 116 « oui », 77 « non ») : 72 lieux écartés par leur nom, 964 doublons (dont 133 dans une même source), 319 sites (525 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure, 16 lieux de Bibracte et 26 parcs de château), **2 092 lieux à pied d'une gare** (2 210 liens), 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
 
+### 4.6 bis Photos des lieux (D100, D101)
+Commande `pnpm etl photos`, après `rattachements` (la photo d'un doublon sert au lieu qu'il double). **Une seule photo par lieu gardé**, la première valide dans cet ordre :
+1. **Fichier Commons du tag OSM** (`lieu.image_url` : tag `image` sur Commons, ou `wikimedia_commons`) ; une image hébergée ailleurs n'a pas de crédit lisible : jamais retenue.
+2. **Image principale libre de l'article Wikipédia** en français (`lieu.wikipedia`, API `pageimages`, `pilicense=free`) ; les 8 articles en anglais ou en allemand (17/11) ne sont pas lus.
+3. **Image de la fiche Wikidata** (`lieu.wikidata`, propriété P18).
+4. **Photo DATAtourisme** de la fiche (ou de son doublon), principale d'abord.
+5. Sinon : aucune ligne, l'application montre l'icône de la catégorie.
+
+**Règles** (`transformations/photos.ts`, fonctions pures) : Commons → fichier connu, format d'image, **auteur lisible**, **licence libre**, nom non exclu, pas une carte postale ; DATAtourisme → format d'image, **crédit lisible**, nom non exclu, droits pas expirés au chargement (les dates sont gardées : l'application revérifie à la date du jour). `regles/photos_exclues.csv` (photo ; raison ; décision « oui ») écarte une photo **précise** (fichier Commons, ou adresse DATAtourisme dont les noms de fichiers ne sont pas uniques) : le lieu prend la source suivante.
+
+**Wikimedia** (`sources/wikimedia.ts`) : Wikidata, Wikipédia et Commons par paquets de `photos.api.taillePaquet`, **User-Agent avec le nom de l'application et un contact** (`URL_CONTACT`, l'adresse du site), une pause de `photos.api.pauseMs` entre deux appels, le délai `Retry-After` respecté ; adresses d'API dans `config/sources.json`. Commons donne l'auteur (`Artist`, HTML retiré), la licence, l'adresse de la vignette **telle que Commons la renvoie**, une demande par taille (`iiurlwidth` ; Commons ne sert que des tailles standard, sur `thumb.wikimedia.org` ; une adresse construite à la main, « 400px », répond HTTP 400 ; jamais `Special:FilePath`, qui redirige) et les catégories visibles. Réponses gardées dans `data/brut/wikimedia/reponses.json`.
+
+**DATAtourisme** : l'**export national RDF** (`datatourisme_photos`, `datatourisme.nt.zip`, 1,9 Go, ≈ 14 Go en clair) ; le CSV régional n'a aucune photo. Lu **en flux dans le zip**, trois passages (fiche → représentation → annotation et ressource ; ≈ 2,5 min chacun le 17/11), en ne gardant que nos fiches : adresse (`ebucore:locator`), crédit (`core:credits`), début et fin des droits. **Téléchargement qui reprend** (`telechargerAvecReprise`) : le serveur a coupé l'envoi deux fois le 17/11 ; chaque nouvelle tentative reprend là où le fichier s'est arrêté (`Range`), jusqu'à 8 tentatives. Résultat gardé dans `data/brut/datatourisme_photos/photos.json` avec l'empreinte de l'export : relu tant que l'export n'a pas changé (`--force` le relit). Vignettes par `?width=` (Tourinsoft).
+
+**Chargement** : `photo_lieu` entièrement remplacée dans une transaction ; contrôle `controles.photosMin`. **Rapports** : `traite/rapports/photos_retenues.csv` (lieu, origine, photo, auteur, licence) et `photos_ecartees.csv` (photo, raison), à relire par Hardy.
+
+**Signe d'intérêt pour la carte** (D092, confirmé le 17/11) : inchangé ; une photo Wikidata seule ne fait pas réapparaître un lieu « pauvre » (+ 495 lieux sinon).
+
+**Tests en paires** : licence libre / « CC BY-NC » refusée ; auteur / « Unknown author » ; photo / carte postale (catégorie Commons) ; droits finissant ce jour / la veille, commençant ce jour / le lendemain (été et hiver) ; ordre des sources et photo exclue à la main ; export lu en trois passages / un seul passage quand aucune de nos fiches n'y est ; politique Wikimedia (User-Agent, pause, `Retry-After`) ; chargement remplacé / photo sans auteur refusée par la base.
+
 ### 4.7 Transports locaux (E07)
 Commande `pnpm etl transport_local [--hors-ligne]` (D046) : réseaux lus dans `config/sources.json` (entrées avec un champ `reseau`), fichiers gardés dans `data/brut/<code du réseau>/`, toujours recalculé (≈ 20 s).
 1. **Licence** : un réseau dont la licence n'est pas dans `LICENCES_RESEAU` (`packages/commun`) n'est pas chargé (remarque dans le rapport).
@@ -432,3 +467,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 13/11/2026 | 1.22 | § 2 : `sousCategoriesRetirees` devient `sousCategoriesMasquees` (gardées en base, `lieu.masque`) — D093 |
 | 14/11/2026 | 1.23 | § 2 : `bullesRayonPx` 37, `bullesZoomMax` 13, `bullesDecalagePx` — D094 |
 | 16/11/2026 | 1.24 | § 2 : `acces.rayonParkingVeloM` ; § 4.7 : parkings vélo épargnés ; § 4.7 bis : parkings vélo — D097 |
+| 17/11/2026 | 1.25 | § 2 : section `photos`, `controles.photosMin` ; § 3 : `photos` (10 bis) et sa fréquence ; § 4.6 bis : photos des lieux — D100, D101 |

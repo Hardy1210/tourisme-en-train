@@ -14,6 +14,7 @@ import {
   estInchange,
   obtenirFichier,
   telecharger,
+  telechargerAvecReprise,
 } from '../src/sources/base';
 
 // SHA-256 de « abc » (vecteur de test officiel FIPS 180-2).
@@ -26,12 +27,34 @@ beforeEach(async () => {
 });
 
 // Petit serveur local : aucun accès au réseau pendant les tests.
+const CONTENU = 'abcdefghij';
+const appels: { url: string | undefined; range: string | null }[] = [];
 let serveur: Server;
 let adresse: string;
 beforeAll(async () => {
   serveur = createServer((requete, reponse) => {
     if (requete.url === '/abc.csv') reponse.end('abc');
-    else reponse.writeHead(404).end();
+    else if (requete.url === '/coupe.bin' || requete.url === '/sans-reprise.bin') {
+      // Comme l'export national du 17/11 : la connexion se coupe en plein envoi. `/coupe.bin` accepte la
+      // reprise (Range) ; `/sans-reprise.bin` renvoie toujours tout le fichier.
+      appels.push({ url: requete.url, range: requete.headers.range ?? null });
+      const plage = /^bytes=(\d+)-$/.exec(requete.headers.range ?? '');
+      if (plage && requete.url === '/coupe.bin') {
+        const debut = Number(plage[1]);
+        reponse.writeHead(206, {
+          'Content-Length': String(CONTENU.length - debut),
+          'Content-Range': `bytes ${debut}-${CONTENU.length - 1}/${CONTENU.length}`,
+        });
+        reponse.end(CONTENU.slice(debut));
+      } else if (appels.filter((a) => a.url === requete.url).length === 1) {
+        reponse.writeHead(200, { 'Content-Length': String(CONTENU.length) });
+        // Le temps que le client reçoive ces 4 octets, puis la coupure.
+        reponse.write(CONTENU.slice(0, 4), () => setTimeout(() => reponse.destroy(), 100));
+      } else {
+        reponse.writeHead(200, { 'Content-Length': String(CONTENU.length) });
+        reponse.end(CONTENU);
+      }
+    } else reponse.writeHead(404).end();
   });
   await new Promise<void>((pret) => serveur.listen(0, '127.0.0.1', pret));
   adresse = `http://127.0.0.1:${(serveur.address() as AddressInfo).port}`;
@@ -103,6 +126,35 @@ describe('telecharger', () => {
     const chemin = path.join(dossier, 'precedent.csv');
     await writeFile(chemin, 'ancien');
     await expect(telecharger(`${adresse}/absent.csv`, chemin)).rejects.toThrow(/HTTP 404/);
+    expect(await readFile(chemin, 'utf8')).toBe('ancien');
+  });
+});
+
+describe('telechargerAvecReprise (gros fichiers : export DATAtourisme, 1,9 Go)', () => {
+  const sansAttente = { tentatives: 3, attendre: async () => {} };
+
+  it('connexion coupée : reprend là où elle s’est arrêtée (Range), le fichier est complet', async () => {
+    appels.length = 0;
+    const chemin = path.join(dossier, 'coupe.bin');
+    const resultat = await telechargerAvecReprise(`${adresse}/coupe.bin`, chemin, sansAttente);
+    expect(await readFile(chemin, 'utf8')).toBe(CONTENU);
+    expect(resultat.taille).toBe(CONTENU.length);
+    expect(appels.map((a) => a.range)).toEqual([null, 'bytes=4-']);
+  });
+
+  it('limite : serveur sans reprise → recommence au début, sans doubler le début du fichier', async () => {
+    appels.length = 0;
+    const chemin = path.join(dossier, 'sans-reprise.bin');
+    await telechargerAvecReprise(`${adresse}/sans-reprise.bin`, chemin, sansAttente);
+    expect(await readFile(chemin, 'utf8')).toBe(CONTENU);
+  });
+
+  it('limite : coupé à chaque tentative → erreur, le fichier précédent est conservé', async () => {
+    const chemin = path.join(dossier, 'precedent.bin');
+    await writeFile(chemin, 'ancien');
+    await expect(
+      telechargerAvecReprise(`${adresse}/absent.bin`, chemin, sansAttente),
+    ).rejects.toThrow(/HTTP 404/);
     expect(await readFile(chemin, 'utf8')).toBe('ancien');
   });
 });

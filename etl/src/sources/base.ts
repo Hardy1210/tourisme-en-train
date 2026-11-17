@@ -130,6 +130,53 @@ export async function telecharger(
   return { empreinte: hash.digest('hex'), taille };
 }
 
+/**
+ * Téléchargement d'un gros fichier (export national DATAtourisme, 1,9 Go) que le serveur coupe parfois en
+ * plein envoi (vu deux fois le 17/11) : chaque nouvelle tentative **reprend** là où le fichier s'est arrêté
+ * (`Range`), au lieu de tout recommencer. Serveur sans reprise (réponse 200) : on repart du début. Comme
+ * `telecharger`, le fichier précédent n'est remplacé qu'une fois le nouveau complet.
+ */
+export async function telechargerAvecReprise(
+  url: string,
+  chemin: string,
+  options: { tentatives: number; attenteMs?: number; attendre?: (ms: number) => Promise<void> },
+): Promise<{ empreinte: string; taille: number }> {
+  const attendre = options.attendre ?? ((ms) => new Promise<void>((r) => setTimeout(r, ms)));
+  await mkdir(path.dirname(chemin), { recursive: true });
+  const partiel = `${chemin}.partiel`;
+  await rm(partiel, { force: true });
+  let total: number | null = null;
+  for (let tentative = 1; ; tentative += 1) {
+    const deja = (await stat(partiel).catch(() => null))?.size ?? 0;
+    try {
+      const reponse = await fetch(url, deja > 0 ? { headers: { Range: `bytes=${deja}-` } } : {});
+      if (!reponse.ok || !reponse.body) throw new ErreurTelechargement(reponse.status, url);
+      const reprise = reponse.status === 206;
+      const annonce = reprise
+        ? /\/(\d+)$/.exec(reponse.headers.get('content-range') ?? '')?.[1]
+        : reponse.headers.get('content-length');
+      if (annonce) total = Number(annonce);
+      await pipeline(
+        Readable.fromWeb(reponse.body as ReadableStream<Uint8Array>),
+        createWriteStream(partiel, { flags: reprise ? 'a' : 'w' }),
+      );
+      const taille = (await stat(partiel)).size;
+      if (total !== null && taille < total)
+        throw new Error(`Fichier incomplet : ${taille} / ${total} octets`);
+      await rename(partiel, chemin);
+      return { empreinte: await empreinteFichier(chemin), taille };
+    } catch (erreur) {
+      const definitive =
+        erreur instanceof ErreurTelechargement && !STATUTS_PASSAGERS.has(erreur.statut);
+      if (definitive || tentative >= options.tentatives) {
+        await rm(partiel, { force: true });
+        throw erreur;
+      }
+      await attendre(options.attenteMs ?? 30_000);
+    }
+  }
+}
+
 /** Télécharge le fichier de la source, ou réutilise celui de `data/brut/` en mode hors ligne. */
 export async function obtenirFichier(
   source: SourceDonnees,

@@ -18,6 +18,7 @@ const LIEU: LieuACharger = {
   url: null,
   imageUrl: null,
   wikipedia: null,
+  wikidata: null,
   horaires: null,
   qualiteTourisme: false,
   lon: 5,

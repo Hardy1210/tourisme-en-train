@@ -29,6 +29,13 @@ export const TYPES_MOBILITE = [
   'PARKING_VELO',
 ] as const;
 export const schemaTypeMobilite = z.enum(TYPES_MOBILITE);
+
+/**
+ * D'où vient la photo d'un lieu (D100), dans l'ordre de priorité : fichier Commons du tag OSM, image libre
+ * de l'article Wikipédia, image de la fiche Wikidata, puis photo DATAtourisme.
+ */
+export const ORIGINES_PHOTO = ['osm', 'wikipedia', 'wikidata', 'datatourisme'] as const;
+export type OriginePhoto = (typeof ORIGINES_PHOTO)[number];
 export type TypeMobilite = z.infer<typeof schemaTypeMobilite>;
 
 /** Résultat d'une exécution ETL ; `IGNORE` = fichier inchangé depuis le dernier chargement. */

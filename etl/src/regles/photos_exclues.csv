@@ -1,0 +1,10 @@
+# Photos écartées à la main (docs/04-traitement-donnees.md § 4.6 bis, D101), relues par Hardy. Modifiable sans code.
+# Le lieu n'est jamais touché : il prend la photo de la source suivante, ou l'icône de sa catégorie.
+# photo : nom du fichier Wikimedia Commons (« Bouligney8.jpg »), ou adresse complète de la photo DATAtourisme
+#   (leurs noms de fichiers ne sont pas uniques : « IMG-1953.jpg »). Le rapport traite/rapports/photos_retenues.csv
+#   donne la valeur exacte à recopier.
+# Seules les lignes dont la colonne decision vaut « oui » sont appliquées.
+photo;raison;decision
+https://decibelles-data.media.tourinsoft.eu/upload/IMG-1953.jpg;Planche du 17/11, n° 12 : des vignes au lieu du musée (Musée de la vigne et du vin du vigneron);oui
+Bouligney8.jpg;Planche du 17/11, n° 26 : seulement l'horloge du toit (Mairie-lavoir et fontaine dite Napoléon);oui
+https://decibelles-data.media.tourinsoft.eu/upload/20230819-212811.jpg;Planche du 17/11, n° 41 : projection de nuit, église méconnaissable (Église romane Saint-Jacques);oui

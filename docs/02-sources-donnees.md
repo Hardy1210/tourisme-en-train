@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.16 · **Date** 16/11/2026
+> **Version** 1.17 · **Date** 17/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -19,6 +19,10 @@
 | `gtfs_sncf` | Horaires SNCF (TER, Intercités, TGV) | SNCF | GTFS (ZIP de CSV) | Base | P0 | E03 |
 | `datatourisme` | DATAtourisme — POI par région | ADN Tourisme | CSV par région | Base | P0 | E05 |
 | `osm` | OpenStreetMap (aires de jeux, parcs, points de vue…) | Contributeurs OSM | JSON Overpass | Base | P0 | E05 |
+| `datatourisme_photos` | DATAtourisme — photos des points d'intérêt (export national) | ADN Tourisme | RDF N-Triples (ZIP, 1,9 Go) | Base | P0 (F06) | D100 |
+| `wikimedia_commons` | Wikimedia Commons — photos, auteurs, licences | Contributeurs Commons | API | Base | P0 (F06) | D100 |
+| `wikidata` | Wikidata — image d'une fiche (P18) | Contributeurs Wikidata | API | Base | P0 (F06) | D100 |
+| `wikipedia` | Wikipédia (fr) — image principale libre d'un article | Contributeurs Wikipédia | API | Base | P0 (F06) | D100 |
 | `transport_local` | Offres de mobilité (bus, tram, vélos) | Autorités organisatrices via transport.data.gouv.fr | GTFS + GBFS | Base | P0 | E07 |
 | `lieux_culturels` | Base des lieux et équipements culturels | Ministère de la Culture | CSV | Base | P1 | après le P0 (D041) |
 | `festivals` | Liste des festivals en France | Ministère de la Culture | CSV | Base | P1 | après le P0 (D041) |
@@ -97,6 +101,14 @@
 - **Utilisés :** nom, classes, position, adresse, site web (premier site qui n'est pas un réseau social), description, « Qualité Tourisme » dans les classements (`lieu.qualite_tourisme`).
 - **Licence :** Licence Ouverte 2.0.
 - **Table cible :** `lieu` (source `datatourisme`).
+
+### 2.3 bis Photos des lieux : `datatourisme_photos`, `wikimedia_commons`, `wikidata`, `wikipedia` (P0, F06, D100, D101)
+- **Pourquoi plusieurs sources :** le CSV régional DATAtourisme n'a **aucune photo** ; OSM n'en donne que 107. Étude du 17/11 (11 180 lieux montrés) : **3 340 lieux avec une photo créditée** (30 %), dont 2 737 par Wikimedia et 603 par DATAtourisme ; 892 sur 2 243 près des gares (40 %).
+- **Wikimedia** (API, sans clé ; `04` § 4.6 bis) : image de l'article Wikipédia (`pageimages`, `pilicense=free`), image de la fiche Wikidata (P18), puis auteur, licence, vignettes et catégories du fichier sur Commons. **Politique d'usage :** User-Agent avec le nom de l'application et l'adresse du site comme contact, appels espacés, `Retry-After` respecté. Licences : celles de chaque fichier (CC BY-SA ≈ 85 %, domaine public, CC0, CC BY, Licence Art Libre) ; Wikidata CC0 ; Wikipédia CC BY-SA.
+- **DATAtourisme, export national** (data.gouv.fr, ressource `datatourisme.nt.zip`, publiée chaque mois, sans compte) : pour chaque photo, adresse (`ebucore:locator`), crédit (`core:credits`) et dates de droits (`core:rightsStartDate`, `core:rightsEndDate`). Toutes nos photos sont hébergées par **Tourinsoft**, qui réduit l'image avec `?width=` (3,4 Mo → 138 Ko en 800 px).
+- **Droits DATAtourisme** (FAQ et CGU diffuseurs v2.0, § 15) : photos sous Licence Ouverte « au même titre que les autres données » **si le producteur en a les droits** ; **crédit obligatoire** et **dates de cession à respecter** (34 de nos fiches n'avaient que des photos aux droits expirés le 17/11).
+- **Écarté pour l'instant :** l'API DATAtourisme (clé au nom de Hardy, 1 000 requêtes par heure) et le flux régional de la plateforme diffuseur (compte gratuit, `A-FAIRE` § 3).
+- **Table cible :** `photo_lieu` (une photo par lieu) ; `lieu.wikidata` (identifiant de fiche, lu depuis OSM).
 
 ### 2.4 `osm` — OpenStreetMap (P0)
 - **Où :** **Overpass API**, une requête par région (aire administrative `ref:INSEE` = `parametres.region.codeInsee`). Adresse du serveur dans `config/sources.json`.
@@ -256,3 +268,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 06/11/2026 | 1.14 | § 4.1 : ce que recouvre le facteur voiture — D075 |
 | 10/11/2026 | 1.15 | § 3.1 : recherche par texte limitée aux communes — D081 |
 | 16/11/2026 | 1.16 | § 2.4 : parkings vélo dans la même extraction, fichier à part — D097 |
+| 17/11/2026 | 1.17 | § 1 et § 2.3 bis : sources des photos des lieux (export national DATAtourisme, Wikimedia Commons, Wikidata, Wikipédia) — D100, D101 |

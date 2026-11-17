@@ -1,6 +1,6 @@
 # 07 — Contrat entre l'application et l'infrastructure
 
-> **Version** 2.2 · **Date** 07/11/2026
+> **Version** 2.3 · **Date** 17/11/2026
 > **Dépend de :** `01-architecture.md`, `03-base-de-donnees.md` (rôles), `05-api.md` (route de santé)
 > **Utilisé par :** fiches E00, E01, E16, E17 ; `infra/README.md` ; tout travail dans `infra/`
 > **Document de référence pour :** ce que l'application fournit à l'infrastructure et ce qu'elle en attend.
@@ -53,6 +53,7 @@ Le responsable infrastructure fournit, sur un VPS géré par Coolify :
 | `BDD_URL_ETL` | etl | `postgres://etl_ecriture:***@db:5432/tourisme` | oui |
 | `URL_APP` | web (métadonnées, partage) | `http://localhost:3000` | oui |
 | `DOSSIER_DONNEES` | etl | `/data` (en local hors Docker : `./data`, lu depuis la racine du dépôt) | oui |
+| `URL_CONTACT` | etl | `https://wagoo.hardylino.com` : contact public envoyé à Wikimedia dans le User-Agent (leur politique d'usage, D100) ; **jamais une adresse e-mail personnelle** | seulement pour `pnpm etl photos` sans `--hors-ligne` |
 | `SNCF_CLE_API` | web (temps réel, P1) | *(secret)* | non |
 | `NODE_ENV` | web | `production` | oui |
 | `BDD_PORT_HOTE` | compose **local** uniquement (port de `db` sur le poste) | `5432` (défaut) | non |
@@ -126,3 +127,4 @@ Procédure complète : `infra/README.md`, section dédiée (D077).
 | 06/11/2026 | 2.0 | Rôles au lieu de noms ; § 2 et § 6 : Coolify et phases d'E17 ; journal d'accès coupé — D076 |
 | 06/11/2026 | 2.1 | § 1 : commande de migration dans l'image, compose de production — D076 |
 | 07/11/2026 | 2.2 | § 6 bis : renvoi vers la procédure de mise en ligne — D077 |
+| 17/11/2026 | 2.3 | § 3 : `URL_CONTACT` (etl, photos des lieux) — D100 |

@@ -43,6 +43,7 @@ services:
     environment:
       BDD_URL_ETL: postgres://etl_ecriture:${MDP_ETL_ECRITURE}@db:5432/${POSTGRES_DB}
       DOSSIER_DONNEES: /data
+      URL_CONTACT: ${URL_CONTACT:-https://wagoo.hardylino.com}
     volumes:
       - ./data:/data
     depends_on:
