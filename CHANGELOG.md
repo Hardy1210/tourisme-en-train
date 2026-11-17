@@ -7,6 +7,8 @@
 
 ## [Non publié]
 
+## [0.3.1] — 17/11/2026
+
 ### Corrigé
 - « Votre gare » suit la même règle quand une gare plus proche existe : plus de « 50 min à pied » à 2,9 km. Le temps à vélo s'affiche si la gare a un parking vélo, sinon la distance ; la phrase « Gare la plus proche : … » suit la même règle.
 
