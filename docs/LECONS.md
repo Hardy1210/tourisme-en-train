@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.16 · **Date** 17/11/2026
+> **Version** 1.17 · **Date** 17/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -465,6 +465,12 @@
 - **À retenir :** pour un défaut qui dépend du temps, rendre la machine lente et mesurer ce que voit l'écran ; un délai de test plus long cache le défaut que l'utilisateur, lui, verra sur un téléphone lent.
 - **Origine :** audit du 16/11 (`A-FAIRE` § 1).
 
+### L69 — Un symptôme anodin se vérifie en lisant ce que le navigateur reçoit
+- **Problème :** après la mise à jour de Next.js, les parcours voyaient « une demande en double » des lieux de la carte, et la PR disait « rien de visible ». En réalité, chaque réponse arrivait illisible (compressée, sans l'en-tête qui l'annonce) : la carte n'avait plus aucune bulle, et la « deuxième demande » n'était qu'un nouvel essai après l'échec.
+- **Solution :** des traces temporaires dans une copie (création du cache, montage du composant, appel, erreur de lecture), puis la réponse elle-même : ses premiers octets (`1F 8B`, gzip) et ses en-têtes. Ensuite seulement, le code de Next.js comparé entre les deux versions, et un test qui lit la réponse comme le navigateur.
+- **À retenir :** un comptage (« 2 demandes au lieu d'une ») décrit un symptôme, pas une cause. Avant de dire « rien de visible », regarder ce que l'utilisateur reçoit. Et un test qui appelle la route directement ne voit pas ce que le serveur change autour d'elle.
+- **Origine :** #133, 17/11 (D098).
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -535,3 +541,4 @@ Valeurs en g CO₂e/km.
 | 14/11/2026 | 1.14 | L56 → L62 et questions du jury sur la carte (périmètre qui cache, saturation, cacher n'est pas supprimer, signe d'intérêt, poids du code, filtre visible, réglages sur le téléphone) |
 | 16/11/2026 | 1.15 | L63 → L65 et chiffres de la performance de la carte (plan d'exécution et JIT, précaution devenue frein, mesure comparée) |
 | 17/11/2026 | 1.16 | L66 → L68 (failles lues à la source, commit après fusion, test lent reproduit en ralentissant le processeur) |
+| 17/11/2026 | 1.17 | L69 (symptôme anodin, lire ce que le navigateur reçoit) |
