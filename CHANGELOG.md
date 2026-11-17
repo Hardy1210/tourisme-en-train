@@ -7,16 +7,17 @@
 
 ## [Non publié]
 
-### Corrigé
-- Sécurité : Next.js passe en 16.4.5, qui corrige 7 failles publiées le 03/11 (aucune ne touchait Wagoo, D098).
+## [0.3.0] — 17/11/2026
 
 ### Ajouté
-- Dans la liste des gares proches, une gare avec un parking vélo juste devant affiche le temps à vélo pour y aller, avec « Parking vélo à la gare » sous son nom ; les autres gardent le temps à pied ou la distance.
-- La carte « Votre gare » suit la même règle : temps à vélo et « Parking vélo à la gare » quand la gare en a un.
+- Dans la liste des gares proches et sur la carte « Votre gare », une gare avec un parking vélo juste devant affiche le temps à vélo pour y aller, avec la distance en dessous et « Parking vélo à la gare » sous son nom. Les autres gardent le temps à pied ou la distance.
+- Un lien « Voir l’itinéraire » avec la gare pour destination : sur iPhone, il propose d’ouvrir Plans ou Google Maps ; ailleurs, il ouvre Google Maps. Il apparaît aussi quand vous choisissez votre gare vous-même, ou sans avoir partagé votre position : l’application de cartes du téléphone part de là où vous êtes.
 
 ### Modifié
-- « Votre gare » ne parle plus de vélo : la durée à pied si la gare est proche, sinon la distance, et un lien « Voir l’itinéraire » avec la gare pour destination : sur iPhone, il propose d’ouvrir Plans ou Google Maps ; ailleurs, il ouvre Google Maps. Les listes de gares proches donnent aussi la durée à pied ou la distance.
-- « Voir l’itinéraire » apparaît aussi quand vous choisissez votre gare vous-même, ou sans avoir partagé votre position : l’application de cartes du téléphone part de là où vous êtes.
+- Plus de temps à vélo sans preuve pour aller à sa gare : la durée à pied si la gare est proche ; plus loin, le temps à vélo seulement si la gare a un parking vélo ; sinon la distance. Même règle dans « Votre gare » et dans les listes de gares proches.
+
+### Corrigé
+- Sécurité : Next.js passe en 16.4.5, qui corrige 7 failles publiées le 03/11 (aucune ne touchait Wagoo, D098).
 
 ## [0.2.0] — 16/11/2026
 
