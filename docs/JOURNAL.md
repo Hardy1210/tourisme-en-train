@@ -24,6 +24,28 @@
 
 ---
 
+## 17/11/2026 (après-midi) — Étape E11 — étude des photos des lieux (D100)
+**Fait :**
+- Programme jusqu'à la soutenance validé par Hardy (D099, #138) : photos d'abord, audit C puis A en E15, B après la soutenance, marge les 26–27/11
+- Étude des photos, sans rien modifier : 11 180 lieux montrés ; Wikidata 2 663 fiches avec photo sur 2 985, Wikipédia 1 534 articles avec image libre sur 1 853, Commons 3 086 fichiers trouvés sur 3 094 (auteur et licence lus automatiquement, 34 sans auteur écartés) ; DATAtourisme : export national RDF (1,9 Go, 14,2 Go en clair, lu en continu, 4 passages d'environ 2,5 min), 718 de nos fiches avec une représentation, 703 utilisables, 34 aux droits expirés, toutes chez Tourinsoft
+- Résultat avec les règles de Hardy et le filtre (SVG, Blason, Carte, Map, Logo, Locator : 16 lieux touchés, 12 perdent leur photo) : **3 340 lieux avec photo (30 %)**, 892 sur 2 243 près des gares (40 %)
+- Droits DATAtourisme lus à la source (FAQ, CGU diffuseurs v2.0 § 15) : Licence Ouverte si le producteur a les droits, crédit et dates de cession obligatoires
+- Poids : Commons 320 px ≈ 31 Ko ; originaux Tourinsoft ≈ 1,5 Mo (jusqu'à 4,3 Mo), `?width=800` → 138 Ko
+- Planche de contrôle de 60 photos publiée (artifact privé : https://claude.ai/artifact/LPvTnUAQQW9fgFg96PRHzW)
+- D100 et `A-FAIRE` (copie des photos réduites sur R2 ou le VPS si le MVP est validé) : PR #139 ouverte
+**Décisions :** D099 (#138), D100 (#139, ouverte)
+**Problèmes rencontrés :**
+- Wikimedia : réponses 429 (trop de requêtes) ; une seconde entre deux appels et le délai `Retry-After` respecté : 17 pauses, tout est passé
+- Téléchargement de l'export national coupé à 312 Mo ; repris avec `curl -C -`
+- PDF des CGU illisible sans outil (pas de `pdftotext`) : texte extrait des flux du PDF en Python
+- Images d'autres sites bloquées dans un artifact : vignettes intégrées à la page (2,6 Mo)
+**À valider par Hardy :** #139 ; planche (numéros des photos fausses) ; export national ou API pour DATAtourisme ; faux positifs du filtre ; service d'itinéraire pour l'étude du coefficient
+**Prochaine action :** `CLAUDE.md` § 9
+**Vérifications :** aucun code modifié depuis la 0.3.1 (documents seuls) ; dernière vérification complète : `e38358a` (585 tests, intégration 187)
+**Commit :** `main` : `dd0da15`
+
+---
+
 ## 17/11/2026 — Étapes E11 et E17 — compression et Next.js 16.4.5 (D098), 0.3.0 et 0.3.1 en ligne
 **Fait :**
 - Essai iPhone de #132 : règle bonne, mais distance disparue à vélo → à droite sur deux lignes, « ≈ N min à vélo » puis la distance en plus petit, listes et « Votre gare » (tests d'abord, 4 unitaires et 3 parcours rouges, puis verts) ; #132 fusionnée
