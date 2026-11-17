@@ -57,6 +57,7 @@
   "photos": {
     "largeurPetitePx": 400,
     "largeurGrandePx": 800,
+    "delaiMaxMs": 4000,
     "extensionsImages": ["jpg", "jpeg", "png", "webp", "gif"],
     "motifsFichiersExclus": ["blason", "carte", "map", "logo", "locator"],
     "motifsCartesPostales": ["postcard", "post card", "carte postale", "cartes postales"],

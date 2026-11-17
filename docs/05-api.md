@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.27 · **Date** 17/11/2026
+> **Version** 1.28 · **Date** 17/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -26,6 +26,7 @@
 10. **Limites** issues de `parametres.limites`, jamais en dur.
 11. **Cache HTTP** indiqué par route (`Cache-Control`). Les réponses dépendant de la position ne sont jamais mises en cache partagé.
 12. **Attributions :** les réponses contenant des lieux incluent le code de leur `source` ; l'interface affiche l'attribution correspondante.
+13. **Photo d'un lieu** (D100, D101) : toutes les routes qui renvoient un lieu (`/api/autour`, `/api/destinations/[uic]/lieux`, `/api/lieux`, `/api/lieux/[cle]`) donnent `photo: Photo | null`, avec `type Photo = { petite: string; grande: string; auteur: string; licence: string; licenceUrl: string | null; page: string | null; source: 'wikimedia_commons' | 'datatourisme_photos' }` (vignettes servies par la source, jamais copiées chez nous ; crédit **toujours** affiché avec la photo). `null` sans photo, **ou si ses droits ne sont pas en cours à la date du jour** (Paris, lue par la route, règle 3) ; au cache près (au plus un jour pour les routes en cache). La date du trajet (`/api/lieux?date`) ne compte pas : une photo se montre si ses droits sont en cours le jour où on la regarde. Remplace `imageUrl`, qui n'était affichée nulle part.
 
 ---
 
@@ -89,7 +90,7 @@ Utilisée par la supervision et le déploiement.
 ```ts
 { lieux: Array<LieuResume>, total: number }
 type LieuResume = { cle: string; nom: string; categorie: Categorie; sousCategorie: string | null;
-                    distanceM: number; dureeMarcheMin: number; imageUrl: string | null;
+                    distanceM: number; dureeMarcheMin: number; photo: Photo | null;  // § 1, point 13
                     qualiteTourisme: boolean; source: string; lat: number; lon: number }
 ```
 Cache : aucun (position).
@@ -193,7 +194,7 @@ Onglet Lieux (D056).
 ### 3.7 `GET /api/lieux/[cle]`
 ```ts
 { cle, demande: string | null,   // `demande` : clé du lien suivi, si elle désignait un doublon ou un membre de site
-  nom, categorie, sousCategorie, description, adresse, commune, url, imageUrl,
+  nom, categorie, sousCategorie, description, adresse, commune, url, photo,  // § 1, point 13
   horaires, periode, qualiteTourisme, source, attribution, lat, lon,
   garesProches: Array<{ uic: string; nom: string; distanceM: number; dureeMarcheMin: number }> }
 ```
@@ -351,3 +352,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 14/11/2026 | 1.25 | § 3.3 bis : `/api/carte/lieux` par zone (point et/ou gares) — D094 |
 | 16/11/2026 | 1.26 | § 3.2 : `parkingVelo` ; `/api/mobilites` sans les parkings vélo — D097 |
 | 17/11/2026 | 1.27 | § 3.3 bis : `/api/carte/lieux` en JSON simple, compression par le proxy de production — D098 |
+| 17/11/2026 | 1.28 | § 1 point 13 : `photo` (droits à la date du jour) remplace `imageUrl` dans les routes de lieux — D100, D101 |

@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.30 · **Date** 17/11/2026
+> **Version** 1.31 · **Date** 17/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -87,6 +87,12 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 - **Pied collant :** bloc `eco` (« 🌱 Vous économisez 5,2 kg de CO₂ par rapport à la voiture ») avec lien « Comparer » (voiture partagée, avion) ; prix estimé si calibré ; bouton `action` « Acheter mon billet » (lien externe vers la billetterie officielle).
 
 ---
+
+## 4 ter. Photos des lieux (D100, D101, D103)
+- **À la place de l'icône de catégorie, dans le même cadre** : cartes « À pied » (188 × 96 px), liste Lieux (pleine largeur × 160 px), fiche lieu (toute la largeur de la colonne, 16:9), mini-fiches de la carte (vignette carrée de 64 px à gauche, sans changer leur hauteur). Composant `features/lieux/ui/photo-lieu.tsx`.
+- **Jamais de carré vide** : fond et icône de la catégorie tout de suite ; la photo se pose par-dessus en fondu (respecte `prefers-reduced-motion`) ; abandonnée au-delà de `photos.delaiMaxMs` (4 s) ou en cas d'erreur, l'icône reste.
+- **Crédit** : ligne « Photo : auteur · licence · source » sous la photo de la fiche (licence et page du fichier liées), seulement quand la photo est affichée ; **ⓘ** en bas à droite des cartes et des mini-fiches (zone de 44 px, hors du lien de la carte), qui ouvre la même ligne dans une bulle. Texte alternatif : le nom du lieu.
+- Mentions légales : les photos viennent de Wikimedia et de Tourinsoft, qui reçoivent l'adresse IP du visiteur.
 
 ## 4 bis. Maquettes et variantes
 
@@ -191,3 +197,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 16/11/2026 | 1.28 | § Explorer : gares proches, durée à vélo avec sa preuve « Parking vélo à la gare » — D097 |
 | 17/11/2026 | 1.29 | § Explorer : « Votre gare » suit la règle des gares proches (vélo avec parking) ; à vélo, la distance sous la durée, en plus petit (essai iPhone) — D097 |
 | 17/11/2026 | 1.30 | § Explorer : « Votre gare » quand la gare proposée n'est pas la plus proche suit la même règle (plus de minutes à pied au-delà de 2 km) — D097 |
+| 17/11/2026 | 1.31 | § 4 ter : photos des lieux (cartes, fiche, mini-fiches, crédit, limite de temps) — D100, D101, D103 |

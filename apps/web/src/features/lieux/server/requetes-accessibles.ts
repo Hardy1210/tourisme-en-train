@@ -7,6 +7,8 @@ import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
+import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+
 // Lieux masqués (piscines…) : jamais dans `lieu_gare` (D093), rien à filtrer ici.
 const { sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
 
@@ -16,12 +18,11 @@ const liste = (valeurs: readonly string[]) =>
     sql`, `,
   );
 
-const schemaLigne = z.object({
+const schemaLigne = schemaColonnesPhoto.extend({
   cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sous_categorie: z.string().nullable(),
-  image_url: z.string().nullable(),
   qualite_tourisme: z.boolean(),
   source: z.string(),
   lat: z.number(),
@@ -54,6 +55,8 @@ export async function lieuxAccessibles(options: {
   categories: readonly Categorie[] | null;
   limite: number;
   decalage: number;
+  /** Date du jour (Paris), pas celle du trajet : une photo se montre si ses droits sont en cours (D100). */
+  datePhoto: string;
 }): Promise<z.infer<typeof schemaResultat>> {
   const { rows } = await db.execute(sql`
     WITH candidats AS (
@@ -76,10 +79,10 @@ export async function lieuxAccessibles(options: {
       ORDER BY lg.lieu_id, ld.duree_min + lg.duree_marche_min, g.uic
     ),
     page AS (
-      SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
+      SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.qualite_tourisme, l.source, ${colonnesPhoto},
              ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
              c.distance_m, c.duree_marche_min, c.duree_train_min, c.gare_uic, c.gare_nom
-      FROM candidats c JOIN lieu l ON l.id = c.lieu_id
+      FROM candidats c JOIN lieu l ON l.id = c.lieu_id ${jointurePhoto(options.datePhoto)}
       ORDER BY c.duree_train_min + c.duree_marche_min, l.cle
       LIMIT ${options.limite} OFFSET ${options.decalage}
     )

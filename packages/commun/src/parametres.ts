@@ -131,6 +131,11 @@ export const schemaParametres = z
     photos: z.strictObject({
       largeurPetitePx: z.number().int().positive(),
       largeurGrandePx: z.number().int().positive(),
+      /**
+       * Au-delà, une photo pas encore chargée est abandonnée et l'icône de la catégorie reste (D103) :
+       * Tourinsoft répond en 0,6 à 3,5 s d'habitude, parfois en 12 s ou jamais (mesures du 17/11).
+       */
+      delaiMaxMs: z.number().int().positive(),
       extensionsImages: z.array(z.string().regex(/^[a-z0-9]+$/)).min(1),
       motifsFichiersExclus: z.array(z.string().min(2)),
       motifsCartesPostales: z.array(z.string().min(2)),

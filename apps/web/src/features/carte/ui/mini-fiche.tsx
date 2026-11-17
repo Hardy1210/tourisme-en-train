@@ -13,6 +13,7 @@ import type { LieuResume } from '@/features/lieux/schemas';
 import { useFicheLieu } from '@/features/lieux/hooks';
 import { lienLieu } from '@/features/lieux/liens';
 import { APPARENCE_CATEGORIE } from '@/features/lieux/ui/icone-categorie';
+import { BoutonCreditPhoto, PhotoLieu } from '@/features/lieux/ui/photo-lieu';
 import { formaterDistance } from '@/lib/geo/formats';
 
 function Cadre({
@@ -73,6 +74,47 @@ export function MiniFicheDestination({
   );
 }
 
+/**
+ * Corps commun des mini-fiches de lieu : vignette carrée à gauche (si le lieu a une photo), dans la hauteur
+ * du texte et du bouton, pour que la mini-fiche ne grandisse pas (D103) ; ⓘ dans son coin.
+ */
+function CorpsMiniFicheLieu({
+  lieu,
+  texte,
+  cle,
+}: {
+  lieu: Pick<LieuResume, 'nom' | 'categorie' | 'photo'> | null;
+  texte: ReactNode;
+  cle: string;
+}) {
+  return (
+    <div className="flex items-end gap-3">
+      {lieu?.photo && (
+        <div className="relative flex-none">
+          <PhotoLieu
+            photo={lieu.photo}
+            nom={lieu.nom}
+            categorie={lieu.categorie}
+            format="vignette"
+            className="size-16 rounded-lg"
+            classeIcone="size-7"
+          />
+          <BoutonCreditPhoto photo={lieu.photo} className="absolute -right-3.5 -bottom-3.5" />
+        </div>
+      )}
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        {texte}
+        <Bouton variante="sortie" asChild className="self-end">
+          <Link href={lienLieu(cle)}>
+            Voir le lieu
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </Link>
+        </Bouton>
+      </div>
+    </div>
+  );
+}
+
 export function MiniFicheLieu({
   lieu,
   surFermeture,
@@ -82,16 +124,16 @@ export function MiniFicheLieu({
 }) {
   return (
     <Cadre titre={lieu.nom} surFermeture={surFermeture}>
-      <p className="tabular text-sm text-muted-foreground">
-        {APPARENCE_CATEGORIE[lieu.categorie].libelle} · {lieu.dureeMarcheMin} min à pied ·{' '}
-        {formaterDistance(lieu.distanceM)}
-      </p>
-      <Bouton variante="sortie" asChild className="mt-1 self-end">
-        <Link href={lienLieu(lieu.cle)}>
-          Voir le lieu
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
-      </Bouton>
+      <CorpsMiniFicheLieu
+        lieu={lieu}
+        cle={lieu.cle}
+        texte={
+          <p className="tabular text-sm text-muted-foreground">
+            {APPARENCE_CATEGORIE[lieu.categorie].libelle} · {lieu.dureeMarcheMin} min à pied ·{' '}
+            {formaterDistance(lieu.distanceM)}
+          </p>
+        }
+      />
     </Cadre>
   );
 }
@@ -110,18 +152,18 @@ export function MiniFicheLieuCarte({
   const fiche = useFicheLieu(cle);
   return (
     <Cadre titre={fiche.data?.nom ?? 'Chargement…'} surFermeture={surFermeture}>
-      {fiche.data && (
-        <p className="text-sm text-muted-foreground">
-          {APPARENCE_CATEGORIE[fiche.data.categorie].libelle}
-          {fiche.data.commune ? ` · ${fiche.data.commune}` : ''}
-        </p>
-      )}
-      <Bouton variante="sortie" asChild className="mt-1 self-end">
-        <Link href={lienLieu(cle)}>
-          Voir le lieu
-          <ArrowRight aria-hidden="true" className="size-4" />
-        </Link>
-      </Bouton>
+      <CorpsMiniFicheLieu
+        lieu={fiche.data ?? null}
+        cle={cle}
+        texte={
+          fiche.data && (
+            <p className="text-sm text-muted-foreground">
+              {APPARENCE_CATEGORIE[fiche.data.categorie].libelle}
+              {fiche.data.commune ? ` · ${fiche.data.commune}` : ''}
+            </p>
+          )
+        }
+      />
     </Cadre>
   );
 }

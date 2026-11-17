@@ -17,6 +17,7 @@ import { lienLieu, type ContexteTrajet } from '../liens';
 import { libelleCategorieDetaillee } from '../presentation';
 import type { ReponseLieuxAccessibles } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
+import { BoutonCreditPhoto, PhotoLieu } from './photo-lieu';
 
 type LieuAccessible = ReponseLieuxAccessibles['lieux'][number];
 
@@ -25,12 +26,19 @@ const GRILLE =
   'flex flex-col gap-4 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] lg:items-start lg:gap-5';
 
 function CarteLieuAccessible({ lieu, trajet }: { lieu: LieuAccessible; trajet: ContexteTrajet }) {
-  const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
+  const { libelle, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
-    <li className="overflow-hidden rounded-carte bg-carte-bg text-foreground shadow-carte">
+    <li className="relative overflow-hidden rounded-carte bg-carte-bg text-foreground shadow-carte">
       <Link href={lienLieu(lieu.cle, trajet)} className="flex flex-col">
-        <div className={cn('relative flex h-40 items-center justify-center', classeFond)}>
-          <IconeCategorie categorie={lieu.categorie} className={cn('size-14', classeTexte)} />
+        <div className="relative">
+          <PhotoLieu
+            photo={lieu.photo}
+            nom={lieu.nom}
+            categorie={lieu.categorie}
+            format="liste"
+            className="h-40"
+            classeIcone="size-14"
+          />
           <span
             className={cn(
               'absolute top-3 left-3 flex h-7 max-w-[calc(100%-1.5rem)] items-center gap-1 rounded-pill bg-surface pr-2.5 pl-2 text-sm font-semibold shadow-xs',
@@ -67,6 +75,8 @@ function CarteLieuAccessible({ lieu, trajet }: { lieu: LieuAccessible; trajet: C
           )}
         </div>
       </Link>
+      {/* Bas droit de la photo (h-40 − 44 px) ; hors du lien : un bouton ne va pas dans un lien. */}
+      {lieu.photo && <BoutonCreditPhoto photo={lieu.photo} className="absolute top-29 right-0" />}
     </li>
   );
 }

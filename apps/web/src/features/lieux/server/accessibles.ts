@@ -5,6 +5,7 @@ import { gareParUic, verifierDateDansFenetre } from '@/lib/db/requetes-partagees
 import { Introuvable } from '@/lib/http/erreurs';
 import { pageSuivante } from '@/lib/http/pagination';
 
+import { photoDe } from '../photo';
 import type { ParametresLieuxAccessibles, ReponseLieuxAccessibles } from '../schemas';
 
 import { lieuxAccessibles } from './requetes-accessibles';
@@ -29,6 +30,7 @@ export async function accessibles(
     categories,
     limite,
     decalage: (page - 1) * limite,
+    datePhoto: dateDuJour,
   });
   return {
     lieux: lieux.map((l) => ({
@@ -38,7 +40,7 @@ export async function accessibles(
       sousCategorie: l.sous_categorie,
       distanceM: l.distance_m,
       dureeMarcheMin: l.duree_marche_min,
-      imageUrl: l.image_url,
+      photo: photoDe(l),
       qualiteTourisme: l.qualite_tourisme,
       source: l.source,
       lat: l.lat,
