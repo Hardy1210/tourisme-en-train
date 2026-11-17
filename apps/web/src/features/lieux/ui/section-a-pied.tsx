@@ -8,12 +8,13 @@ import { formaterDistance } from '@/lib/geo/formats';
 import { lienLieu } from '../liens';
 import type { LieuResume } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
-import { BoutonCreditPhoto, PhotoLieu } from './photo-lieu';
+import { PhotoLieu } from './photo-lieu';
 
+/** Petite carte : la photo sans ⓘ, son crédit est sur la page du lieu (Hardy, 18/11, D103). */
 function CarteLieu({ lieu }: { lieu: LieuResume }) {
   const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
-    <li className="relative w-47 flex-none overflow-hidden rounded-carte bg-carte-bg shadow-carte">
+    <li className="w-47 flex-none overflow-hidden rounded-carte bg-carte-bg shadow-carte">
       <Link href={lienLieu(lieu.cle)} className="flex h-full flex-col">
         <PhotoLieu
           photo={lieu.photo}
@@ -43,8 +44,6 @@ function CarteLieu({ lieu }: { lieu: LieuResume }) {
           </span>
         </div>
       </Link>
-      {/* Bas droit de la photo (h-24 − 44 px) ; hors du lien : un bouton ne va pas dans un lien. */}
-      {lieu.photo && <BoutonCreditPhoto photo={lieu.photo} className="absolute top-13 right-0" />}
     </li>
   );
 }
