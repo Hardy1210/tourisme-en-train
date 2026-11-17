@@ -159,3 +159,51 @@ test.describe('gares proches, à 3 km de Dijon-Ville', () => {
     await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });
 });
+
+// Gare proposée qui n'est pas la plus proche (D064), cas de l'essai iPhone du 17/11 : « 50 min à pied · 2,9 km »
+// et « Dijon Porte Neuve, 48 min à pied ». Une seule règle partout (D097) : jamais de minutes à pied au-delà de
+// `acces.rayonPiedM`. Échantillon : Dijon-Ville (proposée, parking vélo) à ≈ 2,9 km, Dijon-Porte-Neuve (la plus
+// proche, sans parking) à ≈ 2,6 km.
+test.describe('gare proposée qui n’est pas la plus proche, à 2,9 km (D064)', () => {
+  test.use({ geolocation: { latitude: 47.343, longitude: 5.003 }, permissions: ['geolocation'] });
+  test.afterEach(({ page }) => page.unrouteAll({ behavior: 'ignoreErrors' }));
+
+  // La route choisit sur les trains du jour réel, absents de l'échantillon : réponse simulée. `parkingPlusProche`
+  // donne un parking à Dijon-Porte-Neuve, pour la limite.
+  async function proposerDijonVille(page: Page, parkingPlusProche = false) {
+    await page.route('**/api/gares/proches*', async (requete) => {
+      const corps = (await (await requete.fetch()).json()) as {
+        gares: { uic: string; parkingVelo: boolean }[];
+      };
+      const gares = corps.gares.map((g) =>
+        g.uic === 'EX000023' ? { ...g, parkingVelo: parkingPlusProche } : g,
+      );
+      await requete.fulfill({ json: { ...corps, gares, uicConseille: 'EX000001' } });
+    });
+    await page.goto(ECRAN);
+  }
+
+  test('« Votre gare » à vélo avec la preuve ; la plus proche, sans parking : la distance seule', async ({
+    page,
+  }) => {
+    await proposerDijonVille(page);
+    const carte = carteVotreGare(page);
+    await expect(carte).toContainText('Dijon-Ville');
+    await sousLaDuree(carte);
+    await expect(carte).toContainText('Parking vélo à la gare');
+    await expect(carte).not.toContainText(/min à pied/);
+    const phrase = carte.getByText(/Gare la plus proche/);
+    await expect(phrase).toContainText('Dijon-Porte-Neuve');
+    await expect(phrase).toContainText(/Dijon-Porte-Neuve, 2,\d km\./);
+    await expect(phrase).not.toContainText(/min/);
+  });
+
+  test('limite : la plus proche avec un parking, « ≈ N min à vélo » dans la phrase', async ({
+    page,
+  }) => {
+    await proposerDijonVille(page, true);
+    const phrase = carteVotreGare(page).getByText(/Gare la plus proche/);
+    await expect(phrase).toContainText(/Dijon-Porte-Neuve, ≈ \d+ min à vélo\./);
+    await expect(phrase).not.toContainText(/min à pied/);
+  });
+});
