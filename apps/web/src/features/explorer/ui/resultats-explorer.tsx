@@ -162,7 +162,6 @@ export function ResultatsExplorer({
             <CarteVotreGare
               nom={gare.nom}
               distanceM={gare.distanceM}
-              dureeMarcheMin={gare.dureeMarcheMin}
               parkingVelo={gare.parkingVelo}
               coordonnees={{ lat: gare.lat, lon: gare.lon }}
               prochainDepart={
@@ -177,7 +176,8 @@ export function ResultatsExplorer({
               plusProche={
                 plusProche && {
                   nom: plusProche.nom,
-                  dureeMarcheMin: plusProche.dureeMarcheMin,
+                  distanceM: plusProche.distanceM,
+                  parkingVelo: plusProche.parkingVelo,
                   surChoix: () => surChoixGare(plusProche.uic),
                 }
               }
