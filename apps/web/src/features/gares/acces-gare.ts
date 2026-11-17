@@ -29,20 +29,21 @@ export function accesGare(
 
 /**
  * Texte court des listes de gares proches, d'après `accesGare` : « 27 min à pied », « ≈ 17 min à vélo » ou la
- * distance. `aVelo` : la ligne affiche aussi « Parking vélo à la gare », la preuve (D097).
+ * distance. À vélo, `distance` se lit en dessous, en plus petit ; `aVelo` : la ligne affiche aussi « Parking
+ * vélo à la gare », la preuve (D097).
  */
 export function accesGareProche(
   volOiseauM: number,
   parkingVelo: boolean,
-): { texte: string; aVelo: boolean } {
+): { texte: string; distance: string | null; aVelo: boolean } {
   const {
     dureeMarcheMin: aPied,
     dureeVeloMin: aVelo,
     distance,
   } = accesGare(volOiseauM, parkingVelo);
-  if (aPied !== null) return { texte: `${aPied} min à pied`, aVelo: false };
-  if (aVelo !== null) return { texte: `≈ ${aVelo} min à vélo`, aVelo: true };
-  return { texte: distance, aVelo: false };
+  if (aPied !== null) return { texte: `${aPied} min à pied`, distance: null, aVelo: false };
+  if (aVelo !== null) return { texte: `≈ ${aVelo} min à vélo`, distance, aVelo: true };
+  return { texte: distance, distance: null, aVelo: false };
 }
 
 /** Applications de cartes proposées (D096) : Plans n'existe que sur iPhone. */

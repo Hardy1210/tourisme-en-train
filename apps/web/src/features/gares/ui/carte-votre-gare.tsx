@@ -63,12 +63,18 @@ export function CarteVotreGare({
                 </>
               ) : aVelo ? (
                 <>
-                  <Bike aria-hidden="true" className="size-4" />≈ {acces?.dureeVeloMin} min à vélo ·{' '}
-                  {acces?.distance}
+                  <Bike aria-hidden="true" className="size-4" />
+                  <span>≈ {acces?.dureeVeloMin} min à vélo</span>
                 </>
               ) : (
                 acces?.distance
               )}
+            </span>
+          )}
+          {/* À vélo, la distance en dessous, en plus petit, comme la preuve sous le nom (essai iPhone, 17/11). */}
+          {aVelo && (
+            <span className="tabular text-xs whitespace-nowrap text-muted-foreground">
+              {acces?.distance}
             </span>
           )}
           <LienItineraire gare={coordonnees} />
