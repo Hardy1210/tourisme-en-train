@@ -36,3 +36,20 @@ test('fond de carte chargé : une seule demande des lieux', async ({ page }) => 
   await page.waitForTimeout(1000);
   expect(demandes).toHaveLength(1);
 });
+
+// Next.js 16.4.5 retire l'en-tête `Content-Encoding` des routes (GHSA-pc58-hwjq-p385) : une réponse
+// compressée par la route arrivait illisible, sans bulle sur la carte (D098). La compression est celle du
+// proxy de production, jamais celle de la route.
+test('les lieux de la carte arrivent lisibles par le navigateur', async ({ page }) => {
+  await page.goto('/?date=2026-11-18');
+  const lecture = await page.evaluate(async () => {
+    const reponse = await fetch('/api/carte/lieux?lat=47.3233&lon=5.0272&rayon=2000');
+    try {
+      const corps = (await reponse.json()) as { lieux?: unknown[] };
+      return Array.isArray(corps.lieux) ? `${corps.lieux.length} lieux` : 'sans lieux';
+    } catch {
+      return 'illisible';
+    }
+  });
+  expect(lecture).toMatch(/^[1-9]\d* lieux$/);
+});

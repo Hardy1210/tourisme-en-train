@@ -1,5 +1,4 @@
 // /api/carte/lieux (D091, D092) sur l'échantillon : section D092 de db/echantillon/echantillon.sql.
-import { gunzipSync } from 'node:zlib';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { schemaReponseLieuxCarte } from '@/features/lieux/schemas';
@@ -23,14 +22,16 @@ async function lire(chemin: string) {
     { params: Promise.resolve({}) },
   );
   expect(reponse.status).toBe(200);
-  expect(reponse.headers.get('content-encoding')).toBe('gzip');
-  const corps = JSON.parse(gunzipSync(Buffer.from(await reponse.arrayBuffer())).toString());
+  // Jamais compressée par la route, même si le navigateur accepte gzip : Next.js 16.4.5 retire l'en-tête
+  // et le corps deviendrait illisible. La compression est celle du proxy de production (D098).
+  expect(reponse.headers.get('content-encoding')).toBeNull();
+  const corps: unknown = await reponse.json();
   const cles = schemaReponseLieuxCarte.parse(corps).lieux.map(([c]) => c);
   return { cles, cache: reponse.headers.get('cache-control') };
 }
 
 describe('/api/carte/lieux (D094)', () => {
-  it('seulement des gares : leurs lieux à pied, en cache, compressés', async () => {
+  it('seulement des gares : leurs lieux à pied, en cache, en JSON simple', async () => {
     const { cles, cache } = await lire('/api/carte/lieux?gares=EX000005');
     expect(cache).toMatch(/^public, max-age=\d+$/);
     expect(cles).toEqual(expect.arrayContaining([cle('ECH_L44'), cle('ECH_L47')]));

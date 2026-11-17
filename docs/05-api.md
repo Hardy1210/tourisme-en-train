@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.26 · **Date** 16/11/2026
+> **Version** 1.27 · **Date** 17/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -95,7 +95,7 @@ type LieuResume = { cle: string; nom: string; categorie: Categorie; sousCategori
 Cache : aucun (position).
 
 ### 3.3 bis `GET /api/carte/lieux?lat&lon&rayon&gares`
-Les lieux de la carte d'une **zone** (D094) : autour d'un point (`lat`, `lon`, `rayon` parmi `rayons.autourDeMoiOptionsM` : la position ou la gare de départ, rayon du filtre « Distance autour de vous ») **et/ou** les lieux à pied d'une liste de gares (`gares`, codes UIC séparés par des virgules, au plus `limites.destinations` : les gares de destination affichées, ou la seule destination choisie). Au moins l'un des deux ; `lat`, `lon` et `rayon` vont ensemble. Sans limite de nombre (les bulles comptent tout). **Avec une position : jamais en cache** (règle 5) ; seulement des gares : en cache (`cache.donneesStablesS`). Toujours **compressée en gzip** (Next.js ne compresse pas les routes d'API). Ni doublon, ni membre d'un site, ni fiche de ville ; aires de jeux seulement si elles sont reliées à une gare ; loin de toute gare (aucune ligne `lieu_gare`), les lieux « pauvres » de `acces.lieuxPauvresSources` × `acces.lieuxPauvresCategories` (sans description, photo, label ni article Wikipédia) ne sont pas montrés, sauf `acces.lieuxPauvresToujoursGardes`. **Rien n'est supprimé de la base** : c'est une sélection (D092).
+Les lieux de la carte d'une **zone** (D094) : autour d'un point (`lat`, `lon`, `rayon` parmi `rayons.autourDeMoiOptionsM` : la position ou la gare de départ, rayon du filtre « Distance autour de vous ») **et/ou** les lieux à pied d'une liste de gares (`gares`, codes UIC séparés par des virgules, au plus `limites.destinations` : les gares de destination affichées, ou la seule destination choisie). Au moins l'un des deux ; `lat`, `lon` et `rayon` vont ensemble. Sans limite de nombre (les bulles comptent tout). **Avec une position : jamais en cache** (règle 5) ; seulement des gares : en cache (`cache.donneesStablesS`). **JSON simple, jamais compressé par la route** : depuis Next.js 16.4.5, l'en-tête `Content-Encoding` d'une route est retiré, et un corps compressé arriverait illisible ; la compression gzip est faite par le proxy de production (D098). Ni doublon, ni membre d'un site, ni fiche de ville ; aires de jeux seulement si elles sont reliées à une gare ; loin de toute gare (aucune ligne `lieu_gare`), les lieux « pauvres » de `acces.lieuxPauvresSources` × `acces.lieuxPauvresCategories` (sans description, photo, label ni article Wikipédia) ne sont pas montrés, sauf `acces.lieuxPauvresToujoursGardes`. **Rien n'est supprimé de la base** : c'est une sélection (D092).
 ```ts
 { lieux: Array<[cle: string, lat: number, lon: number, categorie: Categorie, secondaires: Categorie[]]> }
 ```
@@ -350,3 +350,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 13/11/2026 | 1.24 | § 3.3 bis : `/api/carte/lieux` — D091, D092 |
 | 14/11/2026 | 1.25 | § 3.3 bis : `/api/carte/lieux` par zone (point et/ou gares) — D094 |
 | 16/11/2026 | 1.26 | § 3.2 : `parkingVelo` ; `/api/mobilites` sans les parkings vélo — D097 |
+| 17/11/2026 | 1.27 | § 3.3 bis : `/api/carte/lieux` en JSON simple, compression par le proxy de production — D098 |

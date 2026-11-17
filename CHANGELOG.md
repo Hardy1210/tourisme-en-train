@@ -7,6 +7,9 @@
 
 ## [Non publié]
 
+### Corrigé
+- Sécurité : Next.js passe en 16.4.5, qui corrige 7 failles publiées le 03/11 (aucune ne touchait Wagoo, D098).
+
 ### Ajouté
 - Dans la liste des gares proches, une gare avec un parking vélo juste devant affiche le temps à vélo pour y aller, avec « Parking vélo à la gare » sous son nom ; les autres gardent le temps à pied ou la distance.
 - La carte « Votre gare » suit la même règle : temps à vélo et « Parking vélo à la gare » quand la gare en a un.
