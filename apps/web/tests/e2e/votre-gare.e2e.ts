@@ -1,7 +1,7 @@
 // Carte « Votre gare » : le trajet jusqu'à la gare de départ ne parle jamais de vélo, faute de preuve qu'on
 // en a un près de soi (D096) ; « Voir l'itinéraire » ouvre l'application de cartes avec la gare seule.
 // Échantillon, sans réseau ; projet mobile = Android (Google Maps).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { couperLeReseau } from './outils';
 
 const ECRAN = '/?date=2026-11-18';
@@ -108,6 +108,21 @@ test.describe('sur iPhone', () => {
 
 // Listes de gares proches (page « Trajet », téléphone) : la durée à vélo seulement avec sa preuve, un parking
 // vélo à la gare (D097). À 3 km au nord de Dijon-Ville : trop loin à pied, à vélo dans le rayon.
+// À droite, sur deux lignes : « ≈ N min à vélo » en haut, la distance en dessous, en plus petit (essai iPhone
+// de Hardy, 17/11 : la distance avait disparu de la liste, et une seule ligne était trop large à 390 px).
+async function sousLaDuree(zone: Locator) {
+  const duree = zone.getByText(/^≈ \d+ min à vélo$/);
+  const distance = zone.getByText(/^\d+,\d km$/);
+  await expect(duree).toBeVisible();
+  await expect(distance).toBeVisible();
+  const haut = await duree.boundingBox();
+  const bas = await distance.boundingBox();
+  if (!haut || !bas) throw new Error('Durée ou distance sans position à l’écran');
+  expect(bas.y).toBeGreaterThanOrEqual(haut.y + haut.height - 1);
+  const taille = (l: Locator) => l.evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
+  expect(await taille(distance)).toBeLessThan(await taille(duree));
+}
+
 test.describe('gares proches, à 3 km de Dijon-Ville', () => {
   test.use({ geolocation: { latitude: 47.3503, longitude: 5.0272 }, permissions: ['geolocation'] });
 
@@ -126,7 +141,7 @@ test.describe('gares proches, à 3 km de Dijon-Ville', () => {
       .getByRole('region', { name: 'Gares proches de vous' });
     const dijon = liste.getByRole('button', { name: /^Dijon-Ville/ });
     await expect(dijon).toContainText('Parking vélo à la gare');
-    await expect(dijon).toContainText(/≈ \d+ min à vélo/);
+    await sousLaDuree(dijon);
     const autre = liste.getByRole('button', { name: /^Dijon-Porte-Neuve/ });
     await expect(autre).toContainText(/\d+,\d km/);
     await expect(autre).not.toContainText(/vélo/i);
@@ -139,7 +154,7 @@ test.describe('gares proches, à 3 km de Dijon-Ville', () => {
     await page.goto(ECRAN);
     const carte = carteVotreGare(page);
     await expect(carte).toContainText('Dijon-Ville');
-    await expect(carte).toContainText(/≈ \d+ min à vélo/);
+    await sousLaDuree(carte);
     await expect(carte).toContainText('Parking vélo à la gare');
     await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });

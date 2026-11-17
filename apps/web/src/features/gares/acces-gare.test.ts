@@ -45,21 +45,37 @@ describe('accesGare : trajet de l’utilisateur à sa gare de départ (D096)', (
 // Vélo (D097) : 15 km/h, détour 1,3, jusqu'à 6 000 m mesurés avec le détour, soit 4 615 m à vol d'oiseau.
 describe('accesGareProche : listes de gares proches', () => {
   it('à pied jusqu’à 2 000 m à pied, même avec un parking vélo', () => {
-    expect(accesGareProche(1538, false)).toEqual({ texte: '27 min à pied', aVelo: false });
-    expect(accesGareProche(1538, true)).toEqual({ texte: '27 min à pied', aVelo: false });
+    expect(accesGareProche(1538, false)).toEqual({
+      texte: '27 min à pied',
+      distance: null,
+      aVelo: false,
+    });
+    expect(accesGareProche(1538, true)).toEqual({
+      texte: '27 min à pied',
+      distance: null,
+      aVelo: false,
+    });
   });
 
   it('au-delà, sans parking vélo : la distance seule', () => {
-    expect(accesGareProche(3200, false)).toEqual({ texte: '3,2 km', aVelo: false });
+    expect(accesGareProche(3200, false)).toEqual({ texte: '3,2 km', distance: null, aVelo: false });
   });
 
-  it('au-delà, avec un parking vélo : la durée à vélo, jusqu’à 6 000 m avec le détour', () => {
-    expect(accesGareProche(3200, true)).toEqual({ texte: '≈ 17 min à vélo', aVelo: true });
-    expect(accesGareProche(4615, true)).toEqual({ texte: '≈ 24 min à vélo', aVelo: true });
+  it('au-delà, avec un parking vélo : la durée à vélo et la distance en dessous, jusqu’à 6 000 m', () => {
+    expect(accesGareProche(3200, true)).toEqual({
+      texte: '≈ 17 min à vélo',
+      distance: '3,2 km',
+      aVelo: true,
+    });
+    expect(accesGareProche(4615, true)).toEqual({
+      texte: '≈ 24 min à vélo',
+      distance: '4,6 km',
+      aVelo: true,
+    });
   });
 
   it('plus de 6 000 m à vélo : la distance seule, même avec un parking', () => {
-    expect(accesGareProche(4616, true)).toEqual({ texte: '4,6 km', aVelo: false });
+    expect(accesGareProche(4616, true)).toEqual({ texte: '4,6 km', distance: null, aVelo: false });
   });
 });
 
