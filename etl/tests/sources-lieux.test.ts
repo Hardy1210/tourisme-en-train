@@ -9,6 +9,7 @@ import {
 import {
   estNotable,
   imageDe,
+  wikidataDe,
   wikipediaDe,
   lireElementOsm,
   requetesOverpass,
@@ -172,6 +173,16 @@ describe('OSM', () => {
     );
     expect(wikipediaDe({ wikipedia: 'Château de Bussy-Rabutin' })).toBeNull();
     expect(wikipediaDe({ wikidata: 'Q1069718' })).toBeNull();
+  });
+
+  it('wikidataDe : identifiant de la fiche, pour chercher sa photo seulement (D100)', () => {
+    expect(wikidataDe({ wikidata: 'Q1069718' })).toBe('Q1069718');
+    expect(wikidataDe({ wikidata: ' Q12;Q34 ' })).toBe('Q12');
+  });
+
+  it('wikidataDe : limite, tag absent ou invalide → null', () => {
+    expect(wikidataDe({})).toBeNull();
+    expect(wikidataDe({ wikidata: 'Bussy' })).toBeNull();
   });
 
   it('imageDe : tag image, sinon fichier Wikimedia Commons', () => {
