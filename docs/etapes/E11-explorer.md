@@ -91,3 +91,4 @@ Voir `_MODELE.md`.
 - 14/11/2026 : piscines masquées (D093, #116), nombres sans fondu (#117), carte par zone et bulles décalées (D094, #118 ouverte).
 - 16/11/2026 : « Votre gare » sans vélo sans preuve, « Voir l’itinéraire » (D096, #126, #130) ; parkings vélo OSM dans les gares proches (D097, #131) ; audit des parcours instables (3 causes, `A-FAIRE` § 1).
 - 17/11/2026 (nuit) : « Votre gare » suit la règle des gares proches (#132 ouverte) ; Next.js 16.4.5 (D098, #133 ouverte, régression à expliquer).
+- 17/11/2026 : à vélo, la distance sous la durée (#132) ; Next.js 16.4.5 et carte sans compression par la route (D098, #133) ; une seule règle pour le trajet vers la gare, même quand une gare plus proche existe (#136) ; en ligne en 0.3.0 puis 0.3.1.

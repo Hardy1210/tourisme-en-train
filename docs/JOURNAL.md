@@ -24,6 +24,30 @@
 
 ---
 
+## 17/11/2026 — Étapes E11 et E17 — compression et Next.js 16.4.5 (D098), 0.3.0 et 0.3.1 en ligne
+**Fait :**
+- Essai iPhone de #132 : règle bonne, mais distance disparue à vélo → à droite sur deux lignes, « ≈ N min à vélo » puis la distance en plus petit, listes et « Votre gare » (tests d'abord, 4 unitaires et 3 parcours rouges, puis verts) ; #132 fusionnée
+- #133 : cause du « doublon » de `/api/carte/lieux` trouvée par des traces temporaires dans la copie : Next.js 16.4.5 retire `Content-Encoding` des réponses de route (correctif GHSA-pc58, même code en 16.4.6) ; notre route compressait elle-même : corps illisible, deux nouveaux essais, **aucune bulle sur la carte**. Test d'abord (« illisible »), puis `repondreCompresse` retirée (seule route qui l'utilisait) ; D092 point 1 « modifié après coup », D098 complétée ; `carte-chargement` 60/60 ; #133 fusionnée, #129 fermée par Dependabot
+- **0.3.0 en ligne** (#135) : CHANGELOG corrigé (ligne « ne parle plus de vélo » devenue fausse), essai de l'image sans cache (17 migrations, version 0.3.0), sauvegarde `avant.dump` (18 Mo), Redeploy, contrôle 0, `/api/carte/lieux` en gzip par le proxy (19,4 Ko reçus, 985 lieux) ; données : export (empreinte `db25cbc0…`), restauration, comptages identiques (mobilite_locale 830), Redeploy, parkings visibles en production ; étiquette `v0.3.0`
+- Essai iPhone de la 0.3.0 : à 2,9 km, « Votre gare » affichait « 50 min à pied » (cas D064 laissé à part dans #132, signalé seulement dans la PR) → #136 : une seule règle partout (« Votre gare », phrase « Gare la plus proche », listes), test d'abord avec la position de la capture (6 rouges), D097 point 4 « modifié après coup »
+- **0.3.1 en ligne** (#137) : code seul, Redeploy, contrôle 0, essai iPhone ✅, étiquette `v0.3.1`
+- Liste des fonctionnalités de la 0.2.0 rédigée pour le professeur de Hardy (conversation)
+**Décisions :** D098 complétée (compression par le proxy) ; D092 point 1 et D097 point 4 modifiés après coup. Hardy : distance affichée décidée après l'étude du coefficient de détour ; « ≈ » devant les minutes à pied dans la PR suivante ; retouches UI/UX minimales plus tard (textes petits, présentation du produit)
+**Problèmes rencontrés :**
+- La PR #133 disait « rien de visible » : faux, la carte n'avait plus de bulles ; trouvé avant toute fusion (L69)
+- Hardy demandait de marquer D091 comme remplacée : la compression venait de D092 point 1 (D091 = section `acces`, toujours valable) ; signalé, D092 marquée
+- `pkill -f` et `pgrep -f` avec le motif dans la commande ont tué leur propre commande (deux fois) : arrêter un serveur par son port
+- `gh pr edit` en échec (API « Projects classic » retirée) : description modifiée par `gh api -X PATCH`
+- Docker Desktop arrêté en début de session : base locale injoignable, relancé par Hardy
+- Blocs de commandes collés, difficiles à distinguer pour Hardy : une commande par bloc, avec titre (mémoire)
+- Parcours instables vus : `explorer.e2e.ts:45` (cause C), `carte-cadrage:25` (cause B, 5/5 relancé), `explorer.e2e.ts:139` (mini-fiche : 1 sur 10 sur `main`, 2 sur 10 sur #136)
+**À valider par Hardy :** coefficient de détour après l'étude, puis distance affichée ; plan de l'audit (C, A, B) ; ménage du VPS
+**Prochaine action :** `CLAUDE.md` § 9
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (585, `e38358a` = `main` + version 0.3.1) · intégration ✅ (187) · parcours (#136, `2bd1cc8`) : 229/230, échec `explorer.e2e.ts:139` instable aussi sur `main` ; image 0.3.0 ✅
+**Commit :** `main` : `5302bdf` (0.3.1, en ligne)
+
+---
+
 ## 16–17/11/2026 (nuit) — Étape E11 — itinéraire sans position, parkings vélo (D097), audit des parcours, Next.js 16.4.5 (D098)
 **Fait :**
 - Tunnel d'essai de #126 ; #126 puis #130 fusionnées : « Voir l’itinéraire » dès qu'une gare de départ est connue, même choisie à la main ou sans position (test d'abord, 4 cas rouges puis verts) ; icônes génériques confirmées

@@ -95,3 +95,4 @@ L'équipe est réduite à Hardy, qui porte aussi l'infrastructure. L'application
 - 07/11/2026 : phase 1 terminée, panneau Coolify en HTTPS et ports limités à `localhost` (`infra/README.md`) — D076.
 - 07/11/2026 : mise en ligne sur OVH, 12 242 lieux et 268 025 liaisons retrouvés sur le VPS ; avancement et critères mis à jour — D076.
 - 16/11/2026 : version 0.2.0 en ligne (code, migrations 0014–0015, données restaurées : 12 242 lieux, 268 025 liaisons, comptages identiques au poste) ; aide-mémoire « mettre en ligne seul » en tête d'`infra/README.md` (#125) — D080, D095.
+- 17/11/2026 : **0.3.0** en ligne (code, migration 0016, Next.js 16.4.5 ; sauvegarde puis données des parkings vélo restaurées, comptages identiques au poste, `/api/carte/lieux` compressée par le proxy) ; **0.3.1** (code seul) le même jour ; étiquettes `v0.3.0` et `v0.3.1`.
