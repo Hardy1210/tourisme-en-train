@@ -83,6 +83,8 @@ export const schemaParametres = z
       contoursRegionMin: z.number().int().positive(),
       /** Lieux gardés dans la région, par source de lieux (E05). */
       lieuxSourceMin: z.number().int().positive(),
+      /** Lieux avec une photo après `pnpm etl photos` (3 340 le 17/11) : en dessous, une API a mal répondu. */
+      photosMin: z.number().int().positive(),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),
@@ -120,6 +122,27 @@ export const schemaParametres = z
        * pas leur nombre ; les icônes des lieux restent à leur place exacte (Hardy, 13/11).
        */
       bullesDecalagePx: z.tuple([z.number(), z.number()]),
+    }),
+    /**
+     * Photos des lieux (D100, D101) : une par lieu, crédit obligatoire. Motifs comparés sans majuscules,
+     * accents ni ponctuation ; une licence est libre si elle commence par l'un des préfixes et ne contient
+     * aucun des mots refusés (« CC BY-NC » : pas d'usage commercial).
+     */
+    photos: z.strictObject({
+      largeurPetitePx: z.number().int().positive(),
+      largeurGrandePx: z.number().int().positive(),
+      extensionsImages: z.array(z.string().regex(/^[a-z0-9]+$/)).min(1),
+      motifsFichiersExclus: z.array(z.string().min(2)),
+      motifsCartesPostales: z.array(z.string().min(2)),
+      licencesLibres: z.array(z.string().min(2)).min(1),
+      motifsLicencesRefusees: z.array(z.string().min(2)),
+      auteursVides: z.array(z.string().min(1)),
+      /** Appels à Wikimedia : paquets de titres, pause entre deux appels, tentatives si le serveur refuse. */
+      api: z.strictObject({
+        taillePaquet: z.number().int().min(1).max(50),
+        pauseMs: z.number().int().min(0),
+        tentatives: z.number().int().min(1),
+      }),
     }),
     voiture: schemaMode,
     rail: z.strictObject({ coefDetour: z.number().min(1) }),

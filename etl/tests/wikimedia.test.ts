@@ -1,7 +1,11 @@
 // Wikimedia (D100) : lecture des réponses de Wikidata, Wikipédia et Commons, et client qui respecte la
 // politique de Wikimedia (nom de l'application et contact, une pause entre deux appels, délai demandé).
 import { describe, expect, it, vi } from 'vitest';
-import { creerClientWikimedia, userAgentWikimedia } from '../src/sources/wikimedia';
+import {
+  chercherMetasCommons,
+  creerClientWikimedia,
+  userAgentWikimedia,
+} from '../src/sources/wikimedia';
 import {
   lireCategoriesCommons,
   lireImagesPages,
@@ -53,64 +57,108 @@ describe('texteSansBalises : l’auteur Commons arrive en HTML', () => {
   });
 });
 
-describe('lireInfosCommons : auteur, licence, vignettes et page de chaque fichier', () => {
-  const reponse = {
-    query: {
-      normalized: [{ from: 'File:Pont_de_pierre.jpg', to: 'File:Pont de pierre.jpg' }],
-      pages: [
-        {
-          title: 'File:Pont de pierre.jpg',
-          imageinfo: [
-            {
-              thumburl:
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Pont_de_pierre.jpg/800px-Pont_de_pierre.jpg',
-              descriptionurl: 'https://commons.wikimedia.org/wiki/File:Pont_de_pierre.jpg',
-              extmetadata: {
-                Artist: { value: '<a href="//commons.wikimedia.org/wiki/User:Chau7">Chau7</a>' },
-                LicenseShortName: { value: 'CC BY-SA 3.0' },
-                LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/3.0' },
-              },
-            },
-          ],
-        },
-        {
-          title: 'File:Petit.jpg',
-          imageinfo: [
-            {
-              // Original plus petit que 800 px : Commons renvoie l'original, sans vignette.
-              thumburl: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
-              descriptionurl: 'https://commons.wikimedia.org/wiki/File:Petit.jpg',
-              extmetadata: { Artist: { value: 'X' }, LicenseShortName: { value: 'CC0' } },
-            },
-          ],
-        },
-        { title: 'File:Absent.jpg', missing: true },
-      ],
-    },
-  };
+// Réponses réelles du 17/11 : Commons ne sert plus que des tailles standard (demande 400 px → 500 px,
+// 800 px → 960 px) sur thumb.wikimedia.org, avec des paramètres de suivi ; une adresse « 400px » construite
+// à la main répond HTTP 400.
+const vignette = (largeur: number, fichier: string) =>
+  `https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/${fichier}/${largeur}px-${fichier}`;
+const suivi = '?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail';
 
-  it('vignette 800 px et 400 px, adresse directe (jamais Special:FilePath, qui redirige)', () => {
-    const infos = lireInfosCommons(reponse, largeurs);
-    expect(infos.get('Pont de pierre.jpg')).toEqual({
+const reponseInfos = (largeurServie: number) => ({
+  query: {
+    normalized: [{ from: 'File:Couvent_Poligny.JPG', to: 'File:Couvent Poligny.JPG' }],
+    pages: [
+      {
+        title: 'File:Couvent Poligny.JPG',
+        imageinfo: [
+          {
+            thumburl: vignette(largeurServie, 'Couvent_Poligny.JPG') + suivi,
+            url: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Couvent_Poligny.JPG',
+            descriptionurl: 'https://commons.wikimedia.org/wiki/File:Couvent_Poligny.JPG',
+            extmetadata: {
+              Artist: { value: '<a href="//commons.wikimedia.org/wiki/User:Chau7">Chau7</a>' },
+              LicenseShortName: { value: 'CC BY-SA 3.0' },
+              LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/3.0' },
+            },
+          },
+        ],
+      },
+      {
+        title: 'File:Petit.jpg',
+        imageinfo: [
+          {
+            // Original plus petit que la taille demandée : Commons renvoie l'original.
+            thumburl: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
+            descriptionurl: 'https://commons.wikimedia.org/wiki/File:Petit.jpg',
+            extmetadata: { Artist: { value: 'X' }, LicenseShortName: { value: 'CC0' } },
+          },
+        ],
+      },
+      { title: 'File:Absent.jpg', missing: true },
+    ],
+  },
+});
+
+describe('lireInfosCommons : auteur, licence, vignette servie par Commons et page de chaque fichier', () => {
+  it('la vignette est l’adresse renvoyée par Commons, sans les paramètres de suivi', () => {
+    expect(lireInfosCommons(reponseInfos(960)).get('Couvent Poligny.JPG')).toEqual({
       auteur: 'Chau7',
       licence: 'CC BY-SA 3.0',
       licenceUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
-      urlGrande:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Pont_de_pierre.jpg/800px-Pont_de_pierre.jpg',
-      urlPetite:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Pont_de_pierre.jpg/400px-Pont_de_pierre.jpg',
-      page: 'https://commons.wikimedia.org/wiki/File:Pont_de_pierre.jpg',
+      vignette: vignette(960, 'Couvent_Poligny.JPG'),
+      page: 'https://commons.wikimedia.org/wiki/File:Couvent_Poligny.JPG',
     });
   });
 
-  it('limite : original plus petit → les deux tailles sont l’original ; fichier absent → ignoré', () => {
-    const infos = lireInfosCommons(reponse, largeurs);
+  it('limite : original plus petit → l’original ; fichier absent → ignoré', () => {
+    const infos = lireInfosCommons(reponseInfos(960));
     expect(infos.get('Petit.jpg')).toMatchObject({
-      urlPetite: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
-      urlGrande: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
+      vignette: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
       licenceUrl: null,
     });
     expect(infos.has('Absent.jpg')).toBe(false);
+  });
+});
+
+describe('chercherMetasCommons : chaque taille est demandée à Commons, jamais déduite', () => {
+  /** Faux Commons : la largeur demandée donne la taille standard servie ; les catégories à part. */
+  const fauxCommons = async (_api: string, p: Record<string, string>) => {
+    if (p.prop === 'categories')
+      return { query: { pages: [{ title: 'File:Couvent Poligny.JPG' }] } };
+    return reponseInfos(p.iiurlwidth === '400' ? 500 : 960);
+  };
+
+  it('petite = vignette servie pour la petite largeur, grande = pour la grande (bug du 17/11)', async () => {
+    const metas = await chercherMetasCommons(
+      fauxCommons,
+      'https://commons.wikimedia.org/w/api.php',
+      ['Couvent Poligny.JPG'],
+      {
+        taille: 50,
+        ...largeurs,
+      },
+    );
+    expect(metas.get('Couvent Poligny.JPG')).toMatchObject({
+      urlPetite: vignette(500, 'Couvent_Poligny.JPG'),
+      urlGrande: vignette(960, 'Couvent_Poligny.JPG'),
+      categories: [],
+    });
+  });
+
+  it('limite : original plus petit que les deux tailles → la même adresse pour les deux', async () => {
+    const metas = await chercherMetasCommons(
+      fauxCommons,
+      'https://commons.wikimedia.org/w/api.php',
+      ['Petit.jpg'],
+      {
+        taille: 50,
+        ...largeurs,
+      },
+    );
+    expect(metas.get('Petit.jpg')).toMatchObject({
+      urlPetite: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
+      urlGrande: 'https://upload.wikimedia.org/wikipedia/commons/1/12/Petit.jpg',
+    });
   });
 });
 

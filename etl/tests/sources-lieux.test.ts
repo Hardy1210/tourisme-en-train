@@ -75,6 +75,7 @@ describe('DATAtourisme', () => {
         url: 'https://musees.dijon.fr/',
         imageUrl: null,
         wikipedia: null,
+        wikidata: null,
         horaires: null,
         qualiteTourisme: true,
         lon: 5.04,

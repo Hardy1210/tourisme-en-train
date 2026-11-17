@@ -20,6 +20,11 @@ export function resoudreDossierDonnees(dossier: string, racine: string = RACINE_
 const schemaEnv = z.object({
   BDD_URL_ETL: z.url({ protocol: /^postgres(ql)?$/ }),
   DOSSIER_DONNEES: z.string().min(1),
+  /**
+   * Contact public envoyé aux API de Wikimedia dans le User-Agent (leur politique d'usage, D100) : l'adresse
+   * du site, jamais une donnée personnelle. Demandée seulement par `pnpm etl photos` sans `--hors-ligne`.
+   */
+  URL_CONTACT: z.url({ protocol: /^https$/ }).optional(),
 });
 
 export type ConfigEtl = z.infer<typeof schemaEnv>;

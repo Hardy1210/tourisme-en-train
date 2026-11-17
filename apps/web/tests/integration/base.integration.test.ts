@@ -28,6 +28,7 @@ const TABLES_P0 = [
   'lieu_gare',
   'mobilite_locale',
   'passage',
+  'photo_lieu',
   'service_jour',
   'source_donnees',
   'trajet',

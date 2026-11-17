@@ -13,6 +13,8 @@ export interface LieuNormalise {
   imageUrl: string | null;
   /** Lien vers l'article Wikipédia (OSM) ; null sinon (D092). */
   wikipedia: string | null;
+  /** Fiche Wikidata (OSM), pour trouver une photo seulement ; null sinon (D100). */
+  wikidata: string | null;
   horaires: string | null;
   qualiteTourisme: boolean;
   lon: number;

@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.20 · **Date** 16/11/2026
+> **Version** 1.21 · **Date** 17/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -36,6 +36,8 @@
     │  └──── liaison_directe (gare_depart_id, gare_arrivee_id, date_service)
     │
     ├──── lieu_gare ──▶ lieu ◀── categorie_regle (utilisée par l'ETL)
+    │                    ▲
+    │                    └── photo_lieu (0 ou 1 par lieu, D100)
     ├──── gare_stats
     └──── mobilite_locale
 
@@ -282,9 +284,10 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `adresse` | text | | |
 | `code_insee` | char(5) | FK → commune(code_insee) | Commune dont le contour contient le lieu, quelle que soit la source (D041) ; nom de la commune par jointure |
 | `url` | text | | Site officiel |
-| `image_url` | text | | |
+| `image_url` | text | | Photo telle que la source la donne (OSM : tag `image` ou fichier `wikimedia_commons`). L'application affiche `photo_lieu`, jamais cette colonne directement (D100) ; elle reste un signe d'intérêt pour la carte (D092) |
 | `masque` | boolean | NN, défaut faux | Gardé en base mais caché de tous les écrans (`acces.sousCategoriesMasquees`, calculé à l'import ; une correction manuelle passe avant), migration `0015` (D093) |
-| `wikipedia` | text | | Article Wikipédia (OSM, tag `wikipedia`, migration `0014`) : signe d'intérêt pour le tri de la carte (D092). Wikidata non gardé |
+| `wikipedia` | text | | Article Wikipédia (OSM, tag `wikipedia`, migration `0014`) : signe d'intérêt pour le tri de la carte (D092) |
+| `wikidata` | text | | Fiche Wikidata (OSM, tag `wikidata`, « Q1069718 », migration `0017`) : sert **seulement** à trouver une photo (D100) ; jamais un signe d'intérêt pour la carte (D092, confirmé le 17/11) |
 | `horaires` | text | | Texte tel que fourni |
 | `periode` | text | | Festivals : période de l'année |
 | `qualite_tourisme` | boolean | NN, défaut false | |
@@ -300,6 +303,26 @@ Contraintes : UQ(`source`, `id_source`), UQ(`cle`).
 Index : GIST(`geom`), (`categorie`), GIN(`nom` gin_trgm_ops).
 Chargement par source : mise à jour **par (`source`, `id_source`)**, puis suppression des lieux disparus de la source : l'`id` d'un lieu reste stable d'un chargement à l'autre (D041). Seuls les lieux situés dans un contour de commune de la région sont chargés.
 Les requêtes de l'application ignorent les lignes où `doublon_de` **ou** `site_de` n'est pas nul (un site apparaît une fois, par son représentant).
+
+### 3.6 ter `photo_lieu`
+Une photo par lieu au plus (D100, D101), recalculée par `pnpm etl photos` sans recharger les lieux (migration `0017`). On ne garde que l'**adresse** de la vignette, jamais une copie.
+
+| Colonne | Type | Contraintes | Description |
+|---|---|---|---|
+| `lieu_id` | bigint | PK, FK → lieu(id), ON DELETE CASCADE | Lieu gardé (jamais un doublon : la photo d'un doublon est rattachée au lieu qu'il double) |
+| `source` | text | NN, FK → source_donnees(code) | `wikimedia_commons` ou `datatourisme_photos` |
+| `origine` | text | NN, CHECK in (`osm`, `wikipedia`, `wikidata`, `datatourisme`) | D'où vient le fichier, dans l'ordre de priorité |
+| `fichier` | text | NN | Nom du fichier Commons, ou adresse de l'original DATAtourisme : ce que désigne `regles/photos_exclues.csv` |
+| `url_petite` | text | NN | Vignette demandée à `photos.largeurPetitePx` (400 px ; Commons sert sa taille standard, 500 px) : cartes, mini-fiche |
+| `url_grande` | text | NN | Vignette demandée à `photos.largeurGrandePx` (800 px ; Commons : 960 px) : fiche lieu. Commons : adresse **renvoyée par l'API**, sur `thumb.wikimedia.org` (ou l'original sur `upload.wikimedia.org` s'il est plus petit), jamais construite à la main ; Tourinsoft : `?width=` |
+| `auteur` | text | NN, CHECK non vide | Auteur (Commons) ou crédit (DATAtourisme), affiché avec la photo |
+| `licence` | text | NN, CHECK non vide | « CC BY-SA 4.0 », « Licence Ouverte »… |
+| `licence_url` | text | | Texte de la licence (Commons) |
+| `page` | text | | Page du fichier (Commons) ; nul pour DATAtourisme |
+| `droits_debut`, `droits_fin` | date | CHECK début ≤ fin | Droits d'utilisation (DATAtourisme) ; nuls = sans limite. **L'application ne montre la photo que si la date du jour (`dateDuJour()`) est entre les deux** |
+| `maj` | timestamptz | NN, défaut now() | |
+
+Chargement : table entièrement remplacée, dans la transaction de l'étape ; contrôle bloquant `controles.photosMin`.
 
 ### 3.7 `categorie_regle`
 | Colonne | Type | Contraintes | Description |
@@ -493,3 +516,4 @@ ORDER BY a.depart_s;
 | 13/11/2026 | 1.18 | `lieu.wikipedia` — D092 |
 | 13/11/2026 | 1.19 | `lieu.masque` — D093 |
 | 16/11/2026 | 1.20 | § 3.10 : type `PARKING_VELO` (migration 0016) — D097 |
+| 17/11/2026 | 1.21 | § 3.6 `lieu.wikidata`, § 3.6 ter `photo_lieu` (migration 0017) — D100, D101 |

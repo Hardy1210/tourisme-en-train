@@ -5,6 +5,7 @@
 import {
   CATEGORIES,
   CONDITIONS_REGLE,
+  ORIGINES_PHOTO,
   STATUTS_EXECUTION,
   TYPES_MOBILITE,
   TYPES_TRAIN,
@@ -192,6 +193,9 @@ export const lieu = pgTable(
     imageUrl: text(),
     // Article Wikipédia (OSM, tag `wikipedia`) : signe d'intérêt pour le tri de la carte (D092).
     wikipedia: text(),
+    // Fiche Wikidata (OSM, tag `wikidata`) : sert seulement à trouver une photo (D100), jamais de signe
+    // d'intérêt pour la carte (D092, confirmé le 17/11).
+    wikidata: text(),
     horaires: text(),
     periode: text(),
     qualiteTourisme: boolean().notNull().default(false),
@@ -226,6 +230,43 @@ export const lieu = pgTable(
     index().on(t.categorie),
     index('lieu_nom_trgm_index').using('gin', t.nom.op('gin_trgm_ops')),
     check('lieu_categorie_check', parmi(t.categorie, CATEGORIES)),
+  ],
+);
+
+// § 3.6 ter — Une photo par lieu au plus (D100), recalculée par `pnpm etl photos` sans recharger les lieux.
+// Seulement l'adresse de la vignette, jamais une copie ; crédit obligatoire ; droits datés (DATAtourisme),
+// vérifiés à l'affichage avec la date du jour.
+export const photoLieu = pgTable(
+  'photo_lieu',
+  {
+    lieuId: bigint({ mode: 'number' })
+      .primaryKey()
+      .references(() => lieu.id, { onDelete: 'cascade' }),
+    source: text()
+      .notNull()
+      .references(() => sourceDonnees.code),
+    origine: text().notNull(),
+    // Nom du fichier Commons, ou adresse de l'original DATAtourisme : ce que désigne regles/photos_exclues.csv.
+    fichier: text().notNull(),
+    urlPetite: text().notNull(),
+    urlGrande: text().notNull(),
+    auteur: text().notNull(),
+    licence: text().notNull(),
+    licenceUrl: text(),
+    // Page du fichier (Commons) ; null pour DATAtourisme.
+    page: text(),
+    droitsDebut: date({ mode: 'string' }),
+    droitsFin: date({ mode: 'string' }),
+    maj: maj(),
+  },
+  (t) => [
+    check('photo_lieu_origine_check', parmi(t.origine, ORIGINES_PHOTO)),
+    check('photo_lieu_auteur_check', sql`btrim(${t.auteur}) <> ''`),
+    check('photo_lieu_licence_check', sql`btrim(${t.licence}) <> ''`),
+    check(
+      'photo_lieu_droits_check',
+      sql`${t.droitsDebut} IS NULL OR ${t.droitsFin} IS NULL OR ${t.droitsDebut} <= ${t.droitsFin}`,
+    ),
   ],
 );
 

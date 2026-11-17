@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.22 · **Date** 16/11/2026
+> **Version** 1.23 · **Date** 17/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -75,6 +75,10 @@
 | **Mobilité locale** | Moyen de transport à l'arrivée : arrêt de bus, arrêt de tram, station de vélos ou de trottinettes | `MobiliteLocale` | table `mobilite_locale` | Train |
 | **Car régional** | Ligne de car interurbain (Mobigo) desservant une gare : **transport sur place** (type `CAR`), jamais un trajet vers la destination, qui se fait en train (D046) | `'CAR'` | `mobilite_locale.type` | Car SNCF (exclu des trajets, E03) |
 | **Type de mobilité** | `BUS`, `TRAM`, `CAR`, `VELO`, `TROTTINETTE`, `AUTRE`, `PARKING_VELO` | `TypeMobilite` | `type` | — |
+| **Photo du lieu** | Une seule photo par lieu au plus, avec son **crédit** (auteur ou crédit, licence) ; prise d'abord sur Wikimedia (fichier OSM, image de l'article Wikipédia, image Wikidata), sinon sur DATAtourisme ; sinon l'icône de la catégorie. On ne garde que l'adresse de sa **vignette** (D100, D101) | `photo`, `PhotoChoisie` | table `photo_lieu` | `lieu.image_url` (photo brute de la source, pas affichée telle quelle) |
+| **Vignette** | Version réduite d'une photo fournie par sa source : petite (`photos.largeurPetitePx`, cartes) et grande (`photos.largeurGrandePx`, fiche lieu) ; jamais l'original (D100) | `urlPetite`, `urlGrande` | `url_petite`, `url_grande` | Icône de catégorie |
+| **Crédit (photo)** | Auteur et licence d'une photo, lus automatiquement (Commons : `Artist`, `LicenseShortName` ; DATAtourisme : `credits`) et toujours affichés avec elle. Sans crédit lisible, pas de photo (D100) | `auteur`, `licence` | `auteur`, `licence` | Attribution d'une source (écran Sources) |
+| **Droits (photo)** | Période pendant laquelle une photo DATAtourisme peut être montrée (`droits_debut`, `droits_fin`) ; vérifiée à la date du jour, à l'affichage (D100) | `droitsDebut`, `droitsFin` | `droits_debut`, `droits_fin` | Licence |
 | **Parking vélo** | Emplacement OpenStreetMap (`amenity=bicycle_parking`) à `acces.rayonParkingVeloM` d'une gare au plus : la preuve qu'on peut y laisser son vélo, seule raison d'afficher une durée à vélo vers sa gare de départ (D097). Pas un transport sur place | `parkingVelo`, `'PARKING_VELO'` | `mobilite_locale.type` | Station de vélos en libre-service (`VELO`) |
 | **Vélos disponibles** | Nombre de vélos libres en direct dans une station (GBFS), jamais stocké | `velosDisponibles` | — | Station (emplacement, stocké) |
 | **Début du week-end** | Samedi à venir, ou aujourd'hui si on est samedi ou dimanche | `debutDuWeekEnd` | — | — |
@@ -155,3 +159,4 @@
 | 13/11/2026 | 1.20 | Niveau d'accès — D091 |
 | 13/11/2026 | 1.21 | Bulle (carte) : groupe de lieux — D092 |
 | 16/11/2026 | 1.22 | Parking vélo ; type de mobilité `PARKING_VELO` (et `CAR`, oublié) — D097 |
+| 17/11/2026 | 1.23 | Photo du lieu, vignette, crédit et droits d'une photo — D100, D101 |
