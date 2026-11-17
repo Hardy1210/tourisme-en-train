@@ -9,34 +9,41 @@ import {
 import { formaterDistance } from '@/lib/geo/formats';
 
 /**
- * Durée à pied si la gare est à `acces.rayonPiedM` au plus (mesurés avec le détour), sinon la distance seule.
- * Jamais de durée à vélo : rien ne prouve qu'on a un vélo près de soi.
+ * Trajet jusqu'à la gare, une seule règle pour « Votre gare » et les gares proches (D096, D097) : durée à pied
+ * si la gare est à `acces.rayonPiedM` au plus (mesurés avec le détour) ; au-delà, durée à vélo seulement si la
+ * gare a un parking vélo, sa preuve, et jusqu'à `acces.rayonVeloM` avec le détour ; sinon la distance seule.
  */
-export function accesGare(volOiseauM: number): { dureeMarcheMin: number | null; distance: string } {
+export function accesGare(
+  volOiseauM: number,
+  parkingVelo: boolean,
+): { dureeMarcheMin: number | null; dureeVeloMin: number | null; distance: string } {
+  const aPied = distanceMarcheM(volOiseauM) <= parametres.acces.rayonPiedM;
+  const aVelo =
+    !aPied && parkingVelo && distanceParcourueM(volOiseauM, 'velo') <= parametres.acces.rayonVeloM;
   return {
-    dureeMarcheMin:
-      distanceMarcheM(volOiseauM) <= parametres.acces.rayonPiedM
-        ? dureeMarcheMin(volOiseauM)
-        : null,
+    dureeMarcheMin: aPied ? dureeMarcheMin(volOiseauM) : null,
+    dureeVeloMin: aVelo ? dureeVeloMin(volOiseauM) : null,
     distance: formaterDistance(volOiseauM),
   };
 }
 
 /**
- * Texte court des listes de gares proches : « 27 min à pied », sinon « ≈ 17 min à vélo » si la gare a un
- * parking vélo, la preuve qu'on peut y laisser le sien (D097), jusqu'à `acces.rayonVeloM` avec le détour ;
- * sinon la distance. `aVelo` : la ligne affiche aussi « Parking vélo à la gare ».
+ * Texte court des listes de gares proches, d'après `accesGare` : « 27 min à pied », « ≈ 17 min à vélo » ou la
+ * distance. À vélo, `distance` se lit en dessous, en plus petit ; `aVelo` : la ligne affiche aussi « Parking
+ * vélo à la gare », la preuve (D097).
  */
 export function accesGareProche(
   volOiseauM: number,
   parkingVelo: boolean,
-): { texte: string; aVelo: boolean } {
-  const { dureeMarcheMin: minutes, distance } = accesGare(volOiseauM);
-  if (minutes !== null) return { texte: `${minutes} min à pied`, aVelo: false };
-  if (parkingVelo && distanceParcourueM(volOiseauM, 'velo') <= parametres.acces.rayonVeloM) {
-    return { texte: `≈ ${dureeVeloMin(volOiseauM)} min à vélo`, aVelo: true };
-  }
-  return { texte: distance, aVelo: false };
+): { texte: string; distance: string | null; aVelo: boolean } {
+  const {
+    dureeMarcheMin: aPied,
+    dureeVeloMin: aVelo,
+    distance,
+  } = accesGare(volOiseauM, parkingVelo);
+  if (aPied !== null) return { texte: `${aPied} min à pied`, distance: null, aVelo: false };
+  if (aVelo !== null) return { texte: `≈ ${aVelo} min à vélo`, distance, aVelo: true };
+  return { texte: distance, distance: null, aVelo: false };
 }
 
 /** Applications de cartes proposées (D096) : Plans n'existe que sur iPhone. */

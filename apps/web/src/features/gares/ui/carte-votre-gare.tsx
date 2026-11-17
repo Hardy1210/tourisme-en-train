@@ -1,4 +1,4 @@
-import { Footprints, TrainFront } from 'lucide-react';
+import { Bike, Footprints, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
 import { formaterDistance } from '@/lib/geo/formats';
@@ -10,6 +10,8 @@ type Proprietes = {
   nom: string;
   distanceM: number | null;
   dureeMarcheMin: number | null;
+  /** Un parking vélo à la gare : seule preuve d'une durée à vélo (D097). */
+  parkingVelo: boolean;
   /** Coordonnées de la gare : seule destination du lien « Voir l’itinéraire » (D096). */
   coordonnees: { lat: number; lon: number };
   /** « 10:12 → Beaune » ; null tant qu'on ne le connaît pas ou s'il n'y en a plus. */
@@ -23,12 +25,14 @@ export function CarteVotreGare({
   nom,
   distanceM,
   dureeMarcheMin,
+  parkingVelo,
   coordonnees,
   prochainDepart,
   surChangement,
   plusProche,
 }: Proprietes) {
-  const acces = distanceM === null ? null : accesGare(distanceM);
+  const acces = distanceM === null ? null : accesGare(distanceM, parkingVelo);
+  const aVelo = plusProche === null && acces?.dureeVeloMin != null;
   return (
     <Carte className="gap-3.5" aria-labelledby="votre-gare">
       <div className="flex items-center gap-3">
@@ -40,6 +44,7 @@ export function CarteVotreGare({
           <h2 id="votre-gare" className="text-xl font-bold">
             {nom}
           </h2>
+          {aVelo && <span className="text-sm text-muted-foreground">Parking vélo à la gare</span>}
         </div>
         {/* Sous la distance, dans la hauteur du titre : la carte ne grandit pas, la feuille non plus. Le lien
             reste sans distance (gare choisie à la main, position refusée) : il faut toujours y aller. */}
@@ -56,9 +61,20 @@ export function CarteVotreGare({
                   <Footprints aria-hidden="true" className="size-4" />
                   {acces.dureeMarcheMin} min à pied · {acces.distance}
                 </>
+              ) : aVelo ? (
+                <>
+                  <Bike aria-hidden="true" className="size-4" />
+                  <span>≈ {acces?.dureeVeloMin} min à vélo</span>
+                </>
               ) : (
                 acces?.distance
               )}
+            </span>
+          )}
+          {/* À vélo, la distance en dessous, en plus petit, comme la preuve sous le nom (essai iPhone, 17/11). */}
+          {aVelo && (
+            <span className="tabular text-xs whitespace-nowrap text-muted-foreground">
+              {acces?.distance}
             </span>
           )}
           <LienItineraire gare={coordonnees} />

@@ -163,6 +163,7 @@ export function ResultatsExplorer({
               nom={gare.nom}
               distanceM={gare.distanceM}
               dureeMarcheMin={gare.dureeMarcheMin}
+              parkingVelo={gare.parkingVelo}
               coordonnees={{ lat: gare.lat, lon: gare.lon }}
               prochainDepart={
                 destinationChoisie

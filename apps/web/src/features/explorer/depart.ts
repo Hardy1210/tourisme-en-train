@@ -13,6 +13,8 @@ export type GareDepart = {
   distanceM: number | null;
   dureeMarcheMin: number | null;
   dureeVeloMin: number | null;
+  /** Un parking vélo à la gare (D097) : preuve de la durée à vélo dans « Votre gare ». */
+  parkingVelo: boolean;
 };
 
 export type Depart =
@@ -67,7 +69,13 @@ export function calculerDepart({
       etat: 'pret',
       origine: 'choix',
       point: { lat: gareHorsLigne.lat, lon: gareHorsLigne.lon },
-      gare: { ...gareHorsLigne, distanceM: null, dureeMarcheMin: null, dureeVeloMin: null },
+      gare: {
+        ...gareHorsLigne,
+        distanceM: null,
+        dureeMarcheMin: null,
+        dureeVeloMin: null,
+        parkingVelo: false,
+      },
       proches: [],
     };
   }
@@ -93,6 +101,7 @@ export function calculerDepart({
         distanceM: null,
         dureeMarcheMin: null,
         dureeVeloMin: null,
+        parkingVelo: false,
       },
       proches: proches.donnees ?? [],
     };
@@ -119,6 +128,7 @@ export function calculerDepart({
       distanceM: gare.distanceM,
       dureeMarcheMin: gare.dureeMarcheMin,
       dureeVeloMin: gare.dureeVeloMin,
+      parkingVelo: gare.parkingVelo,
     },
     proches: proches.donnees,
   };
