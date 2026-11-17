@@ -95,3 +95,23 @@ test.describe('écran Lieux, depuis Dijon-Ville', () => {
     await expect(carte.getByRole('button', { name: 'Crédit de la photo' })).toHaveCount(0);
   });
 });
+
+// Décision de Hardy (18/11) : pas de ⓘ sur les petites cartes de « Près de vous » / « Près de la gare de… »,
+// même pour DATAtourisme ; le crédit reste sur la page du lieu. Il reste sur l'écran Lieux (test plus haut).
+test.describe('« Près de vous », à Dijon-Ville', () => {
+  test.use({
+    geolocation: { latitude: 47.3233, longitude: 5.0272 },
+    permissions: ['geolocation'],
+  });
+  test.beforeEach(({ context, baseURL }) => servirPhotos(context, baseURL));
+
+  test('la photo sur la carte, sans ⓘ ; le crédit est sur la page du lieu', async ({ page }) => {
+    await page.goto('/?date=2026-11-18');
+    const carte = page
+      .getByRole('region', { name: 'Près de vous' })
+      .getByRole('listitem')
+      .filter({ hasText: 'Exemple - Jardin botanique' });
+    await expect(carte.getByRole('img', { name: 'Exemple - Jardin botanique' })).toBeVisible();
+    await expect(carte.getByRole('button', { name: 'Crédit de la photo' })).toHaveCount(0);
+  });
+});
