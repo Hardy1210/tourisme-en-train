@@ -1,7 +1,7 @@
 // Section « Près de… » d'Explorer (maquette v6) et mode destination : une destination choisie fait passer la
 // section en bas, autour de sa gare (périmètre fixe des gares), donne le prochain train vers elle, et
 // « Filtres » ne garde que « Quand ? ». Échantillon (db/echantillon/), sans réseau, position au centre de Dijon.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DATE = '2026-11-18';

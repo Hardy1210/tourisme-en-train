@@ -1,5 +1,5 @@
 // Mentions légales et confidentialité : atteintes depuis le menu, position expliquée, aucun cookie.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { couperLeReseau } from './outils';
 
 test.beforeEach(async ({ context, baseURL }) => {

@@ -4,6 +4,8 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
+import { INSTANT_DE_TEST } from './apps/web/tests/instant-de-test';
+
 const FICHIER_ENV = path.join(import.meta.dirname, '.env');
 if (existsSync(FICHIER_ENV)) process.loadEnvFile(FICHIER_ENV);
 
@@ -19,5 +21,8 @@ export default defineConfig({
     include: ['{apps/*,etl}/tests/**/*.integration.test.ts'],
     // Une seule base partagée : un fichier à la fois.
     fileParallelism: false,
+    // « Maintenant » fixé (instant-de-test.ts) : même résultat quel que soit le jour du lancement.
+    env: { INSTANT_DE_TEST },
+    setupFiles: ['apps/web/tests/horloge-de-test.ts'],
   },
 });

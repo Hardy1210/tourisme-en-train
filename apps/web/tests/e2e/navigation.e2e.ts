@@ -1,6 +1,6 @@
 // Changer d'onglet ne recharge rien, et un train parti ne reste jamais à l'écran (D068).
 // Échantillon (données d'exemple, db/echantillon/), sans réseau, horloge simulée pour les trains.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DATE = '2026-11-18';

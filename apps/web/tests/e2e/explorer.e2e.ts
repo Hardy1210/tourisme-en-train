@@ -1,6 +1,6 @@
 // Parcours de l'écran Explorer, sur l'échantillon (données d'exemple, db/echantillon/).
 // Sans réseau : fond de carte et recherche de ville simulés. Date fixe, présente dans l'échantillon.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DIJON_VILLE = { latitude: 47.3233, longitude: 5.0272 };

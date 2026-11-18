@@ -1,6 +1,6 @@
 // La date vit dans « Filtres » (D086) : en-tête sans logo ni bouton date sur téléphone ; pastille, compteur
 // et fin de titre quand la date n'est pas aujourd'hui. Échantillon, sans réseau, horloge simulée.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { marque } from '../../src/config/marque';
 import { couperLeReseau } from './outils';
 

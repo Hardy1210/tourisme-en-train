@@ -3,6 +3,8 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
+import { INSTANT_DE_TEST } from './tests/instant-de-test';
+
 const FICHIER_ENV = path.join(import.meta.dirname, '../../.env');
 if (existsSync(FICHIER_ENV)) process.loadEnvFile(FICHIER_ENV);
 
@@ -37,10 +39,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && pnpm exec next start --port ${PORT}`,
+    // Serveur lancé avec l'horloge de test (instant-de-test.ts) ; le navigateur, par e2e/test.ts.
+    command: `pnpm build && NODE_OPTIONS=--import=./tests/horloge-de-test.ts pnpm exec next start --port ${PORT}`,
     url: `${urlApp}/api/sante`,
     timeout: 300_000,
     reuseExistingServer: false,
-    env: { NODE_ENV: 'production', BDD_URL_APP: urlBaseDeTest(), URL_APP: urlApp },
+    env: { NODE_ENV: 'production', BDD_URL_APP: urlBaseDeTest(), URL_APP: urlApp, INSTANT_DE_TEST },
   },
 });
