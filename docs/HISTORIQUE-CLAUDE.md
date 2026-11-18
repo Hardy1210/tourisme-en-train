@@ -74,3 +74,4 @@
 | 17/11/2026 | 1.78 | § 8 et § 9 : priorités jusqu'à la soutenance (D099), études photos et coefficient de détour le 18/11 |
 | 17/11/2026 | 1.79 | § 9 : étude des photos faite (D100, #139), planche de contrôle, décisions en attente, service d'itinéraire proposé |
 | 17/11/2026 | 1.80 | § 16 : étape `photos` du traitement des données (D100) |
+| 18/11/2026 | 1.81 | § 9 : photos (PR 1 fusionnée, #145 ouverte), décisions de la fiche lieu (descriptions complètes, Wikipédia, horaires), 0.4.0 en prochaine action |
