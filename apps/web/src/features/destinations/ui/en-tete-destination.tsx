@@ -25,7 +25,7 @@ export function EnTeteDestination({ fiche, date, surRetour, surOuvrirDate, surDa
   return (
     <header className="flex flex-none flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <BoutonRetour className="-ml-2" onClick={surRetour} />
+        <BoutonRetour surMarque className="-ml-2" onClick={surRetour} />
         <Bouton
           variante="secondaire"
           className="rounded-pill border-border px-3 font-medium"
@@ -40,14 +40,14 @@ export function EnTeteDestination({ fiche, date, surRetour, surOuvrirDate, surDa
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl leading-tight font-bold">{gare.titre}</h1>
         {gare.horsVille && gare.commune.nom && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-page-marque-texte-muted">
             Gare de {gare.nom}, à {gare.commune.nom}
           </p>
         )}
         {liaison && (
-          <p className="tabular flex flex-wrap items-center gap-x-1.5 text-md text-muted-foreground">
-            <Clock aria-hidden="true" className="size-4 text-primary" />
-            <strong className="font-semibold text-foreground">
+          <p className="tabular flex flex-wrap items-center gap-x-1.5 text-md text-page-marque-texte-muted">
+            <Clock aria-hidden="true" className="size-4 text-page-marque-texte" />
+            <strong className="font-semibold text-page-marque-texte">
               {formaterDuree(liaison.dureeMin)} direct
             </strong>
             · {liaison.nbTrains} {liaison.nbTrains > 1 ? 'trains' : 'train'}/jour

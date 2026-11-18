@@ -63,7 +63,8 @@ async function textesPeuContrastes(page: Page): Promise<string[]> {
         .map((n) => n.textContent?.trim() ?? '')
         .join(' ')
         .trim();
-      if (!texte || !(element instanceof HTMLElement) || element.getClientRects().length === 0) continue;
+      if (!texte || !(element instanceof HTMLElement) || element.getClientRects().length === 0)
+        continue;
       const style = getComputedStyle(element);
       if (style.visibility === 'hidden') continue;
       const fond = fondDe(element);
@@ -83,7 +84,10 @@ for (const theme of ['clair', 'sombre'] as const) {
     page,
   }) => {
     await page.goto(BEAUNE);
-    await page.evaluate((sombre) => document.documentElement.classList.toggle('dark', sombre), theme === 'sombre');
+    await page.evaluate(
+      (sombre) => document.documentElement.classList.toggle('dark', sombre),
+      theme === 'sombre',
+    );
     await expect(page.getByRole('heading', { name: 'Beaune', level: 1 })).toBeVisible();
     await expect(page.getByRole('link', { name: /Exemple - / }).first()).toBeVisible();
     expect(await textesPeuContrastes(page), 'onglet Lieux').toEqual([]);

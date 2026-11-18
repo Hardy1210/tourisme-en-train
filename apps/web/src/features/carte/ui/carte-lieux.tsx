@@ -6,7 +6,6 @@ import type { StyleSpecification } from 'maplibre-gl';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import Map, { type MapRef } from 'react-map-gl/maplibre';
-import { Bouton, BoutonFermer } from '@/components/ui/bouton';
 import { parametres } from '@/config/parametres';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { empriseDe, type Point } from '../geometrie';
@@ -37,6 +36,17 @@ export function CarteLieux({ gare, lieux, cleChoisie, surChoix, lienDe }: Propri
   useEffect(() => {
     if (choisi) carte.current?.easeTo({ center: [choisi.lon, choisi.lat] });
   }, [choisi]);
+
+  // La pilule n'a plus de bouton « Fermer » : Échap au clavier, ou un toucher ailleurs sur la carte.
+  const pilule = Boolean(choisi && lienDe);
+  useEffect(() => {
+    if (!pilule) return;
+    const surTouche = (evenement: KeyboardEvent) => {
+      if (evenement.key === 'Escape') surChoix(null);
+    };
+    window.addEventListener('keydown', surTouche);
+    return () => window.removeEventListener('keydown', surTouche);
+  }, [pilule, surChoix]);
 
   if (style.isError) {
     return (
@@ -78,18 +88,19 @@ export function CarteLieux({ gare, lieux, cleChoisie, surChoix, lienDe }: Propri
       </p>
 
       {choisi && lienDe && (
-        <div className="absolute inset-x-3 bottom-8 flex items-center justify-between gap-2 rounded-lg bg-surface-raised py-1 pr-1 pl-3 shadow-float lg:right-auto lg:w-96">
-          <h3 className="min-w-0 truncate text-md font-bold">{choisi.nom}</h3>
-          <div className="flex flex-none items-center">
-            <Bouton variante="sortie" asChild>
-              <Link href={lienDe(choisi.cle)}>
-                Voir
-                <ArrowRight aria-hidden="true" className="size-4" />
-              </Link>
-            </Bouton>
-            <BoutonFermer onClick={() => surChoix(null)} />
-          </div>
-        </div>
+        <Link
+          href={lienDe(choisi.cle)}
+          aria-label={`Ouvrir la fiche de ${choisi.nom}`}
+          className="absolute inset-x-3 bottom-8 flex h-(--pilule-carte-hauteur) items-center justify-between gap-2 rounded-pill bg-carte-sur-marque-bg pr-2.5 pl-5 text-carte-sur-marque-texte shadow-float lg:right-auto lg:w-96"
+        >
+          <span className="min-w-0 truncate text-md font-bold">{choisi.nom}</span>
+          <span
+            aria-hidden="true"
+            className="flex size-(--pilule-carte-rond) flex-none items-center justify-center rounded-pill bg-sortie-bg text-sortie-foreground"
+          >
+            <ArrowRight className="size-5" />
+          </span>
+        </Link>
       )}
     </div>
   );

@@ -47,7 +47,10 @@ describe('sousCategorieAffichee', () => {
 describe('lieuxVisibles', () => {
   const lieux = ['a', 'b', 'c', 'd', 'e', 'f'];
   it('au-delà du maximum, montre les premiers et compte les autres', () => {
-    expect(lieuxVisibles(lieux, 5, false)).toEqual({ visibles: ['a', 'b', 'c', 'd', 'e'], caches: 1 });
+    expect(lieuxVisibles(lieux, 5, false)).toEqual({
+      visibles: ['a', 'b', 'c', 'd', 'e'],
+      caches: 1,
+    });
   });
   it('limite : exactement le maximum, tout est montré, rien à déplier', () => {
     expect(lieuxVisibles(lieux.slice(0, 5), 5, false)).toEqual({

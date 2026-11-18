@@ -14,7 +14,12 @@ type Proprietes = {
 /** Le seul état vide de l'application : dit ce qui se passe et ce que l'on peut faire. */
 export function EtatVide({ titre, texte, mention, children, className }: Proprietes) {
   return (
-    <div className={cn('flex flex-col items-start gap-3 rounded-2xl bg-surface p-5', className)}>
+    <div
+      className={cn(
+        'flex flex-col items-start gap-3 rounded-2xl bg-surface p-5 text-foreground',
+        className,
+      )}
+    >
       {mention}
       <h2 className="text-xl font-bold">{titre}</h2>
       <p className="text-md text-pretty text-muted-foreground">{texte}</p>

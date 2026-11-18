@@ -20,3 +20,31 @@ export function libelleCategorieDetaillee(libelle: string, sousCategorie: string
     ? libelle
     : `${libelle} · ${sousCategorie}`;
 }
+
+const normaliser = (texte: string) =>
+  texte
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim();
+
+/** La sous-catégorie, sauf si elle ne fait que répéter le nom (« Aire de jeux » · « aire de jeux »). */
+export function sousCategorieAffichee(nom: string, sousCategorie: string | null): string | null {
+  if (!sousCategorie) return null;
+  return normaliser(nom) === normaliser(sousCategorie) ? null : sousCategorie;
+}
+
+/** Les `max` premiers lieux d'une catégorie, et le nombre de ceux qui restent à déplier. */
+export function lieuxVisibles<L>(
+  lieux: readonly L[],
+  max: number,
+  deplie: boolean,
+): { visibles: L[]; caches: number } {
+  if (deplie || lieux.length <= max) return { visibles: [...lieux], caches: 0 };
+  return { visibles: lieux.slice(0, max), caches: lieux.length - max };
+}
+
+/** Libellé du bouton qui déplie une catégorie. */
+export function libelleVoirAutres(caches: number): string {
+  return caches === 1 ? "Voir l'autre" : `Voir les ${caches} autres`;
+}

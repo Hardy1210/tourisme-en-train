@@ -1,57 +1,19 @@
 'use client';
 
-import { BadgeCheck, ChevronRight, Footprints, MapPin } from 'lucide-react';
-import Link from 'next/link';
-import { useRef, type ReactNode } from 'react';
-import { Badge } from '@/components/ui/badge';
+import type { Categorie } from '@tourisme/commun';
+import { ChevronDown } from 'lucide-react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Bouton } from '@/components/ui/bouton';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
+import { parametres } from '@/config/parametres';
 import { cn } from '@/lib/classes';
-import { formaterDistance } from '@/lib/geo/formats';
-import { grouperParCategorie } from '../presentation';
+import { grouperParCategorie, libelleVoirAutres, lieuxVisibles } from '../presentation';
 import type { LieuResume } from '../schemas';
+import { CarteLieuSurMarque } from './carte-lieu-sur-marque';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
 
-function LigneLieu({
-  lieu,
-  lien,
-  surCarte,
-}: {
-  lieu: LieuResume;
-  lien: string;
-  surCarte: () => void;
-}) {
-  return (
-    <li className="flex flex-col gap-1.5 border-b px-3 py-2.5 last:border-b-0">
-      <Link href={lien} className="flex items-start justify-between gap-2">
-        <span className="font-semibold">{lieu.nom}</span>
-        <ChevronRight aria-hidden="true" className="size-5 flex-none text-muted-foreground" />
-      </Link>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-        <span className="tabular flex items-center gap-1">
-          <Footprints aria-hidden="true" className="size-4" />
-          {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
-        </span>
-        {lieu.sousCategorie && <span>{lieu.sousCategorie}</span>}
-        {lieu.qualiteTourisme && (
-          <Badge variante="info">
-            <BadgeCheck aria-hidden="true" />
-            Qualité Tourisme
-          </Badge>
-        )}
-        <Bouton
-          variante="fantome"
-          className="ml-auto h-8 px-2 text-sm font-semibold text-primary"
-          onClick={surCarte}
-        >
-          <MapPin aria-hidden="true" className="size-4" />
-          Voir sur la carte
-        </Bouton>
-      </div>
-    </li>
-  );
-}
+const { lieuxParCategorie } = parametres.limites;
 
 type Proprietes = {
   lieuxCharges: boolean;
@@ -78,6 +40,7 @@ export function OngletLieux({
   carte,
 }: Proprietes) {
   const blocCarte = useRef<HTMLDivElement>(null);
+  const [deplies, setDeplies] = useState<ReadonlySet<Categorie>>(new Set());
   if (!lieuxCharges) {
     return (
       <EtatVide
@@ -122,9 +85,14 @@ export function OngletLieux({
       )}
       {grouperParCategorie(lieux).map(({ categorie, lieux: duGroupe }) => {
         const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[categorie];
+        const { visibles, caches } = lieuxVisibles(
+          duGroupe,
+          lieuxParCategorie,
+          deplies.has(categorie),
+        );
         return (
           <section key={categorie} className="flex flex-col gap-2">
-            <h3 className="flex items-center gap-2 text-md font-bold">
+            <h3 className="flex items-center gap-2 text-md font-bold text-page-marque-texte">
               <span
                 className={cn(
                   'flex size-7 items-center justify-center rounded-pill',
@@ -135,13 +103,13 @@ export function OngletLieux({
                 <IconeCategorie categorie={categorie} className="size-4" />
               </span>
               {libelle}
-              <span className="tabular text-sm font-normal text-muted-foreground">
+              <span className="tabular text-sm font-normal text-page-marque-texte-muted">
                 {duGroupe.length}
               </span>
             </h3>
-            <ul className="rounded-carte bg-carte-bg shadow-carte">
-              {duGroupe.map((lieu) => (
-                <LigneLieu
+            <ul className="flex flex-col gap-2">
+              {visibles.map((lieu) => (
+                <CarteLieuSurMarque
                   key={lieu.cle}
                   lieu={lieu}
                   lien={lienDe(lieu.cle)}
@@ -152,6 +120,16 @@ export function OngletLieux({
                 />
               ))}
             </ul>
+            {caches > 0 && (
+              <Bouton
+                variante="sur-marque"
+                className="w-full rounded-carte bg-carte-sur-marque-bg"
+                onClick={() => setDeplies((avant) => new Set(avant).add(categorie))}
+              >
+                {libelleVoirAutres(caches)}
+                <ChevronDown aria-hidden="true" className="size-4" />
+              </Bouton>
+            )}
           </section>
         );
       })}

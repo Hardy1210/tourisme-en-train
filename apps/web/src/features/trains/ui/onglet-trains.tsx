@@ -16,7 +16,7 @@ function LigneTrain({ train, dernier = false }: { train: Train; dernier?: boolea
   return (
     <li
       className={cn(
-        'flex flex-col gap-0.5 rounded-lg border bg-surface px-2.5 py-2',
+        'flex flex-col gap-0.5 rounded-lg border bg-surface px-2.5 py-2 text-foreground',
         dernier ? 'border-primary bg-primary-soft' : 'border-transparent',
       )}
     >
@@ -44,7 +44,7 @@ function Colonne({
     <section aria-label={titre} className="flex min-w-0 flex-col gap-2">
       <div className="flex flex-col">
         <h3 className="text-md font-bold">{titre}</h3>
-        <span className="truncate text-xs text-muted-foreground">{sousTitre}</span>
+        <span className="truncate text-xs text-page-marque-texte-muted">{sousTitre}</span>
       </div>
       <ul className="flex flex-col gap-2">{children}</ul>
     </section>
@@ -134,7 +134,7 @@ function Horaires({
 
   return (
     <div className="flex flex-col gap-3">
-      <p role="note" className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <p role="note" className="flex items-center gap-1.5 text-xs text-page-marque-texte-muted">
         <Info aria-hidden="true" className="size-3.5 flex-none" />
         Horaires prévus, à vérifier avant de partir.
       </p>
