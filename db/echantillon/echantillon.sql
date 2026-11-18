@@ -364,6 +364,16 @@ FROM (VALUES
   ('ECH_L52', 'Aire de jeux', 'enfants', 'aire de jeux', NULL)
 ) AS l (id_source, nom, categorie, sous_categorie, wikipedia);
 
+-- D105 : description longue avec deux paragraphes (donnée d'exemple), pour « Lire la suite » et la source.
+UPDATE lieu SET description =
+  'Donnée d''exemple : premier paragraphe. Le musée présente l''histoire du vin en Bourgogne, '
+  || 'des premières vignes aux grands domaines, dans une ancienne demeure des ducs, avec ses caves voûtées, '
+  || 'ses pressoirs anciens et une collection d''outils de vigneron.'
+  || E'\n\n'
+  || 'Donnée d''exemple : second paragraphe. La visite dure environ une heure ; les salles sont accessibles '
+  || 'aux poussettes et une dégustation est proposée à la fin du parcours.'
+WHERE id_source = 'ECH_L14';
+
 -- D093 : piscine gardée en base mais masquée, au même point que les lieux de « Près de vous » (6,9 ; 46,3).
 INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, code_insee, geom, masque)
 SELECT 'echantillon', 'ECH_L53', 'Exemple - Piscine municipale', 'enfants', 'piscine', '71076',
