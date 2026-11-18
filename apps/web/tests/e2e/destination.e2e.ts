@@ -111,7 +111,8 @@ test('prix non calibré : aucun prix, le bouton de billetterie reste', async ({ 
   });
   await page.goto(lien(BEAUNE));
   await expect(page.getByRole('link', { name: 'Acheter mon billet' })).toBeVisible();
-  await expect(page.getByText(/estimation|≈/)).toHaveCount(0);
+  // « ≈ » seul ne suffit plus : il précède aussi les minutes à pied (D102). On cherche un prix.
+  await expect(page.getByText(/estimation|≈ \d+( à \d+)? €/)).toHaveCount(0);
 });
 
 test('une destination inconnue et une date hors horaires ont leur message', async ({ page }) => {

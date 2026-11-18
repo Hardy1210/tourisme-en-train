@@ -194,7 +194,7 @@ test.describe('gare proposée qui n’est pas la plus proche, à 2,9 km (D064)',
     await expect(carte).not.toContainText(/min à pied/);
     const phrase = carte.getByText(/Gare la plus proche/);
     await expect(phrase).toContainText('Dijon-Porte-Neuve');
-    await expect(phrase).toContainText(/Dijon-Porte-Neuve, 2,\d km\./);
+    await expect(phrase).toContainText(/Dijon-Porte-Neuve, 2,\d km à vol d'oiseau\./);
     await expect(phrase).not.toContainText(/min/);
   });
 

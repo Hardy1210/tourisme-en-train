@@ -4,7 +4,7 @@ import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
 import { Squelette } from '@/components/ui/squelette';
 import { cn } from '@/lib/classes';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { lienLieu } from '../liens';
 import type { LieuResume } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
@@ -40,7 +40,7 @@ function CarteLieu({ lieu }: { lieu: LieuResume }) {
           </span>
           <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
             <Footprints aria-hidden="true" className="size-4 flex-none" />
-            {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
+            {formaterDureeEstimee(lieu.dureeMarcheMin)} · {formaterDistance(lieu.distanceM)}
           </span>
         </div>
       </Link>

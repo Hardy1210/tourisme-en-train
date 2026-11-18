@@ -20,7 +20,7 @@ import { useGrandEcran } from '@/features/carte/hooks';
 import { CarteLieuxDifferee } from '@/features/carte/ui/carte-lieux-differee';
 import { cn } from '@/lib/classes';
 import { ErreurClient } from '@/lib/http/client';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { useRetour } from '@/lib/utiliser-retour';
 import { useFicheLieu } from '../hooks';
 import type { ContexteTrajet } from '../liens';
@@ -132,7 +132,8 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
                   <span className="font-semibold">Gare de {g.nom}</span>
                   <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
                     <Footprints aria-hidden="true" className="size-3.5" />
-                    {g.dureeMarcheMin} min à pied ({formaterDistance(g.distanceM)})
+                    {formaterDureeEstimee(g.dureeMarcheMin)} à pied ({formaterDistance(g.distanceM)}
+                    )
                   </span>
                 </div>
               </div>

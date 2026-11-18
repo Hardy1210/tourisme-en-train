@@ -3,7 +3,7 @@
 import { BadgeCheck, Footprints, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Bouton } from '@/components/ui/bouton';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { sousCategorieAffichee } from '../presentation';
 import type { LieuResume } from '../schemas';
 import { PhotoLieu } from './photo-lieu';
@@ -42,7 +42,7 @@ export function CarteLieuSurMarque({
           <span className="line-clamp-2 leading-tight font-bold">{lieu.nom}</span>
           <span className="tabular flex items-center gap-1 text-sm text-carte-sur-marque-texte-muted">
             <Footprints aria-hidden="true" className="size-4 flex-none" />
-            {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
+            {formaterDureeEstimee(lieu.dureeMarcheMin)} · {formaterDistance(lieu.distanceM)}
           </span>
           {(sousCategorie || lieu.qualiteTourisme) && (
             <span className="flex min-w-0 items-center gap-1 text-sm text-carte-sur-marque-texte-muted">

@@ -4,6 +4,7 @@ import { Carte } from '@/components/ui/carte';
 
 import { accesGare, accesGareProche } from '../acces-gare';
 import { LienItineraire } from './lien-itineraire';
+import { formaterDistanceVolOiseau, formaterDureeEstimee } from '@/lib/geo/formats';
 
 type Proprietes = {
   nom: string;
@@ -55,15 +56,15 @@ export function CarteVotreGare({
               {acces?.dureeMarcheMin != null ? (
                 <>
                   <Footprints aria-hidden="true" className="size-4" />
-                  {acces.dureeMarcheMin} min à pied · {acces.distance}
+                  {formaterDureeEstimee(acces.dureeMarcheMin)} à pied · {acces.distance}
                 </>
               ) : aVelo ? (
                 <>
                   <Bike aria-hidden="true" className="size-4" />
-                  <span>≈ {acces?.dureeVeloMin} min à vélo</span>
+                  <span>{formaterDureeEstimee(acces?.dureeVeloMin ?? 0)} à vélo</span>
                 </>
               ) : (
-                acces?.distance
+                formaterDistanceVolOiseau(distanceM)
               )}
             </span>
           )}

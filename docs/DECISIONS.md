@@ -1149,7 +1149,8 @@
   2. **Distance affichée = vol d'oiseau, écrite clairement** (« 2,9 km à vol d'oiseau » sur la fiche) ; **« ≈ » devant les minutes à pied**, comme devant les minutes à vélo. PR à part (D096, D097).
   3. **Après la soutenance** : deux coefficients (≈ 1,2 vers sa gare, 1,3 autour des gares), `A-FAIRE` § 3.
 - **Écarté :** 1,17 partout (trop court pour les trajets autour des gares, mesurés à ×1,32) ; afficher une distance de trajet estimée (« ≈ 3,8 km » contre 3,4 km chez Google : l'écart se verrait).
-- **Impact (à venir) :** `features/gares` (`acces-gare.ts`, `carte-votre-gare.tsx`, `ligne-gare-proche.tsx`), fiche lieu, tests, `06`.
+- **Impact :** `lib/geo/formats.ts` (`formaterDureeEstimee`, `formaterDistanceVolOiseau`), `features/gares` (`acces-gare.ts`, `carte-votre-gare.tsx`), les 8 affichages de minutes à pied (cards de la fiche destination, « Près de vous », écran Lieux, mini-fiche, fiche lieu, « Sur place », « Votre gare », gares proches), tests, `06`.
+- **Réalisé le 18/11 (Hardy) :** « à vol d'oiseau » seulement quand la distance d'une gare est seule (sans minutes), dans « Votre gare », les listes de gares proches et la phrase « Gare la plus proche ». **Les distances des lieux n'ont pas « à vol d'oiseau »** : ce sont déjà des distances à pied estimées (vol d'oiseau × 1,3, D043) ; elles suivent le « ≈ » des minutes (« ≈ 9 min · 648 m », maquette du 18/11).
 
 ## D103 — Affichage des photos : à la place de l'icône, sans attente visible, crédit toujours lisible
 - **Date :** 17/11/2026
