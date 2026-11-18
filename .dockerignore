@@ -13,3 +13,7 @@ design
 infra
 **/tests
 **/*.test.ts
+# Configurations des tests : inutiles à l'image, et elles importent des fichiers de tests/ exclus
+# ci-dessus ; `next build` les vérifie (tsconfig : *.config.ts) et échouait sans eux (0.4.0, 18/11).
+**/playwright.config.ts
+**/vitest*.config.ts
