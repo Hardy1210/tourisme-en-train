@@ -1,6 +1,6 @@
 # Infrastructure : dossier d'exploitation
 
-> **Version** 1.7 · **Date** 16/11/2026
+> **Version** 1.8 · **Date** 17/11/2026
 > **Dépend de :** `docs/07-contrat-infra.md`, `docs/etapes/E17-mise-en-ligne-v1.md`
 > **Utilisé par :** responsable infrastructure
 > **Document de référence pour :** comment exploiter la production. Comment mettre en ligne chaque mise à jour : section dédiée ci-dessous.
@@ -13,6 +13,7 @@
 - **Ne pas saisir `NODE_ENV` :** le compose le fixe déjà à `production`.
 - **Dans Coolify, pour chaque variable :** Build time = *Not available during build*, Runtime = *Available in the container*. La construction n'en a pas besoin (`apps/web/Dockerfile`), et Coolify 4.6 les fournit quand même à `docker compose build` pour les `:?` (lu dans son code le 07/11).
 - **Le domaine** ne dépend que d'`URL_APP` et du réglage Coolify.
+- **`URL_CONTACT`** (pas à saisir aujourd'hui) : contact public (`https://wagoo.hardylino.com`) envoyé à Wikimedia dans le User-Agent par `pnpm etl photos` (D100). Le traitement des données tourne sur le poste de Hardy, pas sur le serveur : `compose.prod.yml` n'a pas de service `etl`. Si un jour l'import tourne sur le serveur, ajouter cette variable à son service, avec l'adresse du site, **jamais une adresse e-mail personnelle** (`07` § 3).
 
 ## Ce qui est déployé
 `compose.prod.yml`, depuis la racine du dépôt : `docker compose --project-directory . -f infra/compose.prod.yml …`. Coolify lance aussi `--project-directory` à la racine (lu dans son code le 06/11).
@@ -250,3 +251,4 @@ Ne pas utiliser le bouton *Rollback* de Coolify, jamais essayé sur ce compose. 
 | 07/11/2026 | 1.5 | Changements de structure, essai avant fusion, réglages Coolify confirmés — D078 |
 | 10/11/2026 | 1.6 | § 2 : relecture du CHANGELOG, numéro et étiquette de version — D080 |
 | 16/11/2026 | 1.7 | Aide-mémoire pour mettre en ligne seul : quel cas, étapes A → E, pièges vus pendant la mise en ligne de la 0.2.0 |
+| 17/11/2026 | 1.8 | Variables : `URL_CONTACT` (import des photos, si un jour il tourne sur le serveur) — D100 |
