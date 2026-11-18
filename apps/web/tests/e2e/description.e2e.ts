@@ -18,7 +18,10 @@ test('une longue description garde ses paragraphes ; « Lire la suite » la dép
   const replie = (await texte.boundingBox())?.height ?? 0;
 
   await lireLaSuite.click();
-  await expect(page.getByRole('button', { name: 'Réduire' })).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('button', { name: 'Réduire' })).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  );
   expect((await texte.boundingBox())?.height ?? 0).toBeGreaterThan(replie);
   expect(await texte.innerText()).toMatch(/\n\s*\nDonnée d'exemple : second paragraphe/);
 
@@ -30,7 +33,9 @@ test('limite : un lieu sans description garde son attribution, une seule fois, s
   page,
 }) => {
   await page.goto('/lieux/echantillon-ECH_L50');
-  await expect(page.getByRole('heading', { level: 1, name: 'Exemple - Musée du village' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Exemple - Musée du village' }),
+  ).toBeVisible();
   await expect(page.getByText(/Données d'exemple/)).toHaveCount(1);
   await expect(page.getByText(/^Source : /)).toHaveCount(0);
 });
