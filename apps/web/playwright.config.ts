@@ -37,7 +37,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && pnpm exec next start --port ${PORT}`,
+    // Serveur lancé avec l'horloge de test (19/11/2026 10 h, Paris) : même résultat quel que soit le jour.
+    command: `pnpm build && NODE_OPTIONS=--import=./tests/horloge-de-test.ts pnpm exec next start --port ${PORT}`,
     url: `${urlApp}/api/sante`,
     timeout: 300_000,
     reuseExistingServer: false,

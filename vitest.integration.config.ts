@@ -19,5 +19,7 @@ export default defineConfig({
     include: ['{apps/*,etl}/tests/**/*.integration.test.ts'],
     // Une seule base partagée : un fichier à la fois.
     fileParallelism: false,
+    // « Maintenant » fixé au 19/11/2026 10 h (Paris) : même résultat quel que soit le jour du lancement.
+    setupFiles: ['apps/web/tests/horloge-de-test.ts'],
   },
 });

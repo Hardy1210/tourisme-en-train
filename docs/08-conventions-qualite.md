@@ -1,6 +1,6 @@
 # 08 — Conventions de code et qualité
 
-> **Version** 1.5 · **Date** 10/11/2026
+> **Version** 1.6 · **Date** 18/11/2026
 > **Dépend de :** `01-architecture.md`, `GLOSSAIRE.md`
 > **Utilisé par :** toutes les fiches d'étape
 > **Document de référence pour :** style de code, nommage détaillé, gestion des erreurs, journaux, tests, Git, définition de « terminé ».
@@ -75,7 +75,7 @@ Règles de `CLAUDE.md` § 3. En pratique :
 
 **Règles :**
 1. **Tests en paires** : le cas **et** sa limite. *Sans la limite, une fonction qui dit toujours « oui » passe.*
-2. **Dates** : tout test impliquant une date existe en **version été et hiver**, et un cas **après minuit** (heure GTFS > 24 h).
+2. **Dates** : tout test impliquant une date existe en **version été et hiver**, et un cas **après minuit** (heure GTFS > 24 h). **« Maintenant » est fixé dans les tests d'intégration et les parcours** (`apps/web/tests/horloge-de-test.ts` : 19/11/2026, 10 h à Paris, puis l'heure avance) : un test ne dépend jamais du jour où on le lance ; les dates de l'échantillon (15/07 et 18/11) ne sont jamais « aujourd'hui ».
 3. **Un test doit pouvoir échouer** : lors de sa création, le casser volontairement une fois pour vérifier qu'il échoue (en copiant le fichier avant, voir § 9).
 4. **Pas de test dépendant du réseau** ou de l'heure réelle.
 5. **Pas de test intermittent** : un test qui échoue « parfois » est corrigé ou supprimé immédiatement.
@@ -149,3 +149,4 @@ Une tâche est terminée quand **tout** est vrai :
 | 11/10/2026 | 1.3 | § 8 : scripts de base et tests d'intégration réels (E01) |
 | 04/11/2026 | 1.4 | § 8 : tests de parcours réels (E11) |
 | 10/11/2026 | 1.5 | § 7 : un bug commence par un test — D080 |
+| 18/11/2026 | 1.6 | § 7 : « maintenant » fixé dans les tests d'intégration et les parcours (le 18/11, date de l'échantillon, était aujourd'hui : 12 échecs) |
