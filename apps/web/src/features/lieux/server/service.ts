@@ -10,16 +10,18 @@ import type {
   ReponseLieuxCarte,
 } from '../schemas';
 
+import { photoDe } from '../photo';
 import { lieuxAutour } from './requetes';
 import { lieuxCarte } from './requetes-carte';
 
-/** Lieux autour de l'utilisateur ; le rayon est une distance à pied, comme pour les gares (D043). */
-export async function autour({
-  lat,
-  lon,
-  rayon,
-  categories,
-}: ParametresAutour): Promise<ReponseAutour> {
+/**
+ * Lieux autour de l'utilisateur ; le rayon est une distance à pied, comme pour les gares (D043).
+ * `datePhoto` : date du jour à Paris, donnée par la route ; filtre les droits des photos (D100).
+ */
+export async function autour(
+  { lat, lon, rayon, categories }: ParametresAutour,
+  datePhoto: string,
+): Promise<ReponseAutour> {
   const lignes = await lieuxAutour({
     lat,
     lon,
@@ -30,6 +32,7 @@ export async function autour({
       rayonVolOiseauM: rayonVolOiseauM(parametres.acces.rayonAiresDeJeuxM),
     },
     limite: parametres.limites.lieux,
+    datePhoto,
   });
   return {
     lieux: lignes.map((l) => ({
@@ -39,7 +42,7 @@ export async function autour({
       sousCategorie: l.sous_categorie,
       distanceM: distanceMarcheM(l.vol_oiseau_m),
       dureeMarcheMin: dureeMarcheMin(l.vol_oiseau_m),
-      imageUrl: l.image_url,
+      photo: photoDe(l),
       qualiteTourisme: l.qualite_tourisme,
       source: l.source,
       lat: l.lat,

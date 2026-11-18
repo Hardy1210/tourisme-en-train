@@ -27,6 +27,7 @@ export const TEXTES_MENTIONS = {
         'Elle est envoyée à notre serveur, pour trouver les gares et les lieux proches de vous.',
         "Elle est envoyée à l'API Adresse de l'IGN pour trouver le nom de votre commune (recherche inverse). Quand vous cherchez une ville, le texte saisi lui est aussi envoyé.",
         'Le fond de carte est chargé depuis OpenFreeMap : votre navigateur lui demande les zones de la carte affichées, et ce service reçoit votre adresse IP, comme tout site consulté.',
+        "Les photos des lieux sont chargées depuis Wikimedia (thumb.wikimedia.org, upload.wikimedia.org) et depuis le serveur de photos de DATAtourisme (Tourinsoft) : ces services reçoivent votre adresse IP, comme tout site consulté. Elles ne sont jamais copiées sur nos serveurs, et l'auteur et la licence de chacune sont affichés avec elle.",
       ],
     },
     {

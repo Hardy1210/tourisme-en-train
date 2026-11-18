@@ -21,6 +21,21 @@ export const schemaParametresAutour = z.object({
   categories: schemaCategories,
 });
 
+/**
+ * Photo d'un lieu (D100, D101) : deux vignettes fournies par la source et le crédit à afficher avec elles.
+ * Présente seulement si ses droits sont en cours à la date du jour ; sinon null (l'icône de la catégorie).
+ */
+export const schemaPhoto = z.object({
+  petite: z.string(),
+  grande: z.string(),
+  auteur: z.string(),
+  licence: z.string(),
+  licenceUrl: z.string().nullable(),
+  /** Page du fichier (Wikimedia Commons) ; null pour DATAtourisme. */
+  page: z.string().nullable(),
+  source: z.enum(['wikimedia_commons', 'datatourisme_photos']),
+});
+
 export const schemaLieuResume = z.object({
   /** Clé de source : identifiant public stable (D052). */
   cle: z.string(),
@@ -30,7 +45,7 @@ export const schemaLieuResume = z.object({
   /** Distance à pied (vol d'oiseau × détour, D043). */
   distanceM: z.number().int(),
   dureeMarcheMin: z.number().int(),
-  imageUrl: z.string().nullable(),
+  photo: schemaPhoto.nullable(),
   qualiteTourisme: z.boolean(),
   /** Code de la source : l'interface affiche son attribution (§ 1.12). */
   source: z.string(),
@@ -103,7 +118,7 @@ export const schemaFicheLieu = z.object({
   adresse: z.string().nullable(),
   commune: z.string().nullable(),
   url: z.string().nullable(),
-  imageUrl: z.string().nullable(),
+  photo: schemaPhoto.nullable(),
   horaires: z.string().nullable(),
   periode: z.string().nullable(),
   qualiteTourisme: z.boolean(),
@@ -125,6 +140,7 @@ export type ParametresLieuxGare = z.infer<typeof schemaParametresLieuxGare>;
 export type FicheLieu = z.infer<typeof schemaFicheLieu>;
 export type ParametresAutour = z.infer<typeof schemaParametresAutour>;
 export type LieuResume = z.infer<typeof schemaLieuResume>;
+export type Photo = z.infer<typeof schemaPhoto>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;
 export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAccessibles>;
 export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;

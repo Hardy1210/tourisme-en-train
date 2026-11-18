@@ -8,15 +8,22 @@ import { formaterDistance } from '@/lib/geo/formats';
 import { lienLieu } from '../liens';
 import type { LieuResume } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
+import { PhotoLieu } from './photo-lieu';
 
+/** Petite carte : la photo sans ⓘ, son crédit est sur la page du lieu (Hardy, 18/11, D103). */
 function CarteLieu({ lieu }: { lieu: LieuResume }) {
   const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
     <li className="w-47 flex-none overflow-hidden rounded-carte bg-carte-bg shadow-carte">
       <Link href={lienLieu(lieu.cle)} className="flex h-full flex-col">
-        <div className={cn('flex h-24 items-center justify-center', classeFond)}>
-          <IconeCategorie categorie={lieu.categorie} className="size-10" />
-        </div>
+        <PhotoLieu
+          photo={lieu.photo}
+          nom={lieu.nom}
+          categorie={lieu.categorie}
+          format="carte"
+          className="h-24"
+          classeIcone="size-10"
+        />
         <div className="flex flex-col gap-2 p-3">
           <h3 className="line-clamp-2 min-h-10 text-base leading-tight font-semibold">
             {lieu.nom}

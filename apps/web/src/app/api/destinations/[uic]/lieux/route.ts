@@ -1,3 +1,4 @@
+import { maintenantParis } from '@tourisme/commun';
 import { schemaParametresLieuxGare } from '@/features/lieux/schemas';
 import { lieuxAPiedDeLaGare } from '@/features/lieux/server/fiche';
 import { gererRoute, repondre, type Segments } from '@/lib/http/reponse';
@@ -8,6 +9,8 @@ export const GET = gererRoute(
   async (requete, { params }: Segments<{ uic: string }>) => {
     const uic = validerSegment((await params).uic, schemaUic);
     const parametres = lireParametres(requete, schemaParametresLieuxGare);
-    return repondre(await lieuxAPiedDeLaGare(uic, parametres), { publicMaxAgeS: 86400 });
+    return repondre(await lieuxAPiedDeLaGare(uic, parametres, maintenantParis().dateDuJour), {
+      publicMaxAgeS: 86400,
+    });
   },
 );

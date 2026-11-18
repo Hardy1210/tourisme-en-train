@@ -369,4 +369,42 @@ INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, code_insee,
 SELECT 'echantillon', 'ECH_L53', 'Exemple - Piscine municipale', 'enfants', 'piscine', '71076',
        ST_SetSRID(ST_MakePoint(6.9, 46.3), 4326)::geography, true;
 
+-- D100 : photos d'exemple. Adresses example.org, jamais appelées pour de vrai : les parcours coupent le réseau
+-- et servent ces adresses depuis un fichier local. Les deux sources photo existent pour la clé étrangère.
+INSERT INTO source_donnees (code, nom, producteur, url, licence, attribution) VALUES
+  ('wikimedia_commons', 'Wikimedia Commons (exemple)', 'Contributeurs de Wikimedia Commons',
+   'https://commons.wikimedia.org', 'Licences libres', 'Wikimedia Commons'),
+  ('datatourisme_photos', 'DATAtourisme, photos (exemple)', 'ADN Tourisme',
+   'https://www.data.gouv.fr', 'Licence Ouverte 2.0', 'DATAtourisme / ADN Tourisme')
+ON CONFLICT (code) DO NOTHING;
+
+-- ECH_L02 : photo sans dates. ECH_L03 : droits finis le 15/07/2026 (été). ECH_L04 : droits commencés le
+-- 17/11/2026 (hiver). ECH_L08 : photo dont l'adresse ne répond jamais dans le parcours de la limite de temps.
+-- ECH_L11 (Beaune) : photo d'un lieu de l'écran Lieux depuis Dijon.
+INSERT INTO photo_lieu (lieu_id, source, origine, fichier, url_petite, url_grande, auteur, licence, licence_url,
+                        page, droits_debut, droits_fin)
+SELECT l.id, p.source, p.origine, p.fichier, p.petite, p.grande, p.auteur, p.licence, p.licence_url, p.page,
+       p.debut::date, p.fin::date
+FROM (VALUES
+  ('ECH_L02', 'wikimedia_commons', 'wikidata', 'Exemple jardin.jpg',
+   'https://example.org/photos/jardin-500.jpg', 'https://example.org/photos/jardin-960.jpg',
+   'Exemple Photographe', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0',
+   'https://commons.wikimedia.org/wiki/File:Exemple_jardin.jpg', NULL, NULL),
+  ('ECH_L03', 'datatourisme_photos', 'datatourisme', 'https://example.org/photos/palais.jpg',
+   'https://example.org/photos/palais.jpg?width=400', 'https://example.org/photos/palais.jpg?width=800',
+   'Exemple Office de tourisme', 'Licence Ouverte', NULL, NULL, '2026-01-01', '2026-07-15'),
+  ('ECH_L04', 'datatourisme_photos', 'datatourisme', 'https://example.org/photos/musee.jpg',
+   'https://example.org/photos/musee.jpg?width=400', 'https://example.org/photos/musee.jpg?width=800',
+   'Exemple Musée', 'Licence Ouverte', NULL, NULL, '2026-11-17', NULL),
+  ('ECH_L08', 'wikimedia_commons', 'osm', 'Exemple eglise.jpg',
+   'https://example.org/photos/lente-500.jpg', 'https://example.org/photos/lente-960.jpg',
+   'Exemple Photographe', 'CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0',
+   'https://commons.wikimedia.org/wiki/File:Exemple_eglise.jpg', NULL, NULL),
+  ('ECH_L11', 'wikimedia_commons', 'wikipedia', 'Exemple hospices.jpg',
+   'https://example.org/photos/hospices-500.jpg', 'https://example.org/photos/hospices-960.jpg',
+   'Exemple Photographe', 'CC0', NULL, 'https://commons.wikimedia.org/wiki/File:Exemple_hospices.jpg',
+   NULL, NULL)
+) AS p (id_source, source, origine, fichier, petite, grande, auteur, licence, licence_url, page, debut, fin)
+JOIN lieu l ON l.source = 'echantillon' AND l.id_source = p.id_source;
+
 COMMIT;

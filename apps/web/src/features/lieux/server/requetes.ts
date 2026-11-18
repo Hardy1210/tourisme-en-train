@@ -6,12 +6,13 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-const schemaLigne = z.object({
+import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+
+const schemaLigne = schemaColonnesPhoto.extend({
   cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sous_categorie: z.string().nullable(),
-  image_url: z.string().nullable(),
   qualite_tourisme: z.boolean(),
   source: z.string(),
   lat: z.number(),
@@ -34,6 +35,8 @@ export async function lieuxAutour(options: {
   categories: readonly Categorie[] | null;
   airesDeJeux: { sousCategories: readonly string[]; rayonVolOiseauM: number };
   limite: number;
+  /** Date du jour (Paris) : une photo ne sort que si ses droits sont en cours (D100). */
+  datePhoto: string;
 }): Promise<LieuAutourBrut[]> {
   const aires = sql.join(
     options.airesDeJeux.sousCategories.map((s) => sql`${s}`),
@@ -41,10 +44,10 @@ export async function lieuxAutour(options: {
   );
   const point = sql`ST_SetSRID(ST_MakePoint(${options.lon}, ${options.lat}), 4326)::geography`;
   const { rows } = await db.execute(sql`
-    SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
+    SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.qualite_tourisme, l.source, ${colonnesPhoto},
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            ST_Distance(l.geom, ${point}) AS vol_oiseau_m, count(*) OVER () AS total
-    FROM lieu l
+    FROM lieu l ${jointurePhoto(options.datePhoto)}
     WHERE l.doublon_de IS NULL AND l.site_de IS NULL AND NOT l.fiche_ville AND NOT l.masque
       AND ${filtreCategories(options.categories)}
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})

@@ -7,12 +7,13 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-const schemaLieuGare = z.object({
+import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+
+const schemaLieuGare = schemaColonnesPhoto.extend({
   cle: z.string(),
   nom: z.string(),
   categorie: schemaCategorie,
   sous_categorie: z.string().nullable(),
-  image_url: z.string().nullable(),
   qualite_tourisme: z.boolean(),
   source: z.string(),
   lat: z.number(),
@@ -30,12 +31,14 @@ export async function lieuxDeLaGare(options: {
   rayonM: number;
   categories: readonly Categorie[] | null;
   limite: number;
+  /** Date du jour (Paris) : une photo ne sort que si ses droits sont en cours (D100). */
+  datePhoto: string;
 }): Promise<LieuGareBrut[]> {
   const { rows } = await db.execute(sql`
-    SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.image_url, l.qualite_tourisme, l.source,
+    SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.qualite_tourisme, l.source, ${colonnesPhoto},
            ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
            lg.distance_m, lg.duree_marche_min, count(*) OVER () AS total
-    FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id
+    FROM lieu_gare lg JOIN lieu l ON l.id = lg.lieu_id ${jointurePhoto(options.datePhoto)}
     WHERE lg.gare_id = ${options.gareId} AND lg.distance_m <= ${options.rayonM}
       AND l.doublon_de IS NULL AND l.site_de IS NULL
       AND ${filtreCategories(options.categories)}
@@ -44,7 +47,7 @@ export async function lieuxDeLaGare(options: {
   return z.array(schemaLieuGare).parse(rows);
 }
 
-const schemaLieu = z.object({
+const schemaLieu = schemaColonnesPhoto.extend({
   id: z.coerce.number().int(),
   cle: z.string(),
   nom: z.string(),
@@ -54,7 +57,6 @@ const schemaLieu = z.object({
   adresse: z.string().nullable(),
   commune: z.string().nullable(),
   url: z.string().nullable(),
-  image_url: z.string().nullable(),
   horaires: z.string().nullable(),
   periode: z.string().nullable(),
   qualite_tourisme: z.boolean(),
@@ -69,21 +71,28 @@ const schemaLieu = z.object({
 export type LieuBrut = z.infer<typeof schemaLieu>;
 
 const COLONNES_LIEU = sql`l.id, l.cle, l.nom, l.categorie, l.sous_categorie, l.description, l.adresse,
-  c.nom AS commune, l.url, l.image_url, l.horaires, l.periode, l.qualite_tourisme, l.source,
-  s.attribution, ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon, l.doublon_de, l.site_de`;
+  c.nom AS commune, l.url, l.horaires, l.periode, l.qualite_tourisme, l.source,
+  s.attribution, ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon, l.doublon_de, l.site_de,
+  ${colonnesPhoto}`;
 
-async function lireLieu(condition: ReturnType<typeof sql>): Promise<LieuBrut | null> {
+async function lireLieu(
+  condition: ReturnType<typeof sql>,
+  datePhoto: string,
+): Promise<LieuBrut | null> {
   const { rows } = await db.execute(sql`
     SELECT ${COLONNES_LIEU}
     FROM lieu l
     JOIN source_donnees s ON s.code = l.source
     LEFT JOIN commune c ON c.code_insee = l.code_insee
+    ${jointurePhoto(datePhoto)}
     WHERE ${condition}`);
   return rows[0] ? schemaLieu.parse(rows[0]) : null;
 }
 
-export const lieuParCle = (cle: string): Promise<LieuBrut | null> => lireLieu(sql`l.cle = ${cle}`);
-export const lieuParId = (id: number): Promise<LieuBrut | null> => lireLieu(sql`l.id = ${id}`);
+export const lieuParCle = (cle: string, datePhoto: string): Promise<LieuBrut | null> =>
+  lireLieu(sql`l.cle = ${cle}`, datePhoto);
+export const lieuParId = (id: number, datePhoto: string): Promise<LieuBrut | null> =>
+  lireLieu(sql`l.id = ${id}`, datePhoto);
 
 const schemaGareProche = z.object({
   uic: z.string(),

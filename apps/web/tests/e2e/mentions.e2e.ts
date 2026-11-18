@@ -16,6 +16,8 @@ test('le menu mène à la page, qui explique la position', async ({ page }) => {
   await expect(page.getByText('jamais enregistrée')).toBeVisible();
   await expect(page.getByText(/API Adresse de l'IGN/)).toBeVisible();
   await expect(page.getByText(/OpenFreeMap/)).toBeVisible();
+  // Photos chargées depuis d'autres sites (D100) : ils reçoivent l'adresse IP, comme OpenFreeMap.
+  await expect(page.getByText(/Les photos des lieux sont chargées depuis Wikimedia/)).toBeVisible();
 });
 
 test('l’application ne pose aucun cookie, ce que la page annonce', async ({ page, context }) => {

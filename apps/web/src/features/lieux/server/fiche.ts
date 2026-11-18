@@ -5,13 +5,16 @@ import { parametres } from '@/config/parametres';
 import { gareParUic } from '@/lib/db/requetes-partagees';
 import { Introuvable } from '@/lib/http/erreurs';
 
+import { photoDe } from '../photo';
 import type { FicheLieu, ParametresLieuxGare, ReponseAutour } from '../schemas';
 
 import { garesDuLieu, type LieuBrut, lieuParCle, lieuParId, lieuxDeLaGare } from './requetes-fiche';
 
+/** `datePhoto` : date du jour à Paris, donnée par la route (règle 3) ; filtre les droits des photos (D100). */
 export async function lieuxAPiedDeLaGare(
   uic: string,
   { categories, rayon }: ParametresLieuxGare,
+  datePhoto: string,
 ): Promise<ReponseAutour> {
   const gare = await gareParUic(uic);
   if (gare === null) throw new Introuvable('Cette gare est inconnue.');
@@ -20,6 +23,7 @@ export async function lieuxAPiedDeLaGare(
     rayonM: rayon,
     categories,
     limite: parametres.limites.lieux,
+    datePhoto,
   });
   return {
     lieux: lignes.map((l) => ({
@@ -29,7 +33,7 @@ export async function lieuxAPiedDeLaGare(
       sousCategorie: l.sous_categorie,
       distanceM: l.distance_m,
       dureeMarcheMin: l.duree_marche_min,
-      imageUrl: l.image_url,
+      photo: photoDe(l),
       qualiteTourisme: l.qualite_tourisme,
       source: l.source,
       lat: l.lat,
@@ -42,13 +46,13 @@ export async function lieuxAPiedDeLaGare(
 /** Doublon → lieu gardé ; membre d'un site → représentant. Borné : une chaîne ne boucle jamais. */
 const SAUTS_MAX = 3;
 
-export async function ficheLieu(cle: string): Promise<FicheLieu> {
-  let lieu: LieuBrut | null = await lieuParCle(cle);
+export async function ficheLieu(cle: string, datePhoto: string): Promise<FicheLieu> {
+  let lieu: LieuBrut | null = await lieuParCle(cle, datePhoto);
   if (lieu === null) throw new Introuvable('Ce lieu est introuvable.');
   for (let saut = 0; saut < SAUTS_MAX; saut += 1) {
     const suivant: number | null = lieu.doublon_de ?? lieu.site_de;
     if (suivant === null) break;
-    const cible: LieuBrut | null = await lieuParId(suivant);
+    const cible: LieuBrut | null = await lieuParId(suivant, datePhoto);
     if (cible === null) break;
     lieu = cible;
   }
@@ -63,7 +67,7 @@ export async function ficheLieu(cle: string): Promise<FicheLieu> {
     adresse: lieu.adresse,
     commune: lieu.commune,
     url: lieu.url,
-    imageUrl: lieu.image_url,
+    photo: photoDe(lieu),
     horaires: lieu.horaires,
     periode: lieu.periode,
     qualiteTourisme: lieu.qualite_tourisme,

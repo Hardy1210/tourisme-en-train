@@ -25,6 +25,7 @@ import { useRetour } from '@/lib/utiliser-retour';
 import { useFicheLieu } from '../hooks';
 import type { ContexteTrajet } from '../liens';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
+import { PhotoDeLaFiche } from './photo-fiche';
 import { Description, Info } from './infos-lieu';
 
 export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet | null }) {
@@ -90,12 +91,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
     <CadreFiche carte={grandEcran ? carte : null}>
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pt-1 pb-6">
         {boutonRetour}
-        <div
-          aria-hidden="true"
-          className={cn('flex h-30 flex-none items-center justify-center rounded-xl', classeFond)}
-        >
-          <IconeCategorie categorie={lieu.categorie} className="size-12" />
-        </div>
+        <PhotoDeLaFiche lieu={lieu} />
 
         <div className="flex flex-col gap-2.5">
           <h1 className="text-3xl leading-tight font-bold text-pretty">{lieu.nom}</h1>
