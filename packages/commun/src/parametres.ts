@@ -57,6 +57,8 @@ export const schemaParametres = z
       zoomMaxFiche: z.number().positive(),
       /** Zoom sur la gare d'une destination choisie dans la recherche : on voit la ville autour. */
       zoomDestination: z.number().positive(),
+      /** Densité de dessin maximale de la carte (audit C, 18/11) : un écran ×3 est dessiné en ×2. */
+      densiteMax: z.number().positive(),
     }),
     localisation: z.strictObject({
       delaiPositionMs: z.number().int().positive(),

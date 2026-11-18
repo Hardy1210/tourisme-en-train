@@ -22,6 +22,7 @@ import {
   type Point,
 } from '../geometrie';
 import { lireTokens } from '../couleurs';
+import { densiteCarte } from '../densite';
 import { useStyleCarte } from '../hooks';
 import { enregistrerIconesCategories } from '../icones-categories';
 import { AttributionFondCarte } from './attribution-fond-carte';
@@ -233,6 +234,10 @@ export function CarteExplorer({
         <Map
           ref={carte}
           mapStyle={style.data.style as StyleSpecification}
+          pixelRatio={densiteCarte(
+            typeof window === 'undefined' ? undefined : window.devicePixelRatio,
+            parametres.carte.densiteMax,
+          )}
           initialViewState={{
             bounds: emprise,
             fitBoundsOptions: { padding: MARGE_PX, maxZoom: 12 },
