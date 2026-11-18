@@ -111,13 +111,22 @@ describe('/api/autour', () => {
     expect(await noms(`/api/autour?${DARCY}&rayon=2000`)).toContain('Exemple - Ludothèque');
   });
 
-  it('les plus proches d’abord, distance à pied et durée de marche', async () => {
+  it('les plus proches d’abord, après les lieux avec photo (D104), distance à pied et durée de marche', async () => {
     const reponse = schemaReponseAutour.parse(
       (await appeler(autour, `/api/autour?${DARCY}&rayon=1000`)).corps,
     );
-    expect(reponse.lieux[0]?.nom).toBe('Exemple - Théâtre');
-    const distances = reponse.lieux.map((l) => l.distanceM);
-    expect(distances).toEqual([...distances].sort((a, b) => a - b));
+    const groupe = (avecPhoto: boolean) =>
+      reponse.lieux.filter((l) => (l.photo !== null) === avecPhoto);
+    // Le théâtre, le plus proche, n'a pas de photo : premier des lieux sans photo.
+    expect(groupe(true).length).toBeGreaterThan(0);
+    expect(groupe(false)[0]?.nom).toBe('Exemple - Théâtre');
+    expect(reponse.lieux.map((l) => l.nom)).toEqual(
+      [...groupe(true), ...groupe(false)].map((l) => l.nom),
+    );
+    for (const avecPhoto of [true, false]) {
+      const distances = groupe(avecPhoto).map((l) => l.distanceM);
+      expect(distances).toEqual([...distances].sort((a, b) => a - b));
+    }
     expect(reponse.total).toBe(reponse.lieux.length);
   });
 

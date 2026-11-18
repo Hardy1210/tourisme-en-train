@@ -24,6 +24,7 @@ export async function lieuxAPiedDeLaGare(
     categories,
     limite: parametres.limites.lieux,
     datePhoto,
+    photosDabord: parametres.photos.enPremier,
   });
   return {
     lieux: lignes.map((l) => ({

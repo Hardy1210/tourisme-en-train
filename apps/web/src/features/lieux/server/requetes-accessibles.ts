@@ -7,7 +7,12 @@ import { parametres } from '@/config/parametres';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+import {
+  colonnesPhoto,
+  jointurePhoto,
+  schemaColonnesPhoto,
+  triPhotosDabord,
+} from './requetes-photo';
 
 // Lieux masqués (piscines…) : jamais dans `lieu_gare` (D093), rien à filtrer ici.
 const { sousCategoriesNomPropreRequis } = parametres.lieux.ongletLieux;
@@ -57,6 +62,8 @@ export async function lieuxAccessibles(options: {
   decalage: number;
   /** Date du jour (Paris), pas celle du trajet : une photo se montre si ses droits sont en cours (D100). */
   datePhoto: string;
+  /** Lieux avec une photo d'abord, avant le LIMIT : une page entière en profite (D104, temporaire). */
+  photosDabord: boolean;
 }): Promise<z.infer<typeof schemaResultat>> {
   const { rows } = await db.execute(sql`
     WITH candidats AS (
@@ -83,7 +90,7 @@ export async function lieuxAccessibles(options: {
              ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon,
              c.distance_m, c.duree_marche_min, c.duree_train_min, c.gare_uic, c.gare_nom
       FROM candidats c JOIN lieu l ON l.id = c.lieu_id ${jointurePhoto(options.datePhoto)}
-      ORDER BY c.duree_train_min + c.duree_marche_min, l.cle
+      ORDER BY ${triPhotosDabord(options.photosDabord)}c.duree_train_min + c.duree_marche_min, l.cle
       LIMIT ${options.limite} OFFSET ${options.decalage}
     )
     SELECT (SELECT count(*) FROM candidats) AS total,

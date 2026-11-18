@@ -136,6 +136,13 @@ export const schemaParametres = z
        * Tourinsoft répond en 0,6 à 3,5 s d'habitude, parfois en 12 s ou jamais (mesures du 17/11).
        */
       delaiMaxMs: z.number().int().positive(),
+      /**
+       * TEMPORAIRE (D104), pour que la démo ne paraisse pas vide : dans « Près de vous », « Près de la
+       * gare de… » et l'écran Lieux, les lieux avec une photo passent d'abord ; chaque groupe garde l'ordre
+       * habituel (distance, ou temps total). `false` = l'ordre d'avant, intact. À repasser à `false` quand
+       * la plupart des lieux auront une photo (nos images ou une autre source).
+       */
+      enPremier: z.boolean(),
       extensionsImages: z.array(z.string().regex(/^[a-z0-9]+$/)).min(1),
       motifsFichiersExclus: z.array(z.string().min(2)),
       motifsCartesPostales: z.array(z.string().min(2)),
