@@ -1202,6 +1202,7 @@
   - **ordinateur de Hardy** (Chrome) : clics immédiats 225 ms, dont 113 ms de réseau ; après attente 193 ms ;
   - API de la destination : 40–90 ms sur le poste, 170–320 ms vers la production depuis le poste.
 - **Décision :** tranche 200–500 ms → **`carte.densiteMax` = 2** (`densiteCarte`, `features/carte/densite.ts`, les deux cartes) : un écran ×3 est dessiné en ×2 (780 points au lieu de 1 170 sur 390 px), un écran ×1 à ×1,5 ne change pas. Le délai ne bouge pas (261 → 253 ms), comme attendu : la carte n'en est pas la cause. **Pas de démarrage différé de la carte** (jamais au-delà de 500 ms, sauf un essai à 540 ms dont 521 ms de réseau).
+- **Netteté (Hardy, 19/11) :** aucune perte vue sur l'iPhone en ×2.
 - **Conséquence pour l'audit :** la cause C est un défaut **du navigateur de test**, pas de l'app sur téléphone. Ce qui reste à faire : rendre les parcours instables d'Explorer indépendants de ce dessin logiciel (E15). Leçon : mesurer sur l'appareil réel avant de corriger une lenteur vue dans les tests.
 - **Écarté :** corriger sur les seuls chiffres du navigateur de test (on aurait retardé la carte pour rien) ; laisser le chronomètre dans le dépôt.
 - **Impact :** `config/parametres.json` (`carte.densiteMax`), `packages/commun/src/parametres.ts`, `features/carte/densite.ts`, `carte-explorer.tsx`, `carte-lieux.tsx` (réglage commenté dans le schéma, comme les autres réglages de `carte`) ; `A-FAIRE` § 1.

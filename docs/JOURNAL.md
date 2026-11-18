@@ -24,6 +24,24 @@
 
 ---
 
+## 19/11/2026 (nuit) — Étape E12 — descriptions complètes de DATAtourisme (D105)
+**Fait :**
+- #156 (audit C, densité ×2) et #157 (sauvegarde) fusionnées par Hardy ; **netteté de la carte en ×2 : aucune perte vue sur l'iPhone** (Hardy)
+- Mesures d'abord, sans rien modifier (deux passages `unzip | grep` sur l'export, 2 × 1 min 45) : 3 818 fiches sur 3 969 avec une description longue en français ; 2 271 plus longues que la nôtre, 1 390 là où nous n'avions rien ; médiane 505 caractères, 146 au-delà de 2 000 ; langues : anglais 3 825, allemand 3 822, français, espagnol, néerlandais, italien 3 818
+- Choix de Hardy : 2 000 caractères, coupe en fin de phrase (≥ 80 %) sinon au mot ; paragraphes en texte brut (`pre-line`, jamais de HTML) ; français seul, sans colonne langue (une colonne ne tiendrait qu'une description : table `description_lieu` notée pour plus tard) ; « Source : » sous la description ; question de Hardy sur le décodage : N-Triples déjà décodé (testé maintenant), entités hexadécimales et nommées françaises **ajoutées**
+- **#158** : `transformations/description.ts` (nettoyage), `datatourisme-descriptions.ts` (lecteur, réutilise le passage des photos), étape `pnpm etl descriptions` (cache, contrôle `descriptionsMin`, rapport), `chargement/descriptions.ts` ; fiche lieu : `whitespace-pre-line`, « Source : DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », attribution une seule fois ; échantillon : description à deux paragraphes (ECH_L14)
+- Base locale : 3 668 remplacées (1 390 nouvelles, 2 278 plus longues, 146 coupées : 145 en fin de phrase, 3 au mot), 3 829 avec une description (moyenne 649, contre 120), 1 245 avec paragraphes, aucune entité, balise ou échappement restant ; captures de la fiche repliée et dépliée vérifiées
+**Décisions :** D105 (descriptions complètes) ; D107 complétée (netteté validée)
+**Problèmes rencontrés :**
+- `pnpm verifier` en échec une fois : format du nouveau parcours (corrigé)
+- `pnpm etl descriptions` : 11 min (lecture ligne par ligne en Node, contre 3 min 30 avec `grep`) ; les parcours lancés en même temps ont échoué sur la carte (5) ; rejoués seuls : branche 1/10, `main` 4/10
+**À valider par Hardy :** #158 sur l'iPhone, puis 0.5.0 (code et données) ; 3 textes du pitch avant le 22/11
+**Prochaine action :** `CLAUDE.md` § 9 (20/11 : #158, 0.5.0, intégration continue avant le 22/11, horaires, Wikipédia, audit A)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (690, branche de #158) · intégration ✅ (207) · parcours 247/252 (5 de la carte pendant le traitement, voir ci-dessus)
+**Commit :** `main` : `1f18767` ; #158 : `etape/E12-descriptions-completes`
+
+---
+
 ## 18/11/2026 (soir) — Étapes E17, E12, E15 — 0.4.0 en ligne, fiche destination sur le fond de la marque, D102, audit C
 **Fait :**
 - Reprise après une session coupée : rien de perdu (sauvegarde #150 poussée, copies propres) ; #150 fusionnée

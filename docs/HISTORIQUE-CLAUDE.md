@@ -80,3 +80,4 @@
 | 18/11/2026 | 1.84 | § 9 : photos d'abord (#148) et horloge des tests (#149) fusionnées ; 0.4.0 en prochaine action, avec `compter-lignes.sql` à compléter |
 | 18/11/2026 | 1.85 | § 8 : 0.4.0 le 18/11 ; § 9 : production en 0.4.0, #154 et #155 sur `main`, #156 à fusionner, 0.5.0 à décider ; mesurer sur l'iPhone avant de corriger une lenteur (L81), image Docker et configurations des tests (L80), tunnel depuis la maison, recalage d'une PR empilée ; prochaine action du 19/11 |
 | 19/11/2026 | 1.86 | § 16 : étape `descriptions` dans l'ordre du traitement — D105 |
+| 19/11/2026 | 1.87 | § 9 : #156 et #157 fusionnées, #158 (D105) à essayer et fusionner, 0.5.0 avec données, intégration continue avant le 22/11, traitement lourd jamais en même temps que les parcours ; prochaine action du 20/11 |
