@@ -16,6 +16,7 @@ export const SOURCES = [
   'festivals',
   'rattachements',
   'photos',
+  'descriptions',
   'transport_local',
   'lignes',
   'cyclable',

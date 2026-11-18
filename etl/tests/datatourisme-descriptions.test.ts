@@ -73,7 +73,9 @@ describe('descriptionRetenue : l’export seulement s’il est plus long', () =>
     );
   });
   it('limite : un export plus court ou de même longueur laisse le CSV', () => {
-    expect(descriptionRetenue('Un résumé assez long.', 'Court.', 2000)).toBe('Un résumé assez long.');
+    expect(descriptionRetenue('Un résumé assez long.', 'Court.', 2000)).toBe(
+      'Un résumé assez long.',
+    );
     expect(descriptionRetenue('Même texte.', 'Même texte.', 2000)).toBe('Même texte.');
   });
   it('sans export, le CSV ; sans rien, null ; sans CSV, l’export', () => {

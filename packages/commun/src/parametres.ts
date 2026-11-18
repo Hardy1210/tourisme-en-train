@@ -87,6 +87,8 @@ export const schemaParametres = z
       lieuxSourceMin: z.number().int().positive(),
       /** Lieux avec une photo après `pnpm etl photos` (3 340 le 17/11) : en dessous, une API a mal répondu. */
       photosMin: z.number().int().positive(),
+      /** Lieux DATAtourisme avec une description après `pnpm etl descriptions` (≈ 3 830 le 19/11, D105). */
+      descriptionsMin: z.number().int().positive(),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),
@@ -196,7 +198,7 @@ export const schemaParametres = z
       dureeVisiteMin: z.number().int().positive(),
     }),
     lieux: z.strictObject({
-      /** Description coupée au mot près au-delà de cette longueur (docs/04 § 4.4). */
+      /** Longueur maximale d'une description : coupe à une fin de phrase, sinon au mot (docs/04 § 4.4, D105). */
       descriptionMaxCaracteres: z.number().int().positive(),
       /** Tags OSM `clé=valeur` des lieux en longueur (canal) : tracé gardé, pas seulement un point (D043). */
       enLongueurOsm: z.array(z.string().regex(/^[^=\s]+=[^=\s]+$/, 'clé=valeur attendu')),

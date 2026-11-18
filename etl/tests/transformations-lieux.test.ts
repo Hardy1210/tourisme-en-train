@@ -41,7 +41,11 @@ describe('nettoyerDescription : entités HTML (D105)', () => {
     expect(nettoyerDescription('&zzz; et &amp; &#x27;', 2000)).toBe("&zzz; et & '");
   });
   it('entitesInconnues : liste celles qu’on ne sait pas décoder, pour le rapport', () => {
-    expect(entitesInconnues('a &zzz; b &eacute; &#233; &yyy; &zzz;')).toEqual(['&zzz;', '&yyy;', '&zzz;']);
+    expect(entitesInconnues('a &zzz; b &eacute; &#233; &yyy; &zzz;')).toEqual([
+      '&zzz;',
+      '&yyy;',
+      '&zzz;',
+    ]);
     expect(entitesInconnues('rien à signaler &amp;')).toEqual([]);
   });
 });
@@ -79,7 +83,9 @@ describe('nettoyerDescription : coupe à une fin de phrase (D105)', () => {
   });
   it('une phrase entière au-delà de 80 % : la coupe en fin de phrase l’emporte sur le mot', () => {
     const texte = 'Le château domine la vallée de la Saône depuis 1200. Ses jardins sont ouverts.';
-    expect(nettoyerDescription(texte, 60)).toBe('Le château domine la vallée de la Saône depuis 1200. …');
+    expect(nettoyerDescription(texte, 60)).toBe(
+      'Le château domine la vallée de la Saône depuis 1200. …',
+    );
   });
   it('« ! », « ? » et « … » terminent aussi une phrase', () => {
     expect(nettoyerDescription(`${'b'.repeat(80)} !${suite}`, 100)).toBe(`${'b'.repeat(80)} ! …`);

@@ -2,10 +2,7 @@
 // transaction annulée. Seules les fiches données changent ; les autres gardent leur texte.
 import type pg from 'pg';
 import { afterAll, describe, expect, it } from 'vitest';
-import {
-  lireDescriptionsActuelles,
-  mettreAJourDescriptions,
-} from '../src/chargement/descriptions';
+import { lireDescriptionsActuelles, mettreAJourDescriptions } from '../src/chargement/descriptions';
 import { creerPool, enTransaction } from '../src/db';
 
 function urlTestEtl(): string {
@@ -38,7 +35,9 @@ describe('descriptions en base (D105)', () => {
       if (!premier || !second) return;
 
       const nouvelle = 'Donnée d’exemple.\n\nUn second paragraphe.';
-      expect(await mettreAJourDescriptions(client, [{ id: premier.id, description: nouvelle }])).toBe(1);
+      expect(
+        await mettreAJourDescriptions(client, [{ id: premier.id, description: nouvelle }]),
+      ).toBe(1);
 
       const apres = new Map(
         (await lireDescriptionsActuelles(client, 'echantillon')).map((l) => [l.id, l.description]),

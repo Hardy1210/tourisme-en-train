@@ -34,7 +34,8 @@
     "rapprochementGtfsMinPct": 90,
     "contoursRegionMin": 3000,
     "lieuxSourceMin": 1000,
-    "photosMin": 2000
+    "photosMin": 2000,
+    "descriptionsMin": 3000
   },
   "fenetreJoursHoraires": 60,
   "fenetreJoursLiaisons": 60,
@@ -109,7 +110,7 @@
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "lieux": {
-    "descriptionMaxCaracteres": 500,
+    "descriptionMaxCaracteres": 2000,
     "enLongueurOsm": ["waterway=canal"],
     "raccordTronconsM": 1000,
     "fichesVille": {
