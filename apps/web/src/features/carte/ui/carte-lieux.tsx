@@ -64,7 +64,7 @@ export function CarteLieux({ gare, lieux, cleChoisie, surChoix, lienDe }: Propri
     <div
       role="region"
       aria-label={gare ? `Carte autour de la gare de ${gare.nom}` : 'Carte du lieu'}
-      className="relative h-full overflow-hidden"
+      className="relative h-full overflow-hidden bg-map-land"
     >
       <div className="absolute inset-0 isolate">
         <Map
