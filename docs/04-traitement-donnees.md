@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.25 · **Date** 17/11/2026
+> **Version** 1.26 · **Date** 18/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -78,7 +78,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   ],
   "regroupementParcChateau": { "distanceM": 500 },
   "mobilite": { "regroupementQuaisM": 100 },
-  "limites": { "gares": 3, "lieux": 50, "lieuxParPage": 30, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
+  "limites": { "gares": 3, "lieux": 50, "lieuxParPage": 30, "lieuxParCategorie": 5, "destinations": 150, "trains": 20, "mobilites": 20, "geocodage": 6 },
   "impact": {
     "source": "ADEME — Impact CO2",
     "dateReleve": "2026-11-03",
@@ -468,3 +468,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 14/11/2026 | 1.23 | § 2 : `bullesRayonPx` 37, `bullesZoomMax` 13, `bullesDecalagePx` — D094 |
 | 16/11/2026 | 1.24 | § 2 : `acces.rayonParkingVeloM` ; § 4.7 : parkings vélo épargnés ; § 4.7 bis : parkings vélo — D097 |
 | 17/11/2026 | 1.25 | § 2 : section `photos`, `controles.photosMin` ; § 3 : `photos` (10 bis) et sa fréquence ; § 4.6 bis : photos des lieux — D100, D101 |
+| 18/11/2026 | 1.26 | § 2 : `limites.lieuxParCategorie` (fiche destination, « Voir les N autres ») — D106 |
