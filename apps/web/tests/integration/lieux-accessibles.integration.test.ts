@@ -40,11 +40,17 @@ describe('/api/lieux', () => {
     });
   });
 
-  it('trie par temps total, train et marche', async () => {
+  it('trie par temps total, train et marche, après les lieux avec photo (D104)', async () => {
     const { lieux } = await lire(DIJON);
-    const temps = lieux.map((l) => l.dureeTrainMin + l.dureeMarcheMin);
+    const temps = (avecPhoto: boolean) =>
+      lieux
+        .filter((l) => (l.photo !== null) === avecPhoto)
+        .map((l) => l.dureeTrainMin + l.dureeMarcheMin);
     expect(lieux.length).toBeGreaterThan(1);
-    expect(temps).toEqual([...temps].sort((a, b) => a - b));
+    expect(lieux.map((l) => l.dureeTrainMin + l.dureeMarcheMin)).toEqual([
+      ...temps(true).sort((a, b) => a - b),
+      ...temps(false).sort((a, b) => a - b),
+    ]);
   });
 
   it('affiche une seule fois un lieu proche de deux gares, par la plus rapide au total', async () => {

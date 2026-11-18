@@ -97,3 +97,117 @@ describe('listes : « Près de vous », lieux à pied d’une destination, écra
     expect(avec.get(cle('ECH_L12'))).toBe(false);
   });
 });
+
+// Lieux avec une photo d'abord (D104, temporaire) : le tri par distance (ou par temps total) reste à
+// l'intérieur de chaque groupe. Le cas (`photosDabord: true`, valeur de parametres.json) et sa limite
+// (`false` : l'ordre d'avant, intact). LIMIT après le tri : une photo plus loin remonte dans la page.
+describe('photos d’abord (D104)', () => {
+  let requetes: typeof import('@/features/lieux/server/requetes');
+  let requetesFiche: typeof import('@/features/lieux/server/requetes-fiche');
+  let requetesAccessibles: typeof import('@/features/lieux/server/requetes-accessibles');
+  let dijon: { id: number; code_insee: string | null };
+  beforeAll(async () => {
+    requetes = await import('@/features/lieux/server/requetes');
+    requetesFiche = await import('@/features/lieux/server/requetes-fiche');
+    requetesAccessibles = await import('@/features/lieux/server/requetes-accessibles');
+    const gare = await (await import('@/lib/db/requetes-partagees')).gareParUic('EX000001');
+    if (gare === null) throw new Error('Échantillon : gare EX000001 (Dijon-Ville) absente.');
+    dijon = gare;
+  });
+
+  type Ligne = { photo: boolean; tri: number };
+  /** Groupes « avec photo » puis « sans », chacun dans l'ordre de `tri` (distance ou temps total). */
+  const photosDabordPuisTri = (lignes: Ligne[]) => {
+    const avec = lignes.filter((l) => l.photo).map((l) => l.tri);
+    const sans = lignes.filter((l) => !l.photo).map((l) => l.tri);
+    expect(lignes.map((l) => l.tri)).toEqual([
+      ...avec.sort((a, b) => a - b),
+      ...sans.sort((a, b) => a - b),
+    ]);
+  };
+  /** Le test n'a de sens que si une photo est plus loin qu'un lieu sans photo. */
+  const unePhotoPlusLoin = (lignes: Ligne[]) =>
+    lignes.some((a) => a.photo && lignes.some((b) => !b.photo && b.tri < a.tri));
+  const croissant = (valeurs: number[]) =>
+    expect(valeurs).toEqual([...valeurs].sort((a, b) => a - b));
+
+  const optionsAutour = {
+    lat: 47.3233,
+    lon: 5.0272,
+    rayonVolOiseauM: 2000,
+    categories: null,
+    airesDeJeux: {
+      sousCategories: parametres.acces.sousCategoriesAiresDeJeux,
+      rayonVolOiseauM: 2000,
+    },
+    limite: parametres.limites.lieux,
+    datePhoto: '2026-11-17',
+  };
+  const lignesAutour = (l: Awaited<ReturnType<typeof requetes.lieuxAutour>>) =>
+    l.map((x) => ({ photo: x.photo_petite !== null, tri: x.vol_oiseau_m }));
+
+  it('le réglage est actif dans parametres.json', () => {
+    expect(parametres.photos.enPremier).toBe(true);
+  });
+
+  it('« Près de vous » : photos d’abord, puis par distance ; limite, sans le réglage, par distance seule', async () => {
+    const avec = lignesAutour(await requetes.lieuxAutour({ ...optionsAutour, photosDabord: true }));
+    const sans = lignesAutour(
+      await requetes.lieuxAutour({ ...optionsAutour, photosDabord: false }),
+    );
+    expect(unePhotoPlusLoin(sans)).toBe(true);
+    photosDabordPuisTri(avec);
+    croissant(sans.map((l) => l.tri));
+  });
+
+  it('« Près de vous », un seul lieu demandé : une photo, même si un lieu sans photo est plus près', async () => {
+    // Place Darcy : le plus proche est le théâtre, sans photo.
+    const darcy = { ...optionsAutour, lat: 47.3226, lon: 5.0353, limite: 1 };
+    const [premier] = await requetes.lieuxAutour({ ...darcy, photosDabord: true });
+    const [plusProche] = await requetes.lieuxAutour({ ...darcy, photosDabord: false });
+    expect(premier?.photo_petite).not.toBeNull();
+    expect(plusProche?.photo_petite).toBeNull();
+  });
+
+  it('lieux à pied d’une gare : photos d’abord, puis par distance ; limite, sans le réglage', async () => {
+    const options = { rayonM: 2000, categories: null, limite: 50, datePhoto: '2026-11-17' };
+    const lire = async (photosDabord: boolean) =>
+      (await requetesFiche.lieuxDeLaGare({ ...options, gareId: dijon.id, photosDabord })).map(
+        (x) => ({
+          photo: x.photo_petite !== null,
+          tri: x.distance_m,
+        }),
+      );
+    const avec = await lire(true);
+    const sans = await lire(false);
+    expect(unePhotoPlusLoin(sans)).toBe(true);
+    photosDabordPuisTri(avec);
+    croissant(sans.map((l) => l.tri));
+  });
+
+  it('écran Lieux : photos d’abord, puis par temps total ; limite, sans le réglage ; page 1 d’un lieu', async () => {
+    const options = {
+      gareId: dijon.id,
+      codeInsee: dijon.code_insee,
+      date: '2026-11-18',
+      dureeMax: Math.max(...parametres.durees.trainMaxOptionsMin),
+      categories: null,
+      limite: 50,
+      decalage: 0,
+      datePhoto: '2026-11-17',
+    };
+    const lire = async (photosDabord: boolean, limite = 50) =>
+      (await requetesAccessibles.lieuxAccessibles({ ...options, limite, photosDabord })).lieux.map(
+        (x) => ({
+          photo: x.photo_petite !== null,
+          tri: x.duree_train_min + x.duree_marche_min,
+        }),
+      );
+    const sans = await lire(false);
+    expect(unePhotoPlusLoin(sans)).toBe(true);
+    photosDabordPuisTri(await lire(true));
+    croissant(sans.map((l) => l.tri));
+    expect((await lire(true, 1))[0]?.photo).toBe(true);
+    expect((await lire(false, 1))[0]?.photo).toBe(false);
+  });
+});

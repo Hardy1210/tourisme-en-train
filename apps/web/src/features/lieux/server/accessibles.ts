@@ -31,6 +31,7 @@ export async function accessibles(
     limite,
     decalage: (page - 1) * limite,
     datePhoto: dateDuJour,
+    photosDabord: parametres.photos.enPremier,
   });
   return {
     lieux: lieux.map((l) => ({

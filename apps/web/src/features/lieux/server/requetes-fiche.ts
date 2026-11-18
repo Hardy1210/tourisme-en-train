@@ -7,7 +7,12 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+import {
+  colonnesPhoto,
+  jointurePhoto,
+  schemaColonnesPhoto,
+  triPhotosDabord,
+} from './requetes-photo';
 
 const schemaLieuGare = schemaColonnesPhoto.extend({
   cle: z.string(),
@@ -33,6 +38,8 @@ export async function lieuxDeLaGare(options: {
   limite: number;
   /** Date du jour (Paris) : une photo ne sort que si ses droits sont en cours (D100). */
   datePhoto: string;
+  /** Lieux avec une photo d'abord (D104, temporaire). */
+  photosDabord: boolean;
 }): Promise<LieuGareBrut[]> {
   const { rows } = await db.execute(sql`
     SELECT l.cle, l.nom, l.categorie, l.sous_categorie, l.qualite_tourisme, l.source, ${colonnesPhoto},
@@ -42,7 +49,7 @@ export async function lieuxDeLaGare(options: {
     WHERE lg.gare_id = ${options.gareId} AND lg.distance_m <= ${options.rayonM}
       AND l.doublon_de IS NULL AND l.site_de IS NULL
       AND ${filtreCategories(options.categories)}
-    ORDER BY lg.distance_m, l.cle
+    ORDER BY ${triPhotosDabord(options.photosDabord)}lg.distance_m, l.cle
     LIMIT ${options.limite}`);
   return z.array(schemaLieuGare).parse(rows);
 }

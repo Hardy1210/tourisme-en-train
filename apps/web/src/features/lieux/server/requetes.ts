@@ -6,7 +6,12 @@ import { z } from 'zod';
 import { db } from '@/lib/db/client';
 import { filtreCategories } from '@/lib/db/filtre-categories';
 
-import { colonnesPhoto, jointurePhoto, schemaColonnesPhoto } from './requetes-photo';
+import {
+  colonnesPhoto,
+  jointurePhoto,
+  schemaColonnesPhoto,
+  triPhotosDabord,
+} from './requetes-photo';
 
 const schemaLigne = schemaColonnesPhoto.extend({
   cle: z.string(),
@@ -37,6 +42,8 @@ export async function lieuxAutour(options: {
   limite: number;
   /** Date du jour (Paris) : une photo ne sort que si ses droits sont en cours (D100). */
   datePhoto: string;
+  /** Lieux avec une photo d'abord (D104, temporaire). */
+  photosDabord: boolean;
 }): Promise<LieuAutourBrut[]> {
   const aires = sql.join(
     options.airesDeJeux.sousCategories.map((s) => sql`${s}`),
@@ -53,7 +60,7 @@ export async function lieuxAutour(options: {
       AND ST_DWithin(l.geom, ${point}, ${options.rayonVolOiseauM})
       AND (coalesce(l.sous_categorie, '') NOT IN (${aires})
            OR ST_DWithin(l.geom, ${point}, ${options.airesDeJeux.rayonVolOiseauM}))
-    ORDER BY vol_oiseau_m, l.cle
+    ORDER BY ${triPhotosDabord(options.photosDabord)}vol_oiseau_m, l.cle
     LIMIT ${options.limite}`);
   return z.array(schemaLigne).parse(rows);
 }

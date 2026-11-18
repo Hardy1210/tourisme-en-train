@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.28 · **Date** 17/11/2026
+> **Version** 1.29 · **Date** 18/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -93,6 +93,7 @@ type LieuResume = { cle: string; nom: string; categorie: Categorie; sousCategori
                     distanceM: number; dureeMarcheMin: number; photo: Photo | null;  // § 1, point 13
                     qualiteTourisme: boolean; source: string; lat: number; lon: number }
 ```
+**Tri :** les lieux avec une photo d'abord (D104, temporaire, `photos.enPremier`), puis les plus proches d'abord dans chaque groupe ; limite `parametres.limites.lieux`.
 Cache : aucun (position).
 
 ### 3.3 bis `GET /api/carte/lieux?lat&lon&rayon&gares`
@@ -168,7 +169,7 @@ Mêmes valeurs que la carte de destination (§ 3.4) : la fiche n'affiche jamais 
 ```ts
 { lieux: Array<LieuResume>, total: number }   // distance et durée à pied depuis la gare (lieu_gare)
 ```
-Les plus proches d'abord ; limite `parametres.limites.lieux`. `404` si la gare est inconnue. Cache : `public, max-age=86400`.
+Les lieux avec une photo d'abord (D104, temporaire, `photos.enPremier`), puis les plus proches d'abord dans chaque groupe ; limite `parametres.limites.lieux`. `404` si la gare est inconnue. Cache : `public, max-age=86400`.
 
 ### 3.6 bis `GET /api/lieux?gare&date&categories&dureeMax&page`
 Onglet Lieux (D056).
@@ -186,7 +187,7 @@ Onglet Lieux (D056).
   pageSuivante: number | null;  // pour « Voir plus »
 }
 ```
-- **Tri :** temps total (train + marche), le plus court d'abord. `distanceM` et `dureeMarcheMin` : depuis la gare d'arrivée (`lieu_gare`).
+- **Tri :** les lieux avec une photo d'abord (D104, temporaire, `photos.enPremier` ; avant la pagination), puis le temps total (train + marche), le plus court d'abord. `distanceM` et `dureeMarcheMin` : depuis la gare d'arrivée (`lieu_gare`).
 - **Un lieu proche de plusieurs gares** apparaît une fois, par celle au temps total le plus court.
 - **Lieux écartés :** à pied de la gare de départ, ou à côté d'une gare de la même commune ; piscines ordinaires et aires de jeux sans nom propre, seulement dans cette route (`lieux.ongletLieux`, D057). Une fiche de ville n'est listée dans aucune route (`lieu.fiche_ville`), mais `/api/lieux/[cle]` l'ouvre.
 - `parametres.limites.lieuxParPage` lieux par page. Page au-delà de la fin : `lieux` vide, `total` conservé. `404` si la gare est inconnue. Cache : `public, max-age=3600`.
@@ -353,3 +354,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 16/11/2026 | 1.26 | § 3.2 : `parkingVelo` ; `/api/mobilites` sans les parkings vélo — D097 |
 | 17/11/2026 | 1.27 | § 3.3 bis : `/api/carte/lieux` en JSON simple, compression par le proxy de production — D098 |
 | 17/11/2026 | 1.28 | § 1 point 13 : `photo` (droits à la date du jour) remplace `imageUrl` dans les routes de lieux — D100, D101 |
+| 18/11/2026 | 1.29 | § 3.3, 3.6, 3.6 bis : lieux avec photo d'abord, tri habituel dans chaque groupe (temporaire) — D104 |

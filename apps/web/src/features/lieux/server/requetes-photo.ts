@@ -16,6 +16,15 @@ export function jointurePhoto(date: string): SQL {
     AND (p.droits_fin IS NULL OR p.droits_fin >= ${date}::date)`;
 }
 
+/**
+ * Début d'un ORDER BY : les lieux avec une photo d'abord, si `actif` (D104, temporaire :
+ * `parametres.photos.enPremier`). Inactif, rien n'est ajouté : le tri d'avant reste tel quel.
+ * Demande `jointurePhoto` dans la même requête, avant le LIMIT.
+ */
+export function triPhotosDabord(actif: boolean): SQL {
+  return actif ? sql`(p.lieu_id IS NULL), ` : sql``;
+}
+
 export const schemaColonnesPhoto = z.object({
   photo_petite: z.string().nullable(),
   photo_grande: z.string().nullable(),

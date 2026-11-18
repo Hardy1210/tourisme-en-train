@@ -74,9 +74,10 @@ describe('/api/destinations/[uic]/lieux', () => {
   });
 
   it('catégorie culture : théâtre et musée seulement ; rayon au-delà de 2 000 m → 400', async () => {
+    // Le musée (photo depuis le 17/11) passe devant le théâtre, plus proche mais sans photo (D104).
     expect(await noms('categories=culture')).toEqual([
-      'Exemple - Théâtre',
       'Exemple - Musée des beaux-arts',
+      'Exemple - Théâtre',
     ]);
     const trop = await appeler(lieuxGare, '/api/destinations/EX000001/lieux?rayon=2100', {
       uic: 'EX000001',

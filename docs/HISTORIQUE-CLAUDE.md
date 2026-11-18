@@ -76,3 +76,4 @@
 | 17/11/2026 | 1.80 | § 16 : étape `photos` du traitement des données (D100) |
 | 18/11/2026 | 1.81 | § 9 : photos (PR 1 fusionnée, #145 ouverte), décisions de la fiche lieu (descriptions complètes, Wikipédia, horaires), 0.4.0 en prochaine action |
 | 18/11/2026 | 1.82 | § 9 : #142, #144, #146 fusionnées ; #145 validée sur l'iPhone, à fusionner ; `URL_CONTACT` dans le `.env` de Hardy |
+| 18/11/2026 | 1.83 | § 9 : descriptions complètes renvoyées à D105 (D104 = lieux avec photo d'abord) |

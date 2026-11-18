@@ -10,6 +10,9 @@
 ### Ajouté
 - Des photos pour plus de 3 300 lieux (4 sur 10 près des gares), prises sur Wikimedia (Wikipédia, Wikidata, Commons) puis sur DATAtourisme : sur la fiche du lieu, sur les cartes de lieux et dans la mini-fiche de la carte. L'auteur et la licence de chaque photo sont toujours indiqués (une ligne sous la photo de la fiche, une icône ⓘ sur les cartes). Si une photo tarde à venir, l'icône de la catégorie reste à sa place.
 
+### Modifié
+- Dans « Près de vous », « Près de la gare de… » et l'écran Lieux, les lieux avec une photo s'affichent en premier ; dans chaque groupe, l'ordre reste le même (les plus proches, ou le trajet le plus court).
+
 ## [0.3.1] — 17/11/2026
 
 ### Corrigé
