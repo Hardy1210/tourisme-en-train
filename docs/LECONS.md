@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.18 · **Date** 17/11/2026
+> **Version** 1.19 · **Date** 18/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -507,6 +507,24 @@
 - **À retenir :** une seule mesure, même juste, ne vaut que pour son type de trajet. Mesurer par usage avant de changer une constante qui touche les données.
 - **Origine :** D102.
 
+### L76 — Une adresse construite à la main peut cesser de marcher : prendre celle que l'API renvoie
+- **Problème :** la petite vignette Commons était déduite de la grande (`/800px-` → `/400px-`). Commons ne sert plus que des tailles standard (400 → 500 px, 800 → 960 px, sur `thumb.wikimedia.org`) : l'adresse construite répondait HTTP 400, et le code ne trouvait même pas le motif.
+- **Solution :** une demande à l'API par taille, adresse gardée telle quelle ; test qui reproduit le cas avec une réponse réelle.
+- **À retenir :** une convention d'adresse n'est pas un contrat. On demande à la source, et on vérifie un échantillon d'adresses en vrai après le premier chargement.
+- **Origine :** #143, 17/11.
+
+### L77 — Un gros téléchargement doit pouvoir reprendre
+- **Problème :** l'export national (1,9 Go) a été coupé deux fois par le serveur ; les nouvelles tentatives recommençaient à zéro et échouaient pareil.
+- **Solution :** reprendre là où le fichier s'est arrêté (en-tête `Range`), repartir du début seulement si le serveur ne sait pas reprendre, remplacer le fichier précédent seulement quand le nouveau est complet ; l'étape échoue sans rien remplacer en base.
+- **À retenir :** au-delà de quelques centaines de Mo, la coupure n'est pas un accident, c'est un cas normal.
+- **Origine :** #143, 17/11.
+
+### L78 — « Je ne vois presque rien » : mesurer les données avant de chercher un bug
+- **Problème :** sur l'iPhone, Hardy voyait presque aucune photo autour de lui et craignait un défaut de chargement.
+- **Solution :** trois mesures séparées : la base du serveur d'essai (3 322 photos), le chargement en navigateur mobile simulé (41/41 à Dijon centre, aucune au-delà de 4 s), et la couverture à trois positions types (41/50 au centre, 4/29 et 7/36 en périphérie : parcs, squares, aires de jeux).
+- **À retenir :** séparer « ça ne marche pas » de « il n'y a rien à montrer » avant de corriger ; la réponse change la décision (pas de bug, mais une question de sources).
+- **Origine :** 18/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -579,3 +597,4 @@ Valeurs en g CO₂e/km.
 | 17/11/2026 | 1.16 | L66 → L68 (failles lues à la source, commit après fusion, test lent reproduit en ralentissant le processeur) |
 | 17/11/2026 | 1.17 | L69 (symptôme anodin, lire ce que le navigateur reçoit) |
 | 17/11/2026 | 1.18 | L70 → L75 (couverture d'une source, crédit et droits des photos, vignette à la source, API publique et gros fichier, mécanisme existant, paramètre mesuré par usage) |
+| 18/11/2026 | 1.19 | L76 → L78 (adresse renvoyée par l'API, téléchargement qui reprend, mesurer les données avant de chercher un bug) |

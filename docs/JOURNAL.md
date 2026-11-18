@@ -24,6 +24,32 @@
 
 ---
 
+## 17–18/11/2026 (soir) — Étape E11 — coefficient de détour (D102), photos : données (#143) et affichage (#145)
+**Fait :**
+- Coefficient de détour : 22 trajets réels (routing.openstreetmap.de, points types, jamais la position de Hardy) : commune → gare ×1,22, gare → lieu ×1,32 ; 1,3 gardé (D102) ; distance à vol d'oiseau dite comme telle, « ≈ » à pied (PR à venir)
+- D101 (planche : ≈ 55 photos bonnes sur 60 ; `photos_exclues.csv`, cartes postales, commune sur les cartes, noms vagues masqués, « renommer », `<img>` simples) ; leçons L70 → L75 (#141)
+- En-têtes de sécurité mesurés en production : aucun des quatre de `07` § 6 (#142, ouverte) ; `URL_CONTACT` dans `infra/README.md` (#144, ouverte)
+- **PR 1 des photos (#143, fusionnée)** : migration 0017 (`photo_lieu`, `lieu.wikidata`), étape `pnpm etl photos` (Wikimedia poli, export national DATAtourisme lu en flux), règles et `photos_exclues.csv` ; base locale : **3 322 photos** ; tests d'abord ; parcours 230/230, image ✅
+- Deux bugs au premier chargement réel, test d'abord chacun : Commons ne sert plus que des tailles standard (400 → 500, 800 → 960 px, `thumb.wikimedia.org` ; une adresse « 400px » répond HTTP 400) ; data.gouv.fr coupe le téléchargement de 1,9 Go (reprise par `Range`)
+- **PR 2 des photos (#145, ouverte)** : `photo` dans les quatre routes de lieux, droits filtrés à la date du jour ; photo à la place de l'icône, icône tout de suite, fondu (`prefers-reduced-motion`), abandon au-delà de 4 s ; ⓘ ; mini-fiches ; Sources ; mentions légales ; D103 ; tests d'abord ; parcours 238/240 (2 instables aussi sur `main`, comparés 10 fois)
+- Essais iPhone (Hardy) : les fiches affichent leur photo ; « presque aucune photo autour de moi » → mesuré : le chargement marche (iPhone imité, 4G simulée : 41/41 à Dijon centre, aucune > 4 s), c'est la couverture : en périphérie, surtout des parcs, squares et aires de jeux sans photo (Fontaine-lès-Dijon 4/29, Talant 7/36 ; Dijon centre 41/50)
+- Recherche de sources d'images (65 lieux sans photo) : Commons par proximité ≈ 8 bons sur 65, beaucoup de faux ; Panoramax 23/65 tournées vers le lieu, vues de rue (planche) ; API DATAtourisme : rien de plus que l'export. **Hardy : pas de photos pour remplir** ; ses propres photos ou un fournisseur libre, stockage VPS ou R2 + WebP, après la soutenance (`A-FAIRE`)
+- Hardy (18/11) : pas de ⓘ dans « Près de vous » (même DATAtourisme) ; sur la fiche, ⓘ discret en bas à gauche de la photo au lieu de la ligne de crédit (crédit complet dans la bulle) ; photos des utilisateurs et bouton Commons notés (`A-FAIRE`)
+- Fiche lieu, mesures du 18/11 : Château de Pouilly = OSM sans description (normal) ; Hospices : 149 caractères, tout le CSV, rien coupé par nous ; **l'export national a une description plus longue pour 3 571 fiches sur 3 827** ; horaires : 278 lieux, format `opening_hours` d'OSM en anglais
+**Décisions :** D101, D102 (#141) ; D103 (#145) ; **18/11, à écrire en D104 avec leur PR** : (1) descriptions complètes de DATAtourisme depuis l'export national, (2) l'écran garde 4 lignes + « Lire la suite », (3) extrait Wikipédia pour les lieux sans description, à mesurer d'abord ; horaires lisibles validés
+**Problèmes rencontrés :**
+- `parametres.json` réécrit par `json.dumps` : objets compacts dépliés ; repris en texte
+- Lien direct `400px` de Commons refusé (HTTP 400) ; adresses servies par l'API gardées telles quelles (L76)
+- Téléchargement de l'export coupé deux fois, la seconde fois l'étape a échoué sans rien remplacer (L77)
+- Test de reprise de téléchargement instable sous la charge (le faux serveur coupait trop tôt) : 100 ms avant la coupure, 4/4
+- `explorer.e2e.ts:121` et `:139` instables : `main` 3/10 et 1/10, branche 4/10 et 2/10
+**À valider par Hardy :** essai iPhone puis fusion de #145 ; fusion de #142 et #144 ; `URL_CONTACT` dans son `.env`
+**Prochaine action :** `CLAUDE.md` § 9
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (645, #145 `28d949f`) · intégration ✅ (197) · parcours photos 12/12 ; suite complète 238/240 sur `4fd1541`
+**Commit :** `main` : `a3427ab` ; #145 : `28d949f`
+
+---
+
 ## 17/11/2026 (après-midi) — Étape E11 — étude des photos des lieux (D100)
 **Fait :**
 - Programme jusqu'à la soutenance validé par Hardy (D099, #138) : photos d'abord, audit C puis A en E15, B après la soutenance, marge les 26–27/11
