@@ -78,3 +78,4 @@
 | 18/11/2026 | 1.82 | § 9 : #142, #144, #146 fusionnées ; #145 validée sur l'iPhone, à fusionner ; `URL_CONTACT` dans le `.env` de Hardy |
 | 18/11/2026 | 1.83 | § 9 : descriptions complètes renvoyées à D105 (D104 = lieux avec photo d'abord) |
 | 18/11/2026 | 1.84 | § 9 : photos d'abord (#148) et horloge des tests (#149) fusionnées ; 0.4.0 en prochaine action, avec `compter-lignes.sql` à compléter |
+| 18/11/2026 | 1.85 | § 8 : 0.4.0 le 18/11 ; § 9 : production en 0.4.0, #154 et #155 sur `main`, #156 à fusionner, 0.5.0 à décider ; mesurer sur l'iPhone avant de corriger une lenteur (L81), image Docker et configurations des tests (L80), tunnel depuis la maison, recalage d'une PR empilée ; prochaine action du 19/11 |

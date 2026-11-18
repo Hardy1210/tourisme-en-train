@@ -51,3 +51,4 @@ Voir `_MODELE.md`.
 - 05/10/2026 : traitement des données en TypeScript + SQL au lieu de Python (D024).
 - 07/11/2026 : après le gel, le design et les déploiements continuent — D078.
 - 05/10/2026 : semaine recalée sur la feuille de route (démarrage réel le 05/10 ; P0 le 22/11) — D025.
+- 18/11/2026 : audit C mesuré sur l'iPhone avant toute correction : l'app réagit en ≈ 20 ms, le reste est le réseau ; densité de la carte ×2 (#156, ouverte) — D107. Reste en E15 : parcours instables d'Explorer à rendre indépendants du dessin logiciel du navigateur de test.

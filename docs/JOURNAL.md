@@ -24,6 +24,28 @@
 
 ---
 
+## 18/11/2026 (soir) — Étapes E17, E12, E15 — 0.4.0 en ligne, fiche destination sur le fond de la marque, D102, audit C
+**Fait :**
+- Reprise après une session coupée : rien de perdu (sauvegarde #150 poussée, copies propres) ; #150 fusionnée
+- Tunnel : le réseau de l'école renvoie `0.0.0.0` pour `api.trycloudflare.com` (seul nom bloqué) ; contournement écarté (règle de l'école), essai repris à la maison
+- **0.4.0 en ligne** : PR de version (#151, `compter-lignes.sql` + `lieu_wikidata`, `photo_lieu`) ; sauvegarde `avant.dump` (18 Mo) ; **premier Redeploy en échec** (`next build` : `playwright.config.ts` importait `tests/instant-de-test.ts`, exclu de l'image), production restée en 0.3.1 ; reproduit en local, configurations des tests exclues de l'image, essai complet de l'image (`migrer` 0, `web` sain, version 0.4.0) (#152) ; second Redeploy ; données : empreinte et 9 comptages identiques au poste (3 322 photos) ; deux photos vérifiées en ligne ; tag `v0.4.0`
+- « Les lieux de Beaune ne chargent pas » : en ligne et dans un navigateur neuf, tout charge ; Chrome sur l'iPhone gardait les réponses de la 0.3.1 (`max-age` 24 h), la PWA neuve non → reporté par Hardy, le jury installera la PWA (#153)
+- **Fiche destination d'après la maquette de Hardy** (#154, D106) : fond de la marque sur toute la fiche (trois onglets, colonne de gauche sur ordinateur, choix de Hardy) ; jetons génériques (`--page-marque-*`, `--carte-sur-marque-*`, dimensions), classe `vignette-arc`, variantes `sur-marque`, `CadreFiche fond="marque"` ; cartes de lieux en arc ; « Voir les N autres » (`limites.lieuxParCategorie` 5) ; pilule de la mini-carte (Échap) ; **Qualité Tourisme en icône** sur la ligne de la sous-catégorie, idée de Hardy après mesure (174 px de texte, badge 136 px) ; contraste AA mesuré dans le navigateur (`contraste.e2e.ts`), vu en échec, qui a trouvé l'attribution de la carte sur le violet → `bg-map-land`
+- **D102** (#155) : `formaterDureeEstimee` aux 8 affichages de minutes ; « à vol d'oiseau » pour la distance seule d'une gare (choix de Hardy) ; pas pour les lieux (déjà distance à pied estimée) ; #155 recalée sur `main` après la fusion de #154
+- **Audit C** (#156, D107) : navigateur de test 2,8–3,0 s (immédiat) contre 1,1–1,3 s, trace = démarrage de la carte, mais SwiftShader ; règle de Hardy fixée avant la mesure ; chronomètre temporaire dans la copie d'essai ; iPhone : 222 / 225 ms (immédiat / après 10 s), puis en ×2 : 253 ms dont 237 ms de réseau (≈ 19 ms pour l'app) ; densité ×2 gardée ; pas de carte différée ; chronomètre retiré
+**Décisions :** D106 (surfaces de marque), D107 (audit C, densité ×2) ; D099 modifiée (C et A avancés) ; D102 réalisée
+**Problèmes rencontrés :**
+- Redeploy 0.4.0 en échec (L80)
+- Safari a gardé l'ancien chronomètre : nouvelle adresse de tunnel oubliée après un build (règle du § 9) → tunnel relancé
+- Le contraste sur ordinateur a d'abord échoué : carte transparente dans les tests (fond de carte vide)
+- `explorer.e2e.ts:121`, `:139`, `:178`, `:194` instables, aussi sur `main`
+**À valider par Hardy :** fusion de #156 ; 0.5.0 ; netteté de la carte en ×2 ; ménage du VPS (`avant-donnees.dump` écrasé le 18/11) ; audit A sur l'iPhone
+**Prochaine action :** `CLAUDE.md` § 9 (19/11 : #156, 0.5.0, D105, horaires, Wikipédia, audit A, intégration continue)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (663, `main` `eccb24b`) · intégration ✅ (205) · parcours 246/248 sur #156 (2 instables connus, aussi sur `main`)
+**Commit :** `main` : `eccb24b`
+
+---
+
 ## 18/11/2026 (jour) — Étape E11 — lieux avec photo d'abord (D104), horloge des tests
 **Fait :**
 - #145, #147 fusionnées par Hardy ; avant/après sur l'iPhone par tunnel (copie `../tourisme-recherche`)

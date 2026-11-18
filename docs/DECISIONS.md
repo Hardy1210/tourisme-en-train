@@ -1109,6 +1109,7 @@
 - **Raison :** Hardy juge les photos importantes pour présenter le produit (F06 est un P0 encore 🟡) ; C et A se voient pendant une démo sur téléphone, B est surtout esthétique.
 - **Modifie :** D078 point 1 (« une avance éventuelle va aux P1 » : un seul petit P1, décidé le 25/11 au soir) et D080 (retouches du 23 au 25/11 limitées aux écrans de la démo).
 - **Impact :** `CLAUDE.md` § 8 et § 9, `A-FAIRE.md`.
+- **Modifié le 18/11 (Hardy) :** audits **C puis A avancés** juste après la mise en ligne de la 0.4.0, au lieu des 28–29/11 (C se verrait pendant une démo sur téléphone) ; B toujours après la soutenance. C mesuré le jour même sur l'iPhone : D107.
 
 ## D100 — Photos des lieux : Wikimedia puis DATAtourisme, crédit obligatoire, droits datés, adresse seule
 - **Date :** 17/11/2026
