@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.20 · **Date** 18/11/2026
+> **Version** 1.21 · **Date** 18/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -531,6 +531,20 @@
 - **À retenir :** un test qui lit l'horloge finit par tomber un jour précis, souvent le pire. Régler l'heure vue par les tests, et la régler partout où l'heure est lue (serveur **et** navigateur).
 - **Origine :** #149, 18/11.
 
+### L80 — Un fichier de configuration des tests peut casser l'image de production
+- **Problème :** le 18/11, le Redeploy de la 0.4.0 a échoué pendant `next build` dans l'image Docker, alors que tous les tests passaient. La veille, `playwright.config.ts` s'était mis à importer un fichier de `tests/`.
+- **Cause :** `.dockerignore` exclut `tests/` de l'image, mais pas `playwright.config.ts` ; et `next build` vérifie les types de tous les `*.config.ts` (tsconfig). Le fichier était là, pas ce qu'il importait. L'image n'avait pas été essayée : la PR ne touchait « que les tests ».
+- **Solution :** exclure de l'image les configurations des tests (`**/playwright.config.ts`, `**/vitest*.config.ts`), puis reproduire l'échec en local (`docker build`) et faire un essai complet de l'image avant le second Redeploy. La production n'avait rien eu : l'ancienne version tournait toujours.
+- **À retenir :** « ça ne touche que les tests » n'est pas une garantie pour l'image : tout ce qui est copié dans l'image et vérifié par le build compte. Construire l'image dans l'intégration continue.
+- **Origine :** #152, 18/11.
+
+### L81 — Mesurer sur l'appareil réel avant de corriger une lenteur vue dans les tests
+- **Problème :** dans les parcours, toucher « Voir la sortie » pendant le démarrage de la carte mettait 3 à 7 s à ouvrir la fiche ; on s'apprêtait à retarder le démarrage de la carte.
+- **Cause :** le navigateur de test (Chromium sans écran) n'a pas de carte graphique : il dessine la carte avec SwiftShader, au processeur. Sur l'iPhone, l'application réagit en ≈ 20 ms ; le reste du délai est le réseau.
+- **Solution :** un chronomètre temporaire dans une copie d'essai seulement (toucher → changement de page → fiche peinte, avec le temps réseau lu dans `performance`), quelques touchers sur l'iPhone et l'ordinateur, puis la règle de décision fixée par Hardy à l'avance (sous 200 ms, rien ; 200 à 500 ms, une correction légère ; au-delà, une correction plus lourde à essayer).
+- **À retenir :** séparer le temps de l'application du temps du réseau, et ne corriger qu'un chiffre mesuré là où l'utilisateur le vit. Fixer la règle de décision avant de mesurer évite de corriger au jugé.
+- **Origine :** #156, D107, 18/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -605,3 +619,4 @@ Valeurs en g CO₂e/km.
 | 17/11/2026 | 1.18 | L70 → L75 (couverture d'une source, crédit et droits des photos, vignette à la source, API publique et gros fichier, mécanisme existant, paramètre mesuré par usage) |
 | 18/11/2026 | 1.19 | L76 → L78 (adresse renvoyée par l'API, téléchargement qui reprend, mesurer les données avant de chercher un bug) |
 | 18/11/2026 | 1.20 | L79 (une date de test ne doit jamais pouvoir devenir « aujourd'hui ») |
+| 18/11/2026 | 1.21 | L80 (une configuration des tests peut casser l'image), L81 (mesurer sur l'appareil réel avant de corriger une lenteur) |
