@@ -8,6 +8,7 @@
 ## [Non publié]
 
 ### Modifié
+- La carte se dessine un peu moins finement sur les écrans très denses (iPhone) : moins de travail pour le téléphone, sans différence visible.
 - Les minutes à pied sont précédées de « ≈ », partout, car ce sont des estimations (« ≈ 9 min · 648 m »). La distance d'une gare donnée seule est dite « à vol d'oiseau » (« 2,9 km à vol d'oiseau »).
 - La fiche d'une destination passe sur le fond violet de Wagoo. Chaque lieu a sa carte, avec sa photo dans un quart de cercle bordé de jaune (ou l'icône de sa catégorie) et un bouton rond pour le voir sur la carte. Au-delà de 5 lieux, « Voir les N autres » déplie la catégorie. Sur la mini-carte, le lieu choisi s'affiche dans une pilule qui ouvre sa fiche.
 

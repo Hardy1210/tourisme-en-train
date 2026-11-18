@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import Map, { type MapRef } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
 import type { LieuResume } from '@/features/lieux/schemas';
+import { densiteCarte } from '../densite';
 import { empriseDe, type Point } from '../geometrie';
 import { useStyleCarte } from '../hooks';
 import { AttributionFondCarte } from './attribution-fond-carte';
@@ -70,6 +71,10 @@ export function CarteLieux({ gare, lieux, cleChoisie, surChoix, lienDe }: Propri
         <Map
           ref={carte}
           mapStyle={style.data.style as StyleSpecification}
+          pixelRatio={densiteCarte(
+            typeof window === 'undefined' ? undefined : window.devicePixelRatio,
+            parametres.carte.densiteMax,
+          )}
           initialViewState={{
             bounds: emprise,
             fitBoundsOptions: { padding: MARGE_PX, maxZoom: zoomMaxFiche },
