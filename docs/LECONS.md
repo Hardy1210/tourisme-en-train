@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.19 · **Date** 18/11/2026
+> **Version** 1.20 · **Date** 18/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -525,6 +525,12 @@
 - **À retenir :** séparer « ça ne marche pas » de « il n'y a rien à montrer » avant de corriger ; la réponse change la décision (pas de bug, mais une question de sources).
 - **Origine :** 18/11.
 
+### L79 — Une date de test ne doit jamais pouvoir devenir « aujourd'hui »
+- **Problème :** le 18/11, 12 tests des trains échouaient, sur `main` aussi. L'échantillon n'avait que deux jours de circulation, dont le 18/11 : ce jour-là, la date « hiver » des tests était aujourd'hui, et l'application cachait les trains déjà partis.
+- **Solution :** prouver la cause d'abord (horloge avancée au 19/11 puis au 03/12 : tout passe), puis fixer « maintenant » dans tous les tests, au même instant pour le serveur et pour le navigateur, sans toucher au code de l'application.
+- **À retenir :** un test qui lit l'horloge finit par tomber un jour précis, souvent le pire. Régler l'heure vue par les tests, et la régler partout où l'heure est lue (serveur **et** navigateur).
+- **Origine :** #149, 18/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -598,3 +604,4 @@ Valeurs en g CO₂e/km.
 | 17/11/2026 | 1.17 | L69 (symptôme anodin, lire ce que le navigateur reçoit) |
 | 17/11/2026 | 1.18 | L70 → L75 (couverture d'une source, crédit et droits des photos, vignette à la source, API publique et gros fichier, mécanisme existant, paramètre mesuré par usage) |
 | 18/11/2026 | 1.19 | L76 → L78 (adresse renvoyée par l'API, téléchargement qui reprend, mesurer les données avant de chercher un bug) |
+| 18/11/2026 | 1.20 | L79 (une date de test ne doit jamais pouvoir devenir « aujourd'hui ») |

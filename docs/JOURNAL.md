@@ -24,6 +24,26 @@
 
 ---
 
+## 18/11/2026 (jour) — Étape E11 — lieux avec photo d'abord (D104), horloge des tests
+**Fait :**
+- #145, #147 fusionnées par Hardy ; avant/après sur l'iPhone par tunnel (copie `../tourisme-recherche`)
+- **Idée de Hardy : les lieux avec photo d'abord** dans « Près de vous », « Près de la gare de… » et l'écran Lieux, tri habituel dans chaque groupe, temporaire (D104, #148, fusionnée). Vérifié avant de coder : le serveur choisit les 50 lieux (30 par page dans Lieux) ; un tri dans le composant n'aurait réordonné que ceux-là → tri dans la requête, avant le `LIMIT` (`triPhotosDabord`), réglage `photos.enPremier`
+- Mesures (base locale) : « Près de vous » à Dijon 24 → 50 photos sur 50 (4 → 10 parmi les 10 premiers) ; Lieux depuis Dijon, page 1 : 9 → 30 sur 30, trajets 16–29 → 21–33 min (Besançon 8–25 → 10–32). Hardy : « parfait », un peu plus de trajet accepté
+- Tests d'abord : 5 en paires (réglage actif / inactif, un seul lieu, page de Lieux), vus en échec ; 3 tests d'ordre adaptés
+- **12 tests des trains en échec le 18/11, sur `main` aussi** : l'échantillon n'a que deux jours (15/07, 18/11) ; le 18/11 était aujourd'hui, trains déjà partis cachés. Prouvé avec l'horloge avancée (19/11 et 03/12 : 197/197). **Horloge fixée dans les tests** (#149, fusionnée) : `instant-de-test.ts` (19/11/2026 10 h), serveur par `horloge-de-test.ts` (`setupFiles`, `node --import`), navigateur par `e2e/test.ts` (`setFixedTime`) ; 17 parcours l'importent ; code de l'app inchangé ; L79
+**Décisions :** D104 (lieux avec photo d'abord, temporaire). Descriptions complètes renvoyées à D105
+**Problèmes rencontrés :**
+- Docker inaccessible depuis WSL au début (base arrêtée) : Hardy l'a lancé
+- Le tunnel ne s'ouvrait pas depuis le poste (adresse neuve pas encore connue du DNS local) : sans effet sur l'iPhone
+- Premier essai de l'horloge : serveur seul réglé, 4 parcours encore en échec (l'onglet Trains lit l'heure du navigateur, `use-maintenant.ts`) → navigateur réglé aussi
+- `explorer.e2e.ts:178` et `:194` instables : seuls ×3, branche 1/6, `main` 2/6 ; `carte-cadrage:25` (cause B) 1 fois sur la #148
+**À valider par Hardy :** mise en ligne 0.4.0 (dans quelques heures)
+**Prochaine action :** `CLAUDE.md` § 9 (0.4.0 : PR de version avec `compter-lignes.sql` complété, puis D, B, C, E)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (645, `main` `7c4f4d1`) · intégration ✅ (205) · parcours 240/242 sur #149 (2 instables connus, aussi sur `main`)
+**Commit :** `main` : `7c4f4d1`
+
+---
+
 ## 17–18/11/2026 (soir) — Étape E11 — coefficient de détour (D102), photos : données (#143) et affichage (#145)
 **Fait :**
 - Coefficient de détour : 22 trajets réels (routing.openstreetmap.de, points types, jamais la position de Hardy) : commune → gare ×1,22, gare → lieu ×1,32 ; 1,3 gardé (D102) ; distance à vol d'oiseau dite comme telle, « ≈ » à pied (PR à venir)
