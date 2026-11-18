@@ -5,7 +5,7 @@ import { Bike, BusFront, Footprints, MapPin, TramFront, Zap, type LucideIcon } f
 import { Bouton } from '@/components/ui/bouton';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { useMobilites } from '../hooks';
 import type { ReponseMobilites } from '../schemas';
 
@@ -42,7 +42,7 @@ function Arret({ mobilite: m }: { mobilite: ReponseMobilites['mobilites'][number
       </div>
       <span className="tabular flex flex-none items-center gap-1 text-sm text-muted-foreground">
         <Footprints aria-hidden="true" className="size-4" />
-        {m.dureeMarcheMin} min · {formaterDistance(m.distanceM)}
+        {formaterDureeEstimee(m.dureeMarcheMin)} · {formaterDistance(m.distanceM)}
       </span>
     </li>
   );

@@ -6,7 +6,11 @@ import {
   dureeMarcheMin,
   dureeVeloMin,
 } from '@/lib/geo/distances';
-import { formaterDistance } from '@/lib/geo/formats';
+import {
+  formaterDistance,
+  formaterDistanceVolOiseau,
+  formaterDureeEstimee,
+} from '@/lib/geo/formats';
 
 /**
  * Trajet jusqu'à la gare, une seule règle pour « Votre gare » et les gares proches (D096, D097) : durée à pied
@@ -28,8 +32,8 @@ export function accesGare(
 }
 
 /**
- * Texte court des listes de gares proches, d'après `accesGare` : « 27 min à pied », « ≈ 17 min à vélo » ou la
- * distance. À vélo, `distance` se lit en dessous, en plus petit ; `aVelo` : la ligne affiche aussi « Parking
+ * Texte court des listes de gares proches, d'après `accesGare` : « ≈ 27 min à pied », « ≈ 17 min à vélo » ou la
+ * distance « à vol d'oiseau » (D102). À vélo, `distance` se lit en dessous, en plus petit ; `aVelo` : la ligne affiche aussi « Parking
  * vélo à la gare », la preuve (D097).
  */
 export function accesGareProche(
@@ -41,9 +45,11 @@ export function accesGareProche(
     dureeVeloMin: aVelo,
     distance,
   } = accesGare(volOiseauM, parkingVelo);
-  if (aPied !== null) return { texte: `${aPied} min à pied`, distance: null, aVelo: false };
-  if (aVelo !== null) return { texte: `≈ ${aVelo} min à vélo`, distance, aVelo: true };
-  return { texte: distance, distance: null, aVelo: false };
+  if (aPied !== null)
+    return { texte: `${formaterDureeEstimee(aPied)} à pied`, distance: null, aVelo: false };
+  if (aVelo !== null)
+    return { texte: `${formaterDureeEstimee(aVelo)} à vélo`, distance, aVelo: true };
+  return { texte: formaterDistanceVolOiseau(volOiseauM), distance: null, aVelo: false };
 }
 
 /** Applications de cartes proposées (D096) : Plans n'existe que sur iPhone. */

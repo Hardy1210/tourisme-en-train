@@ -10,7 +10,7 @@ import { Squelette } from '@/components/ui/squelette';
 import { formaterDuree } from '@/features/destinations/presentation';
 import { suffixeDate } from '@/features/explorer/date';
 import { cn } from '@/lib/classes';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { ErreurClient } from '@/lib/http/client';
 import { useLieuxAccessibles } from '../hooks';
 import { lienLieu, type ContexteTrajet } from '../liens';
@@ -65,7 +65,7 @@ function CarteLieuAccessible({ lieu, trajet }: { lieu: LieuAccessible; trajet: C
           </span>
           <span className="tabular flex items-center gap-2 text-md text-muted-foreground">
             <Footprints aria-hidden="true" className="size-4 flex-none" />
-            {lieu.dureeMarcheMin} min à pied · {formaterDistance(lieu.distanceM)}
+            {formaterDureeEstimee(lieu.dureeMarcheMin)} à pied · {formaterDistance(lieu.distanceM)}
           </span>
           {lieu.qualiteTourisme && (
             <span className="flex h-6 items-center gap-1 self-start rounded-pill bg-primary-soft pr-2.5 pl-2 text-xs font-bold text-primary-soft-foreground">

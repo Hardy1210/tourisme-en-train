@@ -14,7 +14,7 @@ import { useFicheLieu } from '@/features/lieux/hooks';
 import { lienLieu } from '@/features/lieux/liens';
 import { APPARENCE_CATEGORIE } from '@/features/lieux/ui/icone-categorie';
 import { BoutonCreditPhoto, PhotoLieu } from '@/features/lieux/ui/photo-lieu';
-import { formaterDistance } from '@/lib/geo/formats';
+import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 
 function Cadre({
   titre,
@@ -129,8 +129,8 @@ export function MiniFicheLieu({
         cle={lieu.cle}
         texte={
           <p className="tabular text-sm text-muted-foreground">
-            {APPARENCE_CATEGORIE[lieu.categorie].libelle} · {lieu.dureeMarcheMin} min à pied ·{' '}
-            {formaterDistance(lieu.distanceM)}
+            {APPARENCE_CATEGORIE[lieu.categorie].libelle} ·{' '}
+            {formaterDureeEstimee(lieu.dureeMarcheMin)} à pied · {formaterDistance(lieu.distanceM)}
           </p>
         }
       />

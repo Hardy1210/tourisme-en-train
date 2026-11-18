@@ -26,7 +26,17 @@ const TEMPS = [
   ['bg-map-time-3', '≤ 1 h 30'],
   ['bg-map-time-4', '> 1 h 30'],
 ] as const;
-const TAILLES = ['text-2xs', 'text-xs', 'text-sm', 'text-md', 'text-base', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl'];
+const TAILLES = [
+  'text-2xs',
+  'text-xs',
+  'text-sm',
+  'text-md',
+  'text-base',
+  'text-lg',
+  'text-xl',
+  'text-2xl',
+  'text-3xl',
+];
 
 function Section({ titre, children }: { titre: string; children: ReactNode }) {
   return (
@@ -132,7 +142,11 @@ export function Planche({ sombreAuDepart }: { sombreAuDepart: boolean }) {
             onglets={[
               { valeur: 'lieux', libelle: 'Lieux', contenu: <p>Contenu de l’onglet Lieux.</p> },
               { valeur: 'trains', libelle: 'Trains', contenu: <p>Contenu de l’onglet Trains.</p> },
-              { valeur: 'place', libelle: 'Sur place', contenu: <p>Contenu de l’onglet Sur place.</p> },
+              {
+                valeur: 'place',
+                libelle: 'Sur place',
+                contenu: <p>Contenu de l’onglet Sur place.</p>,
+              },
             ]}
           />
         </div>
