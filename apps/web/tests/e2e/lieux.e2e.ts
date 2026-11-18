@@ -27,7 +27,7 @@ test.describe('position acceptée', () => {
     await expect(page.getByText(/en train direct depuis Dijon-Ville/)).toBeVisible();
     const premiere = cartes(page).first();
     await expect(premiere).toContainText('en train direct');
-    await expect(premiere).toContainText('min à pied');
+    await expect(premiere).toContainText(/≈ \d+ min à pied/);
     await premiere.getByRole('link').click();
     await expect(page).toHaveURL(/\/lieux\/[^?]+\?depuis=EX000001&date=2026-11-18/);
   });
