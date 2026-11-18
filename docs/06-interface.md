@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.32 · **Date** 18/11/2026
+> **Version** 1.33 · **Date** 18/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -79,9 +79,10 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 ## 4. Fiche destination
 
 - **Mobile :** page plein écran, au-dessus de la navigation. **Desktop :** panneau latéral et carte (D063).
+- **Fond de la marque** sur toute la fiche, ses trois onglets compris (`CadreFiche fond="marque"`, jetons « surfaces de marque » de `globals.css`, D106) ; les surfaces blanches gardent leurs couleurs ; contraste AA vérifié en clair et en sombre (`contraste.e2e.ts`).
 - **En-tête :** nom de la gare, durée, trains/jour, sélecteur de date ; si « Ce week-end » : bascule **Samedi / Dimanche** ; bouton **Partager** (P1 : partage natif du téléphone, sinon copie du lien + message « Lien copié »).
 - **Onglets :**
-  - **Lieux** : mini-carte + liste par catégorie (nom, durée à pied, sous-catégorie, badge Qualité Tourisme ; description et horaires dans la fiche lieu, D063). **Lieu sans description ni horaires** (fréquent pour OpenStreetMap) : nom, catégorie, durée à pied et lien « Voir sur la carte », sans case vide. Hors région : « Les lieux de cette destination ne sont pas encore disponibles. »
+  - **Lieux** : mini-carte + une **carte par lieu** et par catégorie (D106) : vignette en quart de cercle bordé de jaune (photo, sinon icône de la catégorie), nom sur 2 lignes, durée à pied, sous-catégorie (cachée si elle répète le nom) suivie de l'icône Qualité Tourisme (sans badge, D106) ; vignette et texte = lien vers la fiche ; bouton rond « Voir {nom} sur la carte » ; pas de ⓘ. Au-delà de `limites.lieuxParCategorie` lieux : « Voir les N autres », qui déplie sur place. **Pilule de la mini-carte** : nom du lieu et flèche, toute la pilule ouvre la fiche ; fermée en touchant la carte ailleurs ou avec Échap. Description et horaires dans la fiche lieu (D063). Hors région : « Les lieux de cette destination ne sont pas encore disponibles. »
   - **Trains** : deux colonnes Aller / Retour ; départ, arrivée, durée, type ; **dernier retour** mis en évidence. **Par défaut : horaires théoriques, sans statut.** Statut « À l'heure / +5 min / Supprimé » (P1) **seulement** pour les trains des 3 prochaines heures **aujourd'hui**, si la clé API SNCF est disponible ; un train supprimé reste visible, barré.
   - **Sur place** : bus et tram (numéros de lignes), stations vélos/trottinettes, distance à pied ; **nombre de vélos disponibles** en direct (P1, villes avec flux GBFS, sinon pas de nombre) ; aménagements cyclables (P1). **Pas de transport à la demande** (données non fiables, voir `00` § 9).
 - **Pied collant :** bloc `eco` (« 🌱 Vous économisez 5,2 kg de CO₂ par rapport à la voiture ») avec lien « Comparer » (voiture partagée, avion) ; prix estimé si calibré ; bouton `action` « Acheter mon billet » (lien externe vers la billetterie officielle).
@@ -200,3 +201,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 17/11/2026 | 1.30 | § Explorer : « Votre gare » quand la gare proposée n'est pas la plus proche suit la même règle (plus de minutes à pied au-delà de 2 km) — D097 |
 | 17/11/2026 | 1.31 | § 4 ter : photos des lieux (cartes, fiche, mini-fiches, crédit, limite de temps) — D100, D101, D103 |
 | 18/11/2026 | 1.32 | § 4 ter : lieux avec photo d'abord dans les listes (temporaire) — D104 |
+| 18/11/2026 | 1.33 | § 4 : fiche destination sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte — D106 |

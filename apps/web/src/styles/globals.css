@@ -260,6 +260,23 @@
   --hero-muted: var(--barre-texte);
   --hero-tile: color-mix(in oklch, var(--hero-foreground) 13%, transparent);
 
+  /* Surfaces de marque : une page entière sur le fond de la marque (fiche destination, d'autres
+     ensuite), ses cartes et leurs vignettes en arc. Seules les couleurs changent en sombre. */
+  --page-marque-bg: var(--hero-bg);
+  --page-marque-texte: var(--hero-foreground);
+  --page-marque-texte-muted: var(--hero-muted);
+  --carte-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 10%, var(--hero-bg));
+  --carte-sur-marque-texte: var(--hero-foreground);
+  --carte-sur-marque-texte-muted: var(--hero-muted);
+  --tuile-sur-marque-bg: var(--hero-tile);
+  --vignette-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 20%, var(--hero-bg));
+  --vignette-sur-marque-trait: var(--accent);
+  --carte-lieu-hauteur: 6.75rem; /* 108 px : aussi le rayon de l'arc de la vignette */
+  --vignette-arc-largeur: 7.25rem; /* 116 px */
+  --vignette-arc-trait: 0.3125rem; /* 5 px : épaisseur du trait de l'arc */
+  --pilule-carte-hauteur: 3.75rem; /* 60 px : nom du lieu choisi sur une carte */
+  --pilule-carte-rond: 2.5rem; /* 40 px : rond de la flèche dans la pilule */
+
   /* Bouton « Voir la sortie » : ocre, à la différence de l'achat du billet */
   --sortie-bg: var(--accent);
   --sortie-hover: color-mix(in oklch, var(--accent), black 8%);
@@ -327,6 +344,11 @@
   --hero-foreground: var(--secondary-foreground);
   --hero-muted: var(--muted-foreground);
   --hero-tile: color-mix(in oklch, var(--hero-foreground) 10%, transparent);
+  --page-marque-bg: var(--background);
+  --page-marque-texte: var(--foreground);
+  --page-marque-texte-muted: var(--muted-foreground);
+  --carte-sur-marque-bg: var(--hero-bg);
+  --vignette-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 14%, var(--hero-bg));
   --sortie-hover: color-mix(in oklch, var(--accent), white 12%);
   --favorite-on-primary: var(--foreground);
 }
@@ -411,6 +433,14 @@
   --color-hero-foreground: var(--hero-foreground);
   --color-hero-muted: var(--hero-muted);
   --color-hero-tile: var(--hero-tile);
+  --color-page-marque-bg: var(--page-marque-bg);
+  --color-page-marque-texte: var(--page-marque-texte);
+  --color-page-marque-texte-muted: var(--page-marque-texte-muted);
+  --color-carte-sur-marque-bg: var(--carte-sur-marque-bg);
+  --color-carte-sur-marque-texte: var(--carte-sur-marque-texte);
+  --color-carte-sur-marque-texte-muted: var(--carte-sur-marque-texte-muted);
+  --color-tuile-sur-marque-bg: var(--tuile-sur-marque-bg);
+  --color-vignette-sur-marque-bg: var(--vignette-sur-marque-bg);
   --color-sortie-bg: var(--sortie-bg);
   --color-sortie-hover: var(--sortie-hover);
   --color-sortie-foreground: var(--sortie-foreground);
@@ -581,6 +611,22 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* Vignette en quart de cercle, centré sur le coin haut gauche de sa carte : le cadre dessine le trait
+   de l'arc, son contenu (photo ou icône) est découpé un peu plus court. Rayon = hauteur de la carte. */
+@utility vignette-arc {
+  position: relative;
+  flex: none;
+  width: var(--vignette-arc-largeur);
+  height: var(--carte-lieu-hauteur);
+  background-color: var(--vignette-sur-marque-trait);
+  clip-path: circle(calc(var(--carte-lieu-hauteur) + var(--vignette-arc-trait)) at 0 0);
+}
+@utility vignette-arc-contenu {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(var(--carte-lieu-hauteur) at 0 0);
 }
 
 /* Chiffres alignés : horaires, durées, distances, prix */

@@ -90,7 +90,7 @@ export function OngletSurPlace({ uic, gareNom, dansRegion, surTrains }: Propriet
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-muted-foreground">Autour de la gare de {gareNom}</p>
+      <p className="text-sm text-page-marque-texte-muted">Autour de la gare de {gareNom}</p>
       {ORDRE.map((type) => ({ type, arrets: liste.filter((m) => m.type === type) }))
         .filter((groupe) => groupe.arrets.length > 0)
         .map(({ type, arrets }) => {
@@ -101,7 +101,7 @@ export function OngletSurPlace({ uic, gareNom, dansRegion, surTrains }: Propriet
                 <Icone aria-hidden="true" className="size-4.5 text-transit" />
                 {libelle}
               </h3>
-              <ul className="rounded-carte bg-carte-bg shadow-carte">
+              <ul className="rounded-carte bg-carte-bg text-carte-foreground shadow-carte">
                 {arrets.map((m) => (
                   <Arret key={`${m.source}-${m.nom}-${m.distanceM}`} mobilite={m} />
                 ))}

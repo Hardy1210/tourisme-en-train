@@ -138,16 +138,32 @@ test('la fiche d’un lieu s’ouvre, propose le train et revient à la destinat
   await expect(page.getByRole('region', { name: 'Aller' })).toBeVisible();
 });
 
-test('« Voir sur la carte » met le lieu en avant sur la carte, sans quitter la fiche', async ({
+test('le bouton repère met le lieu en avant sur la carte ; Échap referme la pilule', async ({
   page,
 }) => {
   await page.goto(lien(BEAUNE));
-  await page.getByRole('button', { name: 'Voir sur la carte' }).first().click();
+  await page
+    .getByRole('button', { name: /^Voir .+ sur la carte$/ })
+    .first()
+    .click();
   const carte = page.getByRole('region', { name: /Carte autour de la gare/ });
   await expect(carte.getByRole('button', { pressed: true })).toHaveCount(1);
-  await expect(carte.getByRole('link', { name: 'Voir' })).toBeVisible();
-  await carte.getByRole('button', { name: 'Fermer' }).click();
+  await expect(carte.getByRole('link', { name: /^Ouvrir la fiche de / })).toBeVisible();
+  await expect(carte.getByRole('button', { name: 'Fermer' })).toHaveCount(0);
+  await page.keyboard.press('Escape');
   await expect(carte.getByRole('button', { pressed: true })).toHaveCount(0);
+  await expect(carte.getByRole('link', { name: /^Ouvrir la fiche de / })).toHaveCount(0);
+});
+
+test('toute la pilule de la mini-carte ouvre la fiche du lieu', async ({ page }) => {
+  await page.goto(lien(BEAUNE));
+  await page
+    .getByRole('button', { name: /^Voir .+ sur la carte$/ })
+    .first()
+    .click();
+  const carte = page.getByRole('region', { name: /Carte autour de la gare/ });
+  await carte.getByRole('link', { name: /^Ouvrir la fiche de / }).click();
+  await expect(page).toHaveURL(/\/lieux\/.+\?depuis=EX000001&date=2026-11-18$/);
 });
 
 test('la fiche d’un lieu sans contexte de trajet ne propose pas le train', async ({ page }) => {

@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.23 · **Date** 17/11/2026
+> **Version** 1.24 · **Date** 18/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -105,6 +105,7 @@
 
 | Terme | Sens dans ce projet |
 |---|---|
+| **Surface de marque** | Page ou carte posée sur le fond de la marque (fiche destination), avec ses jetons de couleur et de taille (D106) : `CadreFiche fond="marque"`, `--page-marque-*`, `--carte-sur-marque-*`, `vignette-arc` |
 | **ETL** | Le traitement des données (`etl/`, TypeScript + SQL) : télécharger (Extract), transformer (Transform), charger (Load) |
 | **Code commun** | Paquet `packages/commun` (`@tourisme/commun`), importé par l'app et par le traitement : schéma de `parametres.json`, `dateDuJour()`, types partagés |
 | **Espace de travail (pnpm)** | Un seul dépôt contenant plusieurs paquets (`apps/web`, `etl`, `packages/commun`) installés ensemble |
@@ -160,3 +161,4 @@
 | 13/11/2026 | 1.21 | Bulle (carte) : groupe de lieux — D092 |
 | 16/11/2026 | 1.22 | Parking vélo ; type de mobilité `PARKING_VELO` (et `CAR`, oublié) — D097 |
 | 17/11/2026 | 1.23 | Photo du lieu, vignette, crédit et droits d'une photo — D100, D101 |
+| 18/11/2026 | 1.24 | Surface de marque — D106 |

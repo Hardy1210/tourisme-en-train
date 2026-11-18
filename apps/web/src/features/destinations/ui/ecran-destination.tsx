@@ -39,7 +39,7 @@ export function EcranDestination({ uic }: { uic: string }) {
 
   if (fiche.isPending) {
     return (
-      <CadreFiche carte={<div aria-hidden="true" className="h-full bg-map-land" />}>
+      <CadreFiche fond="marque" carte={<div aria-hidden="true" className="h-full bg-map-land" />}>
         <div aria-hidden="true" className="flex flex-col gap-3 p-4">
           <Squelette className="h-32 rounded-lg" />
           <Squelette className="h-64 rounded-lg" />
@@ -52,9 +52,9 @@ export function EcranDestination({ uic }: { uic: string }) {
     const { error } = fiche;
     const statut = error instanceof ErreurClient ? error.statut : 500;
     return (
-      <CadreFiche carte={null}>
+      <CadreFiche fond="marque" carte={null}>
         <div className="flex flex-col gap-3 p-4">
-          <BoutonRetour className="-ml-2" onClick={surRetour} />
+          <BoutonRetour surMarque className="-ml-2" onClick={surRetour} />
           {statut === 404 ? (
             <EtatVide
               titre="Cette destination n'existe pas ou plus"
@@ -92,7 +92,7 @@ export function EcranDestination({ uic }: { uic: string }) {
   const versTrains = () => changer({ onglet: 'trains' });
 
   return (
-    <CadreFiche carte={grandEcran ? carte : null}>
+    <CadreFiche fond="marque" carte={grandEcran ? carte : null}>
       <div className="flex min-h-0 flex-1 flex-col gap-3 px-4 pt-1">
         <EnTeteDestination
           fiche={fiche.data}
