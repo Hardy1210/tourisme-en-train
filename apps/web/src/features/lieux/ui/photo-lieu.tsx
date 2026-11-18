@@ -141,7 +141,16 @@ export function LigneCreditPhoto({ photo, className }: { photo: Photo; className
  * (fond de surface presque opaque, contour), dans les deux thèmes. Jamais dans un lien : c'est un frère du
  * lien de la carte, posé sur la photo.
  */
-export function BoutonCreditPhoto({ photo, className }: { photo: Photo; className?: string }) {
+export function BoutonCreditPhoto({
+  photo,
+  className,
+  alignement = 'end',
+}: {
+  photo: Photo;
+  className?: string;
+  /** Côté de la photo où se trouve le ⓘ : la bulle s'ouvre de ce côté. */
+  alignement?: 'start' | 'end';
+}) {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
@@ -159,7 +168,7 @@ export function BoutonCreditPhoto({ photo, className }: { photo: Photo; classNam
       <Popover.Portal>
         <Popover.Content
           side="top"
-          align="end"
+          align={alignement}
           sideOffset={2}
           collisionPadding={16}
           className="z-toast max-w-72 rounded-lg bg-surface-raised px-3 py-2 text-foreground shadow-float ring-1 ring-border"
