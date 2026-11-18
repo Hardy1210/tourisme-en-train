@@ -1,12 +1,13 @@
-// Horloge des tests d'intégration et des parcours : « maintenant » part du 19/11/2026 à 10 h (Paris)
-// et avance normalement. Sans elle, le résultat dépend du jour où l'on lance les tests : le 18/11/2026,
-// date d'hiver de l'échantillon (db/echantillon/), était « aujourd'hui », et les trains déjà partis
-// disparaissaient (12 échecs). Le 19/11 n'est pas un jour de circulation de l'échantillon : ses deux
-// dates (15/07 et 18/11) restent toujours « un autre jour ». Le code de l'application ne change pas.
-// Chargée par `setupFiles` (vitest.integration.config.ts) et par `node --import` (playwright.config.ts).
+// Horloge des tests d'intégration et du serveur des parcours : « maintenant » part de `INSTANT_DE_TEST`
+// (instant-de-test.ts, transmis par la configuration) et avance normalement. Sans elle, le 18/11/2026, date
+// d'hiver de l'échantillon, était « aujourd'hui » et les trains déjà partis disparaissaient (12 échecs).
+// Le code de l'application ne change pas. Chargée par `setupFiles` (vitest.integration.config.ts) et par
+// `node --import` (playwright.config.ts) ; le navigateur des parcours est réglé par e2e/test.ts.
 
-const DEPART = Date.parse('2026-11-19T09:00:00Z');
-const decalage = DEPART - Date.now();
+const instant = process.env.INSTANT_DE_TEST;
+if (!instant) throw new Error('INSTANT_DE_TEST manquant : voir apps/web/tests/instant-de-test.ts.');
+
+const decalage = Date.parse(instant) - Date.now();
 const VraieDate = Date;
 
 class DateDeTest extends VraieDate {

@@ -1,7 +1,7 @@
 // Photos des lieux à l'écran (D100, D101, D103), échantillon, sans réseau : les adresses d'exemple
 // (example.org) sont servies ici par une petite image, sauf la photo « lente », qui ne répond jamais.
 // L'icône de la catégorie est là tout de suite ; la photo se pose par-dessus si elle arrive à temps.
-import { expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 // PNG d'un pixel, servi pour chaque photo d'exemple.

@@ -1,6 +1,6 @@
 // Cadrage de la carte d'Explorer : centrée sur la destination choisie, puis retour au cadrage de départ quand
 // on l'efface ; « Recentrer » ramène sur la destination tant qu'elle est choisie. Échantillon, sans réseau.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DATE = '2026-11-18';

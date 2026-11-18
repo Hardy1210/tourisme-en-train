@@ -2,7 +2,7 @@
 // carte vide. Avec MapLibre 6, le fond disparaît alors que tous les autres parcours passent (D062).
 // Sans réseau : le fond simulé (données d'exemple) passe par le module de travail de MapLibre, comme
 // les vraies tuiles. Couche nommée `water` pour recevoir la couleur du token --map-water.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const STYLE_FOND_SIMULE = {

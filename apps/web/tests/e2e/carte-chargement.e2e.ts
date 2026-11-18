@@ -1,6 +1,6 @@
 // Les lieux de la carte sont demandés sans attendre le fond de carte (D095) : sur téléphone, toutes les
 // tuiles arrivaient avant la demande, et les bulles plusieurs secondes après. Échantillon, sans réseau.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { ADRESSE_FOND_CARTE, couperLeReseau } from './outils';
 
 test.use({ geolocation: { latitude: 47.3233, longitude: 5.0272 }, permissions: ['geolocation'] });

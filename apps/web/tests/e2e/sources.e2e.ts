@@ -1,5 +1,5 @@
 // Écran « Sources » : atteint depuis le menu, chaque source citée, avec sa licence et son lien (règle 8).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { sources } from '@tourisme/commun';
 import { couperLeReseau } from './outils';
 

@@ -75,7 +75,7 @@ Règles de `CLAUDE.md` § 3. En pratique :
 
 **Règles :**
 1. **Tests en paires** : le cas **et** sa limite. *Sans la limite, une fonction qui dit toujours « oui » passe.*
-2. **Dates** : tout test impliquant une date existe en **version été et hiver**, et un cas **après minuit** (heure GTFS > 24 h). **« Maintenant » est fixé dans les tests d'intégration et les parcours** (`apps/web/tests/horloge-de-test.ts` : 19/11/2026, 10 h à Paris, puis l'heure avance) : un test ne dépend jamais du jour où on le lance ; les dates de l'échantillon (15/07 et 18/11) ne sont jamais « aujourd'hui ».
+2. **Dates** : tout test impliquant une date existe en **version été et hiver**, et un cas **après minuit** (heure GTFS > 24 h). **« Maintenant » est fixé dans les tests d'intégration et les parcours** (`apps/web/tests/instant-de-test.ts` : 19/11/2026, 10 h à Paris ; serveur par `horloge-de-test.ts`, l'heure avance ; navigateur par `e2e/test.ts`, que les parcours importent à la place de `@playwright/test`) : un test ne dépend jamais du jour où on le lance ; les dates de l'échantillon (15/07 et 18/11) ne sont jamais « aujourd'hui ».
 3. **Un test doit pouvoir échouer** : lors de sa création, le casser volontairement une fois pour vérifier qu'il échoue (en copiant le fichier avant, voir § 9).
 4. **Pas de test dépendant du réseau** ou de l'heure réelle.
 5. **Pas de test intermittent** : un test qui échoue « parfois » est corrigé ou supprimé immédiatement.

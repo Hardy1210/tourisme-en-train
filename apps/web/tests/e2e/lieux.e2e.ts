@@ -1,5 +1,5 @@
 // Parcours de l'écran Lieux, sur l'échantillon (données d'exemple, db/echantillon/). Sans réseau.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DIJON_VILLE = { latitude: 47.3233, longitude: 5.0272 };

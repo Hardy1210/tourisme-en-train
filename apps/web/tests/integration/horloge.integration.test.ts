@@ -2,9 +2,11 @@
 import { dateDuJour, maintenantParis } from '@tourisme/commun';
 import { describe, expect, it } from 'vitest';
 
+import { INSTANT_DE_TEST } from '../instant-de-test';
+
 describe('horloge de test', () => {
   it('aujourd’hui = 19/11/2026, à partir de 10 h (Paris)', () => {
-    expect(dateDuJour()).toBe('2026-11-19');
+    expect(dateDuJour()).toBe(INSTANT_DE_TEST.slice(0, 10));
     expect(maintenantParis().heureActuelleS).toBeGreaterThanOrEqual(10 * 3600);
   });
 

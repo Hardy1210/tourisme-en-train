@@ -1,6 +1,6 @@
 // Explorer gardé en vie (D069) : caché, aucun appel ; au retour, mise à jour seulement si c'est utile.
 // Échantillon (données d'exemple, db/echantillon/), sans réseau, horloge simulée.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DATE = '2026-11-18';

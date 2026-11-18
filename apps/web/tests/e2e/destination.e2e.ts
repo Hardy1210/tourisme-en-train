@@ -1,5 +1,5 @@
 // Parcours de la fiche destination et de la fiche lieu, sur l'échantillon (données d'exemple, db/echantillon/).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DIJON_VILLE = 'EX000001';

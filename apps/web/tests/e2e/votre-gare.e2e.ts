@@ -1,7 +1,7 @@
 // Carte « Votre gare » : le trajet jusqu'à la gare de départ ne parle jamais de vélo, faute de preuve qu'on
 // en a un près de soi (D096) ; « Voir l'itinéraire » ouvre l'application de cartes avec la gare seule.
 // Échantillon, sans réseau ; projet mobile = Android (Google Maps).
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const ECRAN = '/?date=2026-11-18';

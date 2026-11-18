@@ -1,7 +1,7 @@
 // Filtres d'Explorer et de Lieux (F05) : chaque filtre change la liste (et la carte pour les destinations),
 // reste dans l'adresse de la page et tient après un rechargement. Catégories et date : explorer.e2e.ts et
 // date-filtres.e2e.ts. Échantillon (db/echantillon/), sans réseau, position simulée au centre de Dijon.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
 
 const DIJON = { latitude: 47.3233, longitude: 5.0272 };

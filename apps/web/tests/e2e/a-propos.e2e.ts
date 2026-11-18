@@ -1,5 +1,5 @@
 // Page « L'âme du produit » : atteinte depuis le menu, chiffres sourcés, sortie vers l'application.
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 import { couperLeReseau } from './outils';
 
 test.beforeEach(async ({ context, baseURL }) => {
