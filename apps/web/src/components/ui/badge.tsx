@@ -13,8 +13,6 @@ const classesBadge = cva(
         avertissement: 'bg-warning-soft text-warning',
         danger: 'bg-danger-soft text-danger',
         info: 'bg-info-soft text-info',
-        /** Posé sur une carte de surface de marque (fiche destination). */
-        'sur-marque': 'bg-tuile-sur-marque-bg text-carte-sur-marque-texte',
       },
     },
     defaultVariants: { variante: 'neutre' },

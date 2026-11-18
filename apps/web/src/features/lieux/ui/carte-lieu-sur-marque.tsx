@@ -2,7 +2,6 @@
 
 import { BadgeCheck, Footprints, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { Bouton } from '@/components/ui/bouton';
 import { formaterDistance } from '@/lib/geo/formats';
 import { sousCategorieAffichee } from '../presentation';
@@ -45,16 +44,20 @@ export function CarteLieuSurMarque({
             <Footprints aria-hidden="true" className="size-4 flex-none" />
             {lieu.dureeMarcheMin} min · {formaterDistance(lieu.distanceM)}
           </span>
-          {sousCategorie && (
-            <span className="truncate text-sm text-carte-sur-marque-texte-muted">
-              {sousCategorie}
+          {(sousCategorie || lieu.qualiteTourisme) && (
+            <span className="flex min-w-0 items-center gap-1 text-sm text-carte-sur-marque-texte-muted">
+              {sousCategorie && <span className="truncate">{sousCategorie}</span>}
+              {/* Icône seule, sans badge : la card garde sa hauteur ; le badge complet est sur la fiche. */}
+              {lieu.qualiteTourisme && (
+                <span
+                  title="Qualité Tourisme"
+                  className="flex flex-none text-carte-sur-marque-texte"
+                >
+                  <BadgeCheck aria-hidden="true" className="size-4" />
+                  <span className="sr-only">Qualité Tourisme</span>
+                </span>
+              )}
             </span>
-          )}
-          {lieu.qualiteTourisme && (
-            <Badge variante="sur-marque" className="self-start">
-              <BadgeCheck aria-hidden="true" />
-              Qualité Tourisme
-            </Badge>
           )}
         </span>
       </Link>

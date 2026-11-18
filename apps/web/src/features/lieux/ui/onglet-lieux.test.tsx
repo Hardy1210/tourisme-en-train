@@ -54,8 +54,24 @@ describe('OngletLieux', () => {
     expect(html).not.toContain('aire de jeux');
   });
 
-  it('le badge Qualité Tourisme reste', () => {
-    expect(rendre([lieu(1, { qualiteTourisme: true })])).toContain('Qualité Tourisme');
+  it('Qualité Tourisme : une icône nommée sur la ligne de la sous-catégorie, sans badge', () => {
+    const html = rendre([lieu(1, { qualiteTourisme: true })]);
+    expect(html).toMatch(
+      /château<\/span>.*lucide-badge-check.*<span class="sr-only">Qualité Tourisme<\/span>/,
+    );
+    expect(html).not.toContain('rounded-pill bg-tuile-sur-marque-bg px-2');
+  });
+
+  it('Qualité Tourisme sans sous-catégorie : l’icône seule sur sa ligne', () => {
+    const html = rendre([lieu(1, { qualiteTourisme: true, sousCategorie: null })]);
+    expect(html).toContain('lucide-badge-check');
+    expect(html).toContain('<span class="sr-only">Qualité Tourisme</span>');
+  });
+
+  it('limite : sans Qualité Tourisme, ni icône ni texte', () => {
+    const html = rendre([lieu(1)]);
+    expect(html).not.toContain('lucide-badge-check');
+    expect(html).not.toContain('Qualité Tourisme');
   });
 
   it('au-delà du maximum par catégorie, les premiers lieux puis « Voir l’autre »', () => {
