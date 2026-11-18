@@ -7,6 +7,8 @@
 
 ## [Non publié]
 
+## [0.4.0] — 18/11/2026
+
 ### Ajouté
 - Des photos pour plus de 3 300 lieux (4 sur 10 près des gares), prises sur Wikimedia (Wikipédia, Wikidata, Commons) puis sur DATAtourisme : sur la fiche du lieu, sur les cartes de lieux et dans la mini-fiche de la carte. L'auteur et la licence de chaque photo sont toujours indiqués (une ligne sous la photo de la fiche, une icône ⓘ sur les cartes). Si une photo tarde à venir, l'icône de la catégorie reste à sa place.
 
