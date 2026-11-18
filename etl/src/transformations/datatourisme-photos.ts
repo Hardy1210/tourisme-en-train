@@ -51,10 +51,10 @@ export function lireLitteral(objet: string): string | null {
   );
 }
 
-type Lignes = () => AsyncIterable<string>;
+export type Lignes = () => AsyncIterable<string>;
 
 /** Un passage : pour chaque sujet de `sujets`, ses (prédicat, objet) dont le prédicat est demandé. */
-async function passage(
+export async function passage(
   ouvrir: Lignes,
   sujets: ReadonlySet<string>,
   predicats: ReadonlySet<string>,

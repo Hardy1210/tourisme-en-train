@@ -25,6 +25,14 @@ describe('lireArguments', () => {
     expect(lireArguments(['photos'])).toMatchObject({ type: 'execution', cibles: ['photos'] });
   });
 
+  it('« descriptions » vient juste après « photos » : même export national, déjà téléchargé (D105)', () => {
+    expect(SOURCES.indexOf('descriptions')).toBe(SOURCES.indexOf('photos') + 1);
+    expect(lireArguments(['descriptions'])).toMatchObject({
+      type: 'execution',
+      cibles: ['descriptions'],
+    });
+  });
+
   it('lit --force et --hors-ligne', () => {
     expect(lireArguments(['gtfs_sncf', '--force', '--hors-ligne'])).toMatchObject({
       force: true,

@@ -8,9 +8,9 @@ import {
 } from '../src/transformations/lieux';
 
 describe('nettoyerDescription', () => {
-  it('retire le HTML et décode les entités', () => {
+  it('retire le HTML et décode les entités ; `<br/>` devient un retour à la ligne (D105)', () => {
     expect(nettoyerDescription('<p>Jardin &amp; mus&#233;e<br/>du XVIIᵉ</p>', 500)).toBe(
-      'Jardin & musée du XVIIᵉ',
+      'Jardin & musée\ndu XVIIᵉ',
     );
   });
   it('garde un texte de exactement `max` caractères', () => {

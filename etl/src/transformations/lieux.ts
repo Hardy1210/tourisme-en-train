@@ -43,35 +43,14 @@ export const LIBELLES_ECART: Readonly<Record<RaisonEcart, string>> = {
   correction: 'retirés par une correction manuelle (regles/corrections_manuelles.csv)',
 };
 
-const ENTITES: Readonly<Record<string, string>> = {
-  amp: '&',
-  lt: '<',
-  gt: '>',
-  quot: '"',
-  apos: "'",
-  nbsp: ' ',
-};
-
 /** Espaces multiples, retours à la ligne et tabulations → une espace ; texte vide → null. */
 export function texteOuNull(texte: string | null | undefined): string | null {
   const propre = (texte ?? '').replace(/\s+/g, ' ').trim();
   return propre === '' ? null : propre;
 }
 
-/** Retire les balises HTML, décode les entités courantes, coupe au mot près au-delà de `max` caractères. */
-export function nettoyerDescription(texte: string | null | undefined, max: number): string | null {
-  const sansHtml = (texte ?? '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&(#\d+|[a-z]+);/gi, (entite, code: string) => {
-      if (code.startsWith('#')) return String.fromCodePoint(Number(code.slice(1)));
-      return ENTITES[code.toLowerCase()] ?? entite;
-    });
-  const propre = texteOuNull(sansHtml);
-  if (propre === null || propre.length <= max) return propre;
-  const coupe = propre.slice(0, max - 1);
-  const dernierEspace = coupe.lastIndexOf(' ');
-  return `${(dernierEspace > 0 ? coupe.slice(0, dernierEspace) : coupe).replace(/[\s,;:.]+$/, '')}…`;
-}
+// Nettoyage des descriptions : description.ts (D105).
+export { entitesInconnues, nettoyerDescription } from './description';
 
 /** Petits mots laissés en minuscules dans un nom remis en casse normale (sauf en tête). */
 const PETITS_MOTS = new Set([
