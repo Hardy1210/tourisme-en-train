@@ -24,6 +24,21 @@
 
 ---
 
+## 19/11/2026 (matin) — Étapes E12, E13 — essai de #158, one-pager
+**Fait :**
+- Reprise : base locale démarrée (Docker Desktop relancé par Hardy), 3 829 lieux DATAtourisme décrits (moyenne 649) ; serveur d'essai dans `../tourisme-recherche` (build de cette nuit, même code que #158 : seuls des documents ont changé depuis) ; tunnel ouvert et contrôlé de l'extérieur (`/api/sante` 200) ; essai de #158 sur l'iPhone confié à Hardy (étapes et fiche d'exemple données)
+- **One-pager** : relecture avec Hardy, chaque chiffre mesuré dans la base locale et `config/` ; texte complet pour Claude Design noté dans `docs/equipe/pitch.md` § One-pager
+**Décisions :** choix de textes de Hardy (région dans le titre, « Pour qui » sans cible principale, « Nos choix » au lieu de « Nos engagements », étrangers en perspective) : notés dans `pitch.md`, pas de nouvelle décision d'architecture
+**Problèmes rencontrés :**
+- **268 025 « liaisons en train direct »** sur le one-pager : une ligne par liaison et par jour (61 jours) ; vraies valeurs : 4 367 liaisons au départ de la région, vers 350 gares
+- « 16 réseaux de bus et tram » : 13 réseaux urbains + Mobigo + 2 vélos ; « 30 secondes » et « 1 à 2 h » jamais mesurés
+**À valider par Hardy :** #158 sur l'iPhone puis fusion ; one-pager après le design
+**Prochaine action :** `CLAUDE.md` § 9 (vendredi 20/11)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (690)
+**Commit :** voir #159
+
+---
+
 ## 19/11/2026 (nuit) — Étape E12 — descriptions complètes de DATAtourisme (D105)
 **Fait :**
 - #156 (audit C, densité ×2) et #157 (sauvegarde) fusionnées par Hardy ; **netteté de la carte en ×2 : aucune perte vue sur l'iPhone** (Hardy)
