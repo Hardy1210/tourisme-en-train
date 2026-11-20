@@ -7,14 +7,20 @@ type Proprietes = {
   children: ReactNode;
   /** `marque` : toute la fiche sur le fond de la marque (fiche destination) ; ses surfaces gardent leurs couleurs. */
   fond?: 'neutre' | 'marque';
+  /**
+   * Pas de marge en haut : le contenu monte jusqu'en haut de l'écran, derrière l'heure et la batterie
+   * (photo de la fiche lieu, maquette Fiche-Lieu). Le contenu tient compte lui-même de cette zone.
+   */
+  hautPlein?: boolean;
 };
 
 /** Fiche plein écran sur mobile (au-dessus de la navigation), panneau et carte sur grand écran. */
-export function CadreFiche({ carte, children, fond = 'neutre' }: Proprietes) {
+export function CadreFiche({ carte, children, fond = 'neutre', hautPlein = false }: Proprietes) {
   return (
     <div
       className={cn(
-        'fixed inset-x-0 top-0 z-overlay h-(--hauteur-app) flex flex-col bg-background safe-top lg:static lg:z-auto lg:grid lg:h-full lg:grid-cols-[var(--panneau-largeur)_minmax(0,1fr)] lg:pt-0',
+        'fixed inset-x-0 top-0 z-overlay h-(--hauteur-app) flex flex-col bg-background lg:static lg:z-auto lg:grid lg:h-full lg:grid-cols-[var(--panneau-largeur)_minmax(0,1fr)] lg:pt-0',
+        !hautPlein && 'safe-top',
         fond === 'marque' && 'bg-page-marque-bg text-page-marque-texte',
       )}
     >

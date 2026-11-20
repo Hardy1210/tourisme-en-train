@@ -1,6 +1,7 @@
 'use client';
 
-// Haut de la fiche lieu (maquette Fiche-Lieu, 20/11) : la photo sur toute la largeur, découpée par un grand
+// Haut de la fiche lieu (maquette Fiche-Lieu, 20/11) : la photo sur toute la largeur, jusqu'en haut de
+// l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand
 // cercle et bordée de jaune (`entete-arc`, globals.css) ; Retour en haut à gauche, crédit ⓘ en haut à
 // droite, seulement quand la photo est à l'écran (D103). Sans photo : même courbe, plus basse, sur le fond
 // de la marque, avec l'icône de la catégorie.
@@ -33,9 +34,13 @@ export function EnTeteLieu({
           />
         </div>
       </div>
-      <BoutonRetour surPhoto className="absolute top-3.5 left-3" onClick={surRetour} />
+      <BoutonRetour surPhoto className="absolute left-3 entete-arc-haut" onClick={surRetour} />
       {lieu.photo && affichee && (
-        <BoutonCreditPhoto photo={lieu.photo} surPhoto className="absolute top-3.5 right-3" />
+        <BoutonCreditPhoto
+          photo={lieu.photo}
+          surPhoto
+          className="absolute right-3 entete-arc-haut"
+        />
       )}
     </div>
   );

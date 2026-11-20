@@ -283,6 +283,7 @@
   --entete-lieu-rayon: 149.2cqw;
   --entete-lieu-centre-y: -72.3cqw;
   --entete-lieu-trait: 0.375rem; /* 6 px */
+  --entete-lieu-ecart-boutons: 0.875rem; /* 14 px sous le haut de l'écran, ou sous l'heure */
   /* Boutons posés sur une photo : lisibles sur n'importe quelle image */
   --sur-photo-texte: #ffffff;
   --sur-photo-bouton: rgb(22 17 30 / 0.5);
@@ -648,10 +649,13 @@
 @utility entete-arc {
   position: relative;
   --entete-lieu-h: var(--entete-lieu-h-choisie, var(--entete-lieu-hauteur));
+  /* La photo monte derrière l'heure et la batterie (Hardy, 20/11) : on ajoute cette zone en haut, et le
+     cercle descend d'autant, pour que la partie visible garde la forme de la maquette. */
   --entete-lieu-cy: calc(
-    var(--entete-lieu-centre-y) - (var(--entete-lieu-hauteur) - var(--entete-lieu-h))
+    var(--entete-lieu-centre-y) - (var(--entete-lieu-hauteur) - var(--entete-lieu-h)) +
+      env(safe-area-inset-top, 0px)
   );
-  height: var(--entete-lieu-h);
+  height: calc(var(--entete-lieu-h) + env(safe-area-inset-top, 0px));
   background-color: var(--vignette-sur-marque-trait);
   clip-path: circle(
     calc(var(--entete-lieu-rayon) + var(--entete-lieu-trait)) at 0 var(--entete-lieu-cy)
@@ -664,6 +668,10 @@
   position: absolute;
   inset: 0;
   clip-path: circle(var(--entete-lieu-rayon) at 0 var(--entete-lieu-cy));
+}
+/* Boutons posés en haut de la photo : sous l'heure et la batterie, puis l'écart de la maquette (14 px). */
+@utility entete-arc-haut {
+  top: calc(env(safe-area-inset-top, 0px) + var(--entete-lieu-ecart-boutons));
 }
 
 /* Chiffres alignés : horaires, durées, distances, prix */

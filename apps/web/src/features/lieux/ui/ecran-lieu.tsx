@@ -90,7 +90,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
   // Maquette Fiche-Lieu (20/11) : toute la fiche sur le fond de la marque, ses cartes sur les surfaces de
   // marque (D106) ; photo en arc en haut, « Y aller en train » dans une feuille en bas.
   return (
-    <CadreFiche carte={grandEcran ? carte : null} fond="marque">
+    <CadreFiche carte={grandEcran ? carte : null} fond="marque" hautPlein>
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-6">
         <EnTeteLieu lieu={lieu} surRetour={surRetour} />
 
