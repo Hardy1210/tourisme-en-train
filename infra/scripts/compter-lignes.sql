@@ -3,6 +3,8 @@ SELECT
   (SELECT count(*) FROM gare) AS gare,
   (SELECT count(*) FROM lieu) AS lieu,
   (SELECT count(wikidata) FROM lieu) AS lieu_wikidata,
+  (SELECT count(description) FROM lieu) AS lieu_description,
+  (SELECT sum(length(description)) FROM lieu) AS description_caracteres,
   (SELECT count(*) FROM lieu_gare) AS lieu_gare,
   (SELECT count(*) FROM liaison_directe) AS liaison_directe,
   (SELECT count(*) FROM trajet) AS trajet,
