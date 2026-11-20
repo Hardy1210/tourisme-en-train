@@ -24,6 +24,23 @@
 
 ---
 
+## 20/11/2026 (après-midi) — Étapes E17, E12 — 0.5.0 en ligne, design de la fiche lieu
+**Fait :**
+- **0.5.0 en ligne** : PR de version #161 (numéro, `CHANGELOG` daté, `compter-lignes.sql` compte les descriptions), Redeploy, contrôle 0 ; données : export du poste (empreinte `6599b386…94c28b`), sauvegarde `avant-donnees.dump` (18 Mo), restauration, **11 comptages identiques** (3 998 descriptions, 2 499 065 caractères), Redeploy, contrôle 0, essai iPhone bon ; tag `v0.5.0` sur `c7c57da` ; `~/tourisme.dump` supprimé du poste
+- **Design de la fiche lieu** (branche `etape/E12-design-fiche-lieu`, poussée, PR à ouvrir ; D109) : fond de la marque, photo en arc (`clip-path: circle`, mesures en `cqw`) jusqu'en haut de l'écran derrière l'heure (`CadreFiche hautPlein`), haut sans photo ; `BarreRetour` (une seule position par `--retour-*`, un seul dessin) sur la destination et la fiche lieu ; `PiedFiche` (pied de la destination + haut arrondi) ; captures à 390 px vues avant de montrer
+- Mesures du bouton Retour avant : 12, 14, 16 px du haut selon l'écran ; après : destination et lieu au pixel près (8 px, 12 px, 44 px)
+**Décisions :** D109 (dans la branche) ; Hardy : photo derrière l'heure comme la maquette, un seul bouton Retour partout « sans bricolage », pied de la destination arrondi pour les deux fiches
+**Problèmes rencontrés :**
+- Bande violette au-dessus de la photo : marge `safe-top` du cadre de toutes les fiches ; test d'abord, puis `hautPlein`
+- `horloge.integration.test.ts` a échoué une fois (PR #161), passé à la relance : noté dans `A-FAIRE`
+- Dans Safari, la zone de l'heure reste à Safari : l'essai de la photo pleine hauteur se fait depuis l'écran d'accueil
+**À valider par Hardy :**
+- Barre et pied sur l'iPhone ; pastille de date à 8 ou 16 px du bord ; haut sans photo ; ménage du VPS
+**Prochaine action :**
+- Ouvrir la PR du design de la fiche lieu après l'essai ; puis Sources, À propos, Mentions au même bouton Retour
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (738 unitaires, parcours 255 + 3 instables connus)
+**Commit :** `c7c57da` (0.5.0 en ligne) ; branche du design `bf671ae` et suivant
+
 ## 20/11/2026 — Étape E12 — horaires lisibles (#160), fusion de #158, maquette de la fiche lieu
 **Fait :**
 - Reprise : serveur d'essai (port 3200) et tunnel relancés ; essai de #158 par Hardy (texte complet ; les « … » du Consortium viennent de DATAtourisme, pas d'une coupe) ; **#158 fusionnée**, sauvegarde #159 recalée deux fois sur `main` (conflit `A-FAIRE` résolu en gardant les deux côtés)
