@@ -7,6 +7,8 @@
 
 ## [Non publié]
 
+## [0.5.0] — 20/11/2026
+
 ### Ajouté
 - La fiche d'un lieu montre la description complète de DATAtourisme, avec ses paragraphes, au lieu d'un court résumé : 3 668 lieux y gagnent, dont 1 390 qui n'en avaient pas. Les textes très longs s'arrêtent à la fin d'une phrase. La source est écrite juste en dessous.
 - Les horaires d'un lieu sont écrits en français, une ligne par saison ou par jour (« 16 nov. – 31 mars : 9 h – 12 h, 14 h – 18 h 30 »), au lieu du format technique en anglais ; en haut, un résumé dit les heures du jour (« Aujourd'hui, ven. 20 nov. », puis une plage par ligne), tenu à jour même si la fiche reste ouverte après minuit. 385 lieux sur 399 en profitent ; les autres gardent leur texte d'origine.
