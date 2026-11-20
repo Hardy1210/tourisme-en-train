@@ -17,8 +17,14 @@ test('les horaires sont en lignes françaises, avec le résumé du jour en haut'
 
   // Instant des tests : jeudi 19/11/2026, saison d'hiver.
   await expect(horaires.getByText(/Aujourd’hui/)).toHaveCount(1);
-  await expect(horaires.getByText(/Aujourd’hui/)).toHaveText('Aujourd’hui, jeu. 19 nov. :');
-  await expect(horaires.getByText('9 h – 12 h · 14 h – 18 h 30')).toBeVisible();
+  const resume = horaires.getByText(/Aujourd’hui/);
+  await expect(resume).toHaveText('Aujourd’hui, jeu. 19 nov.');
+  // Une plage par ligne, alignées : la seconde commence au même bord gauche, plus bas.
+  const premiere = horaires.getByText('9 h – 12 h').first();
+  const seconde = horaires.getByText('14 h – 18 h 30').first();
+  const [a, b] = [await premiere.boundingBox(), await seconde.boundingBox()];
+  expect(b!.y).toBeGreaterThan(a!.y);
+  expect(Math.abs(b!.x - a!.x)).toBeLessThan(1);
 });
 
 test('limite : des horaires non compris restent tels quels, sans « Aujourd’hui »', async ({

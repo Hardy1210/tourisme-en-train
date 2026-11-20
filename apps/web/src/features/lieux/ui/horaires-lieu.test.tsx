@@ -16,10 +16,11 @@ describe('HorairesLieu', () => {
     expect(html).not.toContain('Apr 01');
   });
 
-  it('commence par le résumé du jour, avec sa date et ses heures, une seule fois', () => {
+  it('commence par le résumé du jour, avec sa date et ses plages, une seule fois', () => {
     const html = renderToStaticMarkup(<HorairesLieu texte={HOTEL_DIEU} dateDuJour="2026-11-20" />);
-    expect(html).toContain('Aujourd’hui, ven. 20 nov. :');
-    expect(html).toContain('9 h – 12 h · 14 h – 18 h 30');
+    expect(html).toContain('Aujourd’hui, ven. 20 nov.');
+    const resume = html.slice(0, html.indexOf('<dl'));
+    expect(resume).toMatch(/>9 h – 12 h<\/span><span[^>]*>14 h – 18 h 30</);
     expect(html.match(/Aujourd’hui/g)).toHaveLength(1);
     expect(html.indexOf('Aujourd’hui')).toBeLessThan(html.indexOf('<dl'));
   });
@@ -38,5 +39,21 @@ describe('HorairesLieu', () => {
     expect(html).toContain('May-Oct Su[1]');
     expect(html).not.toContain('<dl');
     expect(html).not.toContain('Aujourd’hui');
+  });
+});
+
+describe('HorairesLieu : une plage par ligne', () => {
+  it('une plage d’heures n’est jamais coupée au milieu', () => {
+    const html = renderToStaticMarkup(<HorairesLieu texte={HOTEL_DIEU} dateDuJour="2026-11-20" />);
+    expect(html).toMatch(/<span class="whitespace-nowrap">14 h – 18 h 30<\/span>/);
+  });
+  it('limite : un long commentaire de la source peut aller à la ligne', () => {
+    const html = renderToStaticMarkup(
+      <HorairesLieu
+        texte={'Mo-Su 14:00-18:00, "ou sur RDV, selon la saison"'}
+        dateDuJour="2026-11-20"
+      />,
+    );
+    expect(html).toMatch(/<span class="text-pretty">ou sur RDV, selon la saison<\/span>/);
   });
 });

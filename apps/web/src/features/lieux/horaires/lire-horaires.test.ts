@@ -143,23 +143,23 @@ describe('resumeDuJour : la ligne « Aujourd’hui, … » en haut du bloc', () 
   const resume = (texte: string, date: string) =>
     resumeDuJour(lireHoraires(texte, date) ?? [], date);
 
-  it('donne le jour, sa date et les heures de la règle du jour', () => {
+  it('donne le jour, sa date et les plages de la règle du jour, une par ligne', () => {
     expect(resume(HOTEL_DIEU, '2026-11-20')).toEqual({
       jour: 'Aujourd’hui, ven. 20 nov.',
-      heures: '9 h – 12 h · 14 h – 18 h 30',
+      heures: ['9 h – 12 h', '14 h – 18 h 30'],
     });
   });
   it('suit la date : l’été, puis le 1er janvier (« 1er »)', () => {
     expect(resume(HOTEL_DIEU, '2026-07-14')).toEqual({
       jour: 'Aujourd’hui, mar. 14 juil.',
-      heures: '9 h – 19 h 30',
+      heures: ['9 h – 19 h 30'],
     });
     expect(resume(HOTEL_DIEU, '2027-01-01')?.jour).toBe('Aujourd’hui, ven. 1er janv.');
   });
-  it('dit « fermé » un jour de fermeture', () => {
+  it('dit « Fermé » un jour de fermeture', () => {
     expect(resume('Tu-Su 10:00-18:00; Mo off', '2026-11-23')).toEqual({
       jour: 'Aujourd’hui, lun. 23 nov.',
-      heures: 'fermé',
+      heures: ['Fermé'],
     });
   });
   it('limite : aucun résumé sans ligne du jour sûre (jour sans règle, vacances scolaires)', () => {

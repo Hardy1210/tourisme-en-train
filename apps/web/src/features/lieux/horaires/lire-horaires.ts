@@ -138,18 +138,14 @@ function jourEnClair(dateDuJour: string): string {
 }
 
 /**
- * Ligne de résumé en haut du bloc : « Aujourd'hui, ven. 20 nov. » et les heures de la règle du jour.
+ * Résumé en haut du bloc : « Aujourd’hui, ven. 20 nov. » et les plages de la règle du jour, une par ligne.
  * Null sans ligne du jour sûre : on n'affiche rien plutôt qu'un jour faux.
  */
 export function resumeDuJour(
   lignes: LigneHoraires[],
   dateDuJour: string,
-): { jour: string; heures: string } | null {
+): { jour: string; heures: string[] } | null {
   const ligne = lignes.find((l) => l.aujourdhui);
   if (!ligne) return null;
-  const heures = ligne.heures.join(' · ');
-  return {
-    jour: `Aujourd’hui, ${jourEnClair(dateDuJour)}`,
-    heures: heures === 'Fermé' || heures === 'Ouvert' ? heures.toLowerCase() : heures,
-  };
+  return { jour: `Aujourd’hui, ${jourEnClair(dateDuJour)}`, heures: ligne.heures };
 }
