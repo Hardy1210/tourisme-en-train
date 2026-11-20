@@ -336,6 +336,10 @@
   --reward-foreground: var(--accent-foreground);
   --favorite: var(--favori);
   --favorite-on-primary: var(--primary-foreground);
+
+  /* Horaires d'ouverture (D108) : badge « Aujourd'hui » de la ligne du jour */
+  --horaires-aujourdhui: var(--accent);
+  --horaires-aujourdhui-foreground: var(--accent-foreground);
 }
 
 .dark {
@@ -447,6 +451,8 @@
   --color-reward: var(--reward);
   --color-reward-soft: var(--reward-soft);
   --color-reward-foreground: var(--reward-foreground);
+  --color-horaires-aujourdhui: var(--horaires-aujourdhui);
+  --color-horaires-aujourdhui-foreground: var(--horaires-aujourdhui-foreground);
   --color-favorite: var(--favorite);
   --color-favorite-on-primary: var(--favorite-on-primary);
   --color-logo: var(--logo);

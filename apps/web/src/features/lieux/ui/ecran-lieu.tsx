@@ -1,11 +1,11 @@
 'use client';
 
+import { dateDuJour } from '@tourisme/commun';
 import {
   ArrowLeft,
   ArrowUpRight,
   BadgeCheck,
   CalendarRange,
-  Clock,
   Footprints,
   MapPin,
   TrainFront,
@@ -25,6 +25,7 @@ import { useRetour } from '@/lib/utiliser-retour';
 import { useFicheLieu } from '../hooks';
 import type { ContexteTrajet } from '../liens';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
+import { HorairesLieu } from './horaires-lieu';
 import { PhotoDeLaFiche } from './photo-fiche';
 import { Description, Info } from './infos-lieu';
 
@@ -145,11 +146,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
 
         {(lieu.horaires || lieu.periode || lieu.adresse || lieu.commune) && (
           <div className="flex flex-col rounded-carte bg-carte-bg shadow-carte">
-            {lieu.horaires && (
-              <Info Icone={Clock} titre="Horaires">
-                {lieu.horaires}
-              </Info>
-            )}
+            {lieu.horaires && <HorairesLieu texte={lieu.horaires} dateDuJour={dateDuJour()} />}
             {lieu.periode && (
               <Info Icone={CalendarRange} titre="Période">
                 {lieu.periode}

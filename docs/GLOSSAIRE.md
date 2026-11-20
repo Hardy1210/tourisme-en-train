@@ -95,6 +95,8 @@
 | **Point géographique** | Coordonnées WGS 84 (longitude, latitude), stockées en `geography(Point, 4326)` | `PointGeo` (`{ lon, lat }`) | `geom` | Position de l'utilisateur (jamais stockée) |
 | **Échantillon** | Petit jeu de **données d'exemple** pour les tests, chargé uniquement dans la base de test | `echantillon` | source `echantillon`, dossier `db/echantillon/` | Vraies données |
 | **Qualité Tourisme** | Label d'État attribué à certains lieux | `qualiteTourisme` | `qualite_tourisme` | — |
+| **Horaires d'ouverture** | Horaires d'un lieu, au format `opening_hours` d'OpenStreetMap (aussi pour DATAtourisme), affichés en lignes françaises (D108) | `horaires` | `lieu.horaires` | Horaires d'un train (GTFS) |
+| **Ligne d'horaires** | Une règle des horaires d'ouverture traduite : quand (dates, jours) et heures ; marquée « Aujourd'hui » quand elle s'applique ce jour-là | `LigneHoraires` | — | — |
 | **Région pilote** | Région couverte par les données de la v1 : Bourgogne-Franche-Comté (27) | `region` | `region` | — |
 | **Marque** | Nom commercial affiché (provisoire : Wagoo), défini dans `config/marque.ts` | `marque` | — | Nom de code `tourisme-en-train` |
 | **Paramètres** | Seuils métier partagés, définis dans `config/parametres.json` | `parametres` | `parametres` | Variables d'environnement |
