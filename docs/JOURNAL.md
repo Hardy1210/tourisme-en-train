@@ -24,6 +24,24 @@
 
 ---
 
+## 20/11/2026 — Étape E12 — horaires lisibles (#160), fusion de #158, maquette de la fiche lieu
+**Fait :**
+- Reprise : serveur d'essai (port 3200) et tunnel relancés ; essai de #158 par Hardy (texte complet ; les « … » du Consortium viennent de DATAtourisme, pas d'une coupe) ; **#158 fusionnée**, sauvegarde #159 recalée deux fois sur `main` (conflit `A-FAIRE` résolu en gardant les deux côtés)
+- Mesures : descriptions — OSM 169 sur 8 273, DATAtourisme 3 829 sur 3 969, 171 coupées à 2 000 caractères ; horaires — 399 lieux, tous au format `opening_hours` (113 DATAtourisme), « Période » vide partout
+- **#160 fusionnée (D108)** : `features/lieux/horaires/` (analyse, calendrier avec jours fériés, traduction), 385 horaires sur 399 compris ; résumé « Aujourd'hui, ven. 20 nov. » en haut du bloc, une plage par ligne alignée sur les lignes du dessous ; `useDateDuJour()` (minuit à Paris, retour au premier plan) ; parcours `horaires.e2e.ts`, deux horaires d'exemple dans l'échantillon
+- Maquette `design/maquettes/Fiche-Lieu.dc.html` lue : photo découpée par un grand cercle (`clip-path: circle`), pas un polygone ; plan de la PR 2 donné à Hardy
+**Décisions :** D108 (voir DECISIONS.md) ; Hardy : textes gardés tels quels (pas de retour à la ligne après chaque phrase) ; résumé en haut plutôt que le badge de la maquette (lu « aujourd'hui = 16 nov. »)
+**Problèmes rencontrés :**
+- Le DNS de WSL ne trouve pas une nouvelle adresse de tunnel pendant quelques minutes : contrôle avec `curl --doh-url https://1.1.1.1/dns-query`
+- Parcours : un `has:` Playwright construit depuis la zone parente ne trouve rien ; corrigé par `filter({ hasText })`
+- `explorer.e2e.ts:178` et `:194` toujours instables (aussi sur `main`)
+**À valider par Hardy :**
+- Ordre de la suite : mise en ligne 0.5.0 d'abord (recommandé) ou PR 2 du design de la fiche lieu ; lieu sans photo à montrer avant la suite de la PR 2
+**Prochaine action :**
+- « mets en ligne » 0.5.0 (#154, #155, #156, #158, #160 ; données, étape E), puis PR 2 du design de la fiche lieu
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (731 unitaires sur `main`, 207 intégration, parcours : 252 réussis, 2 instables connus)
+**Commit :** `1fd48f7` (#160)
+
 ## 19/11/2026 (matin) — Étapes E12, E13 — essai de #158, one-pager
 **Fait :**
 - Reprise : base locale démarrée (Docker Desktop relancé par Hardy), 3 829 lieux DATAtourisme décrits (moyenne 649) ; serveur d'essai dans `../tourisme-recherche` (build de cette nuit, même code que #158 : seuls des documents ont changé depuis) ; tunnel ouvert et contrôlé de l'extérieur (`/api/sante` 200) ; essai de #158 sur l'iPhone confié à Hardy (étapes et fiche d'exemple données)

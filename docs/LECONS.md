@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.21 · **Date** 18/11/2026
+> **Version** 1.22 · **Date** 20/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -545,6 +545,13 @@
 - **À retenir :** séparer le temps de l'application du temps du réseau, et ne corriger qu'un chiffre mesuré là où l'utilisateur le vit. Fixer la règle de décision avant de mesurer évite de corriger au jugé.
 - **Origine :** #156, D107, 18/11.
 
+### L82 — Un repère posé à côté d'une valeur se lit comme cette valeur
+- **Problème :** un badge « Aujourd'hui » placé, comme sur la maquette, à côté de la ligne d'horaires « 16 nov. – 31 mars » (ou « Lun. – sam. ») se lisait « aujourd'hui, c'est le 16 novembre », alors que la ligne était juste et le badge bien dynamique.
+- **Cause :** l'œil associe une étiquette au texte le plus proche, pas à la règle qu'elle représente ; la maquette montrait le bon calcul avec une mauvaise lecture.
+- **Solution :** dire la chose en entier en haut du bloc (« Aujourd'hui, ven. 20 nov. », puis les heures du jour, une plage par ligne) et ne garder qu'un fond léger sur la ligne correspondante.
+- **À retenir :** un repère d'état (« aujourd'hui », « en cours », « recommandé ») ne doit pas pouvoir être pris pour une valeur ; l'essai sur le téléphone par quelqu'un qui n'a pas écrit le code le révèle en une minute.
+- **Origine :** #160, D108, 20/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -620,3 +627,4 @@ Valeurs en g CO₂e/km.
 | 18/11/2026 | 1.19 | L76 → L78 (adresse renvoyée par l'API, téléchargement qui reprend, mesurer les données avant de chercher un bug) |
 | 18/11/2026 | 1.20 | L79 (une date de test ne doit jamais pouvoir devenir « aujourd'hui ») |
 | 18/11/2026 | 1.21 | L80 (une configuration des tests peut casser l'image), L81 (mesurer sur l'appareil réel avant de corriger une lenteur) |
+| 20/11/2026 | 1.22 | L82 (un repère posé à côté d'une valeur se lit comme cette valeur) |

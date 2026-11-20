@@ -82,3 +82,4 @@
 | 19/11/2026 | 1.86 | § 16 : étape `descriptions` dans l'ordre du traitement — D105 |
 | 19/11/2026 | 1.87 | § 9 : #156 et #157 fusionnées, #158 (D105) à essayer et fusionner, 0.5.0 avec données, intégration continue avant le 22/11, traitement lourd jamais en même temps que les parcours ; prochaine action du 20/11 |
 | 19/11/2026 | 1.88 | § 9 : one-pager (texte et chiffres mesurés, `pitch.md`), essai de #158 en cours, fiche d'exemple ; prochaine action du vendredi 20/11 |
+| 20/11/2026 | 1.89 | § 9 : #158 et #160 fusionnées (D105, D108), 0.5.0 avec #160, PR 2 du design de la fiche lieu (plan), ordre à confirmer par Hardy ; contrôle du tunnel par `--doh-url` |
