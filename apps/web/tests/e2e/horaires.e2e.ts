@@ -17,9 +17,10 @@ test('les horaires sont en lignes françaises, la saison d’hiver est marquée 
   await expect(horaires.getByText('14 h – 18 h 30').first()).toBeVisible();
   await expect(horaires.getByText(/Apr 01/)).toHaveCount(0);
 
-  const aujourdhui = horaires.getByText('Aujourd’hui');
-  await expect(aujourdhui).toHaveCount(1);
-  await expect(horaires.locator('dt', { has: aujourdhui })).toContainText('16 nov. – 31 mars');
+  await expect(horaires.getByText('Aujourd’hui')).toHaveCount(1);
+  await expect(horaires.locator('dt').filter({ hasText: 'Aujourd’hui' })).toContainText(
+    '16 nov. – 31 mars',
+  );
 });
 
 test('limite : des horaires non compris restent tels quels, sans « Aujourd’hui »', async ({
