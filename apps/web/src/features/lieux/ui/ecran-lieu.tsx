@@ -1,6 +1,5 @@
 'use client';
 
-import { dateDuJour } from '@tourisme/commun';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -19,6 +18,7 @@ import { Squelette } from '@/components/ui/squelette';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { CarteLieuxDifferee } from '@/features/carte/ui/carte-lieux-differee';
 import { cn } from '@/lib/classes';
+import { useDateDuJour } from '@/lib/utiliser-date-du-jour';
 import { ErreurClient } from '@/lib/http/client';
 import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { useRetour } from '@/lib/utiliser-retour';
@@ -33,6 +33,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
   const fiche = useFicheLieu(cle);
   const grandEcran = useGrandEcran();
   const surRetour = useRetour();
+  const aujourdhui = useDateDuJour();
 
   const boutonRetour = (
     <Bouton variante="fantome" className="-ml-2 self-start px-2 font-semibold" onClick={surRetour}>
@@ -146,7 +147,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
 
         {(lieu.horaires || lieu.periode || lieu.adresse || lieu.commune) && (
           <div className="flex flex-col rounded-carte bg-carte-bg shadow-carte">
-            {lieu.horaires && <HorairesLieu texte={lieu.horaires} dateDuJour={dateDuJour()} />}
+            {lieu.horaires && <HorairesLieu texte={lieu.horaires} dateDuJour={aujourdhui} />}
             {lieu.periode && (
               <Info Icone={CalendarRange} titre="Période">
                 {lieu.periode}

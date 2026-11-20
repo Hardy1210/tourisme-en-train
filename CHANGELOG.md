@@ -9,7 +9,7 @@
 
 ### Ajouté
 - La fiche d'un lieu montre la description complète de DATAtourisme, avec ses paragraphes, au lieu d'un court résumé : 3 668 lieux y gagnent, dont 1 390 qui n'en avaient pas. Les textes très longs s'arrêtent à la fin d'une phrase. La source est écrite juste en dessous.
-- Les horaires d'un lieu sont écrits en français, une ligne par saison ou par jour (« 16 nov. – 31 mars : 9 h – 12 h, 14 h – 18 h 30 »), au lieu du format technique en anglais ; la ligne qui vaut aujourd'hui porte le badge « Aujourd'hui ». 385 lieux sur 399 en profitent ; les autres gardent leur texte d'origine.
+- Les horaires d'un lieu sont écrits en français, une ligne par saison ou par jour (« 16 nov. – 31 mars : 9 h – 12 h, 14 h – 18 h 30 »), au lieu du format technique en anglais ; en haut, un résumé dit les heures du jour (« Aujourd'hui, ven. 20 nov. : 9 h – 12 h · 14 h – 18 h 30 »), tenu à jour même si la fiche reste ouverte après minuit. 385 lieux sur 399 en profitent ; les autres gardent leur texte d'origine.
 
 ### Modifié
 - La carte se dessine un peu moins finement sur les écrans très denses (iPhone) : moins de travail pour le téléphone, sans différence visible.
