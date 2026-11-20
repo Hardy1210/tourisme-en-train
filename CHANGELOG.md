@@ -7,6 +7,9 @@
 
 ## [Non publié]
 
+### Modifié
+- La fiche d'un lieu prend le nouveau dessin : fond violet, photo en haut découpée en arc bordé de jaune, qui monte jusque derrière l'heure dans l'app installée ; horaires et adresse dans un seul bloc. Le bouton Retour est un rond sombre, exactement au même endroit sur toutes les fiches, et le bas des fiches (« Y aller en train », « Acheter mon billet ») a un haut arrondi.
+
 ## [0.5.0] — 20/11/2026
 
 ### Ajouté

@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.36 · **Date** 20/11/2026
+> **Version** 1.37 · **Date** 20/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -90,15 +90,20 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 ---
 
 ## 4 ter. Photos des lieux (D100, D101, D103)
-- **À la place de l'icône de catégorie, dans le même cadre** : cartes « À pied » (188 × 96 px), liste Lieux (pleine largeur × 160 px), fiche lieu (toute la largeur de la colonne, 16:9), mini-fiches de la carte (vignette carrée de 64 px à gauche, sans changer leur hauteur). Composant `features/lieux/ui/photo-lieu.tsx`.
+- **À la place de l'icône de catégorie, dans le même cadre** : cartes « À pied » (188 × 96 px), liste Lieux (pleine largeur × 160 px), fiche lieu (toute la largeur, découpée en arc, D109), mini-fiches de la carte (vignette carrée de 64 px à gauche, sans changer leur hauteur). Composant `features/lieux/ui/photo-lieu.tsx`.
 - **Jamais de carré vide** : fond et icône de la catégorie tout de suite ; la photo se pose par-dessus en fondu (respecte `prefers-reduced-motion`) ; abandonnée au-delà de `photos.delaiMaxMs` (4 s) ou en cas d'erreur, l'icône reste.
 - **Ordre des listes (temporaire, D104)** : dans « Près de vous », « Près de la gare de… » et l'écran Lieux, les lieux avec une photo passent d'abord, puis le tri habituel ; décidé par le serveur (`photos.enPremier`), l'écran ne retrie pas.
-- **Crédit** : sur la fiche, un ⓘ discret en bas à gauche de la photo (seulement quand elle est affichée) ouvre « Photo : auteur · licence · source » (licence et page du fichier liées) ; **ⓘ** en bas à droite des cartes de l'écran Lieux et des mini-fiches (zone de 44 px, hors du lien de la carte), qui ouvre la même ligne dans une bulle ; **pas de ⓘ** sur les petites cartes de « Près de vous » / « Près de la gare de… » (Hardy, 18/11) : le crédit est sur la page du lieu. Texte alternatif : le nom du lieu.
+- **Crédit** : sur la fiche, un ⓘ rond sombre en haut à droite de la photo, dans la barre du haut (seulement quand elle est affichée, D109) ouvre « Photo : auteur · licence · source » (licence et page du fichier liées) ; **ⓘ** en bas à droite des cartes de l'écran Lieux et des mini-fiches (zone de 44 px, hors du lien de la carte), qui ouvre la même ligne dans une bulle ; **pas de ⓘ** sur les petites cartes de « Près de vous » / « Près de la gare de… » (Hardy, 18/11) : le crédit est sur la page du lieu. Texte alternatif : le nom du lieu.
 - Mentions légales : les photos viennent de Wikimedia et de Tourinsoft, qui reçoivent l'adresse IP du visiteur.
 
 ## 4 quater. Description d'un lieu (D105)
 - **Texte brut, jamais du HTML** (pas de `dangerouslySetInnerHTML`) ; paragraphes gardés par `white-space: pre-line` (`features/lieux/ui/infos-lieu.tsx`). Repliée : 4 lignes, puis « Lire la suite » / « Réduire » au-delà de 240 caractères.
 - **« Source : » + attribution de la source du lieu, juste sous la description** (règle 8 ; DATAtourisme : « DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », `config/sources.json`). Sans description, l'attribution reste en bas de la fiche : jamais deux fois.
+
+## 4 sexies. Fiche lieu, barre du haut et pied des fiches (D109)
+- **Fiche lieu** (maquette `design/maquettes/Fiche-Lieu.dc.html`) : toute la fiche sur le fond de la marque, cartes sur les surfaces de marque (D106). **Haut** : photo pleine largeur, jusqu'en haut de l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand cercle bordé de jaune (`entete-arc`, mesures en `cqw`) ; sans photo, même courbe plus basse, icône de la catégorie. Puis titre, pastille de catégorie, Qualité Tourisme, carte des gares, description, bloc horaires + adresse, « Site officiel » à bord fin, mini-carte, source.
+- **Barre du haut de toutes les fiches** (`BarreRetour`) : Retour à gauche, une action à droite (ⓘ de la photo, date de la destination). **Une seule position** (`--retour-haut`, `--retour-bord`, `--retour-zone`, utilitaire `barre-retour`) et **un seul dessin** (rond sombre, `sur-photo`) : aucun écran ne place son bouton Retour lui-même. Vérifié par `barre-retour.e2e.ts`.
+- **Pied des fiches** (`PiedFiche`) : celui de la fiche destination, haut arrondi des feuilles et leur ombre, hauteur qui suit le contenu.
 
 ## 4 quinquies. Horaires d'ouverture d'un lieu (D108)
 - **Lignes françaises** dans le bloc « Horaires » de la fiche (`features/lieux/ui/horaires-lieu.tsx`) : « quand » à gauche (dates, jours : « 1er avr. – 15 nov. », « Lun. – ven. », « Juil. – août · tous les jours »), heures à droite, une plage par ligne (« 9 h – 12 h », « 14 h – 18 h 30 »), en `tabular`. « Fermé », « 24 h/24 », « Ouvert » (période sans heures), commentaire de la source tel quel.
@@ -215,3 +220,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 18/11/2026 | 1.34 | § 2, § 3, textes : « ≈ » devant les minutes, distance seule des gares « à vol d'oiseau » — D102 |
 | 18/11/2026 | 1.33 | § 4 : fiche destination sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte — D106 |
 | 20/11/2026 | 1.36 | § 4 quinquies : horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, … » en haut quand c'est sûr, date tenue à jour — D108 |
+| 20/11/2026 | 1.37 | § 4 sexies : fiche lieu de la maquette, barre du haut commune (`BarreRetour`), pied commun (`PiedFiche`) ; § 4 ter : ⓘ en haut à droite — D109 |
