@@ -374,6 +374,12 @@ UPDATE lieu SET description =
   || 'aux poussettes et une dégustation est proposée à la fin du parcours.'
 WHERE id_source = 'ECH_L14';
 
+-- D108 : horaires d'ouverture d'exemple au format OSM, un compris (saisons + 2 jours fixes), un non compris.
+UPDATE lieu SET horaires =
+  'Apr 01-Nov 15 09:00-19:30; Nov 16-Mar 31 09:00-12:00,14:00-18:30; Jan 01,Dec 25 14:00-18:30'
+WHERE id_source = 'ECH_L14';
+UPDATE lieu SET horaires = 'May-Oct Su[1]' WHERE id_source = 'ECH_L50';
+
 -- D093 : piscine gardée en base mais masquée, au même point que les lieux de « Près de vous » (6,9 ; 46,3).
 INSERT INTO lieu (source, id_source, nom, categorie, sous_categorie, code_insee, geom, masque)
 SELECT 'echantillon', 'ECH_L53', 'Exemple - Piscine municipale', 'enfants', 'piscine', '71076',

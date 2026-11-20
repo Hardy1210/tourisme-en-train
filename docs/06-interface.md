@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.35 · **Date** 19/11/2026
+> **Version** 1.36 · **Date** 20/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -99,6 +99,12 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 ## 4 quater. Description d'un lieu (D105)
 - **Texte brut, jamais du HTML** (pas de `dangerouslySetInnerHTML`) ; paragraphes gardés par `white-space: pre-line` (`features/lieux/ui/infos-lieu.tsx`). Repliée : 4 lignes, puis « Lire la suite » / « Réduire » au-delà de 240 caractères.
 - **« Source : » + attribution de la source du lieu, juste sous la description** (règle 8 ; DATAtourisme : « DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », `config/sources.json`). Sans description, l'attribution reste en bas de la fiche : jamais deux fois.
+
+## 4 quinquies. Horaires d'ouverture d'un lieu (D108)
+- **Lignes françaises** dans le bloc « Horaires » de la fiche (`features/lieux/ui/horaires-lieu.tsx`) : « quand » à gauche (dates, jours : « 1er avr. – 15 nov. », « Lun. – ven. », « Juil. – août · tous les jours »), heures à droite, une plage par ligne (« 9 h – 12 h », « 14 h – 18 h 30 »), en `tabular`. « Fermé », « 24 h/24 », « Ouvert » (période sans heures), commentaire de la source tel quel.
+- **Résumé du jour en haut du bloc** : « Aujourd'hui, ven. 20 nov. » à gauche, ses plages à droite, **une par ligne et alignées** sur la colonne des heures du dessous, jamais coupées au milieu (« Fermé » un jour de fermeture ; Hardy, 20/11), et la ligne qui vaut ce jour-là sur un fond `primary-soft`, **sans badge** (Hardy, 20/11 : un badge posé à côté de « 16 nov. » ou de « Lun. – sam. » se lisait « aujourd'hui = 16 nov. »). **Aucun résumé** quand on ne peut pas être sûr de la règle du jour (vacances scolaires possibles, règles ajoutées ou de secours, commentaire seul) ni un jour sans règle.
+- **Horaires non compris** (4 % mesurés) : le texte d'origine, tel quel, à la même taille.
+- **Date du jour calculée à l'affichage, jamais au rendu du serveur** : la page n'est ni statique ni ISR, l'API (en cache 24 h et hors ligne) ne renvoie que le texte brut. L'écran la tient à jour avec `useDateDuJour()` (`lib/utiliser-date-du-jour.ts`) : recalculée à minuit (Paris) et au retour de l'app au premier plan, pour une fiche restée ouverte. Le composant la reçoit en paramètre.
 
 ## 4 bis. Maquettes et variantes
 
@@ -208,3 +214,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 19/11/2026 | 1.35 | § 4 quater : description d'un lieu en texte brut avec paragraphes, « Source : » dessous — D105 |
 | 18/11/2026 | 1.34 | § 2, § 3, textes : « ≈ » devant les minutes, distance seule des gares « à vol d'oiseau » — D102 |
 | 18/11/2026 | 1.33 | § 4 : fiche destination sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte — D106 |
+| 20/11/2026 | 1.36 | § 4 quinquies : horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, … » en haut quand c'est sûr, date tenue à jour — D108 |
