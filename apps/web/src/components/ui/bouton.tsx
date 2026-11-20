@@ -17,6 +17,8 @@ const classesBouton = cva(
         'fantome-sur-marque': 'text-page-marque-texte hover:bg-tuile-sur-marque-bg',
         /** Bouton rond posé sur une carte de surface de marque (fiche destination). */
         'sur-marque': 'rounded-pill bg-tuile-sur-marque-bg text-carte-sur-marque-texte',
+        /** Bouton rond posé sur une photo (fiche lieu) : lisible sur n'importe quelle image. */
+        'sur-photo': 'rounded-pill bg-sur-photo-bouton text-sur-photo-texte',
       },
       forme: { texte: 'px-4', icone: 'w-touch' },
     },
@@ -43,14 +45,15 @@ export function Bouton({ variante, forme, asChild = false, className, ...reste }
 
 type ProprietesIcone = Omit<Proprietes, 'variante' | 'forme' | 'children' | 'aria-label'>;
 
-/** Le seul bouton « Retour » de l'application ; `surMarque` sur le fond de la marque. */
+/** Le seul bouton « Retour » de l'application ; `surMarque` sur le fond de la marque, `surPhoto` sur une photo. */
 export function BoutonRetour({
   surMarque = false,
+  surPhoto = false,
   ...proprietes
-}: ProprietesIcone & { surMarque?: boolean }) {
+}: ProprietesIcone & { surMarque?: boolean; surPhoto?: boolean }) {
   return (
     <Bouton
-      variante={surMarque ? 'fantome-sur-marque' : 'fantome'}
+      variante={surPhoto ? 'sur-photo' : surMarque ? 'fantome-sur-marque' : 'fantome'}
       forme="icone"
       aria-label="Retour"
       {...proprietes}

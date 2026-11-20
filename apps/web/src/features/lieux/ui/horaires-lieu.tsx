@@ -1,6 +1,7 @@
 import { Clock } from 'lucide-react';
 import { cn } from '@/lib/classes';
 import { lireHoraires, resumeDuJour } from '../horaires/lire-horaires';
+import { CLASSES_BLOC_INFO } from './infos-lieu';
 
 /** Même colonnes pour le résumé et les lignes : les heures du jour s'alignent sur celles du dessous. */
 const GRILLE = 'grid grid-cols-[minmax(0,8.25rem)_minmax(0,1fr)] gap-2.5';
@@ -34,13 +35,13 @@ export function HorairesLieu({ texte, dateDuJour }: { texte: string; dateDuJour:
   const lignes = lireHoraires(texte, dateDuJour);
   const resume = lignes && resumeDuJour(lignes, dateDuJour);
   return (
-    <section aria-label="Horaires" className="flex gap-3 border-b px-3.5 py-3 last:border-b-0">
-      <Clock aria-hidden="true" className="mt-0.5 size-5 flex-none text-primary" />
+    <section aria-label="Horaires" className={CLASSES_BLOC_INFO}>
+      <Clock aria-hidden="true" className="mt-px size-5.5 flex-none" />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <span className="text-xs font-semibold text-muted-foreground">Horaires</span>
+        <span className="text-sm font-semibold text-carte-sur-marque-texte-muted">Horaires</span>
         {resume && (
           <p className={cn(GRILLE, 'pb-1')}>
-            <span className="text-sm font-semibold text-foreground">{resume.jour}</span>
+            <span className="text-sm font-semibold">{resume.jour}</span>
             <Plages heures={resume.heures} />
           </p>
         )}
@@ -52,13 +53,13 @@ export function HorairesLieu({ texte, dateDuJour }: { texte: string; dateDuJour:
                 className={cn(
                   GRILLE,
                   '-mx-2 rounded-md px-2 py-1.5',
-                  ligne.aujourdhui && 'bg-primary-soft',
+                  ligne.aujourdhui && 'bg-tuile-sur-marque-bg',
                 )}
               >
                 <dt
                   className={cn(
                     'text-sm',
-                    ligne.aujourdhui ? 'text-foreground' : 'text-muted-foreground',
+                    !ligne.aujourdhui && 'text-carte-sur-marque-texte-muted',
                     ligne.quand === null && 'sr-only',
                   )}
                 >

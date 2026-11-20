@@ -274,6 +274,18 @@
   --carte-lieu-hauteur: 6.75rem; /* 108 px : aussi le rayon de l'arc de la vignette */
   --vignette-arc-largeur: 7.25rem; /* 116 px */
   --vignette-arc-trait: 0.3125rem; /* 5 px : épaisseur du trait de l'arc */
+
+  /* Haut de la fiche lieu (maquette Fiche-Lieu, 20/11) : photo découpée par un grand cercle, bordé de jaune.
+     Mesures en largeur du conteneur (cqw) : même courbe sur téléphone et sur ordinateur. 390 px de large :
+     306 px de haut, rayon 582 px, centre à 282 px au-dessus du coin haut gauche, trait 6 px. */
+  --entete-lieu-hauteur: 78.5cqw;
+  --entete-lieu-hauteur-sans-photo: 46cqw; /* sans photo : même courbe, remontée */
+  --entete-lieu-rayon: 149.2cqw;
+  --entete-lieu-centre-y: -72.3cqw;
+  --entete-lieu-trait: 0.375rem; /* 6 px */
+  /* Boutons posés sur une photo : lisibles sur n'importe quelle image */
+  --sur-photo-texte: #ffffff;
+  --sur-photo-bouton: rgb(22 17 30 / 0.5);
   --pilule-carte-hauteur: 3.75rem; /* 60 px : nom du lieu choisi sur une carte */
   --pilule-carte-rond: 2.5rem; /* 40 px : rond de la flèche dans la pilule */
 
@@ -441,6 +453,8 @@
   --color-carte-sur-marque-texte-muted: var(--carte-sur-marque-texte-muted);
   --color-tuile-sur-marque-bg: var(--tuile-sur-marque-bg);
   --color-vignette-sur-marque-bg: var(--vignette-sur-marque-bg);
+  --color-sur-photo-texte: var(--sur-photo-texte);
+  --color-sur-photo-bouton: var(--sur-photo-bouton);
   --color-sortie-bg: var(--sortie-bg);
   --color-sortie-hover: var(--sortie-hover);
   --color-sortie-foreground: var(--sortie-foreground);
@@ -627,6 +641,29 @@
   position: absolute;
   inset: 0;
   clip-path: circle(var(--carte-lieu-hauteur) at 0 0);
+}
+
+/* Haut de la fiche lieu : le parent porte `@container` (largeur de référence des cqw). La hauteur suit
+   `--entete-lieu-h` (avec ou sans photo) ; le centre du cercle remonte d'autant : la courbe ne change pas. */
+@utility entete-arc {
+  position: relative;
+  --entete-lieu-h: var(--entete-lieu-h-choisie, var(--entete-lieu-hauteur));
+  --entete-lieu-cy: calc(
+    var(--entete-lieu-centre-y) - (var(--entete-lieu-hauteur) - var(--entete-lieu-h))
+  );
+  height: var(--entete-lieu-h);
+  background-color: var(--vignette-sur-marque-trait);
+  clip-path: circle(
+    calc(var(--entete-lieu-rayon) + var(--entete-lieu-trait)) at 0 var(--entete-lieu-cy)
+  );
+}
+@utility entete-arc-sans-photo {
+  --entete-lieu-h-choisie: var(--entete-lieu-hauteur-sans-photo);
+}
+@utility entete-arc-contenu {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(var(--entete-lieu-rayon) at 0 var(--entete-lieu-cy));
 }
 
 /* Chiffres alignés : horaires, durées, distances, prix */

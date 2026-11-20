@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   BadgeCheck,
   CalendarRange,
-  Footprints,
   MapPin,
   TrainFront,
 } from 'lucide-react';
@@ -17,16 +16,15 @@ import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { CarteLieuxDifferee } from '@/features/carte/ui/carte-lieux-differee';
-import { cn } from '@/lib/classes';
 import { useDateDuJour } from '@/lib/utiliser-date-du-jour';
 import { ErreurClient } from '@/lib/http/client';
-import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
 import { useRetour } from '@/lib/utiliser-retour';
 import { useFicheLieu } from '../hooks';
 import type { ContexteTrajet } from '../liens';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
 import { HorairesLieu } from './horaires-lieu';
-import { PhotoDeLaFiche } from './photo-fiche';
+import { EnTeteLieu } from './en-tete-lieu';
+import { GaresDuLieu } from './gares-du-lieu';
 import { Description, Info } from './infos-lieu';
 
 export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet | null }) {
@@ -78,7 +76,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
   }
 
   const lieu = fiche.data;
-  const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
+  const { libelle } = APPARENCE_CATEGORIE[lieu.categorie];
   const gareProche = lieu.garesProches[0];
   const carte = (
     <CarteLieuxDifferee
@@ -89,96 +87,79 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
     />
   );
 
+  // Maquette Fiche-Lieu (20/11) : toute la fiche sur le fond de la marque, ses cartes sur les surfaces de
+  // marque (D106) ; photo en arc en haut, « Y aller en train » dans une feuille en bas.
   return (
-    <CadreFiche carte={grandEcran ? carte : null}>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pt-1 pb-6">
-        {boutonRetour}
-        <PhotoDeLaFiche lieu={lieu} />
+    <CadreFiche carte={grandEcran ? carte : null} fond="marque">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-6">
+        <EnTeteLieu lieu={lieu} surRetour={surRetour} />
 
-        <div className="flex flex-col gap-2.5">
-          <h1 className="text-3xl leading-tight font-bold text-pretty">{lieu.nom}</h1>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span
-              className={cn(
-                'inline-flex min-h-7 items-center gap-1 rounded-pill pr-2.5 pl-2 text-sm font-semibold',
-                classeFond,
-                classeTexte,
+        <div className="flex flex-col gap-4 px-4 pt-2.5">
+          <div className="flex flex-col gap-3 px-1">
+            <h1 className="text-3xl leading-tight font-extrabold tracking-tight text-pretty">
+              {lieu.nom}
+            </h1>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="inline-flex min-h-8 items-center gap-1.5 rounded-pill bg-primary-soft px-3 text-sm font-semibold text-primary-soft-foreground">
+                <IconeCategorie categorie={lieu.categorie} className="size-4" />
+                {lieu.sousCategorie ? `${libelle} · ${lieu.sousCategorie}` : libelle}
+              </span>
+              {lieu.qualiteTourisme && (
+                <Badge variante="info" className="min-h-8 px-3 text-sm">
+                  <BadgeCheck aria-hidden="true" />
+                  Qualité Tourisme
+                </Badge>
               )}
+            </div>
+          </div>
+
+          <GaresDuLieu gares={lieu.garesProches} />
+
+          {lieu.description && <Description texte={lieu.description} source={lieu.attribution} />}
+
+          {(lieu.horaires || lieu.periode || lieu.adresse || lieu.commune) && (
+            <div className="flex flex-col rounded-carte bg-carte-sur-marque-bg text-carte-sur-marque-texte shadow-carte">
+              {lieu.horaires && <HorairesLieu texte={lieu.horaires} dateDuJour={aujourdhui} />}
+              {lieu.periode && (
+                <Info Icone={CalendarRange} titre="Période">
+                  {lieu.periode}
+                </Info>
+              )}
+              {(lieu.adresse || lieu.commune) && (
+                <Info Icone={MapPin} titre="Adresse">
+                  {[lieu.adresse, lieu.commune].filter(Boolean).join(', ')}
+                </Info>
+              )}
+            </div>
+          )}
+
+          {lieu.url && (
+            <Bouton
+              variante="fantome-sur-marque"
+              asChild
+              className="self-start border-[1.5px] border-page-marque-texte-muted"
             >
-              <IconeCategorie categorie={lieu.categorie} className="size-4" />
-              {lieu.sousCategorie ? `${libelle} · ${lieu.sousCategorie}` : libelle}
-            </span>
-            {lieu.qualiteTourisme && (
-              <Badge variante="info">
-                <BadgeCheck aria-hidden="true" />
-                Qualité Tourisme
-              </Badge>
-            )}
-          </div>
+              <a href={lieu.url} target="_blank" rel="noopener">
+                Site officiel
+                <ArrowUpRight aria-hidden="true" className="size-4" />
+              </a>
+            </Bouton>
+          )}
+
+          {!grandEcran && (
+            <div className="h-50 flex-none overflow-hidden rounded-carte shadow-carte">{carte}</div>
+          )}
+
+          {/* Avec une description, la source est écrite sous elle (D105) : jamais deux fois. */}
+          {!lieu.description && (
+            <p className="px-1 text-xs text-page-marque-texte-muted">{lieu.attribution}</p>
+          )}
         </div>
-
-        {lieu.garesProches.length > 0 && (
-          <section
-            aria-label="Depuis la gare"
-            className="flex flex-col rounded-carte bg-carte-bg shadow-carte"
-          >
-            {lieu.garesProches.map((g) => (
-              <div
-                key={g.uic}
-                className="flex items-center gap-3 border-b px-3.5 py-3 last:border-b-0"
-              >
-                <span className="flex size-10 flex-none items-center justify-center rounded-md bg-primary-soft">
-                  <TrainFront aria-hidden="true" className="size-5 text-primary" />
-                </span>
-                <div className="flex min-w-0 flex-col">
-                  <span className="font-semibold">Gare de {g.nom}</span>
-                  <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
-                    <Footprints aria-hidden="true" className="size-3.5" />
-                    {formaterDureeEstimee(g.dureeMarcheMin)} à pied ({formaterDistance(g.distanceM)}
-                    )
-                  </span>
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
-
-        {lieu.description && <Description texte={lieu.description} source={lieu.attribution} />}
-
-        {(lieu.horaires || lieu.periode || lieu.adresse || lieu.commune) && (
-          <div className="flex flex-col rounded-carte bg-carte-bg shadow-carte">
-            {lieu.horaires && <HorairesLieu texte={lieu.horaires} dateDuJour={aujourdhui} />}
-            {lieu.periode && (
-              <Info Icone={CalendarRange} titre="Période">
-                {lieu.periode}
-              </Info>
-            )}
-            {(lieu.adresse || lieu.commune) && (
-              <Info Icone={MapPin} titre="Adresse">
-                {[lieu.adresse, lieu.commune].filter(Boolean).join(', ')}
-              </Info>
-            )}
-          </div>
-        )}
-
-        {lieu.url && (
-          <Bouton variante="secondaire" asChild className="self-start">
-            <a href={lieu.url} target="_blank" rel="noopener">
-              Site officiel
-              <ArrowUpRight aria-hidden="true" className="size-4" />
-            </a>
-          </Bouton>
-        )}
-
-        {!grandEcran && <div className="h-44 flex-none overflow-hidden rounded-lg">{carte}</div>}
-
-        {/* Avec une description, la source est écrite sous elle (D105) : jamais deux fois. */}
-        {!lieu.description && <p className="text-xs text-muted-foreground">{lieu.attribution}</p>}
       </div>
 
       {trajet && gareProche && (
-        <footer className="flex-none border-t bg-surface px-4 pt-2.5 pb-3 safe-bottom">
-          <Bouton asChild className="w-full">
+        <footer className="flex-none rounded-t-feuille bg-feuille-bg px-4 pt-3.5 pb-3 text-foreground shadow-sheet safe-bottom">
+          <Bouton asChild className="h-13 w-full text-lg">
             <Link
               href={`/destinations/${gareProche.uic}?${new URLSearchParams({
                 depuis: trajet.depuis,
