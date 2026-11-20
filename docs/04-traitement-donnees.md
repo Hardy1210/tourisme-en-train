@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.26 · **Date** 18/11/2026
+> **Version** 1.27 · **Date** 19/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -62,7 +62,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "region": { "garesPrincipales": "…" }, "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
-  "lieux": { "descriptionMaxCaracteres": 500, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
+  "lieux": { "descriptionMaxCaracteres": 2000, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
@@ -163,6 +163,7 @@ Les formules sont des fonctions pures de `apps/web/src/lib/geo/distances.ts` (`d
 | 9 | `festivals` | Charge les festivals (P1) | 1 ter, 5 | après le P0 |
 | 10 | `rattachements` | Doublons, sites, `lieu_gare`, `gare_stats` (Qualité Tourisme déjà lu dans DATAtourisme) | 2, 6–9 | E06 |
 | 10 bis | `photos` | Une photo par lieu (`photo_lieu`) : Wikimedia, puis DATAtourisme (export national) | 1, 6–10 | D100 |
+| 10 ter | `descriptions` | Description longue en français des fiches DATAtourisme (même export, déjà téléchargé par `photos` ; ne télécharge rien) ; à relancer après `datatourisme` | 6, 10 bis | D105 |
 | 11 | `transport_local` | Charge `mobilite_locale` | 2 | E07 |
 | 12 | `lignes` | Charge `ligne_ferroviaire` (P1) | — | E07 |
 | 13 | `cyclable` | Charge `amenagement_cyclable` (P1) | — | E07 |
@@ -300,7 +301,7 @@ Commun aux sources (`sources/lieux.ts`, `chargement/lieux.ts`) :
 1. Lire les règles de la source dans `categorie_regle` (aucune → « lancez `pnpm etl regles` »).
 2. Télécharger → `data/brut/<source>/`. **Empreinte = fichier + règles** : des règles modifiées reclassent la source même si son fichier n'a pas changé.
 3. Lire, valider (Zod), **classer** (§ 4.5) et **normaliser** chaque ligne : `id_source`, `nom`, `categorie`, `sous_categorie`, `description`, `adresse`, `url`, `image_url`, `horaires`, `qualite_tourisme`, position. Ligne écartée → comptée par raison (exclue par une règle, sans règle, condition non remplie, sans position, identifiant déjà lu).
-4. **Nettoyer** (`transformations/lieux.ts`) : description sans HTML, entités décodées, coupée au mot près au-delà de `lieux.descriptionMaxCaracteres` ; adresse web http(s) validée ; nom en casse normale s'il est tout en majuscules (« CHÂTEAU DE BUSSY-RABUTIN » → « Château de Bussy-Rabutin »).
+4. **Nettoyer** (`transformations/description.ts`, D105) : description en texte brut (`<br>` → retour à la ligne, `</p>` → paragraphe, autres balises retirées), entités décimales, hexadécimales et nommées courantes en français décodées (une inconnue reste telle quelle et est comptée), espaces en trop retirés, plusieurs lignes vides → un seul saut de paragraphe ; au-delà de `lieux.descriptionMaxCaracteres`, coupée après la dernière phrase entière si elle garde au moins 80 % de la longueur, sinon au mot près, suivie de « … » ; adresse web http(s) validée ; nom en casse normale s'il est tout en majuscules (« CHÂTEAU DE BUSSY-RABUTIN » → « Château de Bussy-Rabutin »).
 5. Copier dans `tmp_lieu`, puis **commune par contour** : `code_insee` = commune dont `contour` couvre le point (`ST_Covers`, plus petit code en cas de limite). Aucun contour → **hors région, écarté**.
 6. **Contrôles :** communes de la région avec contour ≥ `controles.contoursRegionMin` ; lieux dans la région ≥ `controles.lieuxSourceMin` ; aucun identifiant en double (bloquants) ; lieux hors contours (non bloquant).
 7. Mettre à jour `lieu` **par (`source`, `id_source`)**, puis supprimer les lieux de la source qui n'y sont plus : l'`id` d'un lieu reste stable.
@@ -354,6 +355,9 @@ Commande `pnpm etl rattachements` : `transformations/rattachements.sql` exécut�
 **Contrôles** (bloquants sauf mention) : lignes illisibles dans `doublons_manuels.csv` ; décision dont un lieu n'existe plus (avertissement) ; lieu doublon de lui-même ; sources de lieux absentes de `prioriteSources` ; sous-catégorie de `regroupementSites` sans aucun lieu (avertissement) ; doublon d'un doublon ; lieu à la fois doublon et membre d'un site ; doublon ou membre de site dans `lieu_gare` ; rattachement au-delà du rayon à pied ; `gare_stats` qui ne totalise pas les lignes de `lieu_gare` d'une gare. **Tests en paires** (base de test) : lieu à 1 430 m à pied rattaché / à 1 625 m non ; même château à 20 m fusionné / noms différents à 20 m non ; même nom à 200 m fusionné / autre catégorie non ; grottes à moins de 500 m regroupées / monuments jamais / grotte à 600 m non ; canal rattaché aux gares de son tracé / sans tracé, à aucune.
 
 Au 02/11 (après D044, D045 et la relecture de Hardy : 116 « oui », 77 « non ») : 72 lieux écartés par leur nom, 964 doublons (dont 133 dans une même source), 319 sites (525 lieux rattachés à un représentant, dont les 28 autres grottes d'Arcy-sur-Cure, 16 lieux de Bibracte et 26 parcs de château), **2 092 lieux à pied d'une gare** (2 210 liens), 175 gares de la région sur 196 avec au moins un lieu ; 8 paires à relire.
+
+### 4.6 ter Descriptions complètes de DATAtourisme (D105)
+Commande `pnpm etl descriptions`, juste après `photos` (même export national `datatourisme.nt.zip`, déjà téléchargé : l'étape ne télécharge rien ; sans export ni réponse gardée, elle s'arrête en le disant). Deux passages sur le flux : fiche → `core:hasDescription` → nœud → `dc:description` ; **seulement les littéraux `@fr`**, le plus long si plusieurs. La description d'une fiche n'est remplacée **que si celle de l'export, nettoyée (§ 4.4), est plus longue** ; sinon celle du CSV reste. Réponse gardée dans `data/brut/datatourisme_photos/descriptions.json` avec l'empreinte de l'export (relue tant qu'il n'a pas changé ; `--force` relit). Contrôle : au moins `controles.descriptionsMin` lieux DATAtourisme avec une description. Rapport `traite/rapports/descriptions_remplacees.csv` (longueurs avant et après, coupée ou non) et entités inconnues. **Relancer après `datatourisme`**, qui remet les descriptions du CSV. Mesuré le 19/11 : 3 668 remplacées (1 390 nouvelles, 2 278 plus longues, dont 146 coupées : 145 en fin de phrase, 3 au mot), 150 inchangées, 151 sans description dans l'export ; 3 829 lieux DATAtourisme avec une description (moyenne 649 caractères) ; aucune entité inconnue ; durée 11 min.
 
 ### 4.6 bis Photos des lieux (D100, D101)
 Commande `pnpm etl photos`, après `rattachements` (la photo d'un doublon sert au lieu qu'il double). **Une seule photo par lieu gardé**, la première valide dans cet ordre :
@@ -467,5 +471,6 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 13/11/2026 | 1.22 | § 2 : `sousCategoriesRetirees` devient `sousCategoriesMasquees` (gardées en base, `lieu.masque`) — D093 |
 | 14/11/2026 | 1.23 | § 2 : `bullesRayonPx` 37, `bullesZoomMax` 13, `bullesDecalagePx` — D094 |
 | 16/11/2026 | 1.24 | § 2 : `acces.rayonParkingVeloM` ; § 4.7 : parkings vélo épargnés ; § 4.7 bis : parkings vélo — D097 |
+| 19/11/2026 | 1.27 | § 2 : `lieux.descriptionMaxCaracteres` 2 000, `controles.descriptionsMin` ; § 3 : `descriptions` (10 ter) ; § 4.4 : nettoyage des descriptions ; § 4.6 ter : descriptions complètes — D105 |
 | 17/11/2026 | 1.25 | § 2 : section `photos`, `controles.photosMin` ; § 3 : `photos` (10 bis) et sa fréquence ; § 4.6 bis : photos des lieux — D100, D101 |
 | 18/11/2026 | 1.26 | § 2 : `limites.lieuxParCategorie` (fiche destination, « Voir les N autres ») — D106 |

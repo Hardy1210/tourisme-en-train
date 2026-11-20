@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.34 · **Date** 18/11/2026
+> **Version** 1.35 · **Date** 19/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -95,6 +95,10 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 - **Ordre des listes (temporaire, D104)** : dans « Près de vous », « Près de la gare de… » et l'écran Lieux, les lieux avec une photo passent d'abord, puis le tri habituel ; décidé par le serveur (`photos.enPremier`), l'écran ne retrie pas.
 - **Crédit** : sur la fiche, un ⓘ discret en bas à gauche de la photo (seulement quand elle est affichée) ouvre « Photo : auteur · licence · source » (licence et page du fichier liées) ; **ⓘ** en bas à droite des cartes de l'écran Lieux et des mini-fiches (zone de 44 px, hors du lien de la carte), qui ouvre la même ligne dans une bulle ; **pas de ⓘ** sur les petites cartes de « Près de vous » / « Près de la gare de… » (Hardy, 18/11) : le crédit est sur la page du lieu. Texte alternatif : le nom du lieu.
 - Mentions légales : les photos viennent de Wikimedia et de Tourinsoft, qui reçoivent l'adresse IP du visiteur.
+
+## 4 quater. Description d'un lieu (D105)
+- **Texte brut, jamais du HTML** (pas de `dangerouslySetInnerHTML`) ; paragraphes gardés par `white-space: pre-line` (`features/lieux/ui/infos-lieu.tsx`). Repliée : 4 lignes, puis « Lire la suite » / « Réduire » au-delà de 240 caractères.
+- **« Source : » + attribution de la source du lieu, juste sous la description** (règle 8 ; DATAtourisme : « DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », `config/sources.json`). Sans description, l'attribution reste en bas de la fiche : jamais deux fois.
 
 ## 4 bis. Maquettes et variantes
 
@@ -201,5 +205,6 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 17/11/2026 | 1.30 | § Explorer : « Votre gare » quand la gare proposée n'est pas la plus proche suit la même règle (plus de minutes à pied au-delà de 2 km) — D097 |
 | 17/11/2026 | 1.31 | § 4 ter : photos des lieux (cartes, fiche, mini-fiches, crédit, limite de temps) — D100, D101, D103 |
 | 18/11/2026 | 1.32 | § 4 ter : lieux avec photo d'abord dans les listes (temporaire) — D104 |
+| 19/11/2026 | 1.35 | § 4 quater : description d'un lieu en texte brut avec paragraphes, « Source : » dessous — D105 |
 | 18/11/2026 | 1.34 | § 2, § 3, textes : « ≈ » devant les minutes, distance seule des gares « à vol d'oiseau » — D102 |
 | 18/11/2026 | 1.33 | § 4 : fiche destination sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte — D106 |

@@ -7,6 +7,9 @@
 
 ## [Non publié]
 
+### Ajouté
+- La fiche d'un lieu montre la description complète de DATAtourisme, avec ses paragraphes, au lieu d'un court résumé : 3 668 lieux y gagnent, dont 1 390 qui n'en avaient pas. Les textes très longs s'arrêtent à la fin d'une phrase. La source est écrite juste en dessous.
+
 ### Modifié
 - La carte se dessine un peu moins finement sur les écrans très denses (iPhone) : moins de travail pour le téléphone, sans différence visible.
 - Les minutes à pied sont précédées de « ≈ », partout, car ce sont des estimations (« ≈ 9 min · 648 m »). La distance d'une gare donnée seule est dite « à vol d'oiseau » (« 2,9 km à vol d'oiseau »).

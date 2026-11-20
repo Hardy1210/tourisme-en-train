@@ -27,12 +27,18 @@ export function Info({
   );
 }
 
-export function Description({ texte }: { texte: string }) {
+/**
+ * Description en texte brut, jamais en HTML (D105) : ses paragraphes sont gardés par `whitespace-pre-line`.
+ * Sa source juste dessous (règle 8 : « Source : » + attribution de `config/sources.json`).
+ */
+export function Description({ texte, source }: { texte: string; source: string }) {
   const [ouverte, setOuverte] = useState(false);
   const longue = texte.length > LONGUEUR_RESUME;
   return (
-    <div className="flex flex-col items-start">
-      <p className={cn('text-pretty', longue && !ouverte && 'line-clamp-4')}>{texte}</p>
+    <div className="flex flex-col items-start gap-1">
+      <p className={cn('whitespace-pre-line text-pretty', longue && !ouverte && 'line-clamp-4')}>
+        {texte}
+      </p>
       {longue && (
         <Bouton
           variante="fantome"
@@ -43,6 +49,7 @@ export function Description({ texte }: { texte: string }) {
           {ouverte ? 'Réduire' : 'Lire la suite'}
         </Bouton>
       )}
+      <p className="text-xs text-muted-foreground">Source : {source}</p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.29 · **Date** 18/11/2026
+> **Version** 1.30 · **Date** 19/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -199,6 +199,8 @@ Onglet Lieux (D056).
   horaires, periode, qualiteTourisme, source, attribution, lat, lon,
   garesProches: Array<{ uic: string; nom: string; distanceM: number; dureeMarcheMin: number }> }
 ```
+`description` : texte brut, jamais du HTML, au plus `lieux.descriptionMaxCaracteres` caractères ; peut contenir des retours à la ligne, et `\n\n` entre deux paragraphes (D105). `attribution` : celle de la source du lieu, affichée « Source : … » sous la description.
+
 Un lien vers un lieu devenu **doublon** ou **membre d'un site** renvoie le lieu gardé (ou le représentant du site), avec `demande` (D052) : un lien partagé ne casse pas. `404` seulement si la clé est inconnue. Cache : `public, max-age=86400`.
 
 ### 3.8 `GET /api/trains?depart&arrivee&date&depuis`
@@ -354,4 +356,5 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 16/11/2026 | 1.26 | § 3.2 : `parkingVelo` ; `/api/mobilites` sans les parkings vélo — D097 |
 | 17/11/2026 | 1.27 | § 3.3 bis : `/api/carte/lieux` en JSON simple, compression par le proxy de production — D098 |
 | 17/11/2026 | 1.28 | § 1 point 13 : `photo` (droits à la date du jour) remplace `imageUrl` dans les routes de lieux — D100, D101 |
+| 19/11/2026 | 1.30 | § 3.7 : `description` en texte brut avec paragraphes, 2 000 caractères ; `attribution` sous la description — D105 |
 | 18/11/2026 | 1.29 | § 3.3, 3.6, 3.6 bis : lieux avec photo d'abord, tri habituel dans chaque groupe (temporaire) — D104 |
