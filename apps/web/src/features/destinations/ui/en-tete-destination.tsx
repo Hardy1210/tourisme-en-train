@@ -3,7 +3,8 @@
 import { dateDuJour } from '@tourisme/commun';
 import { CalendarDays, Check, ChevronDown, Clock, Moon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Bouton, BoutonRetour } from '@/components/ui/bouton';
+import { BarreRetour } from '@/components/ui/barre-retour';
+import { Bouton } from '@/components/ui/bouton';
 import { Puce } from '@/components/ui/puce';
 import { joursDuWeekEnd, libelleDate } from '@/features/explorer/date';
 import { formaterDuree } from '../presentation';
@@ -24,18 +25,21 @@ export function EnTeteDestination({ fiche, date, surRetour, surOuvrirDate, surDa
 
   return (
     <header className="flex flex-none flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <BoutonRetour surMarque className="-ml-2" onClick={surRetour} />
-        <Bouton
-          variante="secondaire"
-          className="rounded-pill border-border px-3 font-medium"
-          onClick={surOuvrirDate}
-        >
-          <CalendarDays aria-hidden="true" className="size-4.5 text-primary" />
-          {libelleDate(date, aujourdhui)}
-          <ChevronDown aria-hidden="true" className="size-4 text-primary" />
-        </Bouton>
-      </div>
+      {/* Retour et date : la barre commune, même place que sur toutes les fiches (Hardy, 20/11). */}
+      <BarreRetour
+        surRetour={surRetour}
+        droite={
+          <Bouton
+            variante="secondaire"
+            className="rounded-pill border-border px-3 font-medium"
+            onClick={surOuvrirDate}
+          >
+            <CalendarDays aria-hidden="true" className="size-4.5 text-primary" />
+            {libelleDate(date, aujourdhui)}
+            <ChevronDown aria-hidden="true" className="size-4 text-primary" />
+          </Bouton>
+        }
+      />
 
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl leading-tight font-bold">{gare.titre}</h1>

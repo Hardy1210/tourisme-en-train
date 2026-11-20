@@ -24,7 +24,7 @@ export function CadreFiche({ carte, children, fond = 'neutre', hautPlein = false
         fond === 'marque' && 'bg-page-marque-bg text-page-marque-texte',
       )}
     >
-      <div className="flex min-h-0 flex-1 flex-col lg:h-full">{children}</div>
+      <div className="relative flex min-h-0 flex-1 flex-col lg:h-full">{children}</div>
       <div className="hidden min-h-0 lg:block">{carte}</div>
     </div>
   );

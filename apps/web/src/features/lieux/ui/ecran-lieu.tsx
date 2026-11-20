@@ -1,17 +1,12 @@
 'use client';
 
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  BadgeCheck,
-  CalendarRange,
-  MapPin,
-  TrainFront,
-} from 'lucide-react';
+import { ArrowUpRight, BadgeCheck, CalendarRange, MapPin, TrainFront } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Bouton } from '@/components/ui/bouton';
+import { BarreRetour } from '@/components/ui/barre-retour';
 import { CadreFiche } from '@/components/ui/cadre-fiche';
+import { PiedFiche } from '@/components/ui/pied-fiche';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
 import { useGrandEcran } from '@/features/carte/hooks';
@@ -33,13 +28,6 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
   const surRetour = useRetour();
   const aujourdhui = useDateDuJour();
 
-  const boutonRetour = (
-    <Bouton variante="fantome" className="-ml-2 self-start px-2 font-semibold" onClick={surRetour}>
-      <ArrowLeft aria-hidden="true" className="size-5" />
-      Retour
-    </Bouton>
-  );
-
   if (fiche.isPending) {
     return (
       <CadreFiche carte={<div aria-hidden="true" className="h-full bg-map-land" />}>
@@ -53,9 +41,9 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
   if (fiche.isError) {
     const introuvable = fiche.error instanceof ErreurClient && fiche.error.statut === 404;
     return (
-      <CadreFiche carte={null}>
-        <div className="flex flex-col gap-3 p-4">
-          {boutonRetour}
+      <CadreFiche carte={null} hautPlein>
+        <BarreRetour surRetour={surRetour} />
+        <div className="flex flex-col gap-3 px-4 pb-4 sous-barre-retour">
           <EtatVide
             titre={introuvable ? "Ce lieu n'existe pas ou plus" : 'Un problème est survenu'}
             texte={
@@ -158,8 +146,8 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
       </div>
 
       {trajet && gareProche && (
-        <footer className="flex-none rounded-t-feuille bg-feuille-bg px-4 pt-3.5 pb-3 text-foreground shadow-sheet safe-bottom">
-          <Bouton asChild className="h-13 w-full text-lg">
+        <PiedFiche>
+          <Bouton asChild className="w-full">
             <Link
               href={`/destinations/${gareProche.uic}?${new URLSearchParams({
                 depuis: trajet.depuis,
@@ -170,7 +158,7 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
               <TrainFront aria-hidden="true" className="size-4.5" />Y aller en train
             </Link>
           </Bouton>
-        </footer>
+        </PiedFiche>
       )}
     </CadreFiche>
   );

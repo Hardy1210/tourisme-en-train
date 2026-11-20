@@ -1,12 +1,12 @@
 'use client';
 
 // Haut de la fiche lieu (maquette Fiche-Lieu, 20/11) : la photo sur toute la largeur, jusqu'en haut de
-// l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand
-// cercle et bordée de jaune (`entete-arc`, globals.css) ; Retour en haut à gauche, crédit ⓘ en haut à
+// l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand cercle et bordée
+// de jaune (`entete-arc`, globals.css). Barre du haut commune (`BarreRetour`) : Retour à gauche, crédit ⓘ à
 // droite, seulement quand la photo est à l'écran (D103). Sans photo : même courbe, plus basse, sur le fond
 // de la marque, avec l'icône de la catégorie.
 import { useState } from 'react';
-import { BoutonRetour } from '@/components/ui/bouton';
+import { BarreRetour } from '@/components/ui/barre-retour';
 import { cn } from '@/lib/classes';
 import type { FicheLieu } from '../schemas';
 import { BoutonCreditPhoto, PhotoLieu } from './photo-lieu';
@@ -34,14 +34,14 @@ export function EnTeteLieu({
           />
         </div>
       </div>
-      <BoutonRetour surPhoto className="absolute left-3 entete-arc-haut" onClick={surRetour} />
-      {lieu.photo && affichee && (
-        <BoutonCreditPhoto
-          photo={lieu.photo}
-          surPhoto
-          className="absolute right-3 entete-arc-haut"
-        />
-      )}
+      {/* Retour et crédit : la barre commune, même place que sur toutes les fiches. */}
+      <BarreRetour
+        surRetour={surRetour}
+        droite={
+          lieu.photo &&
+          affichee && <BoutonCreditPhoto photo={lieu.photo} surPhoto alignement="end" />
+        }
+      />
     </div>
   );
 }

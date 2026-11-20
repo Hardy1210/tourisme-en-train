@@ -55,6 +55,12 @@
   --resultats-haut-carte: calc(100% - var(--spacing-touch));
   /* Écart minimal avec le bord de l'écran, quand le téléphone n'impose pas plus (D072). */
   --espace-bord: 0.5rem;
+  /* Barre du haut des fiches (Retour à gauche, une action à droite) : une seule position pour tous les écrans
+     (Hardy, 20/11). Mesurée depuis le haut de la fiche : sous l'heure et la batterie, puis 4 px ; 8 px des
+     bords. `--retour-zone` : où commence le contenu d'une fiche sans photo, 8 px sous la barre. */
+  --retour-haut: calc(max(env(safe-area-inset-top), var(--espace-bord)) + 0.25rem);
+  --retour-bord: var(--espace-bord);
+  --retour-zone: calc(var(--retour-haut) + var(--taille-tactile) + 0.5rem);
   --espace-bas: 1rem;
   /* Hauteur de l'application ; `HauteurEcran` la remplace là où `100dvh` est faux. */
   --hauteur-app: 100dvh;
@@ -283,7 +289,6 @@
   --entete-lieu-rayon: 149.2cqw;
   --entete-lieu-centre-y: -72.3cqw;
   --entete-lieu-trait: 0.375rem; /* 6 px */
-  --entete-lieu-ecart-boutons: 0.875rem; /* 14 px sous le haut de l'écran, ou sous l'heure */
   /* Boutons posés sur une photo : lisibles sur n'importe quelle image */
   --sur-photo-texte: #ffffff;
   --sur-photo-bouton: rgb(22 17 30 / 0.5);
@@ -669,9 +674,22 @@
   inset: 0;
   clip-path: circle(var(--entete-lieu-rayon) at 0 var(--entete-lieu-cy));
 }
-/* Boutons posés en haut de la photo : sous l'heure et la batterie, puis l'écart de la maquette (14 px). */
-@utility entete-arc-haut {
-  top: calc(env(safe-area-inset-top, 0px) + var(--entete-lieu-ecart-boutons));
+
+/* Barre du haut des fiches : posée sur le haut de la fiche (parent `relative`), même place partout. */
+@utility barre-retour {
+  position: absolute;
+  top: var(--retour-haut);
+  left: var(--retour-bord);
+  right: var(--retour-bord);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+/* Contenu d'une fiche sans photo : il commence sous la barre du haut. */
+@utility sous-barre-retour {
+  padding-top: var(--retour-zone);
 }
 
 /* Chiffres alignés : horaires, durées, distances, prix */
