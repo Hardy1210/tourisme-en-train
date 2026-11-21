@@ -24,6 +24,26 @@
 
 ---
 
+## 21/11/2026 (après-midi) — Intégration continue, règle des couches, remarques du professeur précisées
+**Fait :**
+- **Intégration continue (D110, #166)** : `.github/workflows/verifications.yml`, quatre vérifications ; premier passage vert. Mesuré sur GitHub : `verifier` 46–51 s, `integration` 49–56 s, `image` 50–59 s, `parcours` 4 min 21 – 5 min 27, ≈ 5 min 30 en tout
+- **Ensemble de règles « Vérifications de main »** créé par Hardy, sans contournement ; vérifié par l'API (`verifier`, `integration`, `image`, branche par défaut, aucun contournement)
+- **Procédure de mise en ligne (#167)** : `infra/README.md` (aide-mémoire A, § 1, § 2), `CLAUDE.md` § 15 et § 9 : fusion quand les trois vérifications sont vertes ; migrations, Coolify, Redeploy inchangés ; essai de l'image en local gardé quand elle doit démarrer
+- **Règle ESLint des couches (D111, #168)** : lancée à blanc (0 erreur ; seule exception : le fond de carte dans `features/carte`), vérifiée en échec (8 imports interdits → 8 erreurs, 4 permis → 0, une page qui importe un service → 1)
+- Remarques du professeur précisées par Hardy et une autre session : point 4 (feuille attrapée partout, qui suit le doigt, position au lâcher selon la vitesse, défilement puis redescente), point 6 (points de gare, icônes de train au zoom proche, bulles décalées de quelques pixels, autres gares en couleurs inversées, rien ne change dans le fonctionnement) ; Hardy fait des maquettes HTML statiques de certains éléments
+**Décisions :** D110, D111
+**Problèmes rencontrés :**
+- `parcours` échoue plus souvent sur GitHub (1 à 2 instables par passage : `explorer.e2e.ts:121`, `:139`, `:178`) que sur le poste ; non bloquant, e-mail d'échec à chaque fois
+- Avertissement de GitHub : les actions en `@v4` visent Node 20, déjà forcées sur Node 24 ; aucun effet aujourd'hui (`A-FAIRE`)
+**À valider par Hardy :**
+- Suppression des 24 vieilles branches locales des PR déjà fusionnées ; e-mails d'échec à couper ou non (réglage du compte)
+**Prochaine action :**
+- Après chaque maquette de Hardy : étude d'impact détaillée avant tout code (fichiers touchés, logique ou données, tests, risques)
+**Vérifications :** typecheck ✅ · lint ✅ (avec la règle des couches) · tests ✅ (GitHub sur `main` `a6593e6` : `verifier`, `integration`, `image` verts ; `parcours` 273/274, `:121` instable)
+**Commit :** `a6593e6` (#168), `45256ab` (#167), `17eb43c` (#166)
+
+---
+
 ## 21/11/2026 — Étapes E12, E13 — fiche lieu fusionnée, bouton Retour des pages de lecture, licence de Sources, remarques du professeur
 **Fait :**
 - Serveur d'essai et tunnel relancés ; essai de la fiche lieu sur l'iPhone bon (haut sans photo confirmé, D109) → **#162 fusionnée** ; sauvegarde **#159 fusionnée**

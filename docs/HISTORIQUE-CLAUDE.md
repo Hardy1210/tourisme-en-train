@@ -87,3 +87,4 @@
 | 20/11/2026 | 1.91 | § 9 : branche du design de la fiche lieu (D109) à ouvrir en PR, questions à Hardy, prochaine action du 21/11 ; § 9 Bloquant : essai « app installée » par l'écran d'accueil |
 | 21/11/2026 | 1.92 | § 9 : #162, #163, #164 sur `main`, remarques du professeur en cours de décision, durées mesurées des tests, prochaine action : comparer les deux avis |
 | 21/11/2026 | 1.93 | § 15 étapes 2 et 4 : vérifications de GitHub avant la fusion ; § 9 : l'image est vérifiée par GitHub (L80) — D110 |
+| 21/11/2026 | 1.94 | § 9 : #162 à #168 sur `main`, intégration continue en place, durées mesurées sur GitHub, prochaine action : étude d'impact après chaque maquette |
