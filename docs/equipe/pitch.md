@@ -1,7 +1,7 @@
 # Pitch : textes de la page « L'âme du produit »
 
 > **État : BROUILLON, à valider par Hardy.** Rien de cette page n'est encore affiché dans l'application.
-> **Version** 0.3 · **Date** 07/11/2026
+> **Version** 0.4 · **Date** 19/11/2026
 > **Dépend de :** `docs/00-vision.md` § 1 à 3
 > **Utilisé par :** `apps/web/src/features/presentation/` (E13), `docs/06-interface.md` § 5
 > **Document de référence pour :** les textes et les chiffres de la page (source unique, fiche E13).
@@ -68,9 +68,41 @@ Bouton : « Ouvrir l'application ».
 
 ---
 
+## One-pager (fiche d'une page, 19/11/2026)
+
+> Texte remis à Claude Design par Hardy, qui en fait le design. **Chiffres mesurés le 19/11** dans la base locale (données du 01/11) et dans `config/`. À relire par Hardy après le design.
+
+**Chiffres corrigés :**
+
+| Ancien texte | Mesuré | Pourquoi |
+|---|---|---|
+| 268 025 liaisons en train direct | **4 367** liaisons au départ des 196 gares, vers **350 gares** | 268 025 = une ligne par liaison **et par jour** (61 jours) |
+| 16 réseaux de bus et tram | **13** réseaux urbains (tram à Dijon et Besançon) + cars Mobigo + **2** vélos en libre-service = **16 réseaux de transport sur place** | Le total est juste, le libellé non |
+| « en 30 secondes » (titre) | Jamais mesuré (objectif de `00` § 4) | À mesurer sur l'iPhone (5 essais au chronomètre) avant de l'écrire |
+| « 1 à 2 h d'organisation » | Expérience de Hardy, pas une mesure | Gardé pour l'oral, retiré de l'écrit |
+| v0.3.1 | Production en 0.4.0 | Numéro en ligne le 03/12 à mettre |
+
+Inchangés et vérifiés : 196 gares, 11 180 lieux affichés, 3 322 photos, 122 gares avec un parking vélo, 14 / 2,8 / 0,3 kg (facteurs 142 / 27,7 / 2,93 g/km), 97 Mt et 69 %. Autres mesures : 3 853 lieux avec une description (après la 0.5.0), 278 avec des horaires (pas mis en avant), descriptions DATAtourisme en anglais 3 825, allemand 3 822.
+
+**Choix de Hardy :** la région dans le titre ; le problème = des sorties à un train de chez soi qu'on ne connaît pas ; « Pour qui » sans « cible principale » ni « célibataire » (la famille = persona, racontée à l'oral) ; étrangers en perspective (l'app est en français seulement) ; « Nos engagements » → « Nos choix », sans « Rien recommandé sans preuve » ; « Photos créditées » sort des fonctionnalités ; « Carte en bulles » → « Carte interactive » ; « Vélo prouvé » → « Vélo depuis la gare ».
+
+**Texte :**
+1. **Titre :** Que faire en Bourgogne-Franche-Comté ? *Allez-y en train.* — **Sous-titre :** Ouvrez l'application : elle vous montre ce qu'il y a à faire autour de vous, les trains directs pour y aller et comment vous déplacer sur place.
+2. **Chiffres :** 196 gares de la région · 350 gares desservies en train direct · 11 180 lieux à visiter · 3 322 lieux avec photo · 16 réseaux de transport sur place.
+3. **Le problème :** Beaucoup de sorties de la région sont à un seul train de chez soi, mais on ne le sait pas. Pour le vérifier, il faut croiser plusieurs sites : horaires, gares, lieux à visiter, bus à l'arrivée. Alors on reprend la voiture. Or le transport pèse 69 % des 97 Mt CO₂e du tourisme en France. — Graphique : Voiture (1 personne) ≈ 14 kg · TER ≈ 2,8 kg · TGV ≈ 0,3 kg ; CO₂e pour 100 km, par personne · ADEME Impact CO2.
+4. **Pour qui ?** Tous ceux qui veulent sortir sans voiture. En famille (une sortie du week-end avec les enfants) · À deux ou entre amis (une idée de sortie rapide, depuis sa gare) · Habitants de la région (découvrir les environs sans passer une soirée à s'organiser) · En visite dans la région (que faire ici, aujourd'hui ?) · Préparer un séjour (repérer une destination et ses trains à l'avance).
+5. **Fonctionnalités :** Autour de moi (les lieux à visiter près de vous, dès l'ouverture) · Trains directs (toutes les destinations sans correspondance depuis votre gare, aller et retour) · Carte interactive (un aperçu de tous les lieux autour de vous, d'un coup d'œil) · Fiche destination (trains aller et retour, lieux à pied depuis la gare, transports sur place) · Fiche lieu (photo, description, adresse, site officiel, gare la plus proche et trajet à pied) · Transports sur place (bus, tram, cars régionaux et vélos en libre-service près de la gare d'arrivée) · Vélo depuis la gare (proposé seulement quand un parking vélo est signalé près de la gare, 122 gares) · CO₂ et prix (le CO₂ économisé face à la voiture et un prix estimé, toujours signalé comme tel, avec le lien vers la billetterie).
+6. **Données ouvertes utilisées :** SNCF (gares de voyageurs) · Horaires SNCF (TER, Intercités, TGV) · Tarifs SNCF (prix estimé) · DATAtourisme · Qualité Tourisme · OpenStreetMap · Wikimedia Commons, Wikidata, Wikipédia · 13 réseaux urbains et cars Mobigo (GTFS) · Vélos en libre-service (GBFS) · Aménagements cyclables · ADEME Impact CO2 · Ministère de la Culture (lieux culturels, festivals) · INSEE, IGN, API Adresse · OpenFreeMap.
+7. **Nos choix :** uniquement des trains directs, sans correspondance · votre position n'est jamais enregistrée par Wagoo (ni base, ni journaux, journal d'accès coupé) · un prix toujours présenté comme une estimation · chaque source est citée, jusqu'à l'auteur de chaque photo.
+8. **Et après :** l'anglais et l'allemand (DATAtourisme fournit déjà les descriptions en 6 langues), puis d'autres régions : il suffit de changer un paramètre. *À l'oral :* « un paramètre, puis on relance le traitement ».
+9. **Pied de page :** wagoo.hardylino.com · Hardy Lino — Défi data.gouv.fr « Tourisme en train » · version en ligne le 03/12.
+
+---
+
 ## Historique
 | Date | Version | Modification |
 |---|---|---|
 | 06/11/2026 | 0.1 | Brouillon tiré de `00` § 1 à 3 ; chiffres vérifiés sur les pages sources |
 | 06/11/2026 | 0.2 | 14 kg confirmé (Hardy), voiture précisée, règle d'honnêteté chiffrée — D075 |
 | 07/11/2026 | 0.3 | 97 Mt et 69 % affichés ; pièges des 11 % et de l'avion notés — D078 |
+| 19/11/2026 | 0.4 | One-pager : texte pour Claude Design, chiffres mesurés et corrigés (268 025 → 4 367 et 350 gares ; 16 réseaux de transport sur place ; 30 secondes et 1 à 2 h non mesurés) |

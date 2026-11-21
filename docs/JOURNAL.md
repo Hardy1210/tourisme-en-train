@@ -24,6 +24,74 @@
 
 ---
 
+## 20/11/2026 (après-midi) — Étapes E17, E12 — 0.5.0 en ligne, design de la fiche lieu
+**Fait :**
+- **0.5.0 en ligne** : PR de version #161 (numéro, `CHANGELOG` daté, `compter-lignes.sql` compte les descriptions), Redeploy, contrôle 0 ; données : export du poste (empreinte `6599b386…94c28b`), sauvegarde `avant-donnees.dump` (18 Mo), restauration, **11 comptages identiques** (3 998 descriptions, 2 499 065 caractères), Redeploy, contrôle 0, essai iPhone bon ; tag `v0.5.0` sur `c7c57da` ; `~/tourisme.dump` supprimé du poste
+- **Design de la fiche lieu** (branche `etape/E12-design-fiche-lieu`, poussée, PR à ouvrir ; D109) : fond de la marque, photo en arc (`clip-path: circle`, mesures en `cqw`) jusqu'en haut de l'écran derrière l'heure (`CadreFiche hautPlein`), haut sans photo ; `BarreRetour` (une seule position par `--retour-*`, un seul dessin) sur la destination et la fiche lieu ; `PiedFiche` (pied de la destination + haut arrondi) ; captures à 390 px vues avant de montrer
+- Mesures du bouton Retour avant : 12, 14, 16 px du haut selon l'écran ; après : destination et lieu au pixel près (8 px, 12 px, 44 px)
+**Décisions :** D109 (dans la branche) ; Hardy : photo derrière l'heure comme la maquette, un seul bouton Retour partout « sans bricolage », pied de la destination arrondi pour les deux fiches
+**Problèmes rencontrés :**
+- Bande violette au-dessus de la photo : marge `safe-top` du cadre de toutes les fiches ; test d'abord, puis `hautPlein`
+- `horloge.integration.test.ts` a échoué une fois (PR #161), passé à la relance : noté dans `A-FAIRE`
+- Dans Safari, la zone de l'heure reste à Safari : l'essai de la photo pleine hauteur se fait depuis l'écran d'accueil
+**À valider par Hardy :**
+- Barre et pied sur l'iPhone ; pastille de date à 8 ou 16 px du bord ; haut sans photo ; ménage du VPS
+**Prochaine action :**
+- Ouvrir la PR du design de la fiche lieu après l'essai ; puis Sources, À propos, Mentions au même bouton Retour
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (738 unitaires, parcours 255 + 3 instables connus)
+**Commit :** `c7c57da` (0.5.0 en ligne) ; branche du design `bf671ae` et suivant
+
+## 20/11/2026 — Étape E12 — horaires lisibles (#160), fusion de #158, maquette de la fiche lieu
+**Fait :**
+- Reprise : serveur d'essai (port 3200) et tunnel relancés ; essai de #158 par Hardy (texte complet ; les « … » du Consortium viennent de DATAtourisme, pas d'une coupe) ; **#158 fusionnée**, sauvegarde #159 recalée deux fois sur `main` (conflit `A-FAIRE` résolu en gardant les deux côtés)
+- Mesures : descriptions — OSM 169 sur 8 273, DATAtourisme 3 829 sur 3 969, 171 coupées à 2 000 caractères ; horaires — 399 lieux, tous au format `opening_hours` (113 DATAtourisme), « Période » vide partout
+- **#160 fusionnée (D108)** : `features/lieux/horaires/` (analyse, calendrier avec jours fériés, traduction), 385 horaires sur 399 compris ; résumé « Aujourd'hui, ven. 20 nov. » en haut du bloc, une plage par ligne alignée sur les lignes du dessous ; `useDateDuJour()` (minuit à Paris, retour au premier plan) ; parcours `horaires.e2e.ts`, deux horaires d'exemple dans l'échantillon
+- Maquette `design/maquettes/Fiche-Lieu.dc.html` lue : photo découpée par un grand cercle (`clip-path: circle`), pas un polygone ; plan de la PR 2 donné à Hardy
+**Décisions :** D108 (voir DECISIONS.md) ; Hardy : textes gardés tels quels (pas de retour à la ligne après chaque phrase) ; résumé en haut plutôt que le badge de la maquette (lu « aujourd'hui = 16 nov. »)
+**Problèmes rencontrés :**
+- Le DNS de WSL ne trouve pas une nouvelle adresse de tunnel pendant quelques minutes : contrôle avec `curl --doh-url https://1.1.1.1/dns-query`
+- Parcours : un `has:` Playwright construit depuis la zone parente ne trouve rien ; corrigé par `filter({ hasText })`
+- `explorer.e2e.ts:178` et `:194` toujours instables (aussi sur `main`)
+**À valider par Hardy :**
+- Ordre de la suite : mise en ligne 0.5.0 d'abord (recommandé) ou PR 2 du design de la fiche lieu ; lieu sans photo à montrer avant la suite de la PR 2
+**Prochaine action :**
+- « mets en ligne » 0.5.0 (#154, #155, #156, #158, #160 ; données, étape E), puis PR 2 du design de la fiche lieu
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (731 unitaires sur `main`, 207 intégration, parcours : 252 réussis, 2 instables connus)
+**Commit :** `1fd48f7` (#160)
+
+## 19/11/2026 (matin) — Étapes E12, E13 — essai de #158, one-pager
+**Fait :**
+- Reprise : base locale démarrée (Docker Desktop relancé par Hardy), 3 829 lieux DATAtourisme décrits (moyenne 649) ; serveur d'essai dans `../tourisme-recherche` (build de cette nuit, même code que #158 : seuls des documents ont changé depuis) ; tunnel ouvert et contrôlé de l'extérieur (`/api/sante` 200) ; essai de #158 sur l'iPhone confié à Hardy (étapes et fiche d'exemple données)
+- **One-pager** : relecture avec Hardy, chaque chiffre mesuré dans la base locale et `config/` ; texte complet pour Claude Design noté dans `docs/equipe/pitch.md` § One-pager
+**Décisions :** choix de textes de Hardy (région dans le titre, « Pour qui » sans cible principale, « Nos choix » au lieu de « Nos engagements », étrangers en perspective) : notés dans `pitch.md`, pas de nouvelle décision d'architecture
+**Problèmes rencontrés :**
+- **268 025 « liaisons en train direct »** sur le one-pager : une ligne par liaison et par jour (61 jours) ; vraies valeurs : 4 367 liaisons au départ de la région, vers 350 gares
+- « 16 réseaux de bus et tram » : 13 réseaux urbains + Mobigo + 2 vélos ; « 30 secondes » et « 1 à 2 h » jamais mesurés
+**À valider par Hardy :** #158 sur l'iPhone puis fusion ; one-pager après le design
+**Prochaine action :** `CLAUDE.md` § 9 (vendredi 20/11)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (690)
+**Commit :** voir #159
+
+---
+
+## 19/11/2026 (nuit) — Étape E12 — descriptions complètes de DATAtourisme (D105)
+**Fait :**
+- #156 (audit C, densité ×2) et #157 (sauvegarde) fusionnées par Hardy ; **netteté de la carte en ×2 : aucune perte vue sur l'iPhone** (Hardy)
+- Mesures d'abord, sans rien modifier (deux passages `unzip | grep` sur l'export, 2 × 1 min 45) : 3 818 fiches sur 3 969 avec une description longue en français ; 2 271 plus longues que la nôtre, 1 390 là où nous n'avions rien ; médiane 505 caractères, 146 au-delà de 2 000 ; langues : anglais 3 825, allemand 3 822, français, espagnol, néerlandais, italien 3 818
+- Choix de Hardy : 2 000 caractères, coupe en fin de phrase (≥ 80 %) sinon au mot ; paragraphes en texte brut (`pre-line`, jamais de HTML) ; français seul, sans colonne langue (une colonne ne tiendrait qu'une description : table `description_lieu` notée pour plus tard) ; « Source : » sous la description ; question de Hardy sur le décodage : N-Triples déjà décodé (testé maintenant), entités hexadécimales et nommées françaises **ajoutées**
+- **#158** : `transformations/description.ts` (nettoyage), `datatourisme-descriptions.ts` (lecteur, réutilise le passage des photos), étape `pnpm etl descriptions` (cache, contrôle `descriptionsMin`, rapport), `chargement/descriptions.ts` ; fiche lieu : `whitespace-pre-line`, « Source : DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », attribution une seule fois ; échantillon : description à deux paragraphes (ECH_L14)
+- Base locale : 3 668 remplacées (1 390 nouvelles, 2 278 plus longues, 146 coupées : 145 en fin de phrase, 3 au mot), 3 829 avec une description (moyenne 649, contre 120), 1 245 avec paragraphes, aucune entité, balise ou échappement restant ; captures de la fiche repliée et dépliée vérifiées
+**Décisions :** D105 (descriptions complètes) ; D107 complétée (netteté validée)
+**Problèmes rencontrés :**
+- `pnpm verifier` en échec une fois : format du nouveau parcours (corrigé)
+- `pnpm etl descriptions` : 11 min (lecture ligne par ligne en Node, contre 3 min 30 avec `grep`) ; les parcours lancés en même temps ont échoué sur la carte (5) ; rejoués seuls : branche 1/10, `main` 4/10
+**À valider par Hardy :** #158 sur l'iPhone, puis 0.5.0 (code et données) ; 3 textes du pitch avant le 22/11
+**Prochaine action :** `CLAUDE.md` § 9 (20/11 : #158, 0.5.0, intégration continue avant le 22/11, horaires, Wikipédia, audit A)
+**Vérifications :** typecheck ✅ · lint ✅ · format ✅ · tests ✅ (690, branche de #158) · intégration ✅ (207) · parcours 247/252 (5 de la carte pendant le traitement, voir ci-dessus)
+**Commit :** `main` : `1f18767` ; #158 : `etape/E12-descriptions-completes`
+
+---
+
 ## 18/11/2026 (soir) — Étapes E17, E12, E15 — 0.4.0 en ligne, fiche destination sur le fond de la marque, D102, audit C
 **Fait :**
 - Reprise après une session coupée : rien de perdu (sauvegarde #150 poussée, copies propres) ; #150 fusionnée

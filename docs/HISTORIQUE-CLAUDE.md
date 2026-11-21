@@ -80,3 +80,8 @@
 | 18/11/2026 | 1.84 | § 9 : photos d'abord (#148) et horloge des tests (#149) fusionnées ; 0.4.0 en prochaine action, avec `compter-lignes.sql` à compléter |
 | 18/11/2026 | 1.85 | § 8 : 0.4.0 le 18/11 ; § 9 : production en 0.4.0, #154 et #155 sur `main`, #156 à fusionner, 0.5.0 à décider ; mesurer sur l'iPhone avant de corriger une lenteur (L81), image Docker et configurations des tests (L80), tunnel depuis la maison, recalage d'une PR empilée ; prochaine action du 19/11 |
 | 19/11/2026 | 1.86 | § 16 : étape `descriptions` dans l'ordre du traitement — D105 |
+| 19/11/2026 | 1.87 | § 9 : #156 et #157 fusionnées, #158 (D105) à essayer et fusionner, 0.5.0 avec données, intégration continue avant le 22/11, traitement lourd jamais en même temps que les parcours ; prochaine action du 20/11 |
+| 19/11/2026 | 1.88 | § 9 : one-pager (texte et chiffres mesurés, `pitch.md`), essai de #158 en cours, fiche d'exemple ; prochaine action du vendredi 20/11 |
+| 20/11/2026 | 1.89 | § 9 : #158 et #160 fusionnées (D105, D108), 0.5.0 avec #160, PR 2 du design de la fiche lieu (plan), ordre à confirmer par Hardy ; contrôle du tunnel par `--doh-url` |
+| 20/11/2026 | 1.90 | § 8 et § 9 : 0.5.0 en ligne (code et données, tag `v0.5.0`), ménage du VPS à faire, prochaine action : PR 2 du design de la fiche lieu |
+| 20/11/2026 | 1.91 | § 9 : branche du design de la fiche lieu (D109) à ouvrir en PR, questions à Hardy, prochaine action du 21/11 ; § 9 Bloquant : essai « app installée » par l'écran d'accueil |
