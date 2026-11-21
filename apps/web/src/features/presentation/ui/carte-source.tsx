@@ -21,7 +21,11 @@ export function CarteSource({ source, Icone }: Proprietes) {
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Badge className="border text-xs">{source.licence}</Badge>
+        {/* Une licence peut être une phrase (photos) : elle passe à la ligne et ne dépasse jamais la
+            carte, sinon la page devient plus large que le téléphone (Hardy, 21/11). */}
+        <Badge className="max-w-full border py-0.5 text-xs whitespace-normal">
+          {source.licence}
+        </Badge>
         {source.dateDonnees && (
           <span className="flex items-center gap-1 text-xs text-muted-foreground tabular-nums">
             <RefreshCw aria-hidden="true" className="size-3.5" />

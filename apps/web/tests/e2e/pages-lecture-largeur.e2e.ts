@@ -38,15 +38,19 @@ for (const largeur of LARGEURS) {
   }
 }
 
-const LICENCES = [...new Set(sources.sources.filter((s) => s.affichee).map((s) => s.licence))];
-const LA_PLUS_LONGUE = LICENCES.reduce((a, b) => (b.length > a.length ? b : a));
-const LA_PLUS_COURTE = LICENCES.reduce((a, b) => (b.length < a.length ? b : a));
+type Source = (typeof sources.sources)[number];
+const AFFICHEES = sources.sources.filter((s) => s.affichee);
+const LA_PLUS_LONGUE = AFFICHEES.reduce((a, b) => (b.licence.length > a.licence.length ? b : a));
+const LA_PLUS_COURTE = AFFICHEES.reduce((a, b) => (b.licence.length < a.licence.length ? b : a));
 
-async function pastille(page: Page, licence: string) {
-  const carte = page.getByRole('article').filter({ hasText: licence }).first();
+/** La carte d'une source (trouvée par son titre) et la pastille de sa licence. */
+async function pastille(page: Page, source: Source) {
+  const carte = page.getByRole('article').filter({
+    has: page.getByRole('heading', { level: 3, name: source.nom, exact: true }),
+  });
   const boiteCarte = await carte.boundingBox();
-  const boite = await carte.getByText(licence, { exact: true }).first().boundingBox();
-  if (!boiteCarte || !boite) throw new Error(`Licence introuvable : ${licence}`);
+  const boite = await carte.getByText(source.licence, { exact: true }).boundingBox();
+  if (!boiteCarte || !boite) throw new Error(`Licence introuvable : ${source.nom}`);
   return { carte: boiteCarte, boite };
 }
 
