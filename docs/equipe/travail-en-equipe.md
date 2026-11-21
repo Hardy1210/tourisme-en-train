@@ -1,7 +1,7 @@
 # Organisation GitHub
 
 > **Pour :** Hardy, et tout futur coéquipier.
-> **Version** 2.0 · 06/11/2026
+> **Version** 2.1 · 21/11/2026
 > **Liés :** `docs/07-contrat-infra.md` · `infra/README.md` · `.github/CODEOWNERS`
 
 Hardy porte seul l'application et l'infrastructure (D076). Les rôles restent écrits comme des rôles : un coéquipier peut reprendre celui de responsable infrastructure.
@@ -32,13 +32,30 @@ Dépôt → **Settings → Rulesets** (menu de gauche, rubrique « Code, plannin
 | Restrict deletions | ✅ |
 | Block force pushes | ✅ |
 | Require a pull request before merging | ✅ — Required approvals : **1** — **Dismiss stale pull request approvals when new commits are pushed** ✅ — **Require review from Code Owners** ✅ — Allowed merge methods : **Squash** uniquement |
-| Require status checks to pass | ☐ pour l'instant (aucun test automatique) ; **à activer quand l'intégration continue existe** |
+| Require status checks to pass | ☐ : les vérifications sont dans le **deuxième** ensemble de règles (§ 2 bis), sans contournement |
 | Autres réglages | Laisser par défaut |
 
 **Ce que ça donne :**
 - personne ne peut envoyer directement dans `main` ni l'effacer ;
 - une PR d'un coéquipier ne peut être fusionnée **qu'avec l'accord de Hardy** ; si elle est modifiée après l'accord, il faut le redonner ;
 - Hardy, administrateur, peut fusionner **ses propres** PR sans attendre personne (case « bypass » au moment de la fusion) : il n'est jamais bloqué.
+
+## 2 bis. Deuxième ensemble de règles : les vérifications automatiques (D110)
+
+Le contournement de Hardy saute **tout** l'ensemble de règles qui l'autorise. Les vérifications obligatoires sont donc dans un ensemble à part, **sans contournement** : personne ne fusionne une PR rouge, Hardy compris.
+
+À créer **après le premier passage** des vérifications sur une PR (GitHub ne propose un nom qu'une fois qu'il l'a vu) : *Settings* → *Rules* → *Rulesets* → *New ruleset* → *New branch ruleset*.
+
+| Réglage | Valeur |
+|---|---|
+| Ruleset name | `Vérifications de main` |
+| Enforcement status | **Active** |
+| Bypass list | **vide** (ne rien ajouter) |
+| Target branches | **Add target → Include default branch** |
+| Require status checks to pass | ✅ — *Add checks* : `verifier`, `integration`, `image` (pas `parcours (non bloquant)`) |
+| Autres réglages | Laisser décochés |
+
+**Ce que ça donne :** une PR ne peut être fusionnée que si les trois vérifications sont vertes. `parcours (non bloquant)` peut être rouge à cause d'un parcours instable connu : on regarde lequel, sans bloquer la fusion.
 
 ## 3. Le fichier CODEOWNERS
 Déjà présent dans `.github/CODEOWNERS`. Il dit à GitHub que **Hardy relit tout**. Avec le réglage « Require review from Code Owners », c'est ce qui rend son accord obligatoire.
@@ -51,3 +68,4 @@ Le modèle de PR (`.github/pull_request_template.md`) pré-remplit chaque PR ave
 |---|---|---|
 | 09/10/2026 | 1.5 | Guide complet pour une équipe avec les SR (voir l'historique Git) |
 | 06/11/2026 | 2.0 | Réduit à la configuration GitHub : équipe d'une personne — D076 |
+| 21/11/2026 | 2.1 | § 2 bis : deuxième ensemble de règles, vérifications obligatoires sans contournement — D110 |

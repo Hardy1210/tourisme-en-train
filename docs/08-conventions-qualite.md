@@ -1,6 +1,6 @@
 # 08 — Conventions de code et qualité
 
-> **Version** 1.6 · **Date** 18/11/2026
+> **Version** 1.7 · **Date** 21/11/2026
 > **Dépend de :** `01-architecture.md`, `GLOSSAIRE.md`
 > **Utilisé par :** toutes les fiches d'étape
 > **Document de référence pour :** style de code, nommage détaillé, gestion des erreurs, journaux, tests, Git, définition de « terminé ».
@@ -82,6 +82,8 @@ Règles de `CLAUDE.md` § 3. En pratique :
 6. **Un bug commence par un test** qui le reproduit et échoue ; la correction vient ensuite, et le test reste (D080).
 7. Couverture visée : **fonctions pures ≥ 90 %**, le reste selon l'utilité, sans course au chiffre.
 
+**Intégration continue (D110) :** chaque pull request et chaque fusion sur `main` relancent `verifier`, `integration` et `image` sur GitHub (bloquantes), et `parcours` (non bloquante). On teste toujours en local avant de pousser ; GitHub refait tout, sans rien demander.
+
 ## 8. Scripts
 
 | Script | Commande |
@@ -150,3 +152,4 @@ Une tâche est terminée quand **tout** est vrai :
 | 04/11/2026 | 1.4 | § 8 : tests de parcours réels (E11) |
 | 10/11/2026 | 1.5 | § 7 : un bug commence par un test — D080 |
 | 18/11/2026 | 1.6 | § 7 : « maintenant » fixé dans les tests d'intégration et les parcours (le 18/11, date de l'échantillon, était aujourd'hui : 12 échecs) |
+| 21/11/2026 | 1.7 | § 7 : intégration continue — D110 |

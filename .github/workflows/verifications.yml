@@ -1,0 +1,118 @@
+# Vérifications automatiques de chaque pull request et de chaque fusion sur main (D080, D110).
+# Bloquent la fusion (réglage GitHub de main) : verifier, integration, image.
+# Ne bloque pas : parcours (Playwright), à cause des parcours instables connus (A-FAIRE § 1).
+# Aucun secret : la base est jetable, créée et détruite à chaque passage, sans lien avec la production ;
+# ses mots de passe d'essai sont écrits ici exprès (règle 4 : aucun vrai secret dans le dépôt).
+name: Vérifications
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Un nouveau push sur la même branche annule le passage en cours, devenu inutile.
+concurrency:
+  group: verifications-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  POSTGRES_DB: tourisme
+  POSTGRES_USER: proprietaire
+  POSTGRES_PASSWORD: essai-ci
+  MDP_APP_LECTURE: essai-ci-lecture
+  MDP_ETL_ECRITURE: essai-ci-ecriture
+  BDD_URL_MIGRATIONS: postgres://proprietaire:essai-ci@localhost:5432/tourisme
+  BDD_URL_APP: postgres://app_lecture:essai-ci-lecture@localhost:5432/tourisme
+  BDD_URL_ETL: postgres://etl_ecriture:essai-ci-ecriture@localhost:5432/tourisme
+  URL_APP: http://localhost:3000
+  NODE_ENV: test
+
+jobs:
+  verifier:
+    name: verifier
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verifier
+
+  integration:
+    name: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      # Même image que docker-compose.yml.
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: tourisme
+          POSTGRES_USER: proprietaire
+          POSTGRES_PASSWORD: essai-ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U proprietaire -d tourisme"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Crée la base vide puis les rôles (migrations), comme sur le poste avant la base de test.
+      - run: pnpm db:migrer
+      - run: pnpm test:integration
+
+  image:
+    name: image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      # Construites seulement, jamais publiées : ce que Coolify construira (L80).
+      - run: docker build --file apps/web/Dockerfile --tag tourisme-web:verification .
+      - run: docker build --file etl/Dockerfile --tag tourisme-etl:verification .
+
+  parcours:
+    name: parcours (non bloquant)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    services:
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: tourisme
+          POSTGRES_USER: proprietaire
+          POSTGRES_PASSWORD: essai-ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U proprietaire -d tourisme"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @tourisme/web exec playwright install --with-deps chromium
+      - run: pnpm db:migrer
+      - run: pnpm test:e2e
+      # Traces des parcours en échec, à ouvrir avec `playwright show-trace`.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traces-parcours
+          path: test-results/
+          retention-days: 7
