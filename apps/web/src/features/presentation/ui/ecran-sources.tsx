@@ -11,7 +11,6 @@ import { LIBELLES_GROUPES, TEXTES_SOURCES } from '../contenu';
 import { useSources } from '../hooks';
 import { regrouperSources } from '../regrouper-sources';
 import { CarteSource } from './carte-source';
-import { RetourPage } from './retour-page';
 
 const ICONES_GROUPES: Record<GroupeSource, LucideIcon> = {
   trains: TrainFront,
@@ -24,7 +23,7 @@ export function EcranSources() {
   const reponse = useSources();
 
   return (
-    <CadrePage enTete={<RetourPage />}>
+    <CadrePage>
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl leading-tight font-bold">{TEXTES_SOURCES.titre}</h1>
         <p className="text-base text-pretty text-muted-foreground">{TEXTES_SOURCES.introduction}</p>

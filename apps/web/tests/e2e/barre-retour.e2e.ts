@@ -1,5 +1,6 @@
 // Barre du haut des fiches (Hardy, 20/11) : le bouton Retour est au même endroit, avec le même dessin, sur
-// toutes les fiches — avec ou sans photo, destination, erreur. Une seule règle (`barre-retour`) : aucun
+// toutes les fiches — avec ou sans photo, destination, erreur — et sur les pages de lecture (Sources,
+// À propos, Mentions légales, 21/11). Une seule règle (`barre-retour`) : aucun
 // écran ne le place lui-même. Données d'exemple (db/echantillon/).
 import { expect, test, type Page } from './test';
 import { couperLeReseau } from './outils';
@@ -13,6 +14,9 @@ const FICHES = [
   ['lieu avec photo', '/lieux/echantillon-ECH_L02'],
   ['lieu sans photo', '/lieux/echantillon-ECH_L01'],
   ['lieu introuvable', '/lieux/echantillon-INEXISTANT'],
+  ['sources', '/sources'],
+  ['à propos', '/a-propos'],
+  ['mentions légales', '/mentions-legales'],
 ] as const;
 
 async function placeDuRetour(page: Page, chemin: string) {
@@ -25,7 +29,7 @@ async function placeDuRetour(page: Page, chemin: string) {
   return { x: Math.round(boite.x), y: Math.round(boite.y), taille: Math.round(boite.width), fond };
 }
 
-test('le bouton Retour a la même place et le même dessin sur toutes les fiches', async ({
+test('le bouton Retour a la même place et le même dessin sur toutes les fiches et les pages', async ({
   page,
 }) => {
   const [reference, ...autres] = await Promise.all(

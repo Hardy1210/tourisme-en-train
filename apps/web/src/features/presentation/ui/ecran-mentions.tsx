@@ -1,10 +1,9 @@
 import { CadrePage } from '@/components/ui/cadre-page';
 import { TEXTES_MENTIONS as T } from '../contenu-mentions';
-import { RetourPage } from './retour-page';
 
 export function EcranMentions() {
   return (
-    <CadrePage enTete={<RetourPage />}>
+    <CadrePage>
       <h1 className="text-3xl leading-tight font-bold text-pretty">{T.titre}</h1>
       {T.sections.map(({ titre, paragraphes }) => (
         <section key={titre} className="flex flex-col gap-2">

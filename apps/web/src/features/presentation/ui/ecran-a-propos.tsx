@@ -5,7 +5,6 @@ import { CadrePage } from '@/components/ui/cadre-page';
 import { Carte } from '@/components/ui/carte';
 import { Logo } from '@/components/ui/logo';
 import { chiffresAffiches, TEXTES_A_PROPOS as T } from '../contenu-a-propos';
-import { RetourPage } from './retour-page';
 
 const CLASSES_SECTION = 'flex flex-col gap-3';
 const CLASSES_TITRE = 'text-2xl font-bold';
@@ -13,7 +12,7 @@ const CLASSES_TEXTE = 'text-base text-pretty';
 
 export function EcranAPropos() {
   return (
-    <CadrePage enTete={<RetourPage />}>
+    <CadrePage>
       <header className="flex flex-col items-start gap-3">
         <Logo />
         <h1 className="text-3xl leading-tight font-bold text-pretty">{T.accroche}</h1>
