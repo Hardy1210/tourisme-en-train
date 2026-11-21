@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.37 · **Date** 20/11/2026
+> **Version** 1.38 · **Date** 21/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -102,7 +102,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 
 ## 4 sexies. Fiche lieu, barre du haut et pied des fiches (D109)
 - **Fiche lieu** (maquette `design/maquettes/Fiche-Lieu.dc.html`) : toute la fiche sur le fond de la marque, cartes sur les surfaces de marque (D106). **Haut** : photo pleine largeur, jusqu'en haut de l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand cercle bordé de jaune (`entete-arc`, mesures en `cqw`) ; sans photo, même courbe plus basse, icône de la catégorie. Puis titre, pastille de catégorie, Qualité Tourisme, carte des gares, description, bloc horaires + adresse, « Site officiel » à bord fin, mini-carte, source.
-- **Barre du haut de toutes les fiches** (`BarreRetour`) : Retour à gauche, une action à droite (ⓘ de la photo, date de la destination). **Une seule position** (`--retour-haut`, `--retour-bord`, `--retour-zone`, utilitaire `barre-retour`) et **un seul dessin** (rond sombre, `sur-photo`) : aucun écran ne place son bouton Retour lui-même. Vérifié par `barre-retour.e2e.ts`.
+- **Barre du haut de toutes les fiches** (`BarreRetour`) : Retour à gauche, une action à droite (ⓘ de la photo, date de la destination). **Une seule position** (`--retour-haut`, `--retour-bord`, `--retour-zone`, utilitaire `barre-retour`) et **un seul dessin** (rond sombre, `sur-photo`) : aucun écran ne place son bouton Retour lui-même. Les pages de lecture (Sources, À propos, Mentions légales, `CadrePage`) ont la même barre depuis le 21/11 ; les pages plein écran d'Explorer (Départ, Trajet), avec un champ de saisie, gardent leur « ← Retour » en texte (choix de Hardy). Vérifié par `barre-retour.e2e.ts`.
 - **Pied des fiches** (`PiedFiche`) : celui de la fiche destination, haut arrondi des feuilles et leur ombre, hauteur qui suit le contenu.
 
 ## 4 quinquies. Horaires d'ouverture d'un lieu (D108)
@@ -221,3 +221,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 18/11/2026 | 1.33 | § 4 : fiche destination sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte — D106 |
 | 20/11/2026 | 1.36 | § 4 quinquies : horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, … » en haut quand c'est sûr, date tenue à jour — D108 |
 | 20/11/2026 | 1.37 | § 4 sexies : fiche lieu de la maquette, barre du haut commune (`BarreRetour`), pied commun (`PiedFiche`) ; § 4 ter : ⓘ en haut à droite — D109 |
+| 21/11/2026 | 1.38 | § 4 sexies : Sources, À propos, Mentions légales au même bouton Retour ; Départ et Trajet gardent le texte — D109 |
