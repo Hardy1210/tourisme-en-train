@@ -1,6 +1,6 @@
 # 01 — Architecture
 
-> **Version** 1.14 · **Date** 06/11/2026
+> **Version** 1.15 · **Date** 21/11/2026
 > **Dépend de :** `00-vision.md`, `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents techniques (02 → 08), toutes les fiches d'étape
 > **Document de référence pour :** composants, couches, dépendances autorisées, organisation du code, environnements, choix techniques.
@@ -171,6 +171,8 @@ tourisme-en-train/
 
 *Pourquoi :* ces règles gardent la logique au même endroit et rendent les calculs testables sans base. Une violation est un défaut, même si le code fonctionne.
 
+**Vérifié par ESLint (D111)** : `app/`, `components/`, `lib/` et les fonctionnalités hors `server/` n'importent ni `lib/db`, ni `lib/external`, ni un `server/` (sauf les routes d'API, qui appellent les services) ; un `server/` n'importe jamais celui d'une autre fonctionnalité. **Seule exception :** `features/carte` importe `lib/external/fond-carte` (le navigateur charge lui-même le fond de carte). Les autres lignes du tableau restent des règles écrites.
+
 Si deux fonctionnalités ont besoin de la même requête, elle descend dans `lib/db/requetes-partagees.ts`.
 
 ## 5. Flux d'une requête (exemple : destinations)
@@ -280,3 +282,4 @@ Toute nouvelle dépendance majeure : entrée dans `DECISIONS.md` **avant** insta
 | 06/11/2026 | 1.12 | § 3 : écran Sources à sa propre adresse — D075 |
 | 06/11/2026 | 1.13 | § 1, § 3 bis, § 7 : infrastructure confiée à Hardy, sur Coolify — D076 |
 | 06/11/2026 | 1.14 | § 3 bis : contenu d'`infra/` — D076 |
+| 21/11/2026 | 1.15 | § 4 : règles vérifiées par ESLint, exception du fond de carte — D111 |
