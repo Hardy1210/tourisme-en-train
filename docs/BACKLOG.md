@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.6 · **Date** 13/11/2026
+> **Version** 1.7 · **Date** 21/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -178,7 +178,7 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | Étape | Pour quand | Fait | Reste | Estimation |
 |---|---|---|---|---|
 | E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet) et D085 (page « Trajet » sur téléphone, #94), puis page « Trajet » sur Lieux ✅ (#100) et en-tête allégé, date dans « Filtres » (D086, remplace l'en-tête repliable) ; (6) parcours des filtres rayon, durée, ville (F05) ✅. Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
-| Intégration continue | P0, 22/11 | Rien | GitHub Actions sur chaque PR : `pnpm verifier`, intégration (PostgreSQL + PostGIS), parcours Playwright si possible ; fusion bloquée si un test échoue ; règle ESLint des couches (D080) | 1 j |
+| Intégration continue | P0, 22/11 | ✅ le 21/11 : GitHub Actions (`verifier`, `integration`, `image` bloquantes, `parcours` non bloquant, ensemble de règles sans contournement, D110, #166, #167) ; règle ESLint des couches (D111, #168) | Rien | – |
 | Design | 23 → 25/11 | Maquettes v3 | Retouches de Hardy, après le P0 et avant E15, pour que l'accessibilité, la performance et les captures du pitch portent sur l'interface finale (D080) | 3 j |
 | E13 | P0, 22/11 | Sources, À propos, Mentions, en ligne | 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
 | E14 | P0, 22/11 | Installation, hors ligne, iPhone en production | Un vrai Android (30 min, personne à trouver). Invitation à installer : facultative, 0,5 j | 0,5 j |
@@ -201,3 +201,4 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | 07/11/2026 | 1.4 | INF1, INF2, INF8, INF9 et F13 terminés ; F14 en cours ; § 8 : reste à faire et estimations — D077 |
 | 10/11/2026 | 1.5 | § 8 : ordre des 6 points d'E11–E12, intégration continue, design du 23 au 25/11 — D080, D081 |
 | 13/11/2026 | 1.6 | § 8 bis : F05, parcours « Près de vous » et mode destination — D089 |
+| 21/11/2026 | 1.7 | § 8 : intégration continue et règle des couches terminées — D110, D111 |
