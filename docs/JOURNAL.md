@@ -24,6 +24,26 @@
 
 ---
 
+## 21/11/2026 — Étapes E12, E13 — fiche lieu fusionnée, bouton Retour des pages de lecture, licence de Sources, remarques du professeur
+**Fait :**
+- Serveur d'essai et tunnel relancés ; essai de la fiche lieu sur l'iPhone bon (haut sans photo confirmé, D109) → **#162 fusionnée** ; sauvegarde **#159 fusionnée**
+- **#164 fusionnée** : Sources, À propos, Mentions légales au bouton Retour des fiches (`BarreRetour` dans `CadrePage`, `RetourPage` supprimé) ; Départ et Trajet d'Explorer gardent « ← Retour » en texte (Hardy) ; `barre-retour.e2e.ts` compare aussi les trois pages
+- **#163 fusionnée** : sur Sources, deux licences (photos DATAtourisme, Wikimedia) en `whitespace-nowrap` rendaient la page large de 685 px pour 390 ; présent en production depuis la 0.4.0 (mesuré sur `wagoo.hardylino.com`). Test d'abord (`pages-lecture-largeur.e2e.ts` : 390 et 320 px, licence longue à la ligne, limite : la courte sur une ligne), puis `max-w-full whitespace-normal` sur la pastille de la carte seulement
+- **Durées mesurées** (poste, copie `../tourisme-parcours`) : `pnpm verifier` 51 s, `pnpm test:integration` 27 s, `pnpm test:e2e` 6 min 35 s build compris (premier passage) puis 5,5 min de tests (second)
+- **Remarques du professeur sur l'UI/UX** transcrites en 7 points avec l'avis de Claude et un plan (`A-FAIRE` § 1) ; Hardy demande aussi l'avis d'une autre session de Claude Code avant de décider
+**Décisions :** D109 complétée (pages de lecture ; Départ et Trajet gardent le texte)
+**Problèmes rencontrés :**
+- Mentions légales signalée par Hardy comme débordante : rien mesuré à 390, 375, 360, 320 px ; Hardy confirme ensuite qu'elle est bonne
+- Test de limite d'abord faux : la carte cherchée par sa licence (« CC0 ») trouvait celle de Wikimedia, qui contient « CC0 » ; corrigé en cherchant la carte par son titre. Puis `py-0.5` rendait la pastille courte haute de 23 px : retiré, les courtes restent identiques
+**À valider par Hardy :**
+- Ordre des remarques du professeur après l'avis de l'autre session ; intégration continue avant ou après elles
+**Prochaine action :**
+- Comparer l'avis de l'autre Claude Code point par point, puis plan validé par Hardy
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`main` `aa69063` : 738 unitaires ; branches : intégration 207, parcours 274 sans échec pour #163, 256 + 2 instables connus pour #164)
+**Commit :** `aa69063` (#164), `967dc52` (#163), `19739f8` (#162)
+
+---
+
 ## 20/11/2026 (après-midi) — Étapes E17, E12 — 0.5.0 en ligne, design de la fiche lieu
 **Fait :**
 - **0.5.0 en ligne** : PR de version #161 (numéro, `CHANGELOG` daté, `compter-lignes.sql` compte les descriptions), Redeploy, contrôle 0 ; données : export du poste (empreinte `6599b386…94c28b`), sauvegarde `avant-donnees.dump` (18 Mo), restauration, **11 comptages identiques** (3 998 descriptions, 2 499 065 caractères), Redeploy, contrôle 0, essai iPhone bon ; tag `v0.5.0` sur `c7c57da` ; `~/tourisme.dump` supprimé du poste
