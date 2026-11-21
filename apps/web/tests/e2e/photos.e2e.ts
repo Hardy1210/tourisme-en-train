@@ -26,9 +26,10 @@ const cadrePhoto = (page: Page) => page.locator('[data-photo-etat]').first();
 test.describe('fiche lieu', () => {
   test.beforeEach(({ context, baseURL }) => servirPhotos(context, baseURL));
 
-  // Hardy, 18/11 : plus de ligne de crédit sous la photo ; un ⓘ discret en bas à gauche de la photo ouvre
-  // le crédit complet (auteur, licence, source), comme sur les cartes.
-  test('la photo s’affiche ; le ⓘ en bas à gauche ouvre le crédit complet et ses liens', async ({
+  // Hardy, 18/11 : plus de ligne de crédit sous la photo ; un ⓘ discret ouvre le crédit complet (auteur,
+  // licence, source), comme sur les cartes. Maquette Fiche-Lieu (20/11) : en haut à droite de la photo,
+  // en face du bouton Retour, posé en haut à gauche.
+  test('la photo s’affiche ; le ⓘ en haut à droite ouvre le crédit complet et ses liens', async ({
     page,
   }) => {
     await page.goto('/lieux/echantillon-ECH_L02');
@@ -37,11 +38,19 @@ test.describe('fiche lieu', () => {
     await expect(cadrePhoto(page)).toHaveAttribute('data-photo-etat', 'affichee');
     await expect(page.getByText(/^Photo : Exemple Photographe/)).toHaveCount(0);
     const bouton = page.getByRole('button', { name: 'Crédit de la photo' });
-    // En bas à gauche de la photo.
-    const [cadre, ici] = await Promise.all([photo.boundingBox(), bouton.boundingBox()]);
-    if (!cadre || !ici) throw new Error('photo ou ⓘ sans position');
-    expect(ici.x).toBeLessThan(cadre.x + cadre.width / 2);
-    expect(ici.y + ici.height).toBeGreaterThan(cadre.y + cadre.height / 2);
+    const retour = page.getByRole('button', { name: 'Retour' });
+    const [cadre, ici, gauche] = await Promise.all([
+      photo.boundingBox(),
+      bouton.boundingBox(),
+      retour.boundingBox(),
+    ]);
+    if (!cadre || !ici || !gauche) throw new Error('photo, ⓘ ou Retour sans position');
+    expect(ici.x).toBeGreaterThan(cadre.x + cadre.width / 2);
+    expect(ici.y + ici.height).toBeLessThan(cadre.y + cadre.height / 2);
+    // Retour sur la photo, en haut à gauche.
+    expect(gauche.x + gauche.width).toBeLessThan(cadre.x + cadre.width / 2);
+    expect(gauche.y).toBeGreaterThanOrEqual(cadre.y);
+    expect(gauche.y + gauche.height).toBeLessThan(cadre.y + cadre.height / 2);
     await bouton.click();
     await expect(page.getByText(/^Photo : Exemple Photographe/)).toContainText('CC BY-SA 4.0');
     await expect(page.getByRole('link', { name: 'CC BY-SA 4.0' })).toHaveAttribute(
@@ -55,6 +64,9 @@ test.describe('fiche lieu', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Aire de jeux du centre');
     await expect(page.locator('main img')).toHaveCount(0);
     await expect(page.getByText(/^Photo :/)).toHaveCount(0);
+    // Le haut de la fiche garde son bouton Retour, et aucun ⓘ sans photo.
+    await expect(page.getByRole('button', { name: 'Retour' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Crédit de la photo' })).toHaveCount(0);
   });
 
   test('photo trop lente : l’icône tout de suite, puis l’abandon après la limite de temps', async ({

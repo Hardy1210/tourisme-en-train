@@ -2,7 +2,8 @@
 
 import { dateDuJour } from '@tourisme/commun';
 import { useState } from 'react';
-import { Bouton, BoutonRetour } from '@/components/ui/bouton';
+import { BarreRetour } from '@/components/ui/barre-retour';
+import { Bouton } from '@/components/ui/bouton';
 import { CadreFiche } from '@/components/ui/cadre-fiche';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Onglets } from '@/components/ui/onglets';
@@ -52,9 +53,9 @@ export function EcranDestination({ uic }: { uic: string }) {
     const { error } = fiche;
     const statut = error instanceof ErreurClient ? error.statut : 500;
     return (
-      <CadreFiche fond="marque" carte={null}>
-        <div className="flex flex-col gap-3 p-4">
-          <BoutonRetour surMarque className="-ml-2" onClick={surRetour} />
+      <CadreFiche fond="marque" carte={null} hautPlein>
+        <BarreRetour surRetour={surRetour} />
+        <div className="flex flex-col gap-3 px-4 pb-4 sous-barre-retour">
           {statut === 404 ? (
             <EtatVide
               titre="Cette destination n'existe pas ou plus"
@@ -92,8 +93,8 @@ export function EcranDestination({ uic }: { uic: string }) {
   const versTrains = () => changer({ onglet: 'trains' });
 
   return (
-    <CadreFiche fond="marque" carte={grandEcran ? carte : null}>
-      <div className="flex min-h-0 flex-1 flex-col gap-3 px-4 pt-1">
+    <CadreFiche fond="marque" carte={grandEcran ? carte : null} hautPlein>
+      <div className="flex min-h-0 flex-1 flex-col gap-3 px-4 sous-barre-retour">
         <EnTeteDestination
           fiche={fiche.data}
           date={date}

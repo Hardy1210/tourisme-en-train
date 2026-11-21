@@ -145,11 +145,14 @@ export function BoutonCreditPhoto({
   photo,
   className,
   alignement = 'end',
+  surPhoto = false,
 }: {
   photo: Photo;
   className?: string;
   /** Côté de la photo où se trouve le ⓘ : la bulle s'ouvre de ce côté. */
   alignement?: 'start' | 'end';
+  /** Posé en haut de la photo de la fiche : rond sombre, comme le bouton Retour (maquette Fiche-Lieu). */
+  surPhoto?: boolean;
 }) {
   return (
     <Popover.Root>
@@ -160,14 +163,21 @@ export function BoutonCreditPhoto({
           title={texteCredit(photo)}
           className={cn('flex size-11 items-center justify-center rounded-pill', className)}
         >
-          <span className="flex size-6 items-center justify-center rounded-pill bg-surface/90 text-foreground shadow-xs ring-1 ring-border">
-            <Info aria-hidden="true" className="size-4" />
+          <span
+            className={cn(
+              'flex items-center justify-center rounded-pill',
+              surPhoto
+                ? 'size-8 bg-sur-photo-bouton text-sur-photo-texte'
+                : 'size-6 bg-surface/90 text-foreground shadow-xs ring-1 ring-border',
+            )}
+          >
+            <Info aria-hidden="true" className={surPhoto ? 'size-4.5' : 'size-4'} />
           </span>
         </button>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          side="top"
+          side={surPhoto ? 'bottom' : 'top'}
           align={alignement}
           sideOffset={2}
           collisionPadding={16}
