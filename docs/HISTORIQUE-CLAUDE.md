@@ -86,3 +86,4 @@
 | 20/11/2026 | 1.90 | § 8 et § 9 : 0.5.0 en ligne (code et données, tag `v0.5.0`), ménage du VPS à faire, prochaine action : PR 2 du design de la fiche lieu |
 | 20/11/2026 | 1.91 | § 9 : branche du design de la fiche lieu (D109) à ouvrir en PR, questions à Hardy, prochaine action du 21/11 ; § 9 Bloquant : essai « app installée » par l'écran d'accueil |
 | 21/11/2026 | 1.92 | § 9 : #162, #163, #164 sur `main`, remarques du professeur en cours de décision, durées mesurées des tests, prochaine action : comparer les deux avis |
+| 21/11/2026 | 1.93 | § 15 étapes 2 et 4 : vérifications de GitHub avant la fusion ; § 9 : l'image est vérifiée par GitHub (L80) — D110 |
