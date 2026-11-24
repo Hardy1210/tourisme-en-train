@@ -61,11 +61,13 @@ test('destination choisie : « Près de la gare de Beaune » en bas, à 2 km, et
   await expect(page.getByText('Prochain départ direct').locator('..')).toContainText('→ Beaune');
 });
 
-test('destination choisie : « Filtres » ne garde que « Quand ? », Réinitialiser ne touche que la date', async ({
+// D114 : « Réinitialiser » remet à zéro tout ce que la feuille montre (catégories et date), rien d'autre.
+test('destination choisie : « Filtres » ne garde que « Catégories » et « Quand ? », Réinitialiser remet les deux à zéro', async ({
   page,
 }) => {
-  await page.goto(`${AVEC_BEAUNE}&categories=enfants`);
+  await page.goto(`${AVEC_BEAUNE}&categories=enfants&dureeMax=60`);
   await page.getByRole('button', { name: /^Filtres/ }).click();
+  await expect(feuilleFiltres(page).getByRole('group', { name: 'Catégories' })).toBeVisible();
   await expect(feuilleFiltres(page).getByText('Quand ?')).toBeVisible();
   await expect(groupe(page, 'Distance autour de vous')).toHaveCount(0);
   await expect(groupe(page, 'Temps de train maximum')).toHaveCount(0);
@@ -73,8 +75,10 @@ test('destination choisie : « Filtres » ne garde que « Quand ? », Réinitial
 
   await feuilleFiltres(page).getByRole('button', { name: 'Réinitialiser' }).click();
   await expect(page).not.toHaveURL(/date=/);
-  await expect(page).toHaveURL(/categories=enfants/);
+  await expect(page).not.toHaveURL(/categories=/);
+  // Ni la destination, ni le temps de train, caché dans ce mode, ne bougent.
   await expect(page).toHaveURL(/destination=EX000002/);
+  await expect(page).toHaveURL(/dureeMax=60/);
 });
 
 test('sans destination : « Filtres » montre tout', async ({ page }) => {
