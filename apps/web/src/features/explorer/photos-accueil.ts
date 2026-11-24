@@ -91,4 +91,17 @@ export const PHOTOS_ACCUEIL: readonly PhotoAccueil[] = [
     },
     cadrage: '50% 50%',
   },
+  // Belvédère de l'Hermitage, Saint-Claude : gare, ≈ 13 min à pied
+  {
+    photo: {
+      petite: '/accueil/belvedere-hermitage-saint-claude.webp',
+      grande: '/accueil/belvedere-hermitage-saint-claude.webp',
+      auteur: '© Marianne Levert',
+      licence: 'Licence Ouverte',
+      licenceUrl: null,
+      page: null,
+      source: 'datatourisme_photos',
+    },
+    cadrage: '50% 40%',
+  },
 ];
