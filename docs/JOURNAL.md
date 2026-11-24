@@ -24,6 +24,26 @@
 
 ---
 
+## 24/11/2026 (nuit) — Étapes E11/E12 — Barre sur deux lignes, date et ⇅ dans la page « Trajet », remise en ordre
+**Fait :**
+- **#176 (D115)** : barre du trajet sur deux lignes quand une destination est cherchée ; essai de Hardy sur l'iPhone
+- **#178 (D116)** : la date dans la page « Trajet » (ligne toujours, pastilles avec Destination, calendrier) ; défaut trouvé par la suite complète et corrigé avant la PR (page fermée qui contenait déjà les boutons de date, en double)
+- **Relecture du code de la journée** (demande de Hardy : code maintenable, sans cascade d'états) : tout sous 200 lignes sauf `page-trajet.tsx` (212), où ⇅ devait aller
+- **#179 (remise en ordre, aucun changement visible)** : un seul état (réducteur pur `saisie-trajet.ts`), vérification « reste-t-il un train direct ? » calculée, logique dans `use-saisie-trajet.ts`, page en mise en page seule (122 lignes) ; garde `enabled` de `useDestinations` sans gare ; deux parcours manquants écrits et passés sur `main` puis sur la branche (L86)
+- **#180 (D117)** : ⇅ dans la page « Trajet » ; une action du réducteur, deux fonctions pures, la même réaction que la vérification (L85)
+- Idée de Hardy notée (`A-FAIRE`) : ⇅ aussi dans la barre d'Explorer, une seule logique pour les deux vues
+**Décisions :** D115, D116, D117
+**Problèmes rencontrés :**
+- Parcours instables de la carte : mesurés deux fois à conditions égales (7/16 sur `main`, 3/16 sur la branche de #178) ; aucune PR ne les aggrave
+**À valider par Hardy :**
+- Maquette de ⑥ (marqueurs de gare) ; mise en ligne 0.6.0
+**Prochaine action :**
+- ⑥ quand la maquette arrive, sinon ④ (la feuille qui suit le doigt, sans maquette)
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` sur `main` après #180 : 803 tests)
+**Commit :** `ad8fb82` (#180)
+
+---
+
 ## 24/11/2026 (soir) — Étapes E11/E12 — Écran 2 de l'accueil, catégories dans « Filtres », barre sur deux lignes
 **Fait :**
 - **Écran 2 (#174, D113)** : « Dans quelle ville êtes-vous ? » sur le fond de la marque, dans le cadre de l'accueil (même photo pendant la visite) ; plein écran dans Explorer, dans la page avec le menu dans Lieux (solution A, à revoir à l'évaluation) ; sans fenêtre modale ; message « Aucune gare trouvée » dans l'écran ; suite complète verte (306/306)

@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.23 · **Date** 24/11/2026
+> **Version** 1.24 · **Date** 24/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -566,6 +566,20 @@
 - **À retenir :** un test qui reproduit un défaut se vérifie dans les deux sens, et avec un sélecteur qui ne désigne que l'élément visé ; sinon son échec ne prouve rien.
 - **Origine :** #172, 24/11.
 
+### L85 — Deux écritures de l'adresse dans le même geste : la seconde efface la première
+- **Problème :** pour ⇅, il fallait changer la gare de départ (`?gare=`) et la destination (`?recherche=&destination=`) d'un même toucher.
+- **Cause :** chaque écriture part de l'adresse **lue au rendu** ; deux écritures dans le même geste partent de la même adresse, et la seconde remplace la première sans la moindre erreur : la nouvelle gare disparaît.
+- **Solution :** une seule écriture par geste ; la destination est posée ensuite, quand la liste du nouveau départ est chargée (une réaction, au même endroit que les autres).
+- **À retenir :** quand l'état vit dans l'adresse de la page, changer deux parties d'un coup se fait en une seule écriture, ou en deux étapes séparées ; jamais deux écritures indépendantes dans le même geste.
+- **Origine :** #180, D117, 24/11.
+
+### L86 — Une remise en ordre se prouve par des tests qui passent avant et après
+- **Problème :** la page « Trajet » avait quatre états remis à zéro un par un et une vérification en allers-retours entre deux composants ; il fallait la remettre en ordre avant d'y ajouter ⇅, sans rien changer pour l'utilisateur.
+- **Cause :** sans test du cas « changer de départ avec une destination choisie », rien n'aurait prouvé que la remise en ordre ne changeait rien : c'était justement la partie réécrite.
+- **Solution :** écrire d'abord les parcours manquants, les faire passer **sur `main`** (ils décrivent l'ancien comportement), puis sur la branche remise en ordre ; logique sortie en réducteur et fonctions pures, testées par paires.
+- **À retenir :** avant de réécrire, chercher le trou dans les tests de la partie réécrite, et faire passer les nouveaux tests sur l'ancien code d'abord ; « les tests passent » ne prouve rien si aucun ne regarde ce qu'on change.
+- **Origine :** #179, 24/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -643,3 +657,4 @@ Valeurs en g CO₂e/km.
 | 18/11/2026 | 1.21 | L80 (une configuration des tests peut casser l'image), L81 (mesurer sur l'appareil réel avant de corriger une lenteur) |
 | 20/11/2026 | 1.22 | L82 (un repère posé à côté d'une valeur se lit comme cette valeur) |
 | 24/11/2026 | 1.23 | L83 (une fenêtre modale pendant une demande d'autorisation), L84 (un test « d'abord » doit échouer pour la bonne raison) |
+| 24/11/2026 | 1.24 | L85 (deux écritures de l'adresse dans le même geste), L86 (une remise en ordre se prouve par des tests avant et après) |
