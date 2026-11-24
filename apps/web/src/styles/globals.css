@@ -284,6 +284,9 @@
   --tuile-sur-marque-bg: var(--hero-tile);
   --vignette-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 20%, var(--hero-bg));
   --vignette-sur-marque-trait: var(--accent);
+  --action-sur-marque: var(
+    --accent
+  ); /* action secondaire en texte sur la marque (« Autoriser la localisation ») */
   --carte-lieu-hauteur: 6.75rem; /* 108 px : aussi le rayon de l'arc de la vignette */
   --vignette-arc-largeur: 7.25rem; /* 116 px */
   --vignette-arc-trait: 0.3125rem; /* 5 px : épaisseur du trait de l'arc */
@@ -465,6 +468,7 @@
   --color-carte-sur-marque-texte: var(--carte-sur-marque-texte);
   --color-carte-sur-marque-texte-muted: var(--carte-sur-marque-texte-muted);
   --color-tuile-sur-marque-bg: var(--tuile-sur-marque-bg);
+  --color-action-sur-marque: var(--action-sur-marque);
   --color-vignette-sur-marque-bg: var(--vignette-sur-marque-bg);
   --color-sur-photo-texte: var(--sur-photo-texte);
   --color-sur-photo-bouton: var(--sur-photo-bouton);

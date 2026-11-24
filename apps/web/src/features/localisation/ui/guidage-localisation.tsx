@@ -6,11 +6,18 @@ import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 import { Bandeau } from '@/components/ui/bandeau';
+import { cn } from '@/lib/classes';
 
 import { GUIDES_LOCALISATION, LIBELLES_GUIDAGE } from '../contenu-guidage';
 import { useAppareil } from './use-appareil';
 
-export function GuidageLocalisation({ bloquee }: { bloquee: boolean }) {
+type Proprietes = {
+  bloquee: boolean;
+  /** Sur le fond de la marque (écran 2 de l'accueil, D113). */
+  surMarque?: boolean;
+};
+
+export function GuidageLocalisation({ bloquee, surMarque = false }: Proprietes) {
   const appareil = useAppareil();
   // null : la personne n'a pas encore touché le lien ; ouvert si la localisation reste bloquée.
   const [choix, setChoix] = useState<boolean | null>(null);
@@ -23,23 +30,42 @@ export function GuidageLocalisation({ bloquee }: { bloquee: boolean }) {
       <details
         open={ouvert}
         onToggle={(evenement) => setChoix(evenement.currentTarget.open)}
-        className="group rounded-carte bg-surface-sunken px-4 py-3"
+        className={cn(
+          'group rounded-carte px-4 py-3',
+          surMarque ? 'bg-carte-sur-marque-bg' : 'bg-surface-sunken',
+        )}
       >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-semibold text-primary [&::-webkit-details-marker]:hidden">
+        <summary
+          className={cn(
+            'flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-semibold [&::-webkit-details-marker]:hidden',
+            surMarque ? 'text-carte-sur-marque-texte' : 'text-primary',
+          )}
+        >
           {LIBELLES_GUIDAGE.lien}
           <ChevronDown
             aria-hidden="true"
             className="size-4.5 transition-transform group-open:rotate-180"
           />
         </summary>
-        <div className="mt-3 flex flex-col gap-2 text-sm text-foreground">
+        <div
+          className={cn(
+            'mt-3 flex flex-col gap-2 text-sm',
+            surMarque ? 'text-carte-sur-marque-texte' : 'text-foreground',
+          )}
+        >
           <p className="font-semibold">{guide.titre}</p>
           <ol className="flex list-decimal flex-col gap-1.5 pl-5">
             {guide.etapes.map((etape) => (
               <li key={etape}>{etape}</li>
             ))}
           </ol>
-          {guide.complement && <p className="text-muted-foreground">{guide.complement}</p>}
+          {guide.complement && (
+            <p
+              className={surMarque ? 'text-carte-sur-marque-texte-muted' : 'text-muted-foreground'}
+            >
+              {guide.complement}
+            </p>
+          )}
         </div>
       </details>
     </div>

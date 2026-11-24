@@ -115,7 +115,7 @@ export function EcranExplorer() {
         <ErreurChoixDepart choix={choix} />
       </EnTete>
 
-      <EtatsDepart choix={choix} />
+      <EtatsDepart choix={choix} pleinEcran />
 
       {depart.etat === 'pret' && (
         <ResultatsExplorer

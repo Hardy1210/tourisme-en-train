@@ -69,7 +69,7 @@ export function EcranLieux() {
         />
       ) : (
         <div className="flex-1 overflow-y-auto bg-background">
-          <EtatsDepart choix={choix} />
+          <EtatsDepart choix={choix} pleinEcran={false} />
         </div>
       )}
 
