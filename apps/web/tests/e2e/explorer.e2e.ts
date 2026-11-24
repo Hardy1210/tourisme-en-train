@@ -280,6 +280,29 @@ test.describe('position acceptée', () => {
     expect(hauteur).toBeLessThan(60);
   });
 
+  // D115 (maquette « Explorer », état 2) : destination cherchée → deux lignes ; ✕ → une ligne.
+  test('destination choisie : la barre passe sur deux lignes, « Départ » puis « Arrivée »', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN_ETE);
+    await expect(sorties(page).first()).toBeVisible();
+    const { fenetre, champ } = await ouvrirDestination(page);
+    await champ.fill('besancon');
+    await fenetre.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+
+    await expect(barre(page)).toContainText('Départ');
+    await expect(barre(page)).toContainText('Arrivée');
+    await expect(barre(page)).toContainText('Besançon Franche-Comté TGV');
+    await expect(barre(page)).not.toContainText('Autour de');
+    expect((await barre(page).boundingBox())?.height ?? 0).toBeGreaterThan(80);
+    // Les noms pour les lecteurs d'écran ne changent pas.
+    await expect(barre(page).getByRole('button', { name: /^Départ : Autour de/ })).toBeVisible();
+
+    await barre(page).getByRole('button', { name: 'Effacer la recherche' }).click();
+    await expect(barre(page)).toContainText('Où aller ?');
+    expect((await barre(page).boundingBox())?.height ?? 0).toBeLessThan(60);
+  });
+
   test('« besancon » : 2 trouvées, triées par temps ; « Afficher » filtre liste et carte, départ inchangé', async ({
     page,
   }) => {

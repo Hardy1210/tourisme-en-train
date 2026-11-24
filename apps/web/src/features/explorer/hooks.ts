@@ -11,7 +11,7 @@ import { useLancementTermine } from '@/lib/ecran-lancement';
 import { useEcranVisible, useUrlEcran } from '@/lib/ecran-visible';
 import { ErreurClient, lireApi } from '@/lib/http/client';
 import { useEnLigne } from '@/lib/use-en-ligne';
-import { calculerDepart } from './depart';
+import { calculerDepart, nomDepartCourt } from './depart';
 import { ecrireDerniereGare, lireDerniereGare } from './derniere-gare';
 import { ecrireFiltres, lireFiltres, type Filtres } from './filtres';
 
@@ -106,11 +106,15 @@ export function useChoixDepart(options: OptionsDepart = {}) {
       : depart.etat === 'pret'
         ? `Autour de ${commune.data?.commune ?? 'vous'}`
         : 'Choisir une ville';
+  /** Barre sur deux lignes (D115) : « Dijon », « Beaune », pas « Autour de … ». */
+  const departCourt =
+    depart.etat === 'pret' ? nomDepartCourt(depart, commune.data?.commune ?? null) : libelle;
 
   return {
     depart,
     essais,
     libelle,
+    departCourt,
     erreurChoix,
     feuilleOuverte,
     setFeuilleOuverte,

@@ -1,6 +1,7 @@
 // D'où part l'utilisateur : une décision pure, à partir de l'URL, de sa position et des gares trouvées.
 import type { GareProche } from '@/features/gares/schemas';
 import type { EtatPosition } from '@/features/localisation/position';
+import { TEXTES_TRAJET } from './contenu-trajet';
 import type { DerniereGare } from './derniere-gare';
 
 export type GareDepart = {
@@ -144,4 +145,16 @@ export function plusProcheDifferente(depart: Extract<Depart, { etat: 'pret' }>):
   return plusProche && plusProche.dansRegion && plusProche.uic !== depart.gare.uic
     ? plusProche
     : null;
+}
+
+/**
+ * Départ en un mot, pour la barre sur deux lignes (« Départ  Dijon », D115) : la commune de la position,
+ * ou « Ma position » si elle n'est pas encore connue ; le nom de la gare si elle a été choisie.
+ */
+export function nomDepartCourt(
+  depart: Extract<Depart, { etat: 'pret' }>,
+  commune: string | null,
+): string {
+  if (depart.origine === 'choix') return depart.gare.nom;
+  return commune ?? TEXTES_TRAJET.maPosition;
 }

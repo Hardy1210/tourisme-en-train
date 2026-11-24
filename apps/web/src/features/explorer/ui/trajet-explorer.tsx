@@ -44,6 +44,7 @@ export function TrajetExplorer({
     <>
       <BarreTrajet
         depart={choix.libelle}
+        departCourt={choix.departCourt}
         destination={libelleDestination(filtres, liste?.length ?? 0)}
         // Le départ se choisit dans la feuille « D'où partez-vous ? » d'avant.
         surDepart={() => (ouvrirPage ? ouvrirPage('depart') : choix.setFeuilleOuverte(true))}
