@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.22 · **Date** 20/11/2026
+> **Version** 1.23 · **Date** 24/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -552,6 +552,20 @@
 - **À retenir :** un repère d'état (« aujourd'hui », « en cours », « recommandé ») ne doit pas pouvoir être pris pour une valeur ; l'essai sur le téléphone par quelqu'un qui n'a pas écrit le code le révèle en une minute.
 - **Origine :** #160, D108, 20/11.
 
+### L83 — Une fenêtre modale ouverte pendant une demande d'autorisation peut empêcher celle du téléphone
+- **Problème :** sur l'iPhone (Safari et Chrome), « Utiliser ma position » menait directement à « Dans quelle ville êtes-vous ? », sans la fenêtre « Autoriser … à utiliser votre position ? ». Les parcours passaient : le navigateur de test accorde la position sans rien afficher.
+- **Cause :** la seule différence avec la version qui marchait (#171) : la fenêtre de l'accueil (fenêtre modale Radix, qui garde et remet le focus) restait ouverte pendant la demande. Cause probable, pas prouvée sur Safari : ce maniement du focus fait disparaître la fenêtre du système comme un refus.
+- **Solution :** même aspect, mais pas de fenêtre modale pendant la demande ; elle revient une fois la gare trouvée. Un parcours vérifie qu'aucune fenêtre modale n'est ouverte au moment de la demande.
+- **À retenir :** pour un défaut que seul le téléphone montre, deux adresses côte à côte (la version qui marche, la version cassée) localisent la cause en un essai ; et une demande d'autorisation du système se fait écran « calme », sans fenêtre qui retient le focus.
+- **Origine :** #172, D113, 24/11.
+
+### L84 — Un test « d'abord » doit échouer pour la bonne raison
+- **Problème :** le test « aucune fenêtre au moment de la demande » échouait bien sur l'ancien code, mais aussi après la correction.
+- **Cause :** il cherchait `role="dialog"`, que porte aussi la page « Trajet », toujours présente et cachée ; il échouait donc pour une autre raison que le défaut.
+- **Solution :** viser la fenêtre de l'accueil seule (`[role="dialog"][data-state="open"]`), puis revérifier qu'il échoue sur l'ancien code et passe sur le nouveau.
+- **À retenir :** un test qui reproduit un défaut se vérifie dans les deux sens, et avec un sélecteur qui ne désigne que l'élément visé ; sinon son échec ne prouve rien.
+- **Origine :** #172, 24/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -628,3 +642,4 @@ Valeurs en g CO₂e/km.
 | 18/11/2026 | 1.20 | L79 (une date de test ne doit jamais pouvoir devenir « aujourd'hui ») |
 | 18/11/2026 | 1.21 | L80 (une configuration des tests peut casser l'image), L81 (mesurer sur l'appareil réel avant de corriger une lenteur) |
 | 20/11/2026 | 1.22 | L82 (un repère posé à côté d'une valeur se lit comme cette valeur) |
+| 24/11/2026 | 1.23 | L83 (une fenêtre modale pendant une demande d'autorisation), L84 (un test « d'abord » doit échouer pour la bonne raison) |

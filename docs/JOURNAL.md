@@ -24,6 +24,30 @@
 
 ---
 
+## 24/11/2026 — Étapes E11/E12 — Écran de lancement, premier lancement, accueil (remarque ① du professeur)
+**Fait :**
+- **Écran de lancement (#170, D112)** : maquette « Lancement » variante B ; logo, « Allez-y en train. » et la région sur le fond de la marque, fondu de sortie, en CSS seul, une fois par ouverture ; logo en texte partout (« Wago » + « o » en couleur, tiré de `marque.nom`, un seul fichier à changer) ; `background_color` du manifest à la couleur de la marque (Android sans saut)
+- **Premier lancement (#171, D113)** : écran de bienvenue plein écran (maquette « Accueil », écran 1), position demandée **au toucher** de « Utiliser ma position », jamais par-dessus le logo ; repère « accueil vu » (un oui, jamais une position) ; un lien `?gare=` ouvre toujours Explorer ; six photos choisies par Hardy, toutes à pied d'une gare desservie (vérifié dans `lieu_gare`), crédit ⓘ
+- **Écran 3a (#172, D113)** : « Votre gare de départ », trajet jusqu'à la gare (règle unique), sous-titre vrai (« la plus proche » ou « la mieux desservie », D064), « Changer » et « Destination » vers la page « Trajet » existante, « Voir les sorties »
+- Études d'impact avant tout code pour chaque maquette ; parcours `lancement.e2e.ts` et `accueil.e2e.ts` (9 parcours × 2 écrans)
+- Essais de Hardy sur l'iPhone par tunnel, dont une comparaison A/B (deux adresses) qui a localisé un défaut de #172
+**Décisions :** D112, D113 (et sa correction du 24/11 : pas de fenêtre modale pendant la demande de position)
+**Problèmes rencontrés :**
+- #172 : l'iPhone ne montrait plus sa fenêtre de position (fenêtre modale de l'accueil ouverte pendant la demande) ; reproduit par un parcours, corrigé avant la fusion, confirmé par Hardy sur l'iPhone (L83) ; un premier test visait aussi la page « Trajet » cachée (L84)
+- Barre blanche en bas pendant le logo, sur l'iPhone, déjà sur `main` : reportée après les maquettes (choix de Hardy) ; une correction « le logo attend l'application » est mise de côté (branche locale `fix/lancement-attend-application`, sans PR), à la demande de Hardy
+- Parcours instables de la carte (`explorer.e2e.ts:121`, `:139`, `:194`, `carte-cadrage`) : même cause A ; mesurés en parallèle, 5 échecs sur 16 sur `main`, 9 sur 16 sur la branche de #172, écart pas assez net
+- Wikimedia limite les téléchargements (429) : candidats en partie en 960 px
+- Le moteur de Safari (WebKit) ne tourne pas sur le poste : bibliothèques système manquantes
+**À valider par Hardy :**
+- Écran 2 : le nouvel aspect s'applique-t-il aussi à l'onglet Lieux (menu du bas gardé) ? Recommandation : oui
+- Mise en ligne 0.6.0 quand Hardy le décide (#162 à #164, #170 à #172)
+**Prochaine action :**
+- Écran 2 de la maquette « Accueil » (« Position refusée ou introuvable », plein écran), puis les autres maquettes de Hardy, puis la barre blanche
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` sur `main` après #172 : 767 tests)
+**Commit :** `1e680fd` (#172)
+
+---
+
 ## 21/11/2026 (après-midi) — Intégration continue, règle des couches, remarques du professeur précisées
 **Fait :**
 - **Intégration continue (D110, #166)** : `.github/workflows/verifications.yml`, quatre vérifications ; premier passage vert. Mesuré sur GitHub : `verifier` 46–51 s, `integration` 49–56 s, `image` 50–59 s, `parcours` 4 min 21 – 5 min 27, ≈ 5 min 30 en tout

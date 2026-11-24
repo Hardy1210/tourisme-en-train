@@ -78,6 +78,7 @@ Voir `_MODELE.md`.
 - 05/11/2026 : changer d'onglet ne recharge plus la position ni les appels récents ; un train parti disparaît de l'écran (D068).
 - 05/11/2026 : « Votre gare » montre le temps à pied et la gare la plus proche quand une autre est proposée (D064).
 - 05/11/2026 : Explorer gardé en vie entre les écrans, sans appel quand il est caché (D069).
+- 24/11/2026 : remarque ① du professeur, maquettes « Lancement » (B) et « Accueil » (écrans 1 et 3a) : écran de lancement et logo en texte (#170, D112), premier lancement, écran de bienvenue et position demandée au toucher (#171, D113), écran 3a « Votre gare de départ » (#172, D113). Reste l'écran 2 (« Position refusée ou introuvable » en plein écran).
 - 05/11/2026 : chaque écran retrouve ses filtres au retour sur son onglet (D070).
 - 05/11/2026 : carte sous les filtres sur mobile, marges iPhone, poignée posée sur le menu (D072, PR #71) ; carte validée par Hardy sur iPhone, marges à revérifier.
 - 06/11/2026 : mini-fiche calée sur la feuille, cachée feuille en haut, refermée par une carte de la liste ; mention de la carte sur une ligne (D073) ; ligne du train à la sélection (D074) ; retouches de Hardy (PR #71).
