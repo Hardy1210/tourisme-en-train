@@ -17,6 +17,6 @@ test('carte d’une destination : le lieu touché prend la grande épingle plein
 
   await epingles.first().click();
   await expect(epingles.first()).toHaveAttribute('aria-pressed', 'true');
-  await expect(epingles.first().locator('svg')).toHaveClass(/fill-epingle-touchee-bg/);
+  await expect(epingles.first().locator('svg').first()).toHaveClass(/fill-epingle-touchee-bg/);
   await expect(epingles.locator('svg.fill-epingle-touchee-bg')).toHaveCount(1);
 });
