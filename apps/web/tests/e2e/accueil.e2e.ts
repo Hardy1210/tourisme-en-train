@@ -144,7 +144,8 @@ test('un lien avec une gare ouvre Explorer, même au premier lancement', async (
   expect(await demandes(page)).toBe(0);
 });
 
-test('position refusée : « Dans quelle ville êtes-vous ? »', async ({ page }) => {
+/** Le navigateur répond « refusé » à toute demande de position. */
+async function refuserLaPosition(page: Page) {
   await page.addInitScript(() => {
     navigator.geolocation.getCurrentPosition = (_succes, echec) =>
       echec?.({
@@ -155,9 +156,54 @@ test('position refusée : « Dans quelle ville êtes-vous ? »', async ({ page }
         TIMEOUT: 3,
       } as GeolocationPositionError);
   });
+}
+const dansQuelleVille = (page: Page) =>
+  page.getByRole('heading', { name: 'Dans quelle ville êtes-vous ?' });
+
+/** Vrai si le point au centre du menu du bas appartient bien au menu (rien ne le couvre). */
+async function menuALaMain(page: Page): Promise<boolean> {
+  const cadre = await page.getByRole('navigation', { name: 'Navigation principale' }).boundingBox();
+  if (!cadre) return false;
+  return page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.closest('nav') !== null, {
+    x: cadre.x + cadre.width / 2,
+    y: cadre.y + cadre.height / 2,
+  });
+}
+
+test('position refusée : « Dans quelle ville êtes-vous ? » en plein écran, par-dessus le menu', async ({
+  page,
+}) => {
+  await refuserLaPosition(page);
   await page.goto('/');
   await page.getByRole('button', { name: 'Utiliser ma position' }).click();
-  await expect(page.getByRole('heading', { name: 'Dans quelle ville êtes-vous ?' })).toBeVisible();
+  await expect(dansQuelleVille(page)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Crédit de la photo' })).toBeVisible();
+  expect(await menuALaMain(page)).toBe(false);
+});
+
+test('position refusée, puis une ville tapée : l’écran de sa gare', async ({ page }) => {
+  await refuserLaPosition(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Utiliser ma position' }).click();
+  await page.getByRole('searchbox', { name: 'Nom de ville ou de gare' }).fill('Beaune');
+  await page
+    .getByRole('listitem')
+    .getByRole('button', { name: /Beaune/ })
+    .first()
+    .click();
+  await expect(ecranGare(page)).toBeVisible();
+});
+
+test.describe('habitué qui a refusé', () => {
+  test.use({ accueilVu: true });
+
+  test('onglet Lieux : le même écran, mais le menu reste à la main', async ({ page }) => {
+    await refuserLaPosition(page);
+    await page.goto('/lieux');
+    await expect(dansQuelleVille(page)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Crédit de la photo' })).toBeVisible();
+    expect(await menuALaMain(page)).toBe(true);
+  });
 });
 
 test.describe('lancements suivants', () => {

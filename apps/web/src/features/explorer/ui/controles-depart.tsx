@@ -10,6 +10,7 @@ import { EcranHorsRegion } from '@/features/localisation/ui/ecran-hors-region';
 import { EcranSansPosition } from '@/features/localisation/ui/ecran-sans-position';
 import { FeuilleDepart } from '@/features/localisation/ui/feuille-depart';
 import { libelleDate } from '../date';
+import { CadreAccueil } from './cadre-accueil';
 import type { useChoixDepart } from '../hooks';
 
 type Choix = ReturnType<typeof useChoixDepart>;
@@ -51,8 +52,11 @@ export function ErreurChoixDepart({ choix }: { choix: Choix }) {
   );
 }
 
-/** Tout ce qui s'affiche tant que la gare de départ n'est pas connue. */
-export function EtatsDepart({ choix }: { choix: Choix }) {
+/**
+ * Tout ce qui s'affiche tant que la gare de départ n'est pas connue. `pleinEcran` : « Dans quelle ville… »
+ * couvre l'écran et le menu (Explorer) ; sinon, il reste dans la page (Lieux, menu visible).
+ */
+export function EtatsDepart({ choix, pleinEcran }: { choix: Choix; pleinEcran: boolean }) {
   const { depart } = choix;
   return (
     <>
@@ -64,13 +68,18 @@ export function EtatsDepart({ choix }: { choix: Choix }) {
       )}
 
       {depart.etat === 'sans_position' && (
-        <EcranSansPosition
-          raison={depart.raison}
-          bloquee={depart.raison === 'refusee' && choix.essais > 0}
-          surChoixPoint={choix.choisirPoint}
-          surChoixGare={choix.choisirGareEtFermer}
-          surRedemande={choix.revenirAMaPosition}
-        />
+        // Jamais de fenêtre modale : « Autoriser la localisation » redemande la position (D113).
+        <CadreAccueil modale={false} pleinEcran={pleinEcran}>
+          <EcranSansPosition
+            raison={depart.raison}
+            bloquee={depart.raison === 'refusee' && choix.essais > 0}
+            surChoixPoint={choix.choisirPoint}
+            surChoixGare={choix.choisirGareEtFermer}
+            surRedemande={choix.revenirAMaPosition}
+          />
+          {/* Ici aussi : en plein écran, celui de l'en-tête est caché. */}
+          <ErreurChoixDepart choix={choix} />
+        </CadreAccueil>
       )}
 
       {depart.etat === 'hors_region' && (

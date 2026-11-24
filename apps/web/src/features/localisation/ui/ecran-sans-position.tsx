@@ -1,8 +1,10 @@
 'use client';
 
-import { LocateFixed, MapPinOff, TrainFront } from 'lucide-react';
+// « Dans quelle ville êtes-vous ? » (maquette « Accueil », écran 2, D113) : position refusée ou introuvable,
+// ou gare d'un lien disparue. Contenu seul, sur le fond de la marque : l'appelant le pose dans le cadre de
+// l'accueil (plein écran dans Explorer, dans la page dans Lieux).
+import { LocateFixed, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
-import { Puce } from '@/components/ui/puce';
 import { parametres } from '@/config/parametres';
 import { GuidageLocalisation } from './guidage-localisation';
 import { RechercheVille } from './recherche-ville';
@@ -33,35 +35,41 @@ export function EcranSansPosition({
   surRedemande,
 }: Proprietes) {
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6 p-4">
-      <span className="flex size-14 items-center justify-center rounded-carte bg-primary-soft">
-        <MapPinOff aria-hidden="true" className="size-7 text-primary" />
-      </span>
+    <>
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">Dans quelle ville êtes-vous ?</h1>
-        <p className="text-base text-pretty text-muted-foreground">{MESSAGES[raison]}</p>
+        <h1 className="font-display text-3xl leading-tight font-extrabold tracking-tight text-pretty">
+          Dans quelle ville êtes-vous ?
+        </h1>
+        <p className="text-base text-pretty text-page-marque-texte-muted">{MESSAGES[raison]}</p>
       </div>
-      <RechercheVille surChoix={surChoixPoint} indication="Nom de ville ou de gare" />
+      <RechercheVille surChoix={surChoixPoint} indication="Nom de ville ou de gare" surMarque />
       <div className="flex flex-col gap-2.5">
-        <span className="text-sm text-muted-foreground">Suggestions</span>
-        <div className="flex flex-wrap gap-2">
+        <span id="suggestions-gares" className="text-sm text-page-marque-texte-muted">
+          Suggestions
+        </span>
+        <div role="group" aria-labelledby="suggestions-gares" className="flex flex-wrap gap-2">
           {parametres.region.garesPrincipales.slice(0, 3).map((gare) => (
-            <Puce
+            <Bouton
               key={gare.uic}
-              selectionnee={false}
-              icone={<TrainFront aria-hidden="true" className="text-primary" />}
+              variante="sur-marque"
+              className="gap-1.5 px-3.5 text-sm"
               onClick={() => surChoixGare(gare.uic)}
             >
+              <TrainFront aria-hidden="true" className="size-4" />
               {gare.ville}
-            </Puce>
+            </Bouton>
           ))}
         </div>
       </div>
-      <Bouton variante="fantome" className="text-primary" onClick={surRedemande}>
+      <Bouton
+        variante="fantome-sur-marque"
+        className="text-action-sur-marque"
+        onClick={surRedemande}
+      >
         <LocateFixed aria-hidden="true" className="size-4.5" />
         Autoriser la localisation
       </Bouton>
-      <GuidageLocalisation bloquee={bloquee} />
-    </div>
+      <GuidageLocalisation bloquee={bloquee} surMarque />
+    </>
   );
 }

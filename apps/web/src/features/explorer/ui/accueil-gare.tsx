@@ -68,7 +68,7 @@ export function AccueilGare({ depart, surChanger, surDestination, surVoir }: Pro
 
       <div className="flex flex-col gap-2">
         <span className="text-sm text-page-marque-texte-muted">
-          {T.dejaUneIdee} <span className="opacity-85">{T.facultatif}</span>
+          {T.dejaUneIdee} {T.facultatif}
         </span>
         <button
           type="button"

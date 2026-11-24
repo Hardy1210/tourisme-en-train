@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.41 · **Date** 24/11/2026
+> **Version** 1.42 · **Date** 24/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -71,7 +71,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 | État | Affichage |
 |---|---|
 | Chargement | Squelettes + « On cherche ce qu'il y a autour de vous… » |
-| Localisation refusée ou impossible | Grand champ « Dans quelle ville êtes-vous ? » + suggestions de villes de la région ; sous « Autoriser la localisation », lien repliable « Comment autoriser la localisation ? » avec les étapes de l'appareil (iPhone Safari ou installée, iPhone Chrome, Android Chrome ou installée, autre navigateur de téléphone, ordinateur, inconnu : texte générique), ouvert tout seul si une nouvelle demande est encore refusée. Textes : `features/localisation/contenu-guidage.ts` (D083) |
+| Localisation refusée ou impossible | Écran 2 de la maquette « Accueil » (D113), sur le fond de la marque, photo de l'accueil : plein écran par-dessus le menu dans Explorer, dans la page avec le menu dans Lieux. Grand champ « Dans quelle ville êtes-vous ? » + trois grandes gares de la région ; sous « Autoriser la localisation », lien repliable « Comment autoriser la localisation ? » avec les étapes de l'appareil (iPhone Safari ou installée, iPhone Chrome, Android Chrome ou installée, autre navigateur de téléphone, ordinateur, inconnu : texte générique), ouvert tout seul si une nouvelle demande est encore refusée. Textes : `features/localisation/contenu-guidage.ts` (D083) |
 | Hors région pilote | Message clair : « Pour l'instant, <marque> couvre <région> » (`marque.nom` et `parametres.region.nom`, jamais écrits en dur) + choix d'une ville de la région |
 | Aucun résultat | Message utile + action (« Élargir à 1 h de train ») |
 | Hors ligne | Bandeau discret + dernières recherches |
@@ -229,3 +229,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 24/11/2026 | 1.39 | § 7 : écran de lancement ; § 2 : logo en texte — D112 |
 | 24/11/2026 | 1.40 | § 3 : premier lancement, écran de bienvenue, position demandée au toucher — D113 |
 | 24/11/2026 | 1.41 | § 3 : écran 3a de l'accueil (gare de départ, destination facultative) — D113 |
+| 24/11/2026 | 1.42 | § 3 États : écran 2 « Dans quelle ville êtes-vous ? » sur le fond de la marque — D113 |

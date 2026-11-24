@@ -1,8 +1,9 @@
 'use client';
 
 // Cadre des écrans de l'accueil (D113, maquette « Accueil ») : plein écran sur le fond de la marque, au-dessus
-// du menu, photo en haut dans la courbe de la fiche lieu (`entete-arc`) avec son crédit ⓘ. Le cadre reste
-// monté d'un écran à l'autre : la photo, tirée au hasard, ne change pas en cours de route.
+// du menu, photo en haut dans la courbe de la fiche lieu (`entete-arc`) avec son crédit ⓘ. Une seule photo
+// par visite, tirée au hasard : elle ne change pas d'un écran à l'autre (bienvenue, « Dans quelle ville »,
+// gare de départ). `pleinEcran={false}` : dans la page (onglet Lieux), menu du bas visible.
 //
 // `modale` : fenêtre modale (Radix), qui cache le menu et Explorer aux lecteurs d'écran et garde le focus.
 // Jamais pendant la demande de position : la fenêtre de l'iPhone ne s'ouvrait pas (bug vu par Hardy le
@@ -11,14 +12,26 @@ import { Dialog } from 'radix-ui';
 import { useState, type ReactNode } from 'react';
 import { BoutonCreditPhoto } from '@/features/lieux/ui/photo-lieu';
 import { photoAuHasard } from '../accueil';
-import { PHOTOS_ACCUEIL } from '../photos-accueil';
+import { PHOTOS_ACCUEIL, type PhotoAccueil } from '../photos-accueil';
 
-const CLASSES_CADRE =
-  'fixed inset-0 z-overlay overflow-y-auto overscroll-contain bg-page-marque-bg text-page-marque-texte';
+const CLASSES_COULEURS = 'bg-page-marque-bg text-page-marque-texte';
+const CLASSES_PLEIN_ECRAN = `fixed inset-0 z-overlay overflow-y-auto overscroll-contain ${CLASSES_COULEURS}`;
 
-export function CadreAccueil({ modale, children }: { modale: boolean; children: ReactNode }) {
-  // Écran rendu dans le navigateur seulement (Explorer, D069) : le hasard ne crée aucun écart avec le serveur.
-  const [{ photo, cadrage }] = useState(() => photoAuHasard(PHOTOS_ACCUEIL, Math.random()));
+// Tirée une fois par chargement de la page. Ces écrans ne sont rendus que dans le navigateur (position
+// inconnue côté serveur) : le hasard ne crée aucun écart avec le serveur.
+let photoDeLaVisite: PhotoAccueil | null = null;
+const photoPourLaVisite = () => (photoDeLaVisite ??= photoAuHasard(PHOTOS_ACCUEIL, Math.random()));
+
+type Proprietes = {
+  /** Fenêtre modale (Radix) ; jamais pendant une demande de position (voir plus haut). */
+  modale: boolean;
+  /** Faux : dans la page, sous l'en-tête (onglet Lieux), sans couvrir le menu. */
+  pleinEcran?: boolean;
+  children: ReactNode;
+};
+
+export function CadreAccueil({ modale, pleinEcran = true, children }: Proprietes) {
+  const [{ photo, cadrage }] = useState(photoPourLaVisite);
 
   const contenu = (
     <div className="mx-auto flex w-full max-w-md flex-col safe-bottom">
@@ -44,7 +57,8 @@ export function CadreAccueil({ modale, children }: { modale: boolean; children: 
     </div>
   );
 
-  if (!modale) return <div className={CLASSES_CADRE}>{contenu}</div>;
+  if (!pleinEcran) return <div className={`min-h-full ${CLASSES_COULEURS}`}>{contenu}</div>;
+  if (!modale) return <div className={CLASSES_PLEIN_ECRAN}>{contenu}</div>;
   return (
     // On ne la ferme qu'en choisissant (pas d'Échap) ; à la fermeture, le focus va où l'écran suivant le met.
     <Dialog.Root open>
@@ -53,7 +67,7 @@ export function CadreAccueil({ modale, children }: { modale: boolean; children: 
           onOpenAutoFocus={(evenement) => evenement.preventDefault()}
           onCloseAutoFocus={(evenement) => evenement.preventDefault()}
           onEscapeKeyDown={(evenement) => evenement.preventDefault()}
-          className={CLASSES_CADRE}
+          className={CLASSES_PLEIN_ECRAN}
         >
           {contenu}
         </Dialog.Content>
