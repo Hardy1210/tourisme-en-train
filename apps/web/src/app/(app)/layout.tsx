@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { BandeauHorsLigne } from '@/components/ui/bandeau-hors-ligne';
+import { EcranLancement } from '@/components/ui/ecran-lancement';
 import { SecoursChargement } from '@/components/ui/secours-chargement';
 import { ExplorerPersistant } from '@/features/explorer/ui/explorer-persistant';
 import { FournisseurPosition } from '@/features/localisation/fournisseur-position';
@@ -8,6 +9,7 @@ import { NavBasse } from './nav-basse';
 export default function MiseEnPage({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-(--hauteur-app) flex-col overflow-hidden lg:flex-row">
+      <EcranLancement />
       {/* La navigation d'abord : le rail est à gauche sur grand écran, où l'on navigue au clavier. */}
       <NavBasse />
       <FournisseurPosition>

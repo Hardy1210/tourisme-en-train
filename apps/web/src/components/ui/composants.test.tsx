@@ -67,12 +67,27 @@ describe('EtatVide', () => {
 });
 
 describe('Logo', () => {
-  it('écrit le nom venu de la configuration de marque', () => {
-    expect(renderToStaticMarkup(<Logo />)).toContain(marque.nom);
+  const texte = (html: string) => html.replace(/<[^>]+>/g, '');
+
+  it('écrit le nom venu de la configuration de marque, lu d’un seul tenant', () => {
+    const html = renderToStaticMarkup(<Logo />);
+    expect(texte(html)).toBe(marque.nom);
+    expect(html).toContain(`role="img" aria-label="${marque.nom}"`);
+  });
+
+  it('colore la dernière lettre seulement', () => {
+    const html = renderToStaticMarkup(<Logo />);
+    expect(html).toContain(`<span class="text-logo">${marque.nom.slice(-1)}</span>`);
+    expect(html).not.toContain(`<span class="text-logo">${marque.nom.slice(-2)}</span>`);
   });
 
   it('change de couleur sur un en-tête plein', () => {
     expect(renderToStaticMarkup(<Logo />)).toContain('text-logo"');
     expect(renderToStaticMarkup(<Logo surHero />)).toContain('text-logo-sur-hero');
+  });
+
+  it('a une grande taille pour l’écran de lancement, la normale ailleurs', () => {
+    expect(renderToStaticMarkup(<Logo taille="grande" />)).toContain('text-logo-lancement');
+    expect(renderToStaticMarkup(<Logo />)).not.toContain('text-logo-lancement');
   });
 });

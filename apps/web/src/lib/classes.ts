@@ -6,7 +6,7 @@ import { extendTailwindMerge } from 'tailwind-merge';
 const fusionner = extendTailwindMerge({
   extend: {
     theme: {
-      text: ['2xs', 'md'],
+      text: ['2xs', 'md', 'logo-lancement'],
       radius: ['pill', 'bouton', 'carte', 'champ', 'feuille'],
       shadow: ['card', 'float', 'sheet', 'carte'],
     },
