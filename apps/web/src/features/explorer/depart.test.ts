@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { GareProche } from '@/features/gares/schemas';
-import { calculerDepart, plusProcheDifferente, type EntreesDepart } from './depart';
+import {
+  calculerDepart,
+  nomDepartCourt,
+  plusProcheDifferente,
+  type Depart,
+  type EntreesDepart,
+} from './depart';
 
 const VIDE = { donnees: undefined, statutErreur: null };
 const gareProche = (dansRegion: boolean): GareProche => ({
@@ -176,5 +182,26 @@ describe('calculerDepart hors ligne', () => {
       entrees({ uicChoisi: 'AUTRE', gareChoisie: ERREUR, gareHorsLigne: copie }),
     );
     expect(depart.etat).toBe('erreur');
+  });
+});
+
+describe('nomDepartCourt (barre sur deux lignes, « Départ  Dijon »)', () => {
+  const pret = (origine: 'position' | 'choix') =>
+    ({
+      etat: 'pret',
+      origine,
+      gare: { nom: 'Dijon-Ville' },
+      point: { lat: 0, lon: 0 },
+      proches: [],
+    }) as unknown as Extract<Depart, { etat: 'pret' }>;
+
+  it('départ par la position : la commune, pas « Autour de … »', () => {
+    expect(nomDepartCourt(pret('position'), 'Dijon')).toBe('Dijon');
+  });
+  it('départ par la position, commune pas encore connue : « Ma position »', () => {
+    expect(nomDepartCourt(pret('position'), null)).toBe('Ma position');
+  });
+  it('gare choisie : le nom de la gare, jamais la commune de la position', () => {
+    expect(nomDepartCourt(pret('choix'), 'Dijon')).toBe('Dijon-Ville');
   });
 });

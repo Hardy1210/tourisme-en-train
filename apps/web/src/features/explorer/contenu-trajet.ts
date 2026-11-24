@@ -32,6 +32,9 @@ export const TEXTES_TRAJET = {
   titrePageDepart: "D'où partez-vous ?",
   retour: 'Retour',
   champDepart: 'Départ',
+  /** Barre sur deux lignes (D115) : étiquettes devant le départ et l'arrivée. */
+  etiquetteDepart: 'Départ',
+  etiquetteArrivee: 'Arrivée',
   champDestination: 'Destination',
   indicationDestination: 'Où allez-vous ?',
   indicationDepart: 'Ville ou gare de départ',
