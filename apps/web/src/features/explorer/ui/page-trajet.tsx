@@ -42,6 +42,8 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
   // Choix en attente : appliqué une fois le fondu terminé (le filtrage bloquerait l'animation).
   const enAttente = useRef<Recherche | null>(null);
   const texteDestination = saisieDestination ?? filtres.recherche;
+  // Ouverte, ou en train de se refermer : sinon, seuls les champs restent (pour prendre la main au toucher).
+  const visible = trajet.ouverte || enFondu;
   const { setOuverte } = trajet;
 
   const fermer = useCallback(
@@ -141,11 +143,16 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
               setMessage(null);
             },
           }}
-          // D116 : la date de la sortie, la même que dans « Filtres ».
-          date={{ ...ligneDate(filtres.date, dateDuJour()), surToucher: trajet.allerALaDate }}
+          // D116 : la date de la sortie, la même que dans « Filtres ». Page fermée (toujours montée,
+          // inerte) : ni ligne ni pastilles, aucun bouton caché en double sur l'écran.
+          date={
+            visible
+              ? { ...ligneDate(filtres.date, dateDuJour()), surToucher: trajet.allerALaDate }
+              : undefined
+          }
         />
         {/* Les pastilles quand Destination ou Date est actif, pas pour le départ (D116). */}
-        {trajet.champActif !== 'depart' && (
+        {visible && trajet.champActif !== 'depart' && (
           <div className="mt-3 pl-6">
             <PastillesDateTrajet />
           </div>
@@ -156,7 +163,7 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6"
       >
         {/* Fermée : seuls les champs restent, pour prendre la main dans le toucher qui l'ouvre. */}
-        {!trajet.ouverte && !enFondu ? null : trajet.champActif === 'date' ? (
+        {!visible ? null : trajet.champActif === 'date' ? (
           <ZoneDateTrajet surChoisie={() => trajet.allerA('destination')} />
         ) : trajet.champActif === 'depart' ? (
           <ZoneDepart
