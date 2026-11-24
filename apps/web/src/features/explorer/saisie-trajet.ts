@@ -12,6 +12,8 @@ export type EtatSaisie = {
   verifierDepuis: string | null;
   /** « Pas de train direct de … à … » ; null si rien à dire. */
   message: string | null;
+  /** ⇅ en cours (D117) : l'ancien départ, à retrouver dans la liste du nouveau départ. */
+  inversion: { gareARetrouver: string; nom: string } | null;
 };
 
 export const SAISIE_VIDE: EtatSaisie = {
@@ -19,6 +21,7 @@ export const SAISIE_VIDE: EtatSaisie = {
   saisieDestination: null,
   verifierDepuis: null,
   message: null,
+  inversion: null,
 };
 
 export type ActionSaisie =
@@ -28,6 +31,8 @@ export type ActionSaisie =
   | { type: 'verifiee' }
   | { type: 'impossible'; message: string }
   | { type: 'effacerDestination' }
+  | { type: 'inverser'; gareARetrouver: string; nom: string }
+  | { type: 'inversee' }
   | { type: 'reinitialiser' };
 
 export function saisieTrajet(etat: EtatSaisie, action: ActionSaisie): EtatSaisie {
@@ -41,9 +46,25 @@ export function saisieTrajet(etat: EtatSaisie, action: ActionSaisie): EtatSaisie
     case 'verifiee':
       return { ...etat, verifierDepuis: null };
     case 'impossible':
-      return { ...etat, verifierDepuis: null, message: action.message, saisieDestination: '' };
+      return {
+        ...etat,
+        verifierDepuis: null,
+        inversion: null,
+        message: action.message,
+        saisieDestination: '',
+      };
     case 'effacerDestination':
       return { ...etat, saisieDestination: '' };
+    case 'inverser':
+      return {
+        ...etat,
+        inversion: { gareARetrouver: action.gareARetrouver, nom: action.nom },
+        saisieDestination: null,
+        verifierDepuis: null,
+        message: null,
+      };
+    case 'inversee':
+      return { ...etat, inversion: null };
     case 'reinitialiser':
       return SAISIE_VIDE;
   }
@@ -71,4 +92,42 @@ export function resultatVerification({
     return 'attente';
   }
   return filtrerDestinations(liste, recherche).length > 0 ? 'possible' : 'impossible';
+}
+
+/**
+ * ⇅ (D117) : l'ancien départ dans la liste du nouveau, par la gare en tête ou une autre gare de la même ville
+ * (Dijon-Porte-Neuve est regroupé sous « Dijon », D047) ; null s'il n'y a pas de train direct dans ce sens.
+ */
+export function destinationDeRetour<T extends Destination>(
+  liste: readonly T[],
+  gareUic: string,
+): T | null {
+  return (
+    liste.find((d) => d.gare.uic === gareUic || d.autresGares.some((g) => g.uic === gareUic)) ??
+    null
+  );
+}
+
+export type Inversion =
+  | { etat: 'aucune' }
+  | { etat: 'attente' }
+  | { etat: 'trouvee'; destination: Destination }
+  | { etat: 'impossible' };
+
+/** Après ⇅ : l'ancien départ est-il desservi depuis le nouveau ? Dès que la liste du nouveau est chargée. */
+export function resultatInversion({
+  inversion,
+  gareActuelle,
+  liste,
+}: {
+  inversion: EtatSaisie['inversion'];
+  gareActuelle: string | null;
+  liste: readonly Destination[] | undefined;
+}): Inversion {
+  if (inversion === null) return { etat: 'aucune' };
+  if (gareActuelle === null || gareActuelle === inversion.gareARetrouver || liste === undefined) {
+    return { etat: 'attente' };
+  }
+  const destination = destinationDeRetour(liste, inversion.gareARetrouver);
+  return destination ? { etat: 'trouvee', destination } : { etat: 'impossible' };
 }

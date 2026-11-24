@@ -451,6 +451,47 @@ test.describe('position acceptée', () => {
       );
     });
 
+    // ⇅ (D117, maquette « Trajet ») : la gare de la destination devient le départ, l'ancien départ la
+    // destination. Échantillon du 18/11 : Beaune a un train vers Dijon-Ville, Velars-sur-Ouche aucun.
+    const boutonInverser = (page: Page) =>
+      pageTrajet(page).getByRole('button', { name: 'Inverser le départ et la destination' });
+
+    test('⇅ : Dijon → Beaune devient Beaune → Dijon', async ({ page }) => {
+      await page.goto(`${ECRAN}&recherche=Beaune&destination=EX000002`);
+      const { champ } = await ouvrirDestination(page);
+      await boutonInverser(page).click();
+      await expect(page).toHaveURL(/gare=EX000002/);
+      await expect(page).toHaveURL(/destination=EX000001/);
+      await expect(champ).toHaveValue(/Dijon/);
+      await expect(pageTrajet(page).getByRole('searchbox', { name: 'Départ' })).toHaveAttribute(
+        'placeholder',
+        'Au départ de Beaune',
+      );
+    });
+
+    test('⇅ sans train direct dans l’autre sens : le message, et la destination effacée', async ({
+      page,
+    }) => {
+      await page.goto(`${ECRAN}&recherche=Velars-sur-Ouche&destination=EX000024`);
+      await ouvrirDestination(page);
+      await boutonInverser(page).click();
+      await expect(
+        pageTrajet(page).getByText(
+          'Pas de train direct de Velars-sur-Ouche à Dijon-Ville : choisissez une autre destination.',
+        ),
+      ).toBeVisible();
+      await expect(page).toHaveURL(/gare=EX000024/);
+      await expect(page).not.toHaveURL(/destination=/);
+    });
+
+    test('⇅ absent sans destination choisie, même avec un texte tapé', async ({ page }) => {
+      await page.goto(ECRAN);
+      const { champ } = await ouvrirDestination(page);
+      await expect(boutonInverser(page)).toHaveCount(0);
+      await champ.fill('beau');
+      await expect(boutonInverser(page)).toHaveCount(0);
+    });
+
     // D116 (maquette « Trajet », remarque ③) : la date dans la page « Trajet ».
     const ligneDate = (page: Page) => pageTrajet(page).getByRole('button', { name: /^Date : / });
     const pastillesDate = (page: Page) =>
