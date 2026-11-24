@@ -91,3 +91,4 @@
 | 24/11/2026 | 1.95 | § 9 : #170, #171, #172 sur `main` (D112, D113), écran 2 à faire, barre blanche reportée, correction du logo mise de côté ; Bloquant : deux tunnels pour un défaut du téléphone, onglet privé pour le premier lancement, aucune fenêtre modale pendant une demande d'autorisation |
 | 24/11/2026 | 1.96 | § 9 : #174, #175 sur `main`, #176 ouverte (D114, D115), ③ décidé, ⇅ dans la page « Trajet », ordinateur à la fin ; prochaine action : essai de #176, puis la date dans la page « Trajet » |
 | 24/11/2026 | 1.97 | § 9 : #176, #178, #179, #180 sur `main` (D115 à D117), ① ② ③ ⑦ faites, code maintenable (demande de Hardy), prochaine action : ⑥ dès la maquette, sinon ④ |
+| 24/11/2026 | 1.98 | § 9 : #182 sur `main` (D118), #183 ouverte (D119), décision des bulles en attente, prochaine action : reprise avec cette décision |

@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.24 · **Date** 24/11/2026
+> **Version** 1.25 · **Date** 24/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -580,6 +580,13 @@
 - **À retenir :** avant de réécrire, chercher le trou dans les tests de la partie réécrite, et faire passer les nouveaux tests sur l'ancien code d'abord ; « les tests passent » ne prouve rien si aucun ne regarde ce qu'on change.
 - **Origine :** #179, 24/11.
 
+### L87 — Un seuil d'interface se déduit d'un critère mesuré, pas au jugé
+- **Problème :** il fallait choisir le zoom où les gares deviennent des icônes de train ; Claude avait proposé 12 dans l'étude d'impact.
+- **Cause :** une valeur choisie « juste avant les bulles » ne dit rien de ce que voit l'utilisateur ; à 12, une seule gare restait visible.
+- **Solution :** Hardy a donné un critère d'usage (« environ 15 gares visibles autour de Dijon ») ; la mesure (vraies données, écran d'iPhone, projection de la carte) donne 18 gares à 9,5, 13 à 10 : seuil 9,75, dans `parametres.json`, à ajuster sur l'iPhone.
+- **À retenir :** demander le critère d'usage, puis le mesurer avant d'écrire la valeur ; une valeur proposée « au jugé » dans une étude doit être marquée comme telle.
+- **Origine :** #182, D118, 24/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -658,3 +665,4 @@ Valeurs en g CO₂e/km.
 | 20/11/2026 | 1.22 | L82 (un repère posé à côté d'une valeur se lit comme cette valeur) |
 | 24/11/2026 | 1.23 | L83 (une fenêtre modale pendant une demande d'autorisation), L84 (un test « d'abord » doit échouer pour la bonne raison) |
 | 24/11/2026 | 1.24 | L85 (deux écritures de l'adresse dans le même geste), L86 (une remise en ordre se prouve par des tests avant et après) |
+| 24/11/2026 | 1.25 | L87 (un seuil d'interface se déduit d'un critère mesuré) |
