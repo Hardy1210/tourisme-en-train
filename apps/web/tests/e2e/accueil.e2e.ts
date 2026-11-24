@@ -13,11 +13,17 @@ test.beforeEach(async ({ context, baseURL, page }) => {
   await context.route('**/api/geocodage/inverse*', (requete) =>
     requete.fulfill({ json: { commune: 'Dijon', codeInsee: '21231', horsLigne: false } }),
   );
-  // Compte les demandes de position ; note si l'écran de lancement était encore là à ce moment.
+  // Compte les demandes de position ; note si l'écran de lancement, ou une fenêtre modale, était encore
+  // là à ce moment.
   await page.addInitScript(() => {
-    const fenetre = window as unknown as { demandes: number; lancementPendantDemande: string[] };
+    const fenetre = window as unknown as {
+      demandes: number;
+      lancementPendantDemande: string[];
+      modalePendantDemande: boolean[];
+    };
     fenetre.demandes = 0;
     fenetre.lancementPendantDemande = [];
+    fenetre.modalePendantDemande = [];
     const lire = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
     navigator.geolocation.getCurrentPosition = (...args) => {
       fenetre.demandes += 1;
@@ -26,6 +32,7 @@ test.beforeEach(async ({ context, baseURL, page }) => {
       fenetre.lancementPendantDemande.push(
         !style || style.display === 'none' || style.visibility === 'hidden' ? 'parti' : 'visible',
       );
+      fenetre.modalePendantDemande.push(document.querySelector('[role="dialog"]') !== null);
       lire(...args);
     };
   });
@@ -58,6 +65,14 @@ test('« Utiliser ma position » : la demande part, puis l’écran de la gare e
 }) => {
   await jusquALaGare(page);
   expect(await demandes(page)).toBe(1);
+  // Bug vu par Hardy le 24/11 sur l'iPhone (Safari et Chrome) : la fenêtre de l'accueil restait ouverte
+  // pendant la demande, et l'iPhone ne montrait pas la sienne. Avec #171, sans fenêtre à ce moment, il
+  // la montrait. Aucune fenêtre modale pendant la demande de position.
+  expect(
+    await page.evaluate(
+      () => (window as unknown as { modalePendantDemande: boolean[] }).modalePendantDemande,
+    ),
+  ).toEqual([false]);
   await expect(
     page.getByText('La plus proche de vous. Vous pouvez en choisir une autre.'),
   ).toBeVisible();
