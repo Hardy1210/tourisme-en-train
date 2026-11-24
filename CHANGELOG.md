@@ -8,6 +8,7 @@
 ## [Non publié]
 
 ### Ajouté
+- Dans la page « Trajet », on choisit aussi la date : une ligne dit pour quand on cherche, trois pastilles (Aujourd'hui, Demain, Ce week-end) apparaissent avec la destination, et la ligne ouvre le calendrier. C'est la même date que dans « Filtres ».
 - Après le choix du départ, l'accueil montre la gare de départ et le temps pour y aller (« La plus proche de vous », ou « La mieux desservie près de vous »), avec « Changer », un champ « Destination » facultatif et « Voir les sorties ».
 - À la première ouverture, un écran de bienvenue explique l'application avant toute demande de position : « Utiliser ma position » (la fenêtre du téléphone n'apparaît qu'à ce moment), une ville ou une gare à taper, ou une grande gare de la région à toucher. Les fois suivantes, on arrive directement sur Explorer, et la position n'est demandée qu'une fois le logo parti.
 - Un écran de lancement à chaque ouverture : le logo et « Allez-y en train. Bourgogne-Franche-Comté » sur le fond violet, qui s'efface en fondu pendant que l'application démarre. Sur Android, l'écran de démarrage du téléphone a la même couleur : plus de flash blanc.

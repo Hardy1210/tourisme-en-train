@@ -2,14 +2,16 @@
 
 // Les deux champs de la page « Trajet » (D085), reliés par la ligne du logo : anneau devant le départ,
 // point plein devant la destination. Le champ actif est entouré de la couleur principale. Sans
-// destination (écran Lieux), le champ Départ reste seul, sans la ligne.
-import { X } from 'lucide-react';
+// destination (écran Lieux), le champ Départ reste seul, sans la ligne. Avec `date` (D116, Explorer) : une
+// 3ᵉ ligne « Date », reliée en pointillés et marquée du calendrier, qui ouvre le calendrier en bas.
+import { CalendarDays, ChevronDown, X } from 'lucide-react';
 import type { RefObject } from 'react';
 
 import { cn } from '@/lib/classes';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
 import type { ChampTrajet } from '../enchainement-trajet';
+import type { ZoneTrajet } from '../use-page-trajet';
 
 type Champ = {
   valeur: string;
@@ -21,12 +23,21 @@ type Champ = {
 type Proprietes = {
   depart: Champ;
   destination?: Champ;
-  actif: ChampTrajet;
+  /** « Aujourd'hui », « sam. 21 nov. » : la 3ᵉ ligne (D116). */
+  date?: { libelle: string; detail: string | null; surToucher: () => void };
+  actif: ZoneTrajet;
   surActif: (champ: ChampTrajet) => void;
   surEntree: () => void;
 };
 
-export function ChampsTrajet({ depart, destination, actif, surActif, surEntree }: Proprietes) {
+export function ChampsTrajet({
+  depart,
+  destination,
+  date,
+  actif,
+  surActif,
+  surEntree,
+}: Proprietes) {
   const champ = (nom: ChampTrajet, { valeur, indication, ref, surSaisie }: Champ) => (
     // Le ✕ reste hors du <label> : sinon son nom s'ajoute à celui du champ (« Destination Effacer… »).
     <div
@@ -79,10 +90,33 @@ export function ChampsTrajet({ depart, destination, actif, surActif, surEntree }
         <span className="size-3 flex-none rounded-pill border-2 border-primary" />
         <span className="w-0.5 flex-1 bg-primary" />
         <span className="size-3 flex-none rounded-pill bg-primary" />
+        {date && (
+          <>
+            <span className="flex-1 border-l-2 border-dashed border-border" />
+            <CalendarDays className="size-4 flex-none text-primary" />
+          </>
+        )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         {champ('depart', depart)}
         {champ('destination', destination)}
+        {date && (
+          <button
+            type="button"
+            onClick={date.surToucher}
+            aria-label={`Date : ${date.libelle}${date.detail ? `, ${date.detail}` : ''}, modifier`}
+            className={cn(
+              'flex h-13 cursor-pointer items-center justify-between gap-2 rounded-champ border border-border bg-surface px-3.5 text-left text-base',
+              actif === 'date' && 'outline-2 outline-primary',
+            )}
+          >
+            <span className="min-w-0 truncate">
+              <span className="font-semibold">{date.libelle}</span>
+              {date.detail && <span className="text-muted-foreground"> · {date.detail}</span>}
+            </span>
+            <ChevronDown aria-hidden="true" className="size-4.5 flex-none text-muted-foreground" />
+          </button>
+        )}
       </div>
     </div>
   );

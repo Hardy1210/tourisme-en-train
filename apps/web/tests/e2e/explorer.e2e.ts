@@ -404,6 +404,69 @@ test.describe('position acceptée', () => {
       test.skip(!isMobile, 'La page « Trajet » n’existe que sur téléphone.');
     });
 
+    // D116 (maquette « Trajet », remarque ③) : la date dans la page « Trajet ».
+    const ligneDate = (page: Page) => pageTrajet(page).getByRole('button', { name: /^Date : / });
+    const pastillesDate = (page: Page) =>
+      pageTrajet(page).getByRole('group', { name: 'Date de la sortie' });
+
+    test('date : la 3ᵉ ligne et les pastilles avec Destination ; « Demain » s’applique partout', async ({
+      page,
+    }) => {
+      await page.goto('/');
+      const { champ } = await ouvrirDestination(page);
+      await expect(ligneDate(page)).toHaveAccessibleName(/^Date : Aujourd'hui/);
+      await expect(pastillesDate(page)).toBeVisible();
+
+      await pastillesDate(page)
+        .getByRole('button', { name: /^Demain/ })
+        .click();
+      await expect(page).toHaveURL(/date=\d{4}-\d{2}-\d{2}/);
+      await expect(ligneDate(page)).toHaveAccessibleName(/^Date : Demain/);
+      // Le toucher d'une pastille laisse le curseur dans Destination (clavier ouvert).
+      await expect(champ).toBeFocused();
+
+      await pageTrajet(page).getByRole('button', { name: 'Retour' }).click();
+      await expect(
+        page.getByRole('button', { name: "Date : Demain. Revenir à aujourd'hui" }),
+      ).toBeVisible();
+    });
+
+    test('date : avec Départ actif, la ligne « Date » mais pas les pastilles', async ({ page }) => {
+      await page.goto('/');
+      await barre(page)
+        .getByRole('button', { name: /^Départ :/ })
+        .click();
+      await expect(pageTrajet(page).getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+      await expect(ligneDate(page)).toBeVisible();
+      await expect(pastillesDate(page)).toHaveCount(0);
+    });
+
+    test('date : la ligne « Date » ouvre le calendrier ; une date choisie revient à Destination', async ({
+      page,
+    }) => {
+      // L'échantillon n'a d'horaires que jusqu'au 18 : on ouvre le calendrier jusqu'à mi-décembre.
+      await page.route('**/api/sources', async (requete) => {
+        const reponse = await requete.fetch();
+        const corps = (await reponse.json()) as { horaires: { fin: string } };
+        await requete.fulfill({
+          json: { ...corps, horaires: { ...corps.horaires, fin: '2026-12-13' } },
+        });
+      });
+      await page.goto('/');
+      const { champ } = await ouvrirDestination(page);
+      await ligneDate(page).click();
+      await pageTrajet(page)
+        .getByRole('button', { name: /24 novembre/ })
+        .click();
+      // Le calendrier se valide, comme dans « Filtres ».
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Voir les sorties du/ })
+        .click();
+      await expect(page).toHaveURL(/date=2026-11-24/);
+      await expect(ligneDate(page)).toHaveAccessibleName(/^Date : Mar\. 24 nov\./);
+      await expect(champ).toBeFocused();
+    });
+
     test('« Où aller ? » : page plein écran, curseur dans Destination, les plus proches', async ({
       page,
     }) => {

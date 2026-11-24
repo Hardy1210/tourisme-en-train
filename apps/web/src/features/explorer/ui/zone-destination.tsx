@@ -4,6 +4,7 @@
 // #94 (`filtrerDestinations`), dans la liste déjà chargée ; compteur et « Afficher » sous le champ, jamais
 // collés en bas où le clavier les cacherait.
 import { Clock, List, TrainFront } from 'lucide-react';
+import { dateDuJour } from '@tourisme/commun';
 import { useEffect } from 'react';
 
 import { Bandeau } from '@/components/ui/bandeau';
@@ -14,6 +15,7 @@ import type { Destination } from '@/features/destinations/schemas';
 import { cn } from '@/lib/classes';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
+import { suffixeDate } from '../date';
 import type { Depart } from '../depart';
 import type { Filtres } from '../filtres';
 import { useListeDestinations } from '../liste-destinations';
@@ -84,6 +86,7 @@ export function ZoneDestination({
         <section aria-labelledby="trajet-plus-proches" className="flex flex-col">
           <h3 id="trajet-plus-proches" className="text-base font-semibold">
             {TEXTES_TRAJET.plusProches}
+            {suffixeDate(filtres.date, dateDuJour())}
           </h3>
           <ListeDestinations destinations={proches} surChoix={surChoix} />
         </section>
