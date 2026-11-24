@@ -86,6 +86,26 @@ function compteDate(filtres: Filtres, dateDuJour?: string): number {
   return filtres.date !== null && filtres.date !== dateDuJour ? 1 : 0;
 }
 
+/** Catégorie touchée (rangée de la carte ou feuille « Filtres ») : ajoutée si absente, retirée sinon. */
+export function basculerCategorie(
+  categories: readonly Categorie[],
+  categorie: Categorie,
+): Categorie[] {
+  return categories.includes(categorie)
+    ? categories.filter((c) => c !== categorie)
+    : [...categories, categorie];
+}
+
+/**
+ * « Réinitialiser » de la feuille « Filtres » : remet à zéro tout ce que la feuille montre, et rien d'autre
+ * (catégories comprises, remarque ② du professeur : elles étaient remises à zéro sans être montrées).
+ * Destination choisie : la feuille ne montre plus que la date et les catégories.
+ */
+export function filtresReinitialises(modeDestination: boolean): Partial<Filtres> {
+  const { date, categories, rayon, dureeMax, faisable } = FILTRES_PAR_DEFAUT;
+  return modeDestination ? { date, categories } : { categories, rayon, dureeMax, faisable, date };
+}
+
 /** Nombre affiché sur le bouton « Filtres » : ce qui s'écarte du défaut, date comprise. */
 export function nombreFiltres(filtres: Filtres, dateDuJour?: string): number {
   // Destination choisie : « Filtres » ne montre que la date, le bouton ne compte pas ce qui est caché.

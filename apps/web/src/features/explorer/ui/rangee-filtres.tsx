@@ -1,9 +1,9 @@
 'use client';
 
-import { CATEGORIES, type Categorie } from '@tourisme/commun';
+import type { Categorie } from '@tourisme/commun';
 import { CalendarDays, SlidersHorizontal, X } from 'lucide-react';
 import { Puce } from '@/components/ui/puce';
-import { APPARENCE_CATEGORIE, IconeCategorie } from '@/features/lieux/ui/icone-categorie';
+import { PucesCategories } from './puces-categories';
 
 type Proprietes = {
   categories: readonly Categorie[];
@@ -27,13 +27,6 @@ export function RangeeFiltres({
   date,
   surAujourdhui,
 }: Proprietes) {
-  const basculer = (categorie: Categorie) =>
-    surCategories(
-      categories.includes(categorie)
-        ? categories.filter((c) => c !== categorie)
-        : [...categories, categorie],
-    );
-
   return (
     <div className="-mr-4 flex items-center gap-2 lg:mr-0 lg:items-start">
       <div
@@ -52,19 +45,7 @@ export function RangeeFiltres({
             <X aria-hidden="true" />
           </Puce>
         )}
-        <Puce selectionnee={categories.length === 0} onClick={() => surCategories([])}>
-          Tout
-        </Puce>
-        {CATEGORIES.map((categorie) => (
-          <Puce
-            key={categorie}
-            selectionnee={categories.includes(categorie)}
-            onClick={() => basculer(categorie)}
-            icone={<IconeCategorie categorie={categorie} />}
-          >
-            {APPARENCE_CATEGORIE[categorie].libelle}
-          </Puce>
-        ))}
+        <PucesCategories categories={categories} surCategories={surCategories} />
       </div>
       <Puce
         selectionnee={false}

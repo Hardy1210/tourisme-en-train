@@ -12,9 +12,10 @@ import { parametres } from '@/config/parametres';
 import { cn } from '@/lib/classes';
 import { libelleCourt } from '@/lib/dates/calendrier';
 import { optionsDate } from '../date';
-import { FILTRES_PAR_DEFAUT, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
+import { filtresReinitialises, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
 import { useFenetreHoraires } from '../hooks';
 import { Calendrier } from './calendrier';
+import { PucesCategories } from './puces-categories';
 
 const OPTIONS_RAYON = parametres.rayons.autourDeMoiOptionsM.map((metres) => ({
   valeur: String(metres),
@@ -35,8 +36,9 @@ type Proprietes = {
 };
 
 /**
- * « Quand ? », rayon, durée de train et faisabilité : chaque choix s'applique tout de suite. « Choisir une
- * date » montre le calendrier dans la même feuille ; « Retour » ou une date choisie revient aux filtres.
+ * Catégories, « Quand ? », rayon, durée de train et faisabilité : chaque choix s'applique tout de suite.
+ * « Choisir une date » montre le calendrier dans la même feuille ; « Retour » ou une date choisie revient
+ * aux filtres. « Réinitialiser » remet à zéro tout ce que la feuille montre (`filtresReinitialises`).
  */
 export function FeuilleFiltres({
   ouverte,
@@ -52,7 +54,7 @@ export function FeuilleFiltres({
   const date = filtres.date === aujourdhui ? null : filtres.date;
   // Destination choisie (Explorer) : on ne cherche plus où aller, seul « Quand ? » sert encore. Distance,
   // temps de train et faisabilité disparaissent, comme dans les applications de trajet ; ils reviennent
-  // quand la destination est effacée. « Réinitialiser » ne remet alors à zéro que la date.
+  // quand la destination est effacée. « Réinitialiser » ne remet alors à zéro que la date et les catégories.
   const modeDestination = !dureeSeulement && filtres.destination !== null;
   const dateDuCalendrier = date !== null && !options.some((o) => o.date === date);
 
@@ -89,6 +91,17 @@ export function FeuilleFiltres({
         </div>
       ) : (
         <div className="flex flex-col gap-5">
+          <div role="group" aria-labelledby="filtres-categories" className="flex flex-col gap-2.5">
+            <span id="filtres-categories" className="text-base font-semibold">
+              Catégories
+            </span>
+            <div className="flex flex-wrap gap-2">
+              <PucesCategories
+                categories={filtres.categories}
+                surCategories={(categories) => surModification({ categories })}
+              />
+            </div>
+          </div>
           <div role="group" aria-labelledby="filtres-quand" className="flex flex-col gap-2.5">
             <span id="filtres-quand" className="text-base font-semibold">
               Quand ?
@@ -148,19 +161,7 @@ export function FeuilleFiltres({
             <Bouton
               variante="secondaire"
               className="flex-1"
-              onClick={() =>
-                surModification(
-                  modeDestination
-                    ? { date: FILTRES_PAR_DEFAUT.date }
-                    : {
-                        categories: FILTRES_PAR_DEFAUT.categories,
-                        rayon: FILTRES_PAR_DEFAUT.rayon,
-                        dureeMax: FILTRES_PAR_DEFAUT.dureeMax,
-                        faisable: FILTRES_PAR_DEFAUT.faisable,
-                        date: FILTRES_PAR_DEFAUT.date,
-                      },
-                )
-              }
+              onClick={() => surModification(filtresReinitialises(modeDestination))}
             >
               Réinitialiser
             </Bouton>

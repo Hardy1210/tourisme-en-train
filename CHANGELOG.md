@@ -16,6 +16,7 @@
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- La feuille « Filtres » montre aussi les catégories, avec leurs icônes, dans le même état que sur la carte ; « Réinitialiser » remet à zéro tout ce qu'on y voit, et seulement ça.
 - « Dans quelle ville êtes-vous ? » (position refusée ou introuvable) prend le dessin de l'accueil : fond violet, photo, grandes gares en un toucher ; en plein écran dans Explorer, dans la page avec le menu dans Lieux.
 - Le logo devient le nom écrit, sa dernière lettre en jaune (provisoire, il changera après la soutenance).
 - Sources, À propos et Mentions légales ont le même bouton Retour que les fiches : un rond sombre en haut à gauche, qui reste en place pendant la lecture.
