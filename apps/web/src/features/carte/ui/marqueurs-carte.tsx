@@ -57,12 +57,13 @@ export function MarqueursLieux({
 
 /**
  * Gares de destination (D118, remarque ⑥) : de loin, des points colorés par le temps de train ; de près
- * (`icones`), des icônes de train inversées, contour et train dans la même couleur. La destination choisie
- * a un bord jaune. Le bouton garde sa taille (44 px) et son nom : rien ne change dans le fonctionnement.
+ * (`icones`), des icônes de train inversées, contour et train dans la même couleur. La destination du
+ * trajet (`uicCherche`, la ligne « Arrivée » de la barre) a un bord jaune ; une gare touchée grandit. Le bouton garde sa taille (44 px) et son nom : rien ne change dans le fonctionnement.
  */
 export function MarqueursDestinations({
   destinations,
   uicChoisi,
+  uicCherche,
   icones,
   survolee,
   surSurvol,
@@ -70,6 +71,8 @@ export function MarqueursDestinations({
 }: {
   destinations: readonly Destination[];
   uicChoisi: string | null;
+  /** Destination cherchée dans la page « Trajet » (`filtres.destination`) : bord jaune (D118). */
+  uicCherche: string | null;
   /** Zoom au moins `parametres.carte.zoomIconesGares` (`garesEnIcones`). */
   icones: boolean;
   survolee: string | null;
@@ -79,6 +82,7 @@ export function MarqueursDestinations({
   return destinations.map((d) => {
     const choisie = uicChoisi === d.gare.uic;
     const enAvant = choisie || survolee === d.gare.uic;
+    const cherchee = uicCherche === d.gare.uic;
     const nombre = totalLieux(d.lieuxParCategorie);
     return (
       <Marker
@@ -107,7 +111,7 @@ export function MarqueursDestinations({
                 'flex items-center justify-center rounded-md border-2 bg-surface shadow-xs',
                 enAvant ? 'size-9' : 'size-7.5',
                 traitTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
-                choisie && 'ring-3 ring-map-gare-choisie',
+                cherchee && 'ring-3 ring-map-gare-choisie',
               )}
             >
               <TrainFront aria-hidden="true" className={enAvant ? 'size-5' : 'size-4'} />
@@ -118,7 +122,7 @@ export function MarqueursDestinations({
                 'rounded-pill border-2 border-map-halo shadow-xs',
                 enAvant ? 'size-5' : 'size-3.5',
                 couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
-                choisie && 'ring-3 ring-map-gare-choisie',
+                cherchee && 'ring-3 ring-map-gare-choisie',
               )}
             />
           )}

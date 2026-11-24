@@ -284,6 +284,7 @@ export function CarteExplorer({
           <MarqueursDestinations
             destinations={destinations}
             uicChoisi={uicChoisi}
+            uicCherche={destinationCherchee}
             icones={garesIcones}
             survolee={survolee}
             surSurvol={surSurvol}
