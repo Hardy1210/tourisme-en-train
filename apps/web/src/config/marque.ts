@@ -3,6 +3,8 @@
 export const marque = {
   nom: 'Wagoo',
   slogan: 'Trouvez votre sortie en 30 secondes, allez-y en train.',
+  /** Écran de lancement (D112), au-dessus du nom de la région. */
+  accroche: 'Allez-y en train.',
   description:
     'Ce que vous pouvez faire autour de vous, et comment y aller en train direct : lieux à visiter, trains aller et retour, transports sur place, CO₂ économisé.',
 } as const;

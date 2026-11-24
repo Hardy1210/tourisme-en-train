@@ -95,6 +95,12 @@
 
   /* Animations : 0 = aucune, 1 = normal, 2 = deux fois plus lent */
   --motion-speed: 1;
+
+  /* Écran de lancement (D112) : apparition du logo, affichage, puis fondu de sortie. À régler sur le
+     téléphone. « Réduire les animations » : pas de fondu, l'écran part après l'affichage. */
+  --lancement-apparition: 400ms;
+  --lancement-affichage: 1200ms;
+  --lancement-disparition: 400ms;
 }
 
 .dark {
@@ -214,6 +220,7 @@
   --z-header: 30;
   --z-overlay: 40;
   --z-toast: 50;
+  --z-lancement: 60; /* écran de lancement, au-dessus de tout (D112) */
 }
 
 /* Rôles qui ne se déduisent pas de la même façon en sombre */
@@ -503,6 +510,7 @@
   --text-xl: calc(1.25rem * var(--echelle-texte));
   --text-2xl: calc(1.375rem * var(--echelle-texte));
   --text-3xl: calc(2rem * var(--echelle-texte));
+  --text-logo-lancement: calc(3.625rem * var(--echelle-texte)); /* logo de l'écran de lancement */
 
   --radius-xs: calc(var(--radius-base) * 0.35);
   --radius-sm: calc(var(--radius-base) * 0.55);
@@ -748,4 +756,35 @@
 }
 @utility z-toast {
   z-index: var(--z-toast);
+}
+
+/* Écran de lancement (D112) : présent dès la première image, il s'efface seul, sans JavaScript. Après
+   le fondu, `visibility: hidden` le retire : il ne reçoit plus aucun toucher. */
+@utility ecran-lancement {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lancement);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--hero-bg);
+  animation: lancement-sortie calc(var(--lancement-disparition) * var(--motion-speed))
+    var(--ease-soft)
+    calc(var(--lancement-apparition) * var(--motion-speed) + var(--lancement-affichage)) both;
+}
+@utility ecran-lancement-contenu {
+  animation: lancement-entree calc(var(--lancement-apparition) * var(--motion-speed))
+    var(--ease-soft) both;
+}
+@keyframes lancement-entree {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes lancement-sortie {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }

@@ -1,31 +1,32 @@
-// Seul endroit du logo (provisoire) : le remplacer ici le remplace partout. Couleurs : --logo*.
+// Seul endroit du logo (provisoire, changé après la soutenance) : le remplacer ici le remplace partout.
+// Aujourd'hui un logo en texte : le nom de la marque, sa dernière lettre en couleur (--logo*), tiré de
+// config/marque.ts, jamais écrit ici (règle 2). Pour une image (SVG ou PNG), remplacer le contenu de ce
+// composant en gardant ses propriétés et son nom accessible : aucun écran n'aura à changer.
 import { marque } from '@/config/marque';
 import { cn } from '@/lib/classes';
 
-type Proprietes = { surHero?: boolean; className?: string };
+type Proprietes = {
+  surHero?: boolean;
+  /** « grande » : écran de lancement (D112). */
+  taille?: 'normale' | 'grande';
+  className?: string;
+};
 
-export function Logo({ surHero = false, className }: Proprietes) {
+export function Logo({ surHero = false, taille = 'normale', className }: Proprietes) {
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <svg
-        viewBox="0 0 34 10"
-        width="34"
-        height="10"
-        aria-hidden="true"
-        className={surHero ? 'text-logo-sur-hero' : 'text-logo'}
-      >
-        <circle cx="5" cy="5" r="3.75" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <rect x="10" y="3.5" width="14" height="3" fill="currentColor" />
-        <circle cx="29" cy="5" r="5" fill="currentColor" />
-      </svg>
-      <span
-        className={cn(
-          'font-display text-2xl font-bold tracking-tight',
-          surHero ? 'text-hero-foreground' : 'text-foreground',
-        )}
-      >
-        {marque.nom}
-      </span>
+    // Un seul nom pour les lecteurs d'écran : « Wagoo », pas « Wago o ».
+    <span
+      role="img"
+      aria-label={marque.nom}
+      className={cn(
+        'font-display leading-none font-extrabold tracking-tight',
+        taille === 'grande' ? 'text-logo-lancement' : 'text-2xl',
+        surHero ? 'text-hero-foreground' : 'text-foreground',
+        className,
+      )}
+    >
+      {marque.nom.slice(0, -1)}
+      <span className={surHero ? 'text-logo-sur-hero' : 'text-logo'}>{marque.nom.slice(-1)}</span>
     </span>
   );
 }

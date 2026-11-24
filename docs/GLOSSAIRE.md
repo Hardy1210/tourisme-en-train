@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.24 · **Date** 18/11/2026
+> **Version** 1.25 · **Date** 24/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -99,6 +99,8 @@
 | **Ligne d'horaires** | Une règle des horaires d'ouverture traduite : quand (dates, jours) et heures ; celle qui s'applique ce jour-là est résumée en haut (« Aujourd'hui, ven. 20 nov. : … ») | `LigneHoraires` | — | — |
 | **Région pilote** | Région couverte par les données de la v1 : Bourgogne-Franche-Comté (27) | `region` | `region` | — |
 | **Marque** | Nom commercial affiché (provisoire : Wagoo), défini dans `config/marque.ts` | `marque` | — | Nom de code `tourisme-en-train` |
+| **Accroche** | Phrase courte de la marque sur l'écran de lancement (« Allez-y en train. »), définie dans `config/marque.ts` | `marque.accroche` | — | Slogan (`marque.slogan`, la phrase complète) |
+| **Écran de lancement** | Écran du logo à l'ouverture de l'application, qui s'efface seul (D112) | `EcranLancement` | — | Écran d'accueil (premier lancement, choix du départ) |
 | **Paramètres** | Seuils métier partagés, définis dans `config/parametres.json` | `parametres` | `parametres` | Variables d'environnement |
 
 ---
@@ -164,3 +166,4 @@
 | 16/11/2026 | 1.22 | Parking vélo ; type de mobilité `PARKING_VELO` (et `CAR`, oublié) — D097 |
 | 17/11/2026 | 1.23 | Photo du lieu, vignette, crédit et droits d'une photo — D100, D101 |
 | 18/11/2026 | 1.24 | Surface de marque — D106 |
+| 24/11/2026 | 1.25 | Accroche, écran de lancement — D112 |
