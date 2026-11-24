@@ -99,7 +99,9 @@ test('« Changer » : page « Trajet » (téléphone) ou feuille (ordinateur), s
 test('une ville tapée : l’écran de sa gare, sans demander la position', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('searchbox', { name: 'Nom de ville ou de gare' }).fill('Beaune');
+  // Un résultat de la recherche, pas la puce « Beaune » des gares suggérées.
   await page
+    .getByRole('listitem')
     .getByRole('button', { name: /Beaune/ })
     .first()
     .click();
