@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.39 · **Date** 24/11/2026
+> **Version** 1.40 · **Date** 24/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -44,6 +44,9 @@
 ---
 
 ## 3. Écran « Explorer » (page d'accueil)
+
+### Premier lancement (D113)
+Avant Explorer, une seule fois par appareil : **écran de bienvenue** plein écran sur le fond de la marque, au-dessus du menu (maquette « Accueil », écran 1) : photo en haut dans la courbe de la fiche lieu, au hasard parmi `features/explorer/photos-accueil.ts`, crédit ⓘ ; logo ; « Que faire autour de vous ? » ; **« Utiliser ma position »**, seul geste qui fait demander la position au téléphone ; « ou » ; recherche de ville ou de gare ; trois grandes gares de la région ; « Votre position n'est jamais enregistrée par <marque> ». Un départ choisi ferme l'écran pour de bon (repère « accueil vu » sur l'appareil) et Explorer s'ouvre, barre du trajet remplie ; un lien avec une gare (`?gare=`) ne le montre jamais. Aux lancements suivants, la position n'est demandée qu'une fois l'écran de lancement parti. Textes : `features/explorer/contenu-accueil.ts`.
 
 ### Structure mobile, de haut en bas
 1. **En-tête collant** : logo (`marque.nom`, **sur ordinateur seulement depuis D086**), puce de localisation « 📍 Autour de <commune> ▾ » (→ Ma position / Une autre ville ; `<commune>` vient de `/api/geocodage/inverse`, voir `05` § 3.11 bis ; en attendant la réponse : « Autour de vous »), **date** : depuis D086, elle se choisit dans « Filtres », section « Quand ? » en premier (Aujourd'hui · Demain · Ce week-end · Choisir une date, calendrier dans la même feuille) ; « aujourd'hui » par défaut, sans bouton ; sinon pastille « 📅 Demain ✕ » avant « Tout » (la toucher revient à aujourd'hui), +1 au compteur de « Filtres » et « · demain » en fin de titre de la liste. **« Ce week-end »** = samedi (ou aujourd'hui si on est déjà le week-end), voir `05` § A.3.
@@ -224,3 +227,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 20/11/2026 | 1.37 | § 4 sexies : fiche lieu de la maquette, barre du haut commune (`BarreRetour`), pied commun (`PiedFiche`) ; § 4 ter : ⓘ en haut à droite — D109 |
 | 21/11/2026 | 1.38 | § 4 sexies : Sources, À propos, Mentions légales au même bouton Retour ; Départ et Trajet gardent le texte — D109 |
 | 24/11/2026 | 1.39 | § 7 : écran de lancement ; § 2 : logo en texte — D112 |
+| 24/11/2026 | 1.40 | § 3 : premier lancement, écran de bienvenue, position demandée au toucher — D113 |

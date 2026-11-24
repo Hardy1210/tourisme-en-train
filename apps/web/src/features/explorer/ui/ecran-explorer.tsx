@@ -5,9 +5,11 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { cn } from '@/lib/classes';
+import { useEcranVisible } from '@/lib/ecran-visible';
 import { nombreFiltres } from '../filtres';
 import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
+import { useAccueil } from '../use-accueil';
 import { usePageTrajet } from '../use-page-trajet';
 import type { PositionFeuille } from '../position-feuille';
 import {
@@ -16,6 +18,7 @@ import {
   EtatsDepart,
   FeuilleChoixDepart,
 } from './controles-depart';
+import { EcranBienvenue } from './ecran-bienvenue';
 import { FeuilleFiltres } from './feuille-filtres';
 import { PageTrajet } from './page-trajet';
 import { RangeeFiltres } from './rangee-filtres';
@@ -23,7 +26,10 @@ import { ResultatsExplorer } from './resultats-explorer';
 import { TrajetExplorer } from './trajet-explorer';
 
 export function EcranExplorer() {
-  const choix = useChoixDepart();
+  // Premier lancement : bienvenue d'abord, la position attend « Utiliser ma position » (D113).
+  const accueil = useAccueil();
+  const choix = useChoixDepart({ positionPermise: accueil.positionPermise });
+  const visible = useEcranVisible();
   const { depart } = choix;
   const [positionFeuille, setPositionFeuille] = useState<PositionFeuille>('milieu');
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
@@ -124,6 +130,9 @@ export function EcranExplorer() {
         surModification={changer}
       />
       <FeuilleChoixDepart choix={choix} />
+      {visible && accueil.etape === 'bienvenue' && (
+        <EcranBienvenue choix={choix} surTerminer={accueil.terminer} />
+      )}
       <PageTrajet
         trajet={trajet}
         choix={choix}

@@ -7,6 +7,7 @@ import { gareConseilleePour, useGare, useGaresProches } from '@/features/gares/h
 import { usePosition } from '@/features/localisation/fournisseur-position';
 import { useCommune } from '@/features/localisation/hooks';
 import { schemaReponseSources } from '@/features/presentation/schemas';
+import { useLancementTermine } from '@/lib/ecran-lancement';
 import { useEcranVisible, useUrlEcran } from '@/lib/ecran-visible';
 import { ErreurClient, lireApi } from '@/lib/http/client';
 import { useEnLigne } from '@/lib/use-en-ligne';
@@ -19,17 +20,26 @@ const statutDe = (erreur: unknown): number | null => {
   return erreur instanceof ErreurClient ? erreur.statut : 500;
 };
 
+type OptionsDepart = {
+  /** Faux tant que l'accueil attend « Utiliser ma position » (premier lancement, D113). */
+  positionPermise?: boolean;
+};
+
 /**
  * Gare de départ de l'écran. `?gare=<uic>` n'est écrit que sur un choix de l'utilisateur : la gare
  * conseillée, calculée depuis sa position, ne doit jamais se retrouver dans un lien (D058).
+ * La position n'est demandée qu'après l'écran de lancement : la fenêtre du téléphone ne le couvre pas.
  */
-export function useDepart() {
+export function useDepart({ positionPermise = true }: OptionsDepart = {}) {
   const routeur = useRouter();
   const chemin = usePathname();
   const parametresUrl = useUrlEcran();
   const uicChoisi = parametresUrl.get('gare');
 
-  const { position, essais, redemander } = usePosition(uicChoisi === null);
+  const lancementTermine = useLancementTermine();
+  const { position, essais, redemander } = usePosition(
+    uicChoisi === null && positionPermise && lancementTermine,
+  );
   const point = position.etat === 'trouvee' ? { lat: position.lat, lon: position.lon } : null;
   const proches = useGaresProches(point);
   const gareChoisie = useGare(uicChoisi);
@@ -70,8 +80,8 @@ export function useDepart() {
 }
 
 /** Gare de départ et feuille pour en changer, communes aux écrans Explorer et Lieux. */
-export function useChoixDepart() {
-  const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart();
+export function useChoixDepart(options: OptionsDepart = {}) {
+  const { depart, point, essais, choisirGare, revenirAMaPosition } = useDepart(options);
   const [feuilleOuverte, setFeuilleOuverte] = useState(false);
   const [erreurChoix, setErreurChoix] = useState(false);
   const client = useQueryClient();
@@ -82,10 +92,12 @@ export function useChoixDepart() {
     setErreurChoix(false);
     choisirGare(uic);
   };
-  const choisirPoint = async ({ lat, lon }: { lat: number; lon: number }) => {
+  /** Vrai si une gare a été trouvée pour ce point. */
+  const choisirPoint = async ({ lat, lon }: { lat: number; lon: number }): Promise<boolean> => {
     const gare = await gareConseilleePour(client, lat, lon).catch(() => null);
     if (gare) choisirGareEtFermer(gare.uic);
     else setErreurChoix(true);
+    return gare !== null;
   };
 
   const libelle =
