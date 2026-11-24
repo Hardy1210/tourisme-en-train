@@ -32,7 +32,7 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 
 | ID | User story | Priorité | Pts | Critère d'acceptation | Tâches | Livrée en | État |
 |---|---|---|---|---|---|---|---|
-| F01 | En tant que voyageur, je veux être localisé dès l'ouverture (ou saisir une ville si je refuse) afin d'avoir des résultats sans rien taper. | Must (P0) | 3 | Position demandée à l'ouverture ; refus → recherche de ville ; position jamais enregistrée. | E09 · E11 | S6 | ✅ |
+| F01 | En tant que voyageur, je veux être localisé dès l'ouverture (ou saisir une ville si je refuse) afin d'avoir des résultats sans rien taper. | Must (P0) | 3 | Premier lancement : position demandée au toucher de « Utiliser ma position », après une explication ; ensuite, après l'écran de lancement (D113) ; refus → recherche de ville ; position jamais enregistrée. | E09 · E11 | S6 | ✅ |
 | F02 | En tant que voyageur, je veux voir tout de suite les lieux à pied et les gares proches afin de savoir ce qu'il y a autour de moi. | Must (P0) | 3 | Lieux dans le rayon défini par les paramètres ; gares proches avec distance. | E08 · E11 | S6 | ✅ |
 | F03 | En tant que voyageur, je veux connaître mes gares de départ les plus proches et pouvoir en changer. | Must (P0) | 2 | Par défaut, la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064) ; changement de gare possible. | E08 · E11 | S6 | ✅ |
 | F04 | En tant que voyageur, je veux voir les destinations atteignables en train direct à la date choisie afin de choisir une sortie. | Must (P0) | 8 | Aucune correspondance ; durée, trains par jour, premier départ, dernier retour. | E02 · E03 · E04 · E08 · E11 | S6 | ✅ |

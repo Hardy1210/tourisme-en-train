@@ -88,3 +88,4 @@
 | 21/11/2026 | 1.92 | § 9 : #162, #163, #164 sur `main`, remarques du professeur en cours de décision, durées mesurées des tests, prochaine action : comparer les deux avis |
 | 21/11/2026 | 1.93 | § 15 étapes 2 et 4 : vérifications de GitHub avant la fusion ; § 9 : l'image est vérifiée par GitHub (L80) — D110 |
 | 21/11/2026 | 1.94 | § 9 : #162 à #168 sur `main`, intégration continue en place, durées mesurées sur GitHub, prochaine action : étude d'impact après chaque maquette |
+| 24/11/2026 | 1.95 | § 9 : #170, #171, #172 sur `main` (D112, D113), écran 2 à faire, barre blanche reportée, correction du logo mise de côté ; Bloquant : deux tunnels pour un défaut du téléphone, onglet privé pour le premier lancement, aucune fenêtre modale pendant une demande d'autorisation |
