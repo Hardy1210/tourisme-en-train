@@ -20,19 +20,19 @@ import { ErreurChoixDepart } from './controles-depart';
 
 type Proprietes = {
   choix: ReturnType<typeof useChoixDepart>;
-  /** Départ choisi (position, ville ou gare) : l'accueil se ferme et ne reviendra plus. */
-  surTerminer: () => void;
+  /** Départ choisi (position, ou ville et gare) : l'accueil se ferme et ne reviendra plus. */
+  surTerminer: (choix: 'position' | 'gare') => void;
 };
 
 export function EcranBienvenue({ choix, surTerminer }: Proprietes) {
   // Une photo au hasard à chaque ouverture ; écran rendu dans le navigateur seulement (Explorer, D069).
   const [{ photo, cadrage }] = useState(() => photoAuHasard(PHOTOS_ACCUEIL, Math.random()));
   const choisirGare = (uic: string) => {
-    surTerminer();
+    surTerminer('gare');
     choix.choisirGareEtFermer(uic);
   };
   const choisirPoint = async (point: { lat: number; lon: number }) => {
-    if (await choix.choisirPoint(point)) surTerminer();
+    if (await choix.choisirPoint(point)) surTerminer('gare');
   };
 
   return (
@@ -77,7 +77,11 @@ export function EcranBienvenue({ choix, surTerminer }: Proprietes) {
                   {T.texte}
                 </Dialog.Description>
               </div>
-              <Bouton variante="sortie" className="h-13 text-lg font-bold" onClick={surTerminer}>
+              <Bouton
+                variante="sortie"
+                className="h-13 text-lg font-bold"
+                onClick={() => surTerminer('position')}
+              >
                 <LocateFixed aria-hidden="true" className="size-5" />
                 {T.utiliserPosition}
               </Bouton>
