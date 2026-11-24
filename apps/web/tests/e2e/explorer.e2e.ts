@@ -413,7 +413,6 @@ test.describe('position acceptée', () => {
       page,
     }) => {
       await page.goto('/');
-      await expect(sorties(page).first()).toBeVisible();
       const { champ } = await ouvrirDestination(page);
       await expect(ligneDate(page)).toHaveAccessibleName(/^Date : Aujourd'hui/);
       await expect(pastillesDate(page)).toBeVisible();
@@ -458,6 +457,10 @@ test.describe('position acceptée', () => {
       await ligneDate(page).click();
       await pageTrajet(page)
         .getByRole('button', { name: /24 novembre/ })
+        .click();
+      // Le calendrier se valide, comme dans « Filtres ».
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Voir les sorties du/ })
         .click();
       await expect(page).toHaveURL(/date=2026-11-24/);
       await expect(ligneDate(page)).toHaveAccessibleName(/^Date : Mar\. 24 nov\./);
