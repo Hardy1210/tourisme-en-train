@@ -1,8 +1,6 @@
 'use client';
 
 // Barre du trajet + feuille « Où allez-vous ? » d'Explorer, une fois la gare de départ prête (D084).
-import { useState } from 'react';
-
 import type { Depart } from '../depart';
 import type { Filtres } from '../filtres';
 import type { useChoixDepart } from '../hooks';
@@ -20,6 +18,9 @@ type Proprietes = {
   surResultats: () => void;
   /** Téléphone : la page « Trajet » (D085), ouverte dans le toucher ; null sur grand écran. */
   ouvrirPage: ((champ: 'depart' | 'destination') => void) | null;
+  /** Feuille « Où allez-vous ? » (ordinateur) : tenue par Explorer, l'accueil l'ouvre aussi (D113). */
+  destinationOuverte: boolean;
+  surDestinationOuverte: (ouverte: boolean) => void;
 };
 
 export function TrajetExplorer({
@@ -29,8 +30,9 @@ export function TrajetExplorer({
   surModification,
   surResultats,
   ouvrirPage,
+  destinationOuverte,
+  surDestinationOuverte,
 }: Proprietes) {
-  const [destinationOuverte, setDestinationOuverte] = useState(false);
   const { avantRecherche, liste } = useListeDestinations(depart.gare.uic, filtres);
   // Appelé une fois la feuille « Où allez-vous ? » refermée.
   const appliquer = (recherche: Recherche) => {
@@ -46,13 +48,13 @@ export function TrajetExplorer({
         // Le départ se choisit dans la feuille « D'où partez-vous ? » d'avant.
         surDepart={() => (ouvrirPage ? ouvrirPage('depart') : choix.setFeuilleOuverte(true))}
         surDestination={() =>
-          ouvrirPage ? ouvrirPage('destination') : setDestinationOuverte(true)
+          ouvrirPage ? ouvrirPage('destination') : surDestinationOuverte(true)
         }
         surEffacer={() => surModification({ recherche: '', destination: null })}
       />
       <FeuilleDestination
         ouverte={destinationOuverte}
-        surChangement={setDestinationOuverte}
+        surChangement={surDestinationOuverte}
         destinations={avantRecherche}
         rechercheActuelle={filtres.recherche}
         surAppliquer={appliquer}

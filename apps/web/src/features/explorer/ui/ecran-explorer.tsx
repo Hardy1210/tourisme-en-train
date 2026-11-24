@@ -6,6 +6,7 @@ import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
 import { cn } from '@/lib/classes';
 import { useEcranVisible } from '@/lib/ecran-visible';
+import { etapeAccueil } from '../accueil';
 import { nombreFiltres } from '../filtres';
 import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
@@ -18,7 +19,7 @@ import {
   EtatsDepart,
   FeuilleChoixDepart,
 } from './controles-depart';
-import { EcranBienvenue } from './ecran-bienvenue';
+import { AccueilExplorer } from './accueil-explorer';
 import { FeuilleFiltres } from './feuille-filtres';
 import { PageTrajet } from './page-trajet';
 import { RangeeFiltres } from './rangee-filtres';
@@ -35,9 +36,16 @@ export function EcranExplorer() {
   const [feuilleFiltres, setFeuilleFiltres] = useState(false);
   const [demandeDefilement, setDemandeDefilement] = useState(0);
   const { filtres, changer } = useFiltres();
+  // Sur ordinateur, « Où allez-vous ? » s'ouvre aussi depuis l'accueil (écran 3a).
+  const [destinationOuverte, setDestinationOuverte] = useState(false);
   const aujourdhui = dateDuJour();
 
   const pret = depart.etat === 'pret';
+  const etape = etapeAccueil({
+    etat: accueil.etat,
+    gareDansUrl: accueil.gareDansUrl,
+    depart: depart.etat,
+  });
   const grandEcran = useGrandEcran();
   const trajet = usePageTrajet();
   const montrerResultats = () => {
@@ -86,6 +94,8 @@ export function EcranExplorer() {
             surModification={changer}
             surResultats={montrerResultats}
             ouvrirPage={grandEcran ? null : trajet.ouvrir}
+            destinationOuverte={destinationOuverte}
+            surDestinationOuverte={setDestinationOuverte}
           />
         ) : (
           <BoutonDepart choix={choix} />
@@ -130,8 +140,18 @@ export function EcranExplorer() {
         surModification={changer}
       />
       <FeuilleChoixDepart choix={choix} />
-      {visible && accueil.etape === 'bienvenue' && (
-        <EcranBienvenue choix={choix} surTerminer={accueil.terminer} />
+      {visible && etape && (
+        <AccueilExplorer
+          accueil={accueil}
+          etape={etape}
+          choix={choix}
+          ouvrirDepart={() =>
+            grandEcran ? choix.setFeuilleOuverte(true) : trajet.ouvrir('depart')
+          }
+          ouvrirDestination={() =>
+            grandEcran ? setDestinationOuverte(true) : trajet.ouvrir('destination')
+          }
+        />
       )}
       <PageTrajet
         trajet={trajet}

@@ -13,11 +13,17 @@ test.beforeEach(async ({ context, baseURL, page }) => {
   await context.route('**/api/geocodage/inverse*', (requete) =>
     requete.fulfill({ json: { commune: 'Dijon', codeInsee: '21231', horsLigne: false } }),
   );
-  // Compte les demandes de position ; note si l'écran de lancement était encore là à ce moment.
+  // Compte les demandes de position ; note si l'écran de lancement, ou une fenêtre modale, était encore
+  // là à ce moment.
   await page.addInitScript(() => {
-    const fenetre = window as unknown as { demandes: number; lancementPendantDemande: string[] };
+    const fenetre = window as unknown as {
+      demandes: number;
+      lancementPendantDemande: string[];
+      modalePendantDemande: boolean[];
+    };
     fenetre.demandes = 0;
     fenetre.lancementPendantDemande = [];
+    fenetre.modalePendantDemande = [];
     const lire = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
     navigator.geolocation.getCurrentPosition = (...args) => {
       fenetre.demandes += 1;
@@ -25,6 +31,9 @@ test.beforeEach(async ({ context, baseURL, page }) => {
       const style = ecran ? getComputedStyle(ecran) : null;
       fenetre.lancementPendantDemande.push(
         !style || style.display === 'none' || style.visibility === 'hidden' ? 'parti' : 'visible',
+      );
+      fenetre.modalePendantDemande.push(
+        document.querySelector('[role="dialog"][data-state="open"]') !== null,
       );
       lire(...args);
     };
@@ -34,6 +43,15 @@ test.beforeEach(async ({ context, baseURL, page }) => {
 const demandes = (page: Page) =>
   page.evaluate(() => (window as unknown as { demandes: number }).demandes);
 const bienvenue = (page: Page) => page.getByRole('heading', { name: 'Que faire autour de vous ?' });
+const ecranGare = (page: Page) => page.getByRole('heading', { name: 'Votre gare de départ' });
+
+/** Premier lancement → « Utiliser ma position » → écran 3a, la gare trouvée. */
+async function jusquALaGare(page: Page) {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Utiliser ma position' }).click();
+  await expect(ecranGare(page)).toBeVisible();
+  await expect(page.getByRole('dialog').getByText('Dijon-Ville')).toBeVisible();
+}
 
 test('premier lancement : la bienvenue, sans demander la position ni montrer le menu', async ({
   page,
@@ -44,19 +62,69 @@ test('premier lancement : la bienvenue, sans demander la position ni montrer le 
   expect(await demandes(page)).toBe(0);
 });
 
-test('« Utiliser ma position » : la demande part, Explorer montre « Autour de Dijon »', async ({
+test('« Utiliser ma position » : la demande part, puis l’écran de la gare et Explorer', async ({
   page,
 }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Utiliser ma position' }).click();
-  await expect(bienvenue(page)).toBeHidden();
-  await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
+  await jusquALaGare(page);
   expect(await demandes(page)).toBe(1);
+  // Bug vu par Hardy le 24/11 sur l'iPhone (Safari et Chrome) : la fenêtre de l'accueil restait ouverte
+  // pendant la demande, et l'iPhone ne montrait pas la sienne. Avec #171, sans fenêtre à ce moment, il
+  // la montrait. Aucune fenêtre modale pendant la demande de position.
+  expect(
+    await page.evaluate(
+      () => (window as unknown as { modalePendantDemande: boolean[] }).modalePendantDemande,
+    ),
+  ).toEqual([false]);
+  await expect(
+    page.getByText('La plus proche de vous. Vous pouvez en choisir une autre.'),
+  ).toBeVisible();
+  await expect(page.getByRole('dialog').getByText(/≈ \d+ min à pied/)).toBeVisible();
+
+  await page.getByRole('button', { name: 'Voir les sorties' }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
 
   // L'accueil ne revient plus sur cet appareil.
   await page.reload();
   await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
   await expect(bienvenue(page)).toHaveCount(0);
+  await expect(ecranGare(page)).toHaveCount(0);
+});
+
+test('« Destination » : page « Trajet » (téléphone) ou feuille (ordinateur), prête à taper', async ({
+  page,
+  isMobile,
+}) => {
+  await jusquALaGare(page);
+  await page.getByRole('button', { name: 'Destination' }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  if (isMobile) await expect(page.getByRole('searchbox', { name: 'Destination' })).toBeFocused();
+  else await expect(page.getByRole('dialog', { name: 'Où allez-vous ?' })).toBeVisible();
+});
+
+test('« Changer » : page « Trajet » (téléphone) ou feuille (ordinateur), sur le départ', async ({
+  page,
+  isMobile,
+}) => {
+  await jusquALaGare(page);
+  await page.getByRole('button', { name: /Changer de gare de départ/ }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  if (isMobile) await expect(page.getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+  else await expect(page.getByRole('dialog', { name: "D'où partez-vous ?" })).toBeVisible();
+});
+
+test('une ville tapée : l’écran de sa gare, sans demander la position', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('searchbox', { name: 'Nom de ville ou de gare' }).fill('Beaune');
+  // Un résultat de la recherche, pas la puce « Beaune » des gares suggérées.
+  await page
+    .getByRole('listitem')
+    .getByRole('button', { name: /Beaune/ })
+    .first()
+    .click();
+  await expect(ecranGare(page)).toBeVisible();
+  await expect(page.getByText('Vous pouvez en choisir une autre.', { exact: true })).toBeVisible();
+  expect(await demandes(page)).toBe(0);
 });
 
 test('une gare suggérée : Explorer part de cette gare, sans demander la position', async ({

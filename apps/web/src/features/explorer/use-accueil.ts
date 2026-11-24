@@ -3,27 +3,35 @@
 // État de l'accueil du premier lancement (D113). Explorer reste en vie (D069) : cet état aussi.
 import { useCallback, useState } from 'react';
 import { useUrlEcran } from '@/lib/ecran-visible';
-import { ecrireAccueilVu, etapeAccueil, lireAccueilVu } from './accueil';
+import { ecrireAccueilVu, etatAccueilInitial, lireAccueilVu, type EtatAccueil } from './accueil';
 
 export function useAccueil() {
   const gareDansUrl = useUrlEcran().get('gare') !== null;
-  const [vu, setVu] = useState(lireAccueilVu);
+  const [etat, setEtat] = useState<EtatAccueil>(() => etatAccueilInitial(lireAccueilVu()));
   // Une gare choisie met un instant à arriver dans l'URL : d'ici là, aucune demande de position (le
   // parcours `accueil.e2e.ts` l'a vue partir). Remis à faux pendant le rendu, comme `useUrlEcran`.
   const [gareEnAttente, setGareEnAttente] = useState(false);
   if (gareEnAttente && gareDansUrl) setGareEnAttente(false);
 
-  /** L'utilisateur a choisi son départ : l'accueil ne reviendra plus sur cet appareil. */
-  const terminer = useCallback((choix: 'position' | 'gare') => {
-    ecrireAccueilVu();
-    setVu(true);
+  /** Départ choisi sur l'écran 1 : on passe à l'écran de la gare (3a). */
+  const choisir = useCallback((choix: 'position' | 'gare') => {
+    setEtat('gare');
     if (choix === 'gare') setGareEnAttente(true);
+  }, []);
+  /** L'utilisateur quitte l'accueil vers Explorer : il ne reviendra plus sur cet appareil. */
+  const terminer = useCallback(() => {
+    ecrireAccueilVu();
+    setEtat('fini');
   }, []);
 
   return {
-    etape: etapeAccueil({ accueilVu: vu, gareDansUrl }),
+    etat,
+    gareDansUrl,
     /** Au premier lancement, la position attend « Utiliser ma position » : jamais à l'ouverture. */
-    positionPermise: vu && !gareEnAttente,
+    positionPermise: etat !== 'bienvenue' && !gareEnAttente,
+    choisir,
     terminer,
   };
 }
+
+export type Accueil = ReturnType<typeof useAccueil>;
