@@ -9,10 +9,13 @@ import { accesGareProche } from '@/features/gares/acces-gare';
 import { presentationGare } from '../accueil';
 import { TEXTES_ACCUEIL as T } from '../contenu-accueil';
 import type { Depart } from '../depart';
-import { TitreAccueil } from './cadre-accueil';
+import { TitreAccueil, TitreAccueilSimple } from './cadre-accueil';
 
 type Proprietes = {
-  /** `chargement` le temps de trouver la gare (position demandée, ou gare choisie en route). */
+  /**
+   * `chargement` le temps de trouver la gare (position demandée, ou gare choisie en route) : le cadre n'est
+   * pas une fenêtre modale à ce moment-là (`CadreAccueil`), d'où le titre simple.
+   */
   depart: Depart;
   surChanger: () => void;
   surDestination: () => void;
@@ -26,9 +29,11 @@ export function AccueilGare({ depart, surChanger, surDestination, surVoir }: Pro
       ? accesGareProche(pret.gare.distanceM, pret.gare.parkingVelo)
       : null;
 
+  const Titre = pret ? TitreAccueil : TitreAccueilSimple;
+
   return (
     <>
-      <TitreAccueil
+      <Titre
         titre={T.titreGare}
         texte={pret ? T.presentation[presentationGare(pret)] : T.rechercheGare}
       />

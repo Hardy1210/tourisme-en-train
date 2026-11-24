@@ -10,8 +10,11 @@ export const CLE_ACCUEIL_VU = 'wagoo-accueil-vu';
  */
 export type EtatAccueil = 'bienvenue' | 'gare' | 'fini';
 
-/** Écran à montrer par-dessus Explorer ; null : Explorer lui-même (ou ses écrans d'état). */
-export type EtapeAccueil = 'bienvenue' | 'gare' | null;
+/**
+ * Écran à montrer par-dessus Explorer ; null : Explorer lui-même (ou ses écrans d'état). `recherche` : la
+ * gare n'est pas encore trouvée (position demandée) ; même aspect, mais pas de fenêtre modale (bug du 24/11).
+ */
+export type EtapeAccueil = 'bienvenue' | 'recherche' | 'gare' | null;
 
 export const etatAccueilInitial = (accueilVu: boolean): EtatAccueil =>
   accueilVu ? 'fini' : 'bienvenue';
@@ -32,7 +35,8 @@ export function etapeAccueil({
 }): EtapeAccueil {
   if (etat === 'fini') return null;
   if (etat === 'bienvenue') return gareDansUrl ? null : 'bienvenue';
-  return depart === 'chargement' || depart === 'pret' ? 'gare' : null;
+  if (depart === 'chargement') return 'recherche';
+  return depart === 'pret' ? 'gare' : null;
 }
 
 /**

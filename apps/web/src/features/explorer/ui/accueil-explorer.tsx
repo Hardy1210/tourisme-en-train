@@ -35,8 +35,9 @@ export function AccueilExplorer({
   };
 
   return (
-    // Le même cadre pour les deux écrans : la photo ne change pas en cours de route.
-    <CadreAccueil>
+    // Le même cadre pour tous les écrans : la photo ne change pas en cours de route. Pas de fenêtre modale
+    // pendant la recherche de la gare, quand le téléphone demande la position (bug du 24/11).
+    <CadreAccueil modale={etape !== 'recherche'}>
       {etape === 'bienvenue' ? (
         <AccueilBienvenue choix={choix} surChoix={accueil.choisir} />
       ) : (

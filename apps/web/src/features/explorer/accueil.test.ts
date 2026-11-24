@@ -22,8 +22,10 @@ describe('etapeAccueil', () => {
   it('lien partagé avec une gare, même au premier lancement : Explorer directement', () => {
     expect(etapeAccueil({ ...base, etat: 'bienvenue', gareDansUrl: true })).toBeNull();
   });
-  it('départ choisi : l’écran de la gare, pendant la recherche et une fois trouvée', () => {
-    expect(etapeAccueil({ ...base, etat: 'gare' })).toBe('gare');
+  it('départ choisi, gare pas encore trouvée : la recherche, sans fenêtre modale', () => {
+    expect(etapeAccueil({ ...base, etat: 'gare' })).toBe('recherche');
+  });
+  it('départ choisi, gare trouvée : l’écran de la gare', () => {
     expect(etapeAccueil({ ...base, etat: 'gare', depart: 'pret' })).toBe('gare');
   });
   it('départ choisi, gare dans l’URL : reste sur l’écran de la gare', () => {
