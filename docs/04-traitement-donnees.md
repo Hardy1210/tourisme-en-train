@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.27 · **Date** 19/11/2026
+> **Version** 1.28 · **Date** 24/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -112,7 +112,8 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
 | `lieuxPauvresToujoursGardes` | musée, abbaye | Sous-catégories jamais retirées par ce tri | Presque toujours de vraies visites, peu nombreuses (74 remis le 13/11) |
 | `bullesRayonPx` | 37 | Carte : distance (px) sous laquelle des lieux se regroupent en une bulle ; plus petit = les bulles se divisent plus tôt | Réglé à l'œil par Hardy sur iPhone (13/11) |
 | `bullesZoomMax` | 13 | Carte : au-delà, plus de bulles, chaque lieu a son icône ; plus grand = les bulles restent plus longtemps | Idem |
-| `bullesDecalagePx` | [20, -5] | Carte : décalage [droite, bas] des bulles (cercle et nombre), pour que le point d'une gare ne cache pas leur nombre ; les icônes restent à leur place exacte | Réglé par Hardy sur iPhone (14/11) ; nombres négatifs = gauche, haut |
+| `bullesDecalagePx` | [22, -18] | Carte : décalage [droite, bas] des bulles (cercle et nombre), pour qu'une gare (point ou icône de train) ne cache pas leur nombre ; les icônes des lieux restent à leur place exacte | Réglé par Hardy sur iPhone (14/11), en haut à droite depuis D118 (24/11) ; nombres négatifs = gauche, haut |
+| `carte.zoomIconesGares` | 9.75 | Carte : à partir de ce zoom, les gares sont des icônes de train ; en dessous, des points (D118) | Mesuré le 24/11 : ≈ 15 gares visibles autour de Dijon sur un écran d'iPhone ; à ajuster sur l'iPhone |
 | `sousCategoriesMasquees` | piscine, centre aquatique | Sous-catégories **gardées en base** mais cachées de tous les écrans (`lieu.masque`, calculé à l'import : carte, « Près de vous », liens aux gares) ; changer la liste recharge la source | Cachées « pour l'instant » (Hardy, 13/11). **On ne supprime jamais un lieu de la base, on choisit ce qu'on montre** (D093). Une correction manuelle passe avant (§ 4.5) |
 
 **Section `photos` (D100, D101)** : une photo par lieu, `pnpm etl photos` (§ 4.6 bis). Les motifs se comparent sans majuscules, accents ni ponctuation.
@@ -474,3 +475,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 19/11/2026 | 1.27 | § 2 : `lieux.descriptionMaxCaracteres` 2 000, `controles.descriptionsMin` ; § 3 : `descriptions` (10 ter) ; § 4.4 : nettoyage des descriptions ; § 4.6 ter : descriptions complètes — D105 |
 | 17/11/2026 | 1.25 | § 2 : section `photos`, `controles.photosMin` ; § 3 : `photos` (10 bis) et sa fréquence ; § 4.6 bis : photos des lieux — D100, D101 |
 | 18/11/2026 | 1.26 | § 2 : `limites.lieuxParCategorie` (fiche destination, « Voir les N autres ») — D106 |
+| 24/11/2026 | 1.28 | § 2 : `carte.zoomIconesGares`, nouvelle valeur de `acces.bullesDecalagePx` — D118 |

@@ -8,6 +8,7 @@ import {
   formaterDuree,
   formaterNombreLieux,
   totalLieux,
+  traitTranche,
 } from '@/features/destinations/presentation';
 import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
@@ -54,15 +55,26 @@ export function MarqueursLieux({
   ));
 }
 
+/**
+ * Gares de destination (D118, remarque ⑥) : de loin, des points colorés par le temps de train ; de près
+ * (`icones`), des icônes de train inversées, contour et train dans la même couleur. La destination du
+ * trajet (`uicCherche`, la ligne « Arrivée » de la barre) a un bord jaune ; une gare touchée grandit. Le bouton garde sa taille (44 px) et son nom : rien ne change dans le fonctionnement.
+ */
 export function MarqueursDestinations({
   destinations,
   uicChoisi,
+  uicCherche,
+  icones,
   survolee,
   surSurvol,
   surChoix,
 }: {
   destinations: readonly Destination[];
   uicChoisi: string | null;
+  /** Destination cherchée dans la page « Trajet » (`filtres.destination`) : bord jaune (D118). */
+  uicCherche: string | null;
+  /** Zoom au moins `parametres.carte.zoomIconesGares` (`garesEnIcones`). */
+  icones: boolean;
   survolee: string | null;
   surSurvol: (uic: string | null) => void;
   surChoix: (uic: string) => void;
@@ -70,6 +82,7 @@ export function MarqueursDestinations({
   return destinations.map((d) => {
     const choisie = uicChoisi === d.gare.uic;
     const enAvant = choisie || survolee === d.gare.uic;
+    const cherchee = uicCherche === d.gare.uic;
     const nombre = totalLieux(d.lieuxParCategorie);
     return (
       <Marker
@@ -92,13 +105,27 @@ export function MarqueursDestinations({
           }}
           className="relative flex size-touch cursor-pointer items-center justify-center"
         >
-          <span
-            className={cn(
-              'rounded-pill border-2 border-map-halo shadow-xs',
-              enAvant ? 'size-5' : 'size-3.5',
-              couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
-            )}
-          />
+          {icones ? (
+            <span
+              className={cn(
+                'flex items-center justify-center rounded-md border-2 bg-surface shadow-xs',
+                enAvant ? 'size-9' : 'size-7.5',
+                traitTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
+                cherchee && 'ring-3 ring-map-gare-choisie',
+              )}
+            >
+              <TrainFront aria-hidden="true" className={enAvant ? 'size-5' : 'size-4'} />
+            </span>
+          ) : (
+            <span
+              className={cn(
+                'rounded-pill border-2 border-map-halo shadow-xs',
+                enAvant ? 'size-5' : 'size-3.5',
+                couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
+                cherchee && 'ring-3 ring-map-gare-choisie',
+              )}
+            />
+          )}
         </button>
       </Marker>
     );

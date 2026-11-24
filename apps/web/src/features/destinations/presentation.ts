@@ -44,9 +44,26 @@ export function formaterNombreLieux(nombre: number): string {
 /** Couleur de la tranche de temps ; classes entières pour que Tailwind les trouve. */
 const COULEURS = ['bg-map-time-1', 'bg-map-time-2', 'bg-map-time-3', 'bg-map-time-4'] as const;
 
-export function couleurTranche(tranche: string, bornes: readonly number[]): string {
+/** Rang de la tranche dans les bornes ; au-delà de la dernière, la dernière couleur. */
+function rangTranche(tranche: string, bornes: readonly number[]): number {
   const index = bornes.findIndex((borne) => tranche === `<=${borne}`);
-  return COULEURS[index === -1 ? COULEURS.length - 1 : index] ?? 'bg-map-time-4';
+  return index === -1 ? COULEURS.length - 1 : index;
+}
+
+export function couleurTranche(tranche: string, bornes: readonly number[]): string {
+  return COULEURS[rangTranche(tranche, bornes)] ?? 'bg-map-time-4';
+}
+
+/** Icône de train inversée (D118) : contour et train dans la couleur de la tranche, sur fond blanc. */
+const TRAITS = [
+  'border-map-time-1 text-map-time-1',
+  'border-map-time-2 text-map-time-2',
+  'border-map-time-3 text-map-time-3',
+  'border-map-time-4 text-map-time-4',
+] as const;
+
+export function traitTranche(tranche: string, bornes: readonly number[]): string {
+  return TRAITS[rangTranche(tranche, bornes)] ?? 'border-map-time-4 text-map-time-4';
 }
 
 /** Le train direct qui part le plus tôt parmi les destinations : « 10:12 → Beaune ». */

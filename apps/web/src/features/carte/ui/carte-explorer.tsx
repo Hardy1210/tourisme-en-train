@@ -30,6 +30,7 @@ import { CommandesCarte } from './commandes-carte';
 import { COUCHE_BULLES, COUCHE_ICONES, CoucheLieux, SOURCE_LIEUX } from './couche-lieux';
 import { IconesCachees } from './icones-cachees';
 import { CouchesCarte } from './couches-carte';
+import { garesEnIcones } from '../zoom-gares';
 import { MarqueurGareDepart, MarqueursDestinations, MarqueurUtilisateur } from './marqueurs-carte';
 import { MiniFicheDestination, MiniFicheLieu, MiniFicheLieuCarte } from './mini-fiche';
 
@@ -64,6 +65,7 @@ export type ProprietesCarte = {
 };
 
 const MARGE_PX = 48;
+const SEUIL_ICONES = parametres.carte.zoomIconesGares;
 
 /** Fond OpenFreeMap aux couleurs des tokens ; toute information figure aussi dans la liste (`06` § 6). */
 export function CarteExplorer({
@@ -85,6 +87,8 @@ export function CarteExplorer({
 }: ProprietesCarte) {
   const carte = useRef<MapRef>(null);
   const [selection, setSelection] = useState<Selection>(null);
+  // Gares en icônes de train au-delà du seuil de zoom (D118).
+  const [garesIcones, setGaresIcones] = useState(false);
   const style = useStyleCarte();
   const icones = useRef<HTMLDivElement>(null);
   // Couleurs des bulles et icônes de catégorie, lues dans les tokens une fois la carte chargée.
@@ -247,7 +251,12 @@ export function CarteExplorer({
           fadeDuration={0}
           interactiveLayerIds={couleursBulles ? [COUCHE_BULLES, COUCHE_ICONES] : []}
           onClick={(evenement) => void toucher(evenement)}
+          // D118 : l'état ne change qu'au passage du seuil (même valeur : React ne redessine pas).
+          onZoom={(evenement) =>
+            setGaresIcones(garesEnIcones(evenement.viewState.zoom, SEUIL_ICONES))
+          }
           onLoad={(evenement) => {
+            setGaresIcones(garesEnIcones(evenement.target.getZoom(), SEUIL_ICONES));
             cadrer();
             if (!icones.current) return;
             void enregistrerIconesCategories(evenement.target, icones.current).then(() =>
@@ -275,6 +284,8 @@ export function CarteExplorer({
           <MarqueursDestinations
             destinations={destinations}
             uicChoisi={uicChoisi}
+            uicCherche={destinationCherchee}
+            icones={garesIcones}
             survolee={survolee}
             surSurvol={surSurvol}
             surChoix={(uic) => setSelection({ type: 'destination', uic })}
