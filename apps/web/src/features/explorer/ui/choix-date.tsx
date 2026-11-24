@@ -30,7 +30,7 @@ export function ChoixDate({
       aria-pressed={selectionne}
       className={cn(
         'flex cursor-pointer flex-col justify-center rounded-md border text-left transition-colors',
-        compacte ? 'min-h-12 px-2.5 py-1.5' : 'min-h-14 px-3 py-2',
+        compacte ? 'min-h-12 px-2 py-1.5' : 'min-h-14 px-3 py-2',
         selectionne
           ? 'border-selection-border bg-selection-bg text-selection-foreground'
           : 'border-border bg-surface hover:bg-surface-sunken',
@@ -41,7 +41,7 @@ export function ChoixDate({
       <span
         className={cn(
           'flex items-center gap-1.5 font-semibold',
-          compacte ? 'text-sm' : 'text-base',
+          compacte ? 'text-sm whitespace-nowrap' : 'text-base',
         )}
       >
         {icone && <CalendarDays aria-hidden="true" className="size-4.5 flex-none text-primary" />}

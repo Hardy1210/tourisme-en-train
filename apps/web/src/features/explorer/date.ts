@@ -38,6 +38,22 @@ export function libelleDate(date: string | null, dateDuJour: string): string {
 
 const minuscule = (texte: string) => texte.charAt(0).toLowerCase() + texte.slice(1);
 
+/** « Sam. 21 nov. » → « 21 nov. » : le jour de la semaine en moins. */
+const sansJour = (texte: string) => texte.slice(texte.indexOf(' ') + 1);
+
+/**
+ * Détail court de « Ce week-end » (`samedi` : le premier jour du week-end, ou le dimanche s'il ne reste que
+ * lui) : « 21 – 22 nov. », « 31 oct. – 1er nov. », ou « 22 nov. » un dimanche.
+ */
+export function detailCourtWeekEnd(samedi: string): string {
+  if (new Date(`${samedi}T12:00:00Z`).getUTCDay() === 0) return sansJour(libelleCourt(samedi));
+  const debut = sansJour(libelleCourt(samedi));
+  const fin = sansJour(libelleCourt(decalerJours(samedi, 1)));
+  const [jourDebut, ...moisDebut] = debut.split(' ');
+  const memeMois = moisDebut.join(' ') === fin.split(' ').slice(1).join(' ');
+  return `${memeMois ? jourDebut : debut} – ${fin}`;
+}
+
 /**
  * 3ᵉ ligne de la page « Trajet » (D116) : « Aujourd'hui · sam. 21 nov. », « Demain · dim. 22 nov. » ; une
  * date du calendrier se suffit à elle-même (« Mer. 25 nov. »).

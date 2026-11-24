@@ -3,6 +3,7 @@ import {
   dateChoisie,
   joursDuWeekEnd,
   libelleDate,
+  detailCourtWeekEnd,
   ligneDate,
   optionsDate,
   suffixeDate,
@@ -107,5 +108,17 @@ describe('ligneDate (3ᵉ ligne de la page « Trajet », D116)', () => {
   });
   it('une date du calendrier : la date seule, sans détail répété', () => {
     expect(ligneDate('2026-11-25', SAMEDI)).toEqual({ libelle: 'Mer. 25 nov.', detail: null });
+  });
+});
+
+describe('detailCourtWeekEnd (pastille « Ce week-end » de la page « Trajet », D116)', () => {
+  it('même mois : « 21 – 22 nov. »', () => {
+    expect(detailCourtWeekEnd('2026-11-21')).toBe('21 – 22 nov.');
+  });
+  it('à cheval sur deux mois : les deux mois écrits', () => {
+    expect(detailCourtWeekEnd('2026-10-31')).toBe('31 oct. – 1er nov.');
+  });
+  it('un dimanche (il ne reste qu’un jour) : ce jour seul', () => {
+    expect(detailCourtWeekEnd('2026-11-22')).toBe('22 nov.');
   });
 });

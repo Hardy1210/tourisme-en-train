@@ -4,7 +4,7 @@
 // date de l'adresse de la page, la même que dans « Filtres » et sur la pastille de la carte. Ces
 // composants la lisent et l'écrivent eux-mêmes (`useFiltres`), sans la recevoir de proche en proche.
 import { dateDuJour as lireDateDuJour } from '@tourisme/commun';
-import { optionsDate } from '../date';
+import { detailCourtWeekEnd, optionsDate } from '../date';
 import { useFenetreHoraires, useFiltres } from '../hooks';
 import { Calendrier } from './calendrier';
 import { ChoixDate } from './choix-date';
@@ -25,7 +25,11 @@ export function PastillesDateTrajet() {
           compacte
           selectionne={option.date === date}
           libelle={option.libelle}
-          detail={option.detail}
+          detail={
+            option.cle === 'weekend' && option.date
+              ? detailCourtWeekEnd(option.date)
+              : option.detail
+          }
           onPointerDown={(evenement) => evenement.preventDefault()}
           onClick={() => changer({ date: option.date })}
         />
