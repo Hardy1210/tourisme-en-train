@@ -65,19 +65,6 @@ export const PHOTOS_ACCUEIL: readonly PhotoAccueil[] = [
     },
     cadrage: '50% 50%',
   },
-  // Saline royale d'Arc-et-Senans : gare, ≈ 7 min à pied
-  {
-    photo: {
-      petite: '/accueil/saline-royale-arc-et-senans.webp',
-      grande: '/accueil/saline-royale-arc-et-senans.webp',
-      auteur: 'Wolfgang Moroder',
-      licence: 'CC BY-SA 3.0',
-      licenceUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
-      page: 'https://commons.wikimedia.org/wiki/File:Saline_royale_d%27Arc-et-Senans_nord.jpg',
-      source: 'wikimedia_commons',
-    },
-    cadrage: '25% 60%',
-  },
   // Canal de Bourgogne, Migennes : gare de Laroche-Migennes, ≈ 10 min à pied
   {
     photo: {
