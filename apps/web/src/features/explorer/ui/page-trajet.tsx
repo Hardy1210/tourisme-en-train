@@ -3,19 +3,17 @@
 // Page « Trajet » du téléphone (D085) : départ et destination dans une page plein écran, à la place des
 // feuilles « D'où partez-vous ? » et « Où allez-vous ? », que le clavier de l'iPhone bousculait. Toujours
 // montée (même quand le départ se recharge) ; ouverte dans le toucher par `usePageTrajet().ouvrir`.
+// Mise en page seulement : la logique est dans `use-saisie-trajet.ts`.
 import { dateDuJour } from '@tourisme/commun';
-import { useCallback, useRef, useState } from 'react';
 
 import { ATTRIBUT_DEFILEMENT, PagePleinEcran } from '@/components/ui/page-plein-ecran';
-import type { Destination } from '@/features/destinations/schemas';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
 import { ligneDate } from '../date';
-import { apresChoix } from '../enchainement-trajet';
 import { FILTRES_PAR_DEFAUT, type Filtres } from '../filtres';
 import type { useChoixDepart } from '../hooks';
-import type { Recherche } from '../recherche-destination';
 import type { PageTrajetEtat } from '../use-page-trajet';
+import { useSaisieTrajet } from '../use-saisie-trajet';
 import { ChampsTrajet } from './champs-trajet';
 import { PastillesDateTrajet, ZoneDateTrajet } from './date-trajet';
 import { ZoneDepart } from './zone-depart';
@@ -32,87 +30,7 @@ type Proprietes = {
 
 export function PageTrajet({ trajet, choix, filtres, surModification, surResultats }: Proprietes) {
   const { depart } = choix;
-  const [texteDepart, setTexteDepart] = useState('');
-  // null : rien tapé depuis l'ouverture, le champ montre la recherche en cours.
-  const [saisieDestination, setSaisieDestination] = useState<string | null>(null);
-  const [verifierDepuis, setVerifierDepuis] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  // Fondu de fermeture en cours : le contenu reste affiché jusqu'à la fin.
-  const [enFondu, setEnFondu] = useState(false);
-  // Choix en attente : appliqué une fois le fondu terminé (le filtrage bloquerait l'animation).
-  const enAttente = useRef<Recherche | null>(null);
-  const texteDestination = saisieDestination ?? filtres.recherche;
-  // Ouverte, ou en train de se refermer : sinon, seuls les champs restent (pour prendre la main au toucher).
-  const visible = trajet.ouverte || enFondu;
-  const { setOuverte } = trajet;
-
-  const fermer = useCallback(
-    (recherche: Recherche | null) => {
-      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-      enAttente.current = recherche;
-      setEnFondu(true);
-      setOuverte(false);
-    },
-    [setOuverte],
-  );
-  const apresFermeture = () => {
-    setEnFondu(false);
-    setTexteDepart('');
-    setSaisieDestination(null);
-    setVerifierDepuis(null);
-    setMessage(null);
-    const recherche = enAttente.current;
-    enAttente.current = null;
-    if (recherche) {
-      surModification(recherche);
-      surResultats();
-    }
-  };
-
-  // Un départ choisi : le curseur passe à la destination si elle est vide ; sinon, on vérifie qu'elle
-  // a encore un train direct depuis le nouveau départ avant de fermer.
-  const apresDepart = (changer: () => void, memeDepart: boolean) => {
-    const destinationRemplie = filtres.recherche.trim() !== '';
-    const suite = apresChoix({ champ: 'depart', departRempli: true, destinationRemplie });
-    setTexteDepart('');
-    setMessage(null);
-    if (suite.action === 'champ') trajet.allerA(suite.champ);
-    else if (memeDepart) fermer(null);
-    else {
-      trajet.allerA('destination');
-      if (depart.etat === 'pret') setVerifierDepuis(depart.gare.uic);
-    }
-    changer();
-  };
-  const nomDestination = filtres.recherche;
-  const surVerification = useCallback(
-    (possible: boolean) => {
-      setVerifierDepuis(null);
-      if (possible) return fermer(null);
-      setMessage(
-        TEXTES_TRAJET.impossible(depart.etat === 'pret' ? depart.gare.nom : '', nomDestination),
-      );
-      setSaisieDestination('');
-      surModification({ recherche: '', destination: null });
-    },
-    [depart, fermer, nomDestination, surModification],
-  );
-
-  const choisirDestination = (destination: Destination) => {
-    const recherche = { recherche: destination.titre, destination: destination.gare.uic };
-    const suite = apresChoix({
-      champ: 'destination',
-      departRempli: depart.etat === 'pret',
-      destinationRemplie: true,
-    });
-    if (suite.action === 'champ') {
-      trajet.allerA(suite.champ);
-      surModification(recherche);
-    } else fermer(recherche);
-  };
-  const afficherTexte = () => {
-    if (texteDestination.trim() !== '') fermer({ recherche: texteDestination, destination: null });
-  };
+  const saisie = useSaisieTrajet({ trajet, choix, filtres, surModification, surResultats });
 
   return (
     <PagePleinEcran
@@ -120,39 +38,36 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
       page={trajet.page}
       titre={TEXTES_TRAJET.titrePage}
       libelleRetour={TEXTES_TRAJET.retour}
-      surRetour={() => fermer(null)}
-      apresFermeture={apresFermeture}
+      surRetour={() => saisie.fermer(null)}
+      apresFermeture={saisie.apresFermeture}
     >
       <div className="flex-none border-b border-border px-4 pt-1 pb-4">
         <ChampsTrajet
           actif={trajet.champActif}
           surActif={trajet.setChampActif}
-          surEntree={() => trajet.champActif === 'destination' && afficherTexte()}
+          surEntree={() => trajet.champActif === 'destination' && saisie.afficherTexte()}
           depart={{
-            valeur: texteDepart,
+            valeur: saisie.texteDepart,
             indication: depart.etat === 'pret' ? choix.libelle : TEXTES_TRAJET.indicationDepart,
             ref: trajet.champs.depart,
-            surSaisie: setTexteDepart,
+            surSaisie: saisie.saisirDepart,
           }}
           destination={{
-            valeur: texteDestination,
+            valeur: saisie.texteDestination,
             indication: TEXTES_TRAJET.indicationDestination,
             ref: trajet.champs.destination,
-            surSaisie: (texte) => {
-              setSaisieDestination(texte);
-              setMessage(null);
-            },
+            surSaisie: saisie.saisirDestination,
           }}
           // D116 : la date de la sortie, la même que dans « Filtres ». Page fermée (toujours montée,
           // inerte) : ni ligne ni pastilles, aucun bouton caché en double sur l'écran.
           date={
-            visible
+            saisie.visible
               ? { ...ligneDate(filtres.date, dateDuJour()), surToucher: trajet.allerALaDate }
               : undefined
           }
         />
         {/* Les pastilles quand Destination ou Date est actif, pas pour le départ (D116). */}
-        {visible && trajet.champActif !== 'depart' && (
+        {saisie.visible && trajet.champActif !== 'depart' && (
           <div className="mt-3 pl-6">
             <PastillesDateTrajet />
           </div>
@@ -163,41 +78,36 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6"
       >
         {/* Fermée : seuls les champs restent, pour prendre la main dans le toucher qui l'ouvre. */}
-        {!visible ? null : trajet.champActif === 'date' ? (
+        {!saisie.visible ? null : trajet.champActif === 'date' ? (
           <ZoneDateTrajet surChoisie={() => trajet.allerA('destination')} />
         ) : trajet.champActif === 'depart' ? (
           <ZoneDepart
-            texte={texteDepart}
+            texte={saisie.texteDepart}
             choix={choix}
             surMaPosition={() =>
-              apresDepart(
+              saisie.apresDepart(
                 choix.revenirAMaPosition,
                 depart.etat === 'pret' && depart.origine === 'position',
               )
             }
             surGare={(uic) =>
-              apresDepart(
+              saisie.apresDepart(
                 () => choix.choisirGareEtFermer(uic),
                 depart.etat === 'pret' && depart.gare.uic === uic,
               )
             }
-            surPoint={(point) => apresDepart(() => void choix.choisirPoint(point), false)}
+            surPoint={(point) => saisie.apresDepart(() => void choix.choisirPoint(point), false)}
           />
         ) : depart.etat === 'pret' ? (
           <ZoneDestination
             depart={depart}
             filtres={filtres}
-            texte={texteDestination}
-            verifierDepuis={verifierDepuis}
-            surVerification={surVerification}
-            message={message}
-            surChoix={choisirDestination}
-            surAfficher={afficherTexte}
-            surVoirToutes={() => fermer({ recherche: '', destination: null })}
-            surEffacerTexte={() => {
-              setSaisieDestination('');
-              trajet.allerA('destination');
-            }}
+            texte={saisie.texteDestination}
+            message={saisie.message}
+            surChoix={saisie.choisirDestination}
+            surAfficher={saisie.afficherTexte}
+            surVoirToutes={() => saisie.fermer({ recherche: '', destination: null })}
+            surEffacerTexte={saisie.effacerDestination}
             surEffacerFiltres={() => {
               const { categories, rayon, dureeMax, faisable } = FILTRES_PAR_DEFAUT;
               surModification({ categories, rayon, dureeMax, faisable });

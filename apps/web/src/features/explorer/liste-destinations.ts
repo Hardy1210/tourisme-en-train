@@ -11,10 +11,11 @@ import { useMaintenant } from '@/lib/dates/use-maintenant';
 import type { Filtres } from './filtres';
 import { filtrerDestinations } from './recherche-destination';
 
-export function useListeDestinations(gareUic: string, filtres: Filtres) {
+/** `gareUic` null (départ pas encore connu) : aucun appel, liste `undefined`. */
+export function useListeDestinations(gareUic: string | null, filtres: Filtres) {
   const maintenant = useMaintenant();
   const requete = useDestinations({
-    gare: gareUic,
+    gare: gareUic ?? '',
     date: filtres.date,
     categories: filtres.categories,
     dureeMax: filtres.dureeMax,

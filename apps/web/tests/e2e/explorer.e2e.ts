@@ -404,6 +404,53 @@ test.describe('position acceptée', () => {
       test.skip(!isMobile, 'La page « Trajet » n’existe que sur téléphone.');
     });
 
+    // Départ changé alors qu'une destination est choisie : reste-t-il un train direct ? Échantillon du
+    // 18/11 : Dijon-Porte-Neuve dessert Beaune, mais pas Besançon Franche-Comté TGV.
+    const departDansLaBarre = (page: Page) =>
+      barre(page)
+        .getByRole('button', { name: /^Départ :/ })
+        .click();
+
+    test('nouveau départ avec un train direct vers la destination : la page se ferme, la destination reste', async ({
+      page,
+      isMobile,
+    }) => {
+      await page.goto(`${ECRAN}&recherche=Beaune&destination=EX000002`);
+      await expect(barre(page)).toContainText('Beaune');
+      await departDansLaBarre(page);
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Dijon-Porte-Neuve/ })
+        .click();
+      await attendreFermeture(page, isMobile);
+      await expect(page).toHaveURL(/destination=EX000002/);
+      await expect(barre(page)).toContainText('Beaune');
+      await expect(barre(page)).toContainText('Dijon-Porte-Neuve');
+    });
+
+    test('nouveau départ sans train direct vers la destination : le message, et la destination effacée', async ({
+      page,
+    }) => {
+      await page.goto(ECRAN);
+      const { fenetre, champ } = await ouvrirDestination(page);
+      await champ.fill('besancon');
+      await fenetre.getByRole('button', { name: /^Besançon Franche-Comté TGV/ }).click();
+      await expect(barre(page)).toContainText('Besançon Franche-Comté TGV');
+
+      await departDansLaBarre(page);
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Dijon-Porte-Neuve/ })
+        .click();
+      await expect(
+        pageTrajet(page).getByText(
+          'Pas de train direct de Dijon-Porte-Neuve à Besançon Franche-Comté TGV : choisissez une autre destination.',
+        ),
+      ).toBeVisible();
+      await expect(page).not.toHaveURL(/destination=/);
+      await expect(pageTrajet(page).getByRole('searchbox', { name: 'Destination' })).toHaveValue(
+        '',
+      );
+    });
+
     // D116 (maquette « Trajet », remarque ③) : la date dans la page « Trajet ».
     const ligneDate = (page: Page) => pageTrajet(page).getByRole('button', { name: /^Date : / });
     const pastillesDate = (page: Page) =>

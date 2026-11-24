@@ -5,7 +5,6 @@
 // collés en bas où le clavier les cacherait.
 import { Clock, List, TrainFront } from 'lucide-react';
 import { dateDuJour } from '@tourisme/commun';
-import { useEffect } from 'react';
 
 import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
@@ -25,9 +24,6 @@ type Proprietes = {
   depart: Extract<Depart, { etat: 'pret' }>;
   filtres: Filtres;
   texte: string;
-  /** Code de la gare d'avant un changement de départ : la destination choisie est à revérifier. */
-  verifierDepuis: string | null;
-  surVerification: (possible: boolean) => void;
   message: string | null;
   surChoix: (destination: Destination) => void;
   surAfficher: () => void;
@@ -40,8 +36,6 @@ export function ZoneDestination({
   depart,
   filtres,
   texte,
-  verifierDepuis,
-  surVerification,
   message,
   surChoix,
   surAfficher,
@@ -50,14 +44,6 @@ export function ZoneDestination({
   surEffacerFiltres,
 }: Proprietes) {
   const { avantRecherche } = useListeDestinations(depart.gare.uic, filtres);
-
-  // Nouveau départ chargé : la destination déjà choisie y a-t-elle encore un train direct ?
-  const aVerifier =
-    verifierDepuis !== null && depart.gare.uic !== verifierDepuis && avantRecherche !== undefined;
-  useEffect(() => {
-    if (aVerifier && avantRecherche)
-      surVerification(filtrerDestinations(avantRecherche, filtres).length > 0);
-  }, [aVerifier, avantRecherche, filtres, surVerification]);
 
   const tape = texte.trim() !== '';
   const trouvees = avantRecherche
