@@ -34,6 +34,15 @@ test.beforeEach(async ({ context, baseURL, page }) => {
 const demandes = (page: Page) =>
   page.evaluate(() => (window as unknown as { demandes: number }).demandes);
 const bienvenue = (page: Page) => page.getByRole('heading', { name: 'Que faire autour de vous ?' });
+const ecranGare = (page: Page) => page.getByRole('heading', { name: 'Votre gare de départ' });
+
+/** Premier lancement → « Utiliser ma position » → écran 3a, la gare trouvée. */
+async function jusquALaGare(page: Page) {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Utiliser ma position' }).click();
+  await expect(ecranGare(page)).toBeVisible();
+  await expect(page.getByText('Dijon-Ville')).toBeVisible();
+}
 
 test('premier lancement : la bienvenue, sans demander la position ni montrer le menu', async ({
   page,
@@ -44,19 +53,59 @@ test('premier lancement : la bienvenue, sans demander la position ni montrer le 
   expect(await demandes(page)).toBe(0);
 });
 
-test('« Utiliser ma position » : la demande part, Explorer montre « Autour de Dijon »', async ({
+test('« Utiliser ma position » : la demande part, puis l’écran de la gare et Explorer', async ({
   page,
 }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Utiliser ma position' }).click();
-  await expect(bienvenue(page)).toBeHidden();
-  await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
+  await jusquALaGare(page);
   expect(await demandes(page)).toBe(1);
+  await expect(
+    page.getByText('La plus proche de vous. Vous pouvez en choisir une autre.'),
+  ).toBeVisible();
+  await expect(page.getByText(/≈ \d+ min à pied/)).toBeVisible();
+
+  await page.getByRole('button', { name: 'Voir les sorties' }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
 
   // L'accueil ne revient plus sur cet appareil.
   await page.reload();
   await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
   await expect(bienvenue(page)).toHaveCount(0);
+  await expect(ecranGare(page)).toHaveCount(0);
+});
+
+test('« Destination » : page « Trajet » (téléphone) ou feuille (ordinateur), prête à taper', async ({
+  page,
+  isMobile,
+}) => {
+  await jusquALaGare(page);
+  await page.getByRole('button', { name: 'Destination' }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  if (isMobile) await expect(page.getByRole('searchbox', { name: 'Destination' })).toBeFocused();
+  else await expect(page.getByRole('dialog', { name: 'Où allez-vous ?' })).toBeVisible();
+});
+
+test('« Changer » : page « Trajet » (téléphone) ou feuille (ordinateur), sur le départ', async ({
+  page,
+  isMobile,
+}) => {
+  await jusquALaGare(page);
+  await page.getByRole('button', { name: /Changer de gare de départ/ }).click();
+  await expect(ecranGare(page)).toBeHidden();
+  if (isMobile) await expect(page.getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+  else await expect(page.getByRole('dialog', { name: "D'où partez-vous ?" })).toBeVisible();
+});
+
+test('une ville tapée : l’écran de sa gare, sans demander la position', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('searchbox', { name: 'Nom de ville ou de gare' }).fill('Beaune');
+  await page
+    .getByRole('button', { name: /Beaune/ })
+    .first()
+    .click();
+  await expect(ecranGare(page)).toBeVisible();
+  await expect(page.getByText('Vous pouvez en choisir une autre.', { exact: true })).toBeVisible();
+  expect(await demandes(page)).toBe(0);
 });
 
 test('une gare suggérée : Explorer part de cette gare, sans demander la position', async ({
