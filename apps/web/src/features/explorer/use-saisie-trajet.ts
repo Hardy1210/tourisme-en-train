@@ -12,7 +12,12 @@ import type { Filtres } from './filtres';
 import type { useChoixDepart } from './hooks';
 import { useListeDestinations } from './liste-destinations';
 import type { Recherche } from './recherche-destination';
-import { resultatVerification, SAISIE_VIDE, saisieTrajet } from './saisie-trajet';
+import {
+  resultatInversion,
+  resultatVerification,
+  SAISIE_VIDE,
+  saisieTrajet,
+} from './saisie-trajet';
 import type { PageTrajetEtat } from './use-page-trajet';
 
 type Options = {
@@ -68,12 +73,29 @@ export function useSaisieTrajet({
     liste: avantRecherche,
     recherche: filtres,
   });
-  const conclure = useEffectEvent((resultat: typeof verification) => {
-    if (resultat === 'possible') {
+  // ⇅ (D117) : l'ancien départ, retrouvé dans la liste du nouveau dès qu'elle est chargée.
+  const inversion = resultatInversion({
+    inversion: saisie.inversion,
+    gareActuelle,
+    liste: avantRecherche,
+  });
+  const nomDepart = depart.etat === 'pret' ? depart.gare.nom : '';
+  const conclure = useEffectEvent(() => {
+    if (inversion.etat === 'trouvee') {
+      const { titre, gare } = inversion.destination;
+      envoyer({ type: 'inversee' });
+      surModification({ recherche: titre, destination: gare.uic });
+    } else if (inversion.etat === 'impossible' && saisie.inversion) {
+      envoyer({
+        type: 'impossible',
+        message: TEXTES_TRAJET.impossible(nomDepart, saisie.inversion.nom),
+      });
+      surModification({ recherche: '', destination: null });
+    }
+    if (verification === 'possible') {
       envoyer({ type: 'verifiee' });
       fermer(null);
-    } else if (resultat === 'impossible') {
-      const nomDepart = depart.etat === 'pret' ? depart.gare.nom : '';
+    } else if (verification === 'impossible') {
       envoyer({
         type: 'impossible',
         message: TEXTES_TRAJET.impossible(nomDepart, filtres.recherche),
@@ -84,7 +106,7 @@ export function useSaisieTrajet({
   // Un vrai effet, pas un état dérivé : il répond à l'arrivée de la liste du nouveau départ en fermant la
   // page ou en changeant l'adresse (actions sur l'extérieur). Un seul endroit, plus d'aller-retour.
   // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => conclure(verification), [verification]);
+  useEffect(() => conclure(), [verification, inversion.etat]);
 
   // Un départ choisi : le curseur passe à la destination si elle est vide ; sinon, on vérifie qu'elle
   // a encore un train direct depuis le nouveau départ avant de fermer.
@@ -130,6 +152,14 @@ export function useSaisieTrajet({
     afficherTexte,
     saisirDepart: (texte: string) => envoyer({ type: 'saisirDepart', texte }),
     saisirDestination: (texte: string) => envoyer({ type: 'saisirDestination', texte }),
+    /** ⇅ visible seulement avec une destination touchée dans la liste (un texte tapé n'est pas un lieu). */
+    peutInverser: depart.etat === 'pret' && filtres.destination !== null,
+    /** ⇅ : la gare de la destination devient le départ ; l'ancien départ, retrouvé, la destination. */
+    inverser: () => {
+      if (depart.etat !== 'pret' || filtres.destination === null) return;
+      envoyer({ type: 'inverser', gareARetrouver: depart.gare.uic, nom: depart.gare.nom });
+      choix.choisirGareEtFermer(filtres.destination);
+    },
     effacerDestination: () => {
       envoyer({ type: 'effacerDestination' });
       trajet.allerA('destination');

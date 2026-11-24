@@ -4,7 +4,7 @@
 // point plein devant la destination. Le champ actif est entouré de la couleur principale. Sans
 // destination (écran Lieux), le champ Départ reste seul, sans la ligne. Avec `date` (D116, Explorer) : une
 // 3ᵉ ligne « Date », reliée en pointillés et marquée du calendrier, qui ouvre le calendrier en bas.
-import { CalendarDays, ChevronDown, X } from 'lucide-react';
+import { ArrowDownUp, CalendarDays, ChevronDown, X } from 'lucide-react';
 import type { RefObject } from 'react';
 
 import { cn } from '@/lib/classes';
@@ -25,6 +25,8 @@ type Proprietes = {
   destination?: Champ;
   /** « Aujourd'hui », « sam. 21 nov. » : la 3ᵉ ligne (D116). */
   date?: { libelle: string; detail: string | null; surToucher: () => void };
+  /** ⇅ (D117) : à droite, à cheval sur Départ et Destination ; absent sans destination choisie. */
+  surInverser?: () => void;
   actif: ZoneTrajet;
   surActif: (champ: ChampTrajet) => void;
   surEntree: () => void;
@@ -34,6 +36,7 @@ export function ChampsTrajet({
   depart,
   destination,
   date,
+  surInverser,
   actif,
   surActif,
   surEntree,
@@ -44,6 +47,8 @@ export function ChampsTrajet({
       className={cn(
         'flex h-13 items-center gap-2 rounded-champ bg-champ-bg px-3.5',
         actif === nom && 'outline-2 outline-primary',
+        // Place pour ⇅ : le ✕ du champ ne passe pas dessous.
+        surInverser && 'pr-14',
       )}
     >
       <label className="flex min-w-0 flex-1 items-center">
@@ -98,8 +103,20 @@ export function ChampsTrajet({
         )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        {champ('depart', depart)}
-        {champ('destination', destination)}
+        <div className="relative flex flex-col gap-2">
+          {champ('depart', depart)}
+          {champ('destination', destination)}
+          {surInverser && (
+            <button
+              type="button"
+              onClick={surInverser}
+              aria-label={TEXTES_TRAJET.inverser}
+              className="absolute top-1/2 right-2 flex size-touch -translate-y-1/2 cursor-pointer items-center justify-center rounded-md border border-border bg-surface text-primary shadow-xs hover:bg-surface-sunken"
+            >
+              <ArrowDownUp aria-hidden="true" className="size-5" />
+            </button>
+          )}
+        </div>
         {date && (
           <button
             type="button"

@@ -60,6 +60,7 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
           }}
           // D116 : la date de la sortie, la même que dans « Filtres ». Page fermée (toujours montée,
           // inerte) : ni ligne ni pastilles, aucun bouton caché en double sur l'écran.
+          surInverser={saisie.visible && saisie.peutInverser ? saisie.inverser : undefined}
           date={
             saisie.visible
               ? { ...ligneDate(filtres.date, dateDuJour()), surToucher: trajet.allerALaDate }

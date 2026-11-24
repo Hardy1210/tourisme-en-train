@@ -39,6 +39,8 @@ export const TEXTES_TRAJET = {
   indicationDestination: 'Où allez-vous ?',
   indicationDepart: 'Ville ou gare de départ',
   effacerChamp: 'Effacer le texte',
+  /** ⇅ de la page « Trajet » (D117). */
+  inverser: 'Inverser le départ et la destination',
   depuis: 'En train direct depuis',
   voirToutes: 'Voir toutes les destinations',
   plusProches: 'Les plus proches en train',
