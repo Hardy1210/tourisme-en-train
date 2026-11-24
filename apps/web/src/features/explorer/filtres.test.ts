@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  basculerCategorie,
+  filtresReinitialises,
   ecrireFiltres,
   filtresDeLUrl,
   lienAvecDepart,
@@ -197,5 +199,30 @@ describe('filtresDeLUrl', () => {
   });
   it('écarte la gare, la date et toute position', () => {
     expect(filtresDeLUrl(url('gare=A&date=2026-11-18&lat=47.3&lon=5'))).toBe('');
+  });
+});
+
+describe('basculerCategorie', () => {
+  it('ajoute une catégorie absente, en gardant les autres', () => {
+    expect(basculerCategorie(['nature'], 'culture')).toEqual(['nature', 'culture']);
+  });
+  it('retire une catégorie déjà choisie, et seulement elle', () => {
+    expect(basculerCategorie(['nature', 'culture'], 'nature')).toEqual(['culture']);
+  });
+});
+
+describe('filtresReinitialises : tout ce que la feuille montre, rien d’autre', () => {
+  it('sans destination : catégories, distance, temps de train, faisabilité et date', () => {
+    expect(Object.keys(filtresReinitialises(false)).sort()).toEqual(
+      ['categories', 'date', 'dureeMax', 'faisable', 'rayon'].sort(),
+    );
+    expect(filtresReinitialises(false).categories).toEqual([]);
+  });
+  it('destination choisie : la date et les catégories, mais ni distance ni temps de train (cachés)', () => {
+    expect(Object.keys(filtresReinitialises(true)).sort()).toEqual(['categories', 'date']);
+  });
+  it('ne touche jamais à la recherche de destination', () => {
+    expect(filtresReinitialises(false)).not.toHaveProperty('recherche');
+    expect(filtresReinitialises(true)).not.toHaveProperty('destination');
   });
 });

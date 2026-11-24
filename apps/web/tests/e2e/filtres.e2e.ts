@@ -53,6 +53,46 @@ const option = (feuille: ReturnType<typeof feuilleFiltres>, groupe: string, libe
 test.describe('Explorer', () => {
   const ECRAN = `/?date=${DATE}`;
 
+  // Remarque ② du professeur : « Réinitialiser » remettait les catégories à zéro sans les montrer.
+  test('catégories : la feuille montre celles de la carte, et « Réinitialiser » les remet à zéro sous les yeux', async ({
+    page,
+  }) => {
+    const rangee = () => page.getByRole('group', { name: 'Catégories' });
+    const dansFeuille = () => feuilleFiltres(page).getByRole('group', { name: 'Catégories' });
+    await page.goto(ECRAN);
+    await expect(sorties(page).first()).toBeVisible();
+
+    await rangee().getByRole('button', { name: 'Nature' }).click();
+    await boutonFiltres(page).click();
+    await expect(dansFeuille().getByRole('button', { name: 'Nature' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(dansFeuille().getByRole('button', { name: 'Tout' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+
+    // Un choix dans la feuille se voit aussi sur la carte.
+    await dansFeuille().getByRole('button', { name: 'Culture' }).click();
+    await expect(page).toHaveURL(/categories=nature%2Cculture|categories=nature,culture/);
+
+    await feuilleFiltres(page).getByRole('button', { name: 'Réinitialiser' }).click();
+    await expect(dansFeuille().getByRole('button', { name: 'Tout' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(dansFeuille().getByRole('button', { name: 'Nature' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+    await feuilleFiltres(page).getByRole('button', { name: 'Voir les sorties' }).click();
+    await expect(rangee().getByRole('button', { name: 'Tout' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
   test('temps de train : 30 min réduit la liste et la carte, reste après un rechargement', async ({
     page,
   }) => {
