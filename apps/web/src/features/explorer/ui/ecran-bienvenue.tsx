@@ -104,6 +104,7 @@ export function EcranBienvenue({ choix, surTerminer }: Proprietes) {
                   <Bouton
                     key={gare.uic}
                     variante="sur-marque"
+                    className="gap-1.5 px-3.5 text-sm"
                     onClick={() => choisirGare(gare.uic)}
                   >
                     <TrainFront aria-hidden="true" className="size-4" />
@@ -111,8 +112,8 @@ export function EcranBienvenue({ choix, surTerminer }: Proprietes) {
                   </Bouton>
                 ))}
               </div>
-              <p className="flex items-center gap-1.5 text-sm text-page-marque-texte-muted">
-                <Lock aria-hidden="true" className="size-4 flex-none" />
+              <p className="flex items-center gap-1.5 text-xs text-page-marque-texte-muted">
+                <Lock aria-hidden="true" className="size-3.5 flex-none" />
                 {T.confidentialite}
               </p>
             </div>
