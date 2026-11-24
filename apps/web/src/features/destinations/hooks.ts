@@ -24,7 +24,8 @@ export function useDestinations({ gare, date, categories, dureeMax }: Options) {
   const visible = useEcranVisible();
   return useQuery({
     queryKey: ['destinations', chemin],
-    enabled: visible,
+    // Sans gare (départ pas encore connu), aucun appel : la route refuserait la demande.
+    enabled: visible && gare !== '',
     staleTime: DUREE_HORAIRES_MS,
     // Aujourd'hui seulement : le prochain train dépend de l'heure (D068).
     refetchInterval:
