@@ -24,6 +24,27 @@
 
 ---
 
+## 24/11/2026 (soir) — Étapes E11/E12 — Écran 2 de l'accueil, catégories dans « Filtres », barre sur deux lignes
+**Fait :**
+- **Écran 2 (#174, D113)** : « Dans quelle ville êtes-vous ? » sur le fond de la marque, dans le cadre de l'accueil (même photo pendant la visite) ; plein écran dans Explorer, dans la page avec le menu dans Lieux (solution A, à revoir à l'évaluation) ; sans fenêtre modale ; message « Aucune gare trouvée » dans l'écran ; suite complète verte (306/306)
+- **Remarque ② (#175, D114)** : catégories en premier dans la feuille « Filtres », avec leurs icônes, mêmes puces que la carte (`puces-categories.tsx`) ; `basculerCategorie` et `filtresReinitialises` (fonctions pures) ; « Réinitialiser » remet à zéro ce que la feuille montre (avec une destination : la date et les catégories)
+- **Remarque ⑦ (#176 ouverte, D115)** : barre du trajet sur deux lignes quand une destination est cherchée (« Départ  Dijon », « Arrivée  Beaune ») ; `nomDepartCourt` ; noms accessibles inchangés ; sans ⇅
+- Étude d'impact des maquettes « Explorer » et « Trajet » ; décisions de Hardy : ⇅ dans la page « Trajet » seulement, date (ligne toujours, pastilles avec Destination), un seul état lu par `useFiltres()`, rien d'autre des maquettes, ordinateur à la fin
+- Réponses à Hardy : photo derrière l'heure seulement dans l'app installée ; jetons vérifiés (une opacité en dur retirée) ; refus retenu par Safari, autorisation oubliée quand l'adresse ou l'onglet privé change
+**Décisions :** D113 (écran 2), D114, D115
+**Problèmes rencontrés :**
+- `pres-de.e2e.ts:64` vérifiait l'ancienne règle de « Réinitialiser » (destination : la date seule) : mis à jour à D114 et renforcé
+- Parcours instables de la carte (`explorer:121`, `:178`, `:194`) : passent au 2ᵉ essai, sans lien avec les PR du soir
+**À valider par Hardy :**
+- Essai sur l'iPhone de #176 (barre sur deux lignes), puis fusion
+- Mise en ligne 0.6.0 quand Hardy le décide
+**Prochaine action :**
+- PR B : la date dans la page « Trajet » ; PR C : ⇅ dans la page « Trajet » ; puis ⑥ (trains aux gares, maquette de Hardy)
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` sur #176 : 775 tests ; suite complète 309 réussis, 1 instable connu)
+**Commit :** `c0fb0ac` (#175) sur `main` ; #176 ouverte
+
+---
+
 ## 24/11/2026 — Étapes E11/E12 — Écran de lancement, premier lancement, accueil (remarque ① du professeur)
 **Fait :**
 - **Écran de lancement (#170, D112)** : maquette « Lancement » variante B ; logo, « Allez-y en train. » et la région sur le fond de la marque, fondu de sortie, en CSS seul, une fois par ouverture ; logo en texte partout (« Wago » + « o » en couleur, tiré de `marque.nom`, un seul fichier à changer) ; `background_color` du manifest à la couleur de la marque (Android sans saut)
