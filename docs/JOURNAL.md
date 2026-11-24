@@ -24,6 +24,24 @@
 
 ---
 
+## 24/11/2026 (fin) — Étapes E11/E12 — Trains aux gares, épingles des lieux
+**Fait :**
+- **#182 (D118)** : gares en points de loin (inchangés, couleur du temps de train), en icônes de train inversées de près (seuil `carte.zoomIconesGares` = 9,75, mesuré sur le critère de Hardy : ≈ 15 gares visibles autour de Dijon) ; bord jaune de la destination du trajet ; bulles décalées en haut à droite (solution 1 de Hardy)
+- **#183 ouverte (D119)** : épingles des lieux en goutte (lilas, contour violet, pointe sur le lieu), lieu touché plus grand et plein, sur les deux cartes ; `formeEpingle` (fonction pure) ; adresse d'essai donnée à Hardy
+- Étude d'impact des bulles vraiment devant les gares (solution 3) : décision de Hardy en attente
+**Décisions :** D118, D119
+**Problèmes rencontrés :**
+- Première proposition du seuil (12) au jugé et fausse : corrigée par la mesure avant le code (L87)
+- Parcours instables de la carte (`explorer:139`, `carte-cadrage`) : inchangés, passent en les relançant
+**À valider par Hardy :**
+- Essai de #183 sur l'iPhone, puis fusion ; bulles devant les gares : avant le gel ou après la soutenance ; seuil 9,75 et décalage des bulles à juger sur l'iPhone
+**Prochaine action :**
+- Fusion de #183 ; décision sur les bulles ; puis ④ (feuille qui suit le doigt) ou ⑤ s'il reste du temps ; gel des nouveautés le 27/11
+**Vérifications :** typecheck ✅ · lint ✅ · tests ✅ (`pnpm verifier` sur `main` après #182 : 807 tests ; #183 : 810 tests, suite complète 323 réussis, 1 instable connu)
+**Commit :** `274fb34` (#182) sur `main` ; #183 ouverte
+
+---
+
 ## 24/11/2026 (nuit) — Étapes E11/E12 — Barre sur deux lignes, date et ⇅ dans la page « Trajet », remise en ordre
 **Fait :**
 - **#176 (D115)** : barre du trajet sur deux lignes quand une destination est cherchée ; essai de Hardy sur l'iPhone
