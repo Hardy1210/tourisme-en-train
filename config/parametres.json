@@ -22,6 +22,7 @@
     "zoomMinLieux": 10.5,
     "zoomMaxFiche": 15,
     "zoomDestination": 13,
+    "zoomIconesGares": 9.75,
     "densiteMax": 2
   },
   "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
@@ -54,7 +55,7 @@
     "lieuxPauvresToujoursGardes": ["musée", "abbaye"],
     "bullesRayonPx": 37,
     "bullesZoomMax": 13,
-    "bullesDecalagePx": [20, -5]
+    "bullesDecalagePx": [22, -18]
   },
   "photos": {
     "largeurPetitePx": 400,

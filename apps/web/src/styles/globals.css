@@ -196,6 +196,7 @@
   /* Carte : proche = clair, loin = foncé */
   --map-user: var(--primary);
   --map-station: color-mix(in oklch, var(--primary), var(--foreground) 35%);
+  --map-gare-choisie: var(--accent); /* bord jaune de la destination choisie (D118) */
   --map-route: color-mix(in oklch, var(--primary), var(--background) 25%);
   --map-halo: var(--card);
   --map-land: color-mix(in oklch, var(--border) 45%, var(--background));
@@ -441,6 +442,7 @@
 
   --color-map-user: var(--map-user);
   --color-map-station: var(--map-station);
+  --color-map-gare-choisie: var(--map-gare-choisie);
   --color-map-route: var(--map-route);
   --color-map-halo: var(--map-halo);
   --color-map-land: var(--map-land);

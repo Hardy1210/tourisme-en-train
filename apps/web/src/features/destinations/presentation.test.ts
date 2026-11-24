@@ -3,6 +3,7 @@ import {
   formaterNombreLieux,
   totalLieux,
   couleurTranche,
+  traitTranche,
   dureeElargie,
   formaterDuree,
   formaterKg,
@@ -120,5 +121,16 @@ describe('totalLieux', () => {
   it('accorde le mot', () => {
     expect(formaterNombreLieux(1)).toBe('1 lieu');
     expect(formaterNombreLieux(2)).toBe('2 lieux');
+  });
+});
+
+describe('traitTranche (icône de train inversée, D118)', () => {
+  const BORNES = [30, 60, 90];
+  it('même tranche que le point : contour et train de la même couleur', () => {
+    expect(traitTranche('<=30', BORNES)).toBe('border-map-time-1 text-map-time-1');
+    expect(traitTranche('<=90', BORNES)).toBe('border-map-time-3 text-map-time-3');
+  });
+  it('au-delà de la dernière borne : la dernière couleur, comme le point', () => {
+    expect(traitTranche('>90', BORNES)).toBe('border-map-time-4 text-map-time-4');
   });
 });
