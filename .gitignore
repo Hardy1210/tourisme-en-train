@@ -35,3 +35,6 @@ playwright-report/
 
 # Maquettes HTML complètes (2,5 Mo chacune) : gardées en local, D067
 design/maquettes/*.html
+# Photos de l'accueil, originaux et candidats (plusieurs Mo) : en local ; la version WebP est dans
+# apps/web/public/accueil/, ses crédits dans features/explorer/photos-accueil.ts (D113)
+design/maquettes/photos-accueil/

@@ -1,6 +1,7 @@
 // Photos de l'écran de bienvenue (D113) : une au hasard à chaque ouverture. Fichiers dans
 // public/accueil/ (WebP, 1200 px de large) ; crédit affiché par le ⓘ, source citée dans « Sources »
-// (Wikimedia Commons, DATAtourisme : règle 8). Originaux et crédits : design/maquettes/photos-accueil/.
+// (Wikimedia Commons, DATAtourisme : règle 8). Originaux et candidats : design/maquettes/photos-accueil/,
+// sur le poste (hors dépôt).
 // Ajouter une photo = son fichier + une entrée ici.
 import type { Photo } from '@/features/lieux/schemas';
 
