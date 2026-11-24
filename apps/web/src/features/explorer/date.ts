@@ -36,6 +36,25 @@ export function libelleDate(date: string | null, dateDuJour: string): string {
   return option ? option.libelle : libelleCourt(date);
 }
 
+const minuscule = (texte: string) => texte.charAt(0).toLowerCase() + texte.slice(1);
+
+/**
+ * 3ᵉ ligne de la page « Trajet » (D116) : « Aujourd'hui · sam. 21 nov. », « Demain · dim. 22 nov. » ; une
+ * date du calendrier se suffit à elle-même (« Mer. 25 nov. »).
+ */
+export function ligneDate(
+  date: string | null,
+  dateDuJour: string,
+): { libelle: string; detail: string | null } {
+  if (date === null || date === dateDuJour) {
+    return { libelle: "Aujourd'hui", detail: minuscule(libelleCourt(dateDuJour)) };
+  }
+  const option = optionsDate(dateDuJour).find((o) => o.date === date);
+  return option
+    ? { libelle: option.libelle, detail: minuscule(option.detail) }
+    : { libelle: libelleCourt(date), detail: null };
+}
+
 /** Une date autre qu'aujourd'hui est choisie : pastille, compteur de « Filtres », fin des titres. */
 export function dateChoisie(date: string | null, dateDuJour: string): boolean {
   return date !== null && date !== dateDuJour;

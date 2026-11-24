@@ -1,7 +1,7 @@
 'use client';
 
 import { dateDuJour as lireDateDuJour } from '@tourisme/commun';
-import { ArrowLeft, CalendarDays } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Bouton } from '@/components/ui/bouton';
@@ -9,12 +9,12 @@ import { Feuille } from '@/components/ui/feuille';
 import { Interrupteur } from '@/components/ui/interrupteur';
 import { Selecteur } from '@/components/ui/selecteur';
 import { parametres } from '@/config/parametres';
-import { cn } from '@/lib/classes';
 import { libelleCourt } from '@/lib/dates/calendrier';
 import { optionsDate } from '../date';
 import { filtresReinitialises, libelleDureeMax, libelleRayon, type Filtres } from '../filtres';
 import { useFenetreHoraires } from '../hooks';
 import { Calendrier } from './calendrier';
+import { ChoixDate } from './choix-date';
 import { PucesCategories } from './puces-categories';
 
 const OPTIONS_RAYON = parametres.rayons.autourDeMoiOptionsM.map((metres) => ({
@@ -172,40 +172,5 @@ export function FeuilleFiltres({
         </div>
       )}
     </Feuille>
-  );
-}
-
-/** Une case de « Quand ? » : libellé, et sa date en petit dessous. */
-function ChoixDate({
-  selectionne,
-  libelle,
-  detail,
-  icone = false,
-  onClick,
-}: {
-  selectionne: boolean;
-  libelle: string;
-  detail: string;
-  icone?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={selectionne}
-      onClick={onClick}
-      className={cn(
-        'flex min-h-14 cursor-pointer flex-col justify-center rounded-md border px-3 py-2 text-left transition-colors',
-        selectionne
-          ? 'border-selection-border bg-selection-bg text-selection-foreground'
-          : 'border-border hover:bg-surface-sunken',
-      )}
-    >
-      <span className="flex items-center gap-1.5 text-base font-semibold">
-        {icone && <CalendarDays aria-hidden="true" className="size-4.5 flex-none text-primary" />}
-        {libelle}
-      </span>
-      <span className="tabular text-sm text-muted-foreground">{detail}</span>
-    </button>
   );
 }

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { dateChoisie, joursDuWeekEnd, libelleDate, optionsDate, suffixeDate } from './date';
+import {
+  dateChoisie,
+  joursDuWeekEnd,
+  libelleDate,
+  ligneDate,
+  optionsDate,
+  suffixeDate,
+} from './date';
 
 const parCle = (jour: string, cle: string) => optionsDate(jour).find((o) => o.cle === cle);
 
@@ -86,5 +93,19 @@ describe('suffixeDate et libellé de la pastille', () => {
   ])('%s : titre « …%s », pastille « %s »', (date, suffixe, pastille) => {
     expect(suffixeDate(date, '2026-11-04')).toBe(suffixe);
     expect(libelleDate(date, '2026-11-04')).toBe(pastille);
+  });
+});
+
+describe('ligneDate (3ᵉ ligne de la page « Trajet », D116)', () => {
+  const SAMEDI = '2026-11-21';
+  it('aujourd’hui : « Aujourd’hui » et la date en petit', () => {
+    expect(ligneDate(null, SAMEDI)).toEqual({ libelle: "Aujourd'hui", detail: 'sam. 21 nov.' });
+    expect(ligneDate(SAMEDI, SAMEDI)).toEqual({ libelle: "Aujourd'hui", detail: 'sam. 21 nov.' });
+  });
+  it('demain : « Demain » et sa date', () => {
+    expect(ligneDate('2026-11-22', SAMEDI)).toEqual({ libelle: 'Demain', detail: 'dim. 22 nov.' });
+  });
+  it('une date du calendrier : la date seule, sans détail répété', () => {
+    expect(ligneDate('2026-11-25', SAMEDI)).toEqual({ libelle: 'Mer. 25 nov.', detail: null });
   });
 });

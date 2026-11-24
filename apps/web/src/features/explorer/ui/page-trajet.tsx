@@ -3,18 +3,21 @@
 // Page « Trajet » du téléphone (D085) : départ et destination dans une page plein écran, à la place des
 // feuilles « D'où partez-vous ? » et « Où allez-vous ? », que le clavier de l'iPhone bousculait. Toujours
 // montée (même quand le départ se recharge) ; ouverte dans le toucher par `usePageTrajet().ouvrir`.
+import { dateDuJour } from '@tourisme/commun';
 import { useCallback, useRef, useState } from 'react';
 
 import { ATTRIBUT_DEFILEMENT, PagePleinEcran } from '@/components/ui/page-plein-ecran';
 import type { Destination } from '@/features/destinations/schemas';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
+import { ligneDate } from '../date';
 import { apresChoix } from '../enchainement-trajet';
 import { FILTRES_PAR_DEFAUT, type Filtres } from '../filtres';
 import type { useChoixDepart } from '../hooks';
 import type { Recherche } from '../recherche-destination';
 import type { PageTrajetEtat } from '../use-page-trajet';
 import { ChampsTrajet } from './champs-trajet';
+import { PastillesDateTrajet, ZoneDateTrajet } from './date-trajet';
 import { ZoneDepart } from './zone-depart';
 import { ZoneDestination } from './zone-destination';
 
@@ -138,14 +141,24 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
               setMessage(null);
             },
           }}
+          // D116 : la date de la sortie, la même que dans « Filtres ».
+          date={{ ...ligneDate(filtres.date, dateDuJour()), surToucher: trajet.allerALaDate }}
         />
+        {/* Les pastilles quand Destination ou Date est actif, pas pour le départ (D116). */}
+        {trajet.champActif !== 'depart' && (
+          <div className="mt-3 pl-6">
+            <PastillesDateTrajet />
+          </div>
+        )}
       </div>
       <div
         {...{ [ATTRIBUT_DEFILEMENT]: '' }}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-6"
       >
         {/* Fermée : seuls les champs restent, pour prendre la main dans le toucher qui l'ouvre. */}
-        {!trajet.ouverte && !enFondu ? null : trajet.champActif === 'depart' ? (
+        {!trajet.ouverte && !enFondu ? null : trajet.champActif === 'date' ? (
+          <ZoneDateTrajet surChoisie={() => trajet.allerA('destination')} />
+        ) : trajet.champActif === 'depart' ? (
           <ZoneDepart
             texte={texteDepart}
             choix={choix}
