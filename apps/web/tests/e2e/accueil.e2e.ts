@@ -41,7 +41,7 @@ async function jusquALaGare(page: Page) {
   await page.goto('/');
   await page.getByRole('button', { name: 'Utiliser ma position' }).click();
   await expect(ecranGare(page)).toBeVisible();
-  await expect(page.getByText('Dijon-Ville')).toBeVisible();
+  await expect(page.getByRole('dialog').getByText('Dijon-Ville')).toBeVisible();
 }
 
 test('premier lancement : la bienvenue, sans demander la position ni montrer le menu', async ({
@@ -61,7 +61,7 @@ test('« Utiliser ma position » : la demande part, puis l’écran de la gare e
   await expect(
     page.getByText('La plus proche de vous. Vous pouvez en choisir une autre.'),
   ).toBeVisible();
-  await expect(page.getByText(/≈ \d+ min à pied/)).toBeVisible();
+  await expect(page.getByRole('dialog').getByText(/≈ \d+ min à pied/)).toBeVisible();
 
   await page.getByRole('button', { name: 'Voir les sorties' }).click();
   await expect(ecranGare(page)).toBeHidden();
