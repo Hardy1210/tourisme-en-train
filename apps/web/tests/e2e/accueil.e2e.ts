@@ -32,7 +32,9 @@ test.beforeEach(async ({ context, baseURL, page }) => {
       fenetre.lancementPendantDemande.push(
         !style || style.display === 'none' || style.visibility === 'hidden' ? 'parti' : 'visible',
       );
-      fenetre.modalePendantDemande.push(document.querySelector('[role="dialog"][data-state="open"]') !== null);
+      fenetre.modalePendantDemande.push(
+        document.querySelector('[role="dialog"][data-state="open"]') !== null,
+      );
       lire(...args);
     };
   });
