@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.38 · **Date** 21/11/2026
+> **Version** 1.39 · **Date** 24/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -37,7 +37,7 @@
 
 - **Typographie :** `font-display` (titres, noms de lieux), `font-sans` (reste). Classe `tabular` sur **tous** les horaires, durées, distances, prix.
 - **Icônes :** Lucide, trait 1,75 px. Catégories : `enfants` → `FerrisWheel`, `nature` → `Mountain`, `parcs` → `Trees`, `patrimoine` → `Castle`, `culture` → `Theater`. Transports : `TrainFront`, `Bus`, `TramFront`, `Bike`.
-- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet ; un **indicateur de défilement** remplace la barre du navigateur : trait fin de la marque sur un rail presque invisible, visible tant que du contenu est caché plus bas, même sans geste, car Safari sur iPhone n'affiche sa barre que pendant le geste et ignore son style), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo`.
+- **Composants de base** (`components/ui/`, écrits à la main sur Radix et les tokens, D053) : `Bouton`, `Puce` (filtre), `Feuille` (bottom sheet ; un **indicateur de défilement** remplace la barre du navigateur : trait fin de la marque sur un rail presque invisible, visible tant que du contenu est caché plus bas, même sans geste, car Safari sur iPhone n'affiche sa barre que pendant le geste et ignore son style), `Onglets`, `Carte` (conteneur), `Badge`, `Squelette`, `Bandeau`, `ChampRecherche`, `Interrupteur`, `Selecteur`, `EtatVide`, `BoutonRetour`, `BoutonFermer`, `Logo` (le nom de la marque, sa dernière lettre en couleur ; provisoire, seul fichier à changer pour une image, D112), `EcranLancement`.
 - **Mode sombre** (P1) : uniquement par les tokens `.dark`.
 - **Maquettes Claude Design** : conseil visuel. On copie l'aspect, jamais le comportement sans vérification.
 
@@ -152,6 +152,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 | Manifest | Généré par `app/manifest.ts` depuis `config/marque.ts` ; icônes 192/512 + maskable ; `display: standalone` ; `lang: fr` |
 | Service worker | Serwist : précache de l'interface ; réseau d'abord pour une liste explicite de routes et les pages (`lib/pwa/routes-hors-ligne.ts`, `cache.reseauMaxS`, `cache.horsLigneS`, `cache.horsLigneEntrees`) ; **jamais une adresse avec une position** (D071). Le cache hors ligne ne change rien aux trains partis : l'écran compare toujours l'heure du train à l'heure actuelle (D068). |
 | Hors ligne | Dernières recherches lisibles, à partir de la dernière gare gardée sur l'appareil ; bandeau « Vous êtes hors ligne » ; carte sans fond ; page jamais ouverte : message, navigation et lien vers Explorer ; réseau revenu : tout se met à jour seul |
+| Écran de lancement | À chaque ouverture : logo, `marque.accroche` et nom de la région sur le fond de la marque, puis fondu de sortie (durées `--lancement-*`) ; dans le HTML de départ, sans JavaScript ; jamais rejoué en changeant d'écran ; Android : `background_color` du manifest = couleur de la marque, sans saut (D112) |
 | Scripts qui ne se chargent pas | Message et lien pour recharger, après 8 s, au lieu d'une page blanche |
 | Installation | Android et iPhone. Icônes provisoires. Invitation discrète après une première recherche réussie, jamais au premier affichage : reportée (`A-FAIRE`) |
 
@@ -222,3 +223,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 20/11/2026 | 1.36 | § 4 quinquies : horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, … » en haut quand c'est sûr, date tenue à jour — D108 |
 | 20/11/2026 | 1.37 | § 4 sexies : fiche lieu de la maquette, barre du haut commune (`BarreRetour`), pied commun (`PiedFiche`) ; § 4 ter : ⓘ en haut à droite — D109 |
 | 21/11/2026 | 1.38 | § 4 sexies : Sources, À propos, Mentions légales au même bouton Retour ; Départ et Trajet gardent le texte — D109 |
+| 24/11/2026 | 1.39 | § 7 : écran de lancement ; § 2 : logo en texte — D112 |

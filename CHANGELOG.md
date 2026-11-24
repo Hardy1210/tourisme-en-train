@@ -7,10 +7,14 @@
 
 ## [Non publié]
 
+### Ajouté
+- Un écran de lancement à chaque ouverture : le logo et « Allez-y en train. Bourgogne-Franche-Comté » sur le fond violet, qui s'efface en fondu pendant que l'application démarre. Sur Android, l'écran de démarrage du téléphone a la même couleur : plus de flash blanc.
+
 ### Corrigé
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Le logo devient le nom écrit, sa dernière lettre en jaune (provisoire, il changera après la soutenance).
 - Sources, À propos et Mentions légales ont le même bouton Retour que les fiches : un rond sombre en haut à gauche, qui reste en place pendant la lecture.
 - La fiche d'un lieu prend le nouveau dessin : fond violet, photo en haut découpée en arc bordé de jaune, qui monte jusque derrière l'heure dans l'app installée ; horaires et adresse dans un seul bloc. Le bouton Retour est un rond sombre, exactement au même endroit sur toutes les fiches, et le bas des fiches (« Y aller en train », « Acheter mon billet ») a un haut arrondi.
 
