@@ -154,7 +154,6 @@
   "limites": {
     "gares": 3,
     "lieux": 50,
-    "lieuxParPage": 30,
     "lieuxParRangee": 8,
     "rangeesParPage": 6,
     "lieuxParCategorie": 5,

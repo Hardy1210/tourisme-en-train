@@ -10,12 +10,12 @@ import './outils-api';
 
 let fiche: typeof import('@/features/lieux/server/fiche');
 let service: typeof import('@/features/lieux/server/service');
-let accessibles: typeof import('@/features/lieux/server/accessibles');
+let rangees: typeof import('@/features/lieux/server/rangees');
 
 beforeAll(async () => {
   fiche = await import('@/features/lieux/server/fiche');
   service = await import('@/features/lieux/server/service');
-  accessibles = await import('@/features/lieux/server/accessibles');
+  rangees = await import('@/features/lieux/server/rangees');
 });
 
 const cle = (id: string) => `echantillon-${id}`;
@@ -81,8 +81,8 @@ describe('listes : « Près de vous », lieux à pied d’une destination, écra
     expect(avec.get(cle('ECH_L03'))).toBe(false);
   });
 
-  it('écran Lieux (accessibles en train depuis Dijon-Ville) : photo à Beaune ; limite, lieu voisin sans photo', async () => {
-    const reponse = await accessibles.accessibles(
+  it('écran Lieux (rangées depuis Dijon-Ville) : photo à Beaune ; limite, lieu voisin sans photo', async () => {
+    const reponse = await rangees.rangees(
       {
         gare: 'EX000001',
         date: '2026-11-18',
@@ -92,7 +92,7 @@ describe('listes : « Près de vous », lieux à pied d’une destination, écra
       },
       '2026-11-17',
     );
-    const avec = photos(reponse.lieux);
+    const avec = photos(reponse.rangees.flatMap((r) => r.lieux));
     expect(avec.get(cle('ECH_L11'))).toBe(true);
     expect(avec.get(cle('ECH_L12'))).toBe(false);
   });
@@ -104,12 +104,10 @@ describe('listes : « Près de vous », lieux à pied d’une destination, écra
 describe('photos d’abord (D104)', () => {
   let requetes: typeof import('@/features/lieux/server/requetes');
   let requetesFiche: typeof import('@/features/lieux/server/requetes-fiche');
-  let requetesAccessibles: typeof import('@/features/lieux/server/requetes-accessibles');
   let dijon: { id: number; code_insee: string | null };
   beforeAll(async () => {
     requetes = await import('@/features/lieux/server/requetes');
     requetesFiche = await import('@/features/lieux/server/requetes-fiche');
-    requetesAccessibles = await import('@/features/lieux/server/requetes-accessibles');
     const gare = await (await import('@/lib/db/requetes-partagees')).gareParUic('EX000001');
     if (gare === null) throw new Error('Échantillon : gare EX000001 (Dijon-Ville) absente.');
     dijon = gare;
@@ -183,31 +181,5 @@ describe('photos d’abord (D104)', () => {
     expect(unePhotoPlusLoin(sans)).toBe(true);
     photosDabordPuisTri(avec);
     croissant(sans.map((l) => l.tri));
-  });
-
-  it('écran Lieux : photos d’abord, puis par temps total ; limite, sans le réglage ; page 1 d’un lieu', async () => {
-    const options = {
-      gareId: dijon.id,
-      codeInsee: dijon.code_insee,
-      date: '2026-11-18',
-      dureeMax: Math.max(...parametres.durees.trainMaxOptionsMin),
-      categories: null,
-      limite: 50,
-      decalage: 0,
-      datePhoto: '2026-11-17',
-    };
-    const lire = async (photosDabord: boolean, limite = 50) =>
-      (await requetesAccessibles.lieuxAccessibles({ ...options, limite, photosDabord })).lieux.map(
-        (x) => ({
-          photo: x.photo_petite !== null,
-          tri: x.duree_train_min + x.duree_marche_min,
-        }),
-      );
-    const sans = await lire(false);
-    expect(unePhotoPlusLoin(sans)).toBe(true);
-    photosDabordPuisTri(await lire(true));
-    croissant(sans.map((l) => l.tri));
-    expect((await lire(true, 1))[0]?.photo).toBe(true);
-    expect((await lire(false, 1))[0]?.photo).toBe(false);
   });
 });

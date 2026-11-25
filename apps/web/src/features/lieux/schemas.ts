@@ -76,7 +76,7 @@ export const schemaParametresLieuxGare = z.object({
 
 const optionsDureeMax = parametres.durees.trainMaxOptionsMin;
 
-/** GET /api/lieux (docs/05-api.md § 3.6 bis, D056) : l'onglet Lieux. */
+/** GET /api/lieux/rangees (docs/05-api.md § 3.6 ter, D121) : les filtres de l'onglet Lieux. */
 export const schemaParametresLieuxAccessibles = z.object({
   gare: schemaUic,
   date: schemaDate,
@@ -90,20 +90,6 @@ export const schemaParametresLieuxAccessibles = z.object({
     .min(1, 'La page doit être un entier à partir de 1.')
     .optional()
     .transform((page) => page ?? 1),
-});
-
-export const schemaLieuAccessible = schemaLieuResume.extend({
-  /** Gare d'arrivée : la plus rapide (train + marche) si le lieu est proche de plusieurs gares. */
-  gare: z.object({ uic: z.string(), nom: z.string() }),
-  dureeTrainMin: z.number().int(),
-});
-
-export const schemaReponseLieuxAccessibles = z.object({
-  lieux: z.array(schemaLieuAccessible),
-  /** Tous les lieux correspondants, toutes pages confondues. */
-  total: z.number().int(),
-  /** Page à demander pour « Voir plus » ; null s'il n'y en a plus. */
-  pageSuivante: z.number().int().nullable(),
 });
 
 /**
@@ -169,7 +155,6 @@ export type LieuResume = z.infer<typeof schemaLieuResume>;
 export type Photo = z.infer<typeof schemaPhoto>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;
 export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAccessibles>;
-export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
 export type Rangee = z.infer<typeof schemaRangee>;
 export type ReponseRangeesLieux = z.infer<typeof schemaReponseRangeesLieux>;
 
