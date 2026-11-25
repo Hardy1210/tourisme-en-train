@@ -587,6 +587,13 @@
 - **À retenir :** demander le critère d'usage, puis le mesurer avant d'écrire la valeur ; une valeur proposée « au jugé » dans une étude doit être marquée comme telle.
 - **Origine :** #182, D118, 24/11.
 
+### L88 — Une feuille qui suit le doigt : pleine hauteur, un seul décalage animé
+- **Problème :** la feuille d'Explorer suivait le doigt, mais le contenu manquait pendant la montée et elle sursautait au lâcher (essai de Hardy sur l'iPhone, 25/11).
+- **Cause :** la feuille gardait la hauteur de sa position (`top`) et le doigt ajoutait un décalage : seule la demi-feuille était dessinée, et au lâcher deux animations se superposaient, dont une (`top`) remettait la liste en page à chaque image. L'étude d'impact disait aussi « pas de bibliothèque » sans avoir vu que `vaul` était déjà dans le projet, et qu'il montre la bonne technique.
+- **Solution :** la feuille a toujours la hauteur de l'écran, et sa position n'est qu'un `transform` ; la durée et la courbe de `vaul` pour l'animation. Le sursaut au lâcher n'est pas encore résolu (#185).
+- **À retenir :** pour un élément qui suit le doigt, n'animer que `transform` (ou `opacity`) sur un élément déjà à sa taille finale ; avant d'écarter une bibliothèque, chercher celles du projet qui font déjà la même chose, et lire leur technique.
+- **Origine :** #185, D120, 25/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|

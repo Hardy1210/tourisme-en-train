@@ -24,6 +24,24 @@
 
 ---
 
+## 25/11/2026 — Étape E11 — Épingles fusionnées, feuille d'Explorer glissée au doigt (en cours)
+**Fait :**
+- #183 (épingles, D119) recalée sur `main` (conflit de `A-FAIRE.md` avec #184, code inchangé), fusionnée par Hardy ; échec de parcours `explorer.e2e.ts:139` : cause A connue (Chalon sur Beaune), marqueurs des gares inchangés par #183
+- Bulles devant les gares : **après la soutenance** (Hardy) ; nouvelle idée de Hardy (icônes de lieux choisies par l'utilisateur) notée dans `A-FAIRE` § 3
+- ④ : étude d'impact validée (geste comme Google Maps, ouverture à moitié inchangée, PR A le geste puis PR B le retrait du bouton de la carte) ; **#185 ouverte (D120)** : fonctions pures `preneurDuGeste`, `hautSousLeDoigt`, `vitesseAuLacher`, `positionAuLacher` (19 tests en paires), `use-glissement-feuille.ts` (événements tactiles seulement), 5 parcours tactiles et clavier (`feuille-glissement.e2e.ts`)
+- Trois essais de Hardy sur l'iPhone : 1) contenu absent pendant la montée et sursaut → feuille à pleine hauteur, posée par un seul `transform` ; 2) passage d'un cran à l'autre trop brusque (mesuré : 60 % du trajet en une image avec `--ease-soft`) → jetons `--duree-feuille` (500 ms) et `--ease-feuille`, ceux de `vaul` ; 3) A/B : B (`flushSync` au lâcher) pareil que A ; il reste un sursaut au lâcher, et la version A a planté (cause inconnue)
+**Décisions :** D120 (dans #185)
+**Problèmes rencontrés :**
+- Le fond prolongé sous la feuille (première version) rendait l'écran défilable (1 598 px de contenu pour 754) : corrigé par `overflow-clip`
+- Parcours de la carte (cause A) : `:121`, `:178`, `:194` 9/18 échecs sur la branche contre 4/18 sur `main` (première version), puis `:121`, `:139`, `:178`, `:194` 10/16 contre 7/16 ; même cause des deux côtés, écart pas assez net
+- L'étude d'impact disait « pas de bibliothèque » sans avoir vu `vaul`, déjà dans le projet (L88)
+**À valider par Hardy :**
+- Décrire le plantage de la version A ; essai de #185 après la correction du sursaut
+**Prochaine action :**
+- Mesurer un lâcher image par image, puis A/B des pistes a, b, c (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ (824 tests, sur `b66a077`) · parcours d'Explorer, de la carte et de la feuille : 87 réussis, 1 échec connu (`:139`, cause A)
+**Commit :** `b66a077` (#185)
+
 ## 24/11/2026 (fin) — Étapes E11/E12 — Trains aux gares, épingles des lieux
 **Fait :**
 - **#182 (D118)** : gares en points de loin (inchangés, couleur du temps de train), en icônes de train inversées de près (seuil `carte.zoomIconesGares` = 9,75, mesuré sur le critère de Hardy : ≈ 15 gares visibles autour de Dijon) ; bord jaune de la destination du trajet ; bulles décalées en haut à droite (solution 1 de Hardy)
