@@ -4,6 +4,7 @@ import {
   totalLieux,
   couleurTranche,
   traitTranche,
+  destinationsMontrees,
   dureeElargie,
   formaterDuree,
   formaterKg,
@@ -132,5 +133,24 @@ describe('traitTranche (icône de train inversée, D118)', () => {
   });
   it('au-delà de la dernière borne : la dernière couleur, comme le point', () => {
     expect(traitTranche('>90', BORNES)).toBe('border-map-time-4 text-map-time-4');
+  });
+});
+
+describe('destinationsMontrees (« Voir plus » de la feuille, D122)', () => {
+  const liste = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
+
+  it('25 destinations : les 10 premières dans l’ordre reçu, 15 restent ; puis 20, puis toutes', () => {
+    expect(destinationsMontrees(liste(25), 1, 10)).toEqual({ montrees: liste(10), reste: 15 });
+    expect(destinationsMontrees(liste(25), 2, 10)).toEqual({ montrees: liste(20), reste: 5 });
+    expect(destinationsMontrees(liste(25), 3, 10)).toEqual({ montrees: liste(25), reste: 0 });
+  });
+
+  it('limite : 10 destinations tiennent dans la première page, rien ne reste ; 11 en laissent une', () => {
+    expect(destinationsMontrees(liste(10), 1, 10)).toEqual({ montrees: liste(10), reste: 0 });
+    expect(destinationsMontrees(liste(11), 1, 10)).toEqual({ montrees: liste(10), reste: 1 });
+  });
+
+  it('liste vide : rien à montrer, rien ne reste', () => {
+    expect(destinationsMontrees([], 1, 10)).toEqual({ montrees: [], reste: 0 });
   });
 });

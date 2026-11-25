@@ -254,6 +254,8 @@ export const schemaParametres = z
       /** Fiche destination, onglet Lieux : lieux montrés par catégorie avant « Voir les N autres ». */
       lieuxParCategorie: z.number().int().positive(),
       destinations: z.number().int().positive(),
+      /** Feuille d'Explorer : destinations montrées d'abord, puis à chaque « Voir plus » (D122). */
+      destinationsParPage: z.number().int().positive(),
       trains: z.number().int().positive(),
       mobilites: z.number().int().positive(),
       /** Résultats de la recherche de ville (gares de la base d'abord, puis API Adresse). */

@@ -1,8 +1,10 @@
 import { Route } from 'lucide-react';
+import { useState } from 'react';
 import { Bouton } from '@/components/ui/bouton';
 import { EtatVide } from '@/components/ui/etat-vide';
 import { Squelette } from '@/components/ui/squelette';
-import type { DestinationAffichee } from '../presentation';
+import { parametres } from '@/config/parametres';
+import { destinationsMontrees, type DestinationAffichee } from '../presentation';
 import type { Destination } from '../schemas';
 import { CarteDestination } from './carte-destination';
 import { LegendeTemps } from './legende-temps';
@@ -50,6 +52,13 @@ export function SectionDestinations({
   recherche,
 }: Proprietes) {
   const nombre = destinations?.length ?? 0;
+  // Nombre de pages montrées : le seul état de la liste ; ce qu'on montre en découle (D122).
+  const [pages, setPages] = useState(1);
+  const { montrees, reste } = destinationsMontrees(
+    destinations ?? [],
+    pages,
+    parametres.limites.destinationsParPage,
+  );
   return (
     <section aria-labelledby="en-train-direct" className="flex flex-col gap-3">
       <div className="flex flex-col gap-0.5">
@@ -127,7 +136,7 @@ export function SectionDestinations({
             />
             {gareNom} · départ
           </p>
-          {destinations.map((destination) => (
+          {montrees.map((destination) => (
             <CarteDestination
               key={destination.gare.uic}
               destination={destination}
@@ -137,6 +146,16 @@ export function SectionDestinations({
             />
           ))}
         </div>
+      )}
+
+      {reste > 0 && (
+        <Bouton
+          variante="secondaire"
+          className="lg:self-center"
+          onClick={() => setPages((nombrePages) => nombrePages + 1)}
+        >
+          Voir plus
+        </Bouton>
       )}
     </section>
   );
