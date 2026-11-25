@@ -24,6 +24,23 @@
 
 ---
 
+## 25/11/2026 (après-midi) — Étape E11 — Départ brutal de la feuille sur l'iPhone : diagnostic
+**Fait :**
+- Essais A/B sur l'iPhone (deux tunnels à chaque fois) : `touch-action: pan-x` hors du haut (C), 800 ms (fin plus douce, départ inchangé), lâcher de `vaul` (D : transition et arrivée en pixels écrites ensemble), courbes `(0.2, 0, 0, 1)` puis `(0.4, 0, 0.2, 1)` (E, calculées : moitié du trajet à 20 % puis 35 % du temps) : **aucun ne rend le départ doux** ; observation de Hardy : le défaut touche aussi le bouton, et disparaît quand on enchaîne vite
+- Mesures dans Chromium (sondes Playwright temporaires, jamais versionnées) : lâcher image par image propre sans ralentissement ; processeur ralenti ×4 : temps mort de 130 à 300 ms puis 27 à 66 % du trajet en une image ; recalcul du style après `data-feuille` sur la racine 60–78 ms (variable `--resultats-haut` héritée par les ≈ 970 éléments), contre 30–45 ms pour un style posé sur la feuille seule ; F (`@property` non héritée sur les seuls suiveurs) réduit le recalcul sans supprimer les sauts ; profil du processeur : code de l'application ≈ 10–15 ms par changement
+- Version de diagnostic en ligne (`diagnostic/feuille`, jamais fusionnée) : `?diag=sanscarte`, `?diag=listecourte`, `?diag=aucun`
+- WebKit de Playwright non installable sur le poste (bibliothèques système manquantes, `sudo` nécessaire)
+**Décisions :** aucune ; #185 inchangée (`b66a077`)
+**Problèmes rencontrés :**
+- Un `git commit --amend` sans `-a` n'avait changé que le message : le build d'E portait l'ancienne courbe ; vu en lisant le CSS construit, corrigé
+- Les mesures par image de Chromium (sans carte graphique, horloge des tests simulée) ne montrent pas ce que Safari affiche : seule la comparaison sur l'iPhone tranche (L89)
+**À valider par Hardy :**
+- Résultat des trois variantes de diagnostic ; description du plantage vu sur A
+**Prochaine action :**
+- Selon le résultat : carte, liste (F), ou panneau de mesure sur l'iPhone (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `b66a077` (824 tests, inchangé depuis) · parcours de la feuille ✅ sur chaque essai (6 à 7)
+**Commit :** `b66a077` (#185) ; essais sur branches locales
+
 ## 25/11/2026 — Étape E11 — Épingles fusionnées, feuille d'Explorer glissée au doigt (en cours)
 **Fait :**
 - #183 (épingles, D119) recalée sur `main` (conflit de `A-FAIRE.md` avec #184, code inchangé), fusionnée par Hardy ; échec de parcours `explorer.e2e.ts:139` : cause A connue (Chalon sur Beaune), marqueurs des gares inchangés par #183

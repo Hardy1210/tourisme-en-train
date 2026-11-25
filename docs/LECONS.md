@@ -594,6 +594,13 @@
 - **À retenir :** pour un élément qui suit le doigt, n'animer que `transform` (ou `opacity`) sur un élément déjà à sa taille finale ; avant d'écarter une bibliothèque, chercher celles du projet qui font déjà la même chose, et lire leur technique.
 - **Origine :** #185, D120, 25/11.
 
+### L89 — Un défaut d'animation vu seulement sur l'iPhone se cherche en retirant, sur l'iPhone
+- **Problème :** le départ de chaque animation de la feuille d'Explorer est brutal sur l'iPhone ; cinq corrections essayées l'une après l'autre (ordre de React, `touch-action`, durée, méthode de `vaul`, courbes) n'ont rien changé.
+- **Cause :** chaque correction partait d'une hypothèse ; les mesures image par image de Chromium (sans carte graphique, animations faites ailleurs que là où on les lit) ne montrent pas ce que Safari affiche à l'écran.
+- **Solution :** une version de diagnostic où l'on retire un suspect à la fois (la carte, la longue liste), choisie par l'adresse, comparée sur l'iPhone dans des onglets séparés.
+- **À retenir :** après deux corrections sans effet, arrêter de corriger et isoler : retirer les gros suspects un par un sur l'appareil où le défaut se voit, puis mesurer le coupable avant d'écrire la vraie correction.
+- **Origine :** #185, D120, 25/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
