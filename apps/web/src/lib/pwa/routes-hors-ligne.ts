@@ -5,7 +5,6 @@ const ROUTES_API_GARDEES = [
   /^\/api\/destinations$/,
   /^\/api\/destinations\/[^/]+$/,
   /^\/api\/destinations\/[^/]+\/lieux$/,
-  /^\/api\/lieux$/,
   /^\/api\/lieux\/[^/]+$/,
   /^\/api\/trains$/,
   /^\/api\/mobilites\/[^/]+$/,

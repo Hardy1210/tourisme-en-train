@@ -25,7 +25,7 @@ const onglet = (page: Page, nom: string) =>
   page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: nom });
 const sorties = (page: Page) => page.getByRole('link', { name: 'Voir la sortie' });
 
-/** Les appels propres à Explorer : `/api/lieux` et les autres servent aussi à l'écran Lieux. */
+/** Les appels propres à Explorer : `/api/lieux/rangees` et les autres servent aussi à l'écran Lieux. */
 function appelsExplorer(page: Page): string[] {
   const appels: string[] = [];
   page.on('request', (requete) => {

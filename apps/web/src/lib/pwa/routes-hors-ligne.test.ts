@@ -8,7 +8,7 @@ describe('apiGardeeHorsLigne', () => {
     '/api/destinations?gare=A&dureeMax=180',
     '/api/destinations/A?depuis=B',
     '/api/destinations/A/lieux',
-    '/api/lieux?gare=A',
+    '/api/lieux/rangees?gare=A',
     '/api/lieux/cle',
     '/api/trains?depart=A&arrivee=B',
     '/api/mobilites/A',

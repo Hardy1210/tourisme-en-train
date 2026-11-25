@@ -1,14 +1,13 @@
 // /api/lieux/rangees (onglet Lieux en rangées, D121) sur l'échantillon : section E11 de
-// db/echantillon/echantillon.sql (données d'exemple). Mêmes lieux que /api/lieux, rangés par gare.
+// db/echantillon/echantillon.sql (données d'exemple) : les lieux à pied des gares atteintes, rangés par gare.
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { parametres } from '@/config/parametres';
-import { schemaReponseLieuxAccessibles, schemaReponseRangeesLieux } from '@/features/lieux/schemas';
+import { schemaReponseRangeesLieux } from '@/features/lieux/schemas';
 
 import { appeler, erreurDe, type Route } from './outils-api';
 
 let route: Route;
-let liste: Route;
 const DIJON = 'EX000001';
 const BEAUNE = 'EX000002';
 const DOLE = 'EX000003';
@@ -52,7 +51,6 @@ async function avecReglages<O extends object, T>(
 
 beforeAll(async () => {
   route = await import('@/app/api/lieux/rangees/route');
-  liste = await import('@/app/api/lieux/route');
 });
 
 describe('/api/lieux/rangees', () => {
@@ -120,9 +118,16 @@ describe('/api/lieux/rangees', () => {
     const avecLeLieu = reponse.rangees.filter((r) => r.lieux.some((l) => l.cle === cle('ECH_L40')));
     expect(avecLeLieu.length).toBe(2);
     expect(avecLeLieu.map((r) => r.gare.uic)).toContain(CHALON);
-    // Même total que la liste à plat, où chaque lieu n'apparaît qu'une fois.
-    const aPlat = await appeler(liste, `/api/lieux?gare=${DIJON}&date=${HIVER}`);
-    expect(reponse.total).toBe(schemaReponseLieuxAccessibles.parse(aPlat.corps).total);
+    // Toutes les rangées et tous leurs lieux d'un coup : le total compte chaque lieu une fois.
+    await avecReglages(
+      parametres.limites,
+      { lieuxParRangee: 100, rangeesParPage: 100 },
+      async () => {
+        const tout = await lire(DIJON);
+        expect(new Set(cles(tout)).size).toBe(tout.total);
+        expect(cles(tout).length).toBeGreaterThan(tout.total);
+      },
+    );
   });
 
   it('écarte la gare de départ et les gares de sa commune, pas les autres', async () => {
@@ -152,7 +157,19 @@ describe('/api/lieux/rangees', () => {
     }
   });
 
-  it('garde les mêmes exclusions que la liste : aires sans nom propre, fiche de ville', async () => {
+  it('un lieu de catégorie secondaire apparaît aussi sous cette envie, et sous sa catégorie (D060)', async () => {
+    const enfants = (await lire(DIJON, '&categories=enfants')).rangees.flatMap((r) => r.lieux);
+    expect(enfants.find((l) => l.cle === cle('ECH_L47'))).toMatchObject({ categorie: 'nature' });
+    expect(cles(await lire(DIJON, '&categories=nature'))).toContain(cle('ECH_L47'));
+  });
+
+  it('limite : un lieu sans catégorie secondaire n’apparaît pas sous cette envie ; sans filtre, une fois par rangée', async () => {
+    expect(cles(await lire(DIJON, '&categories=enfants'))).not.toContain(cle('ECH_L48'));
+    for (const { lieux } of (await lire(DIJON)).rangees)
+      expect(lieux.filter((l) => l.cle === cle('ECH_L47')).length).toBeLessThanOrEqual(1);
+  });
+
+  it('écarte les aires de jeux sans nom propre et les fiches de ville (D057)', async () => {
     const tous = cles(await lire(DIJON));
     expect(tous).not.toContain(cle('ECH_L44'));
     expect(tous).toContain(cle('ECH_L45'));
