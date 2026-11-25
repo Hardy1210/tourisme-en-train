@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { Layer, Source } from 'react-map-gl/maplibre';
 import { parametres } from '@/config/parametres';
 import type { ReponseLieuxCarte } from '@/features/lieux/schemas';
-import { PREFIXE_IMAGE } from '../icones-categories';
+import { PREFIXE_IMAGE, PREFIXE_IMAGE_TOUCHEE } from '../icones-categories';
 
 export const SOURCE_LIEUX = 'lieux';
 export const COUCHE_BULLES = 'lieux-bulles';
@@ -39,10 +39,13 @@ export function CoucheLieux({
   lieux,
   categories,
   couleurs,
+  cleTouchee,
 }: {
   lieux: ReponseLieuxCarte['lieux'];
   categories: readonly Categorie[];
   couleurs: { bulle: string; texteBulle: string; halo: string };
+  /** Lieu touché (mini-fiche ouverte) : sa grande épingle pleine (D119) ; null sinon. */
+  cleTouchee: string | null;
 }) {
   const donnees = useMemo(() => lieuxGeoJson(lieux, categories), [lieux, categories]);
   const { bullesRayonPx, bullesZoomMax, bullesDecalagePx } = parametres.acces;
@@ -85,7 +88,15 @@ export function CoucheLieux({
         type="symbol"
         filter={['!', ['has', 'point_count']]}
         layout={{
-          'icon-image': ['concat', PREFIXE_IMAGE, ['get', 'categorie']],
+          // D119 : épingle dont la pointe marque le lieu ; le lieu touché, plus grande et pleine, devant.
+          'icon-image': [
+            'case',
+            ['==', ['get', 'cle'], cleTouchee ?? ''],
+            ['concat', PREFIXE_IMAGE_TOUCHEE, ['get', 'categorie']],
+            ['concat', PREFIXE_IMAGE, ['get', 'categorie']],
+          ],
+          'icon-anchor': 'bottom',
+          'symbol-sort-key': ['case', ['==', ['get', 'cle'], cleTouchee ?? ''], 1, 0],
           'icon-allow-overlap': true,
         }}
       />

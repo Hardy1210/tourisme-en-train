@@ -14,8 +14,17 @@ import type { Destination } from '@/features/destinations/schemas';
 import type { LieuResume } from '@/features/lieux/schemas';
 import { IconeCategorie } from '@/features/lieux/ui/icone-categorie';
 import { cn } from '@/lib/classes';
+import { formeEpingle } from '../epingle';
 import type { Point } from '../geometrie';
 
+// Épingles des lieux en pixels CSS : 30 px, et 40 px pour le lieu touché (maquette « Explorer »).
+const FORME_NORMALE = formeEpingle(15);
+const FORME_TOUCHEE = formeEpingle(20);
+
+/**
+ * Épingles des lieux de la carte d'une destination (D119) : la même goutte que dans Explorer
+ * (`formeEpingle`), pointe sur le lieu ; le lieu touché, plus grand et plein, sans anneau.
+ */
 export function MarqueursLieux({
   lieux,
   cleChoisie = null,
@@ -25,34 +34,55 @@ export function MarqueursLieux({
   cleChoisie?: string | null;
   surChoix: (cle: string) => void;
 }) {
-  return lieux.map((lieu) => (
-    <Marker
-      key={lieu.cle}
-      latitude={lieu.lat}
-      longitude={lieu.lon}
-      style={{ zIndex: lieu.cle === cleChoisie ? 2 : 1 }}
-    >
-      <button
-        type="button"
-        aria-label={lieu.nom}
-        aria-pressed={lieu.cle === cleChoisie}
-        onClick={(evenement) => {
-          evenement.stopPropagation();
-          surChoix(lieu.cle);
-        }}
-        className="flex size-touch cursor-pointer items-center justify-center"
+  return lieux.map((lieu) => {
+    const touchee = lieu.cle === cleChoisie;
+    const forme = touchee ? FORME_TOUCHEE : FORME_NORMALE;
+    return (
+      <Marker
+        key={lieu.cle}
+        latitude={lieu.lat}
+        longitude={lieu.lon}
+        anchor="bottom"
+        style={{ zIndex: touchee ? 2 : 1 }}
       >
-        <span
-          className={cn(
-            'flex size-7 items-center justify-center rounded-pill bg-surface shadow-xs',
-            lieu.cle === cleChoisie && 'ring-2 ring-primary',
-          )}
+        <button
+          type="button"
+          aria-label={lieu.nom}
+          aria-pressed={touchee}
+          onClick={(evenement) => {
+            evenement.stopPropagation();
+            surChoix(lieu.cle);
+          }}
+          className="flex min-h-touch min-w-touch cursor-pointer items-end justify-center"
         >
-          <IconeCategorie categorie={lieu.categorie} className="size-4" />
-        </span>
-      </button>
-    </Marker>
-  ));
+          <span className="relative block" style={{ width: forme.largeur, height: forme.hauteur }}>
+            <svg
+              aria-hidden="true"
+              width={forme.largeur}
+              height={forme.hauteur}
+              className={cn(
+                'absolute inset-0',
+                touchee
+                  ? 'fill-epingle-touchee-bg stroke-epingle-touchee-bg'
+                  : 'fill-epingle-bg stroke-epingle-trait',
+              )}
+            >
+              <path d={forme.chemin} strokeWidth={1.5} />
+            </svg>
+            <span
+              className="absolute flex -translate-1/2 items-center justify-center"
+              style={{ left: forme.cx, top: forme.cy }}
+            >
+              <IconeCategorie
+                categorie={lieu.categorie}
+                className={touchee ? 'size-5 text-epingle-touchee-texte' : 'size-4'}
+              />
+            </span>
+          </span>
+        </button>
+      </Marker>
+    );
+  });
 }
 
 /**

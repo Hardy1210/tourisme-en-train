@@ -18,6 +18,7 @@
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Sur les cartes, les lieux sont des épingles en forme de goutte dont la pointe tombe sur le lieu ; le lieu touché a une épingle plus grande, pleine.
 - Sur la carte, les gares deviennent des icônes de train quand on zoome (de loin, les points colorés restent) ; la destination choisie a un bord jaune ; les bulles du nombre de lieux sont décalées pour ne plus être cachées.
 - Avec une destination choisie, la barre en haut d'Explorer passe sur deux lignes : « Départ  Dijon », puis « Arrivée  Beaune ».
 - La feuille « Filtres » montre aussi les catégories, avec leurs icônes, dans le même état que sur la carte ; « Réinitialiser » remet à zéro tout ce qu'on y voit, et seulement ça.

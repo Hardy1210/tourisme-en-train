@@ -329,6 +329,12 @@
   --selection-foreground: var(--primary-soft-foreground);
   --selection-border: var(--primary);
 
+  /* Épingles des lieux sur les cartes (D119) : lilas clair et contour violet ; le lieu touché, plein */
+  --epingle-bg: var(--selection-bg);
+  --epingle-trait: var(--selection-border);
+  --epingle-touchee-bg: var(--primary);
+  --epingle-touchee-texte: var(--primary-foreground);
+
   /* Puces */
   --puce-bg: var(--surface);
   --puce-foreground: var(--foreground);
@@ -489,6 +495,10 @@
   --color-selection-bg: var(--selection-bg);
   --color-selection-foreground: var(--selection-foreground);
   --color-selection-border: var(--selection-border);
+  --color-epingle-bg: var(--epingle-bg);
+  --color-epingle-trait: var(--epingle-trait);
+  --color-epingle-touchee-bg: var(--epingle-touchee-bg);
+  --color-epingle-touchee-texte: var(--epingle-touchee-texte);
   --color-puce-bg: var(--puce-bg);
   --color-puce-foreground: var(--puce-foreground);
   --color-puce-border: var(--puce-border);

@@ -273,7 +273,12 @@ export function CarteExplorer({
         >
           {/* Avant les couches des gares : leurs étiquettes restent au-dessus des bulles. */}
           {couleursBulles && lieuxCarte && (
-            <CoucheLieux lieux={lieuxCarte} categories={categories} couleurs={couleursBulles} />
+            <CoucheLieux
+              lieux={lieuxCarte}
+              categories={categories}
+              couleurs={couleursBulles}
+              cleTouchee={selection?.type === 'lieu' ? selection.cle : null}
+            />
           )}
           <CouchesCarte
             segments={segments}
