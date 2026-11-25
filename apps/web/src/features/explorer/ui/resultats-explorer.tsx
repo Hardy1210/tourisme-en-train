@@ -3,7 +3,6 @@
 import { dateDuJour } from '@tourisme/commun';
 import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
-import { AttributionFondCarte } from '@/features/carte/ui/attribution-fond-carte';
 import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
 import { SectionDestinations } from '@/features/destinations/ui/section-destinations';
 import type { Destination } from '@/features/destinations/schemas';
@@ -138,9 +137,11 @@ export function ResultatsExplorer({
           lienDe={lienDe}
           masqueEnHaut={masqueEnHaut}
           masqueEnBas={() => {
+            // Sur mobile, la feuille garde la hauteur de l'écran : elle cache ce qui est sous son haut visible.
             const element = feuille.current;
-            return element && getComputedStyle(element).position === 'absolute'
-              ? element.offsetHeight
+            const cadre = element?.parentElement?.getBoundingClientRect();
+            return element && cadre && getComputedStyle(element).position === 'absolute'
+              ? cadre.bottom - element.getBoundingClientRect().top
               : 0;
           }}
           pleinEcran={{
@@ -151,12 +152,9 @@ export function ResultatsExplorer({
           surSurvol={setSurvolee}
         />
       </div>
-      {/* Transparente au toucher : seule la feuille réagit, la carte reste utilisable autour. */}
-      <div className="pointer-events-none relative h-full lg:contents">
-        {/* Attribution exigée par la licence, posée sur la feuille (config/sources.json). */}
-        <p className="absolute inset-x-0 top-(--resultats-haut) z-sheet -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:hidden">
-          <AttributionFondCarte />
-        </p>
+      {/* Transparente au toucher : seule la feuille réagit, la carte reste utilisable autour.
+          `overflow-clip` : la feuille décalée vers le bas ne rend pas l'écran défilable (D120). */}
+      <div className="pointer-events-none relative h-full overflow-clip lg:contents">
         <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
           <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
             <CarteVotreGare

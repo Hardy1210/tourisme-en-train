@@ -159,6 +159,7 @@
     "rangeesParPage": 6,
     "lieuxParCategorie": 5,
     "destinations": 150,
+    "destinationsParPage": 10,
     "trains": 20,
     "mobilites": 20,
     "geocodage": 6
