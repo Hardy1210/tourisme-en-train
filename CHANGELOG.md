@@ -19,6 +19,7 @@
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Sur la page Lieux, les cartes des lieux n'ont plus de ⓘ : le crédit de la photo est sur la page du lieu, comme dans « Près de vous ».
 - La feuille d'Explorer montre les 10 destinations les plus proches, puis « Voir plus » en ajoute 10 : elle glisse sans à-coup sur l'iPhone, et le nombre total reste affiché.
 - Sur le téléphone, la feuille des résultats se glisse avec le doigt n'importe où sur elle et suit le doigt ; lâchée, elle va à la position la plus proche, ou plus loin si on la lance vite.
 - La page Lieux montre une rangée par gare où l'on va en train direct, celles qui ont des photos d'abord, puis la plus proche : ses premiers lieux défilent de côté, en grandes photos, et « Voir tout » ouvre la fiche de la destination.
