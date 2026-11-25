@@ -93,3 +93,17 @@ export const formaterKg = (kg: number): string => kg.toFixed(1).replace('.', ','
 export function dureeElargie(actuelle: number, options: readonly number[]): number | null {
   return [...options].sort((a, b) => a - b).find((option) => option > actuelle) ?? null;
 }
+
+/**
+ * Les destinations montrées après `pages` toucher(s) de « Voir plus », et combien il en reste (D122) :
+ * les `pages × parPage` premières, dans l'ordre reçu. Toute la liste d'un coup (≈ 100 cartes) figeait la
+ * feuille d'Explorer au début de chaque mouvement, et faisait planter Safari sur l'iPhone.
+ */
+export function destinationsMontrees<T>(
+  destinations: readonly T[],
+  pages: number,
+  parPage: number,
+): { montrees: readonly T[]; reste: number } {
+  const montrees = destinations.slice(0, pages * parPage);
+  return { montrees, reste: destinations.length - montrees.length };
+}
