@@ -7,7 +7,7 @@ import { lireApi } from '@/lib/http/client';
 import {
   schemaFicheLieu,
   schemaReponseAutour,
-  schemaReponseLieuxAccessibles,
+  schemaReponseRangeesLieux,
   schemaReponseLieuxCarte,
   type ParametresLieuxCarte,
 } from './schemas';
@@ -49,25 +49,28 @@ export function useLieuxGare(uic: string, actif: boolean, categories: readonly C
   });
 }
 
-type OptionsAccessibles = {
+type OptionsRangees = {
   gare: string;
   date: string | null;
   categories: readonly Categorie[];
   dureeMax: number;
 };
 
-/** Onglet Lieux : pages de `/api/lieux`, avec « Voir plus » ; la liste reste affichée pendant un filtre. */
-export function useLieuxAccessibles({ gare, date, categories, dureeMax }: OptionsAccessibles) {
+/**
+ * Onglet Lieux en rangées (D121) : pages de rangées de `/api/lieux/rangees`, avec « Voir plus » ; les
+ * rangées restent affichées pendant un changement de filtre.
+ */
+export function useRangeesLieux({ gare, date, categories, dureeMax }: OptionsRangees) {
   const requete = new URLSearchParams({ gare, dureeMax: String(dureeMax) });
   if (date !== null) requete.set('date', date);
   if (categories.length > 0) requete.set('categories', categories.join(','));
-  const chemin = `/api/lieux?${requete.toString()}`;
+  const chemin = `/api/lieux/rangees?${requete.toString()}`;
   return useInfiniteQuery({
-    queryKey: ['lieux-accessibles', chemin],
+    queryKey: ['lieux-rangees', chemin],
     initialPageParam: 1,
     placeholderData: keepPreviousData,
     queryFn: ({ pageParam, signal }) =>
-      lireApi(`${chemin}&page=${pageParam}`, schemaReponseLieuxAccessibles, signal),
+      lireApi(`${chemin}&page=${pageParam}`, schemaReponseRangeesLieux, signal),
     getNextPageParam: (reponse) => reponse.pageSuivante,
   });
 }
