@@ -150,8 +150,9 @@ export function ResultatsExplorer({
           surSurvol={setSurvolee}
         />
       </div>
-      {/* Transparente au toucher : seule la feuille réagit, la carte reste utilisable autour. */}
-      <div className="pointer-events-none relative h-full lg:contents">
+      {/* Transparente au toucher : seule la feuille réagit, la carte reste utilisable autour.
+          `overflow-clip` : le fond prolongé sous la feuille ne rend pas l'écran défilable (D120). */}
+      <div className="pointer-events-none relative h-full overflow-clip lg:contents">
         <FeuilleResultats ref={feuille} position={position} surPosition={surPosition}>
           <div className="flex flex-col gap-6 px-4 pb-6 lg:pt-4">
             <CarteVotreGare
