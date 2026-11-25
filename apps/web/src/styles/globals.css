@@ -280,6 +280,13 @@
   --page-marque-texte: var(--hero-foreground);
   --page-marque-texte-muted: var(--hero-muted);
   --carte-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 10%, var(--hero-bg));
+  /* Grande icône d'une carte sans photo : la teinte du blanc à 13 % (`--hero-tile`) posé sur la carte,
+     mais opaque, pour que les traits qui se croisent ne s'additionnent pas en plus clair. */
+  --carte-sur-marque-icone: color-mix(
+    in oklch,
+    var(--hero-foreground) 13%,
+    var(--carte-sur-marque-bg)
+  );
   --carte-sur-marque-texte: var(--hero-foreground);
   --carte-sur-marque-texte-muted: var(--hero-muted);
   --tuile-sur-marque-bg: var(--hero-tile);
@@ -392,6 +399,11 @@
   --page-marque-texte: var(--foreground);
   --page-marque-texte-muted: var(--muted-foreground);
   --carte-sur-marque-bg: var(--hero-bg);
+  --carte-sur-marque-icone: color-mix(
+    in oklch,
+    var(--hero-foreground) 10%,
+    var(--carte-sur-marque-bg)
+  );
   --vignette-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 14%, var(--hero-bg));
   --sortie-hover: color-mix(in oklch, var(--accent), white 12%);
   --favorite-on-primary: var(--foreground);
@@ -482,6 +494,7 @@
   --color-page-marque-texte: var(--page-marque-texte);
   --color-page-marque-texte-muted: var(--page-marque-texte-muted);
   --color-carte-sur-marque-bg: var(--carte-sur-marque-bg);
+  --color-carte-sur-marque-icone: var(--carte-sur-marque-icone);
   --color-carte-sur-marque-texte: var(--carte-sur-marque-texte);
   --color-carte-sur-marque-texte-muted: var(--carte-sur-marque-texte-muted);
   --color-tuile-sur-marque-bg: var(--tuile-sur-marque-bg);
