@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.30 · **Date** 19/11/2026
+> **Version** 1.31 · **Date** 25/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -42,6 +42,7 @@
 | GET | `/api/destinations/[uic]` | Résumé d'une destination (gare, lieux par catégorie, liaison) | P0 | E09 |
 | GET | `/api/destinations/[uic]/lieux` | Lieux à pied depuis une gare | P0 | E09 |
 | GET | `/api/lieux` | Lieux accessibles en train direct depuis une gare (onglet Lieux) | P0 | E11 |
+| GET | `/api/lieux/rangees` | Onglet Lieux en rangées : une rangée par gare d'arrivée, ses premiers lieux et leur nombre (D121) | P0 | E11 |
 | GET | `/api/lieux/[cle]` | Détail d'un lieu | P0 | E09 |
 | GET | `/api/trains` | Trains directs aller et retour | P0 | E09 |
 | GET | `/api/trains/arrets` | Arrêts du prochain train direct, pour la ligne sur la carte | P0 | E11 |
@@ -191,6 +192,26 @@ Onglet Lieux (D056).
 - **Un lieu proche de plusieurs gares** apparaît une fois, par celle au temps total le plus court.
 - **Lieux écartés :** à pied de la gare de départ, ou à côté d'une gare de la même commune ; piscines ordinaires et aires de jeux sans nom propre, seulement dans cette route (`lieux.ongletLieux`, D057). Une fiche de ville n'est listée dans aucune route (`lieu.fiche_ville`), mais `/api/lieux/[cle]` l'ouvre.
 - `parametres.limites.lieuxParPage` lieux par page. Page au-delà de la fin : `lieux` vide, `total` conservé. `404` si la gare est inconnue. Cache : `public, max-age=3600`.
+
+### 3.6 ter `GET /api/lieux/rangees?gare&date&categories&dureeMax&page`
+Onglet Lieux en rangées (D121). Mêmes paramètres, mêmes lieux et mêmes lieux écartés que `/api/lieux` (§ 3.6 bis) ; `page` compte des **rangées**.
+```ts
+{
+  rangees: Array<{
+    type: 'gare';                         // seule sorte pour l'instant ; d'autres viendront (D121)
+    gare: { uic: string; nom: string };   // gare d'arrivée ; « Voir tout » ouvre sa fiche destination
+    dureeTrainMin: number;
+    total: number;                        // lieux à pied de cette gare, filtres compris
+    lieux: LieuResume[];                  // au plus `limites.lieuxParRangee`
+  }>;
+  total: number;          // lieux distincts, toutes rangées confondues (le nombre du titre)
+  totalRangees: number;
+  pageSuivante: number | null;
+}
+```
+- **Rangées :** une par gare d'arrivée qui a au moins un lieu avec ces filtres ; celles qui ont au moins un lieu avec photo d'abord (D104, `photos.enPremier`), puis la plus courte en train, puis le nom de la gare. `limites.rangeesParPage` rangées par page ; page au-delà de la fin : `rangees` vide, totaux conservés.
+- **Dans une rangée :** les lieux avec une photo d'abord (D104, `photos.enPremier`), puis la marche la plus courte, puis la clé. Un lieu à pied de deux gares est dans les deux rangées, comme sur leurs fiches ; `total` (du titre) le compte une fois.
+- `404` si la gare est inconnue, `400` pour un paramètre invalide (comme § 3.6 bis). Cache : `public, max-age=3600`.
 
 ### 3.7 `GET /api/lieux/[cle]`
 ```ts
@@ -358,3 +379,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 17/11/2026 | 1.28 | § 1 point 13 : `photo` (droits à la date du jour) remplace `imageUrl` dans les routes de lieux — D100, D101 |
 | 19/11/2026 | 1.30 | § 3.7 : `description` en texte brut avec paragraphes, 2 000 caractères ; `attribution` sous la description — D105 |
 | 18/11/2026 | 1.29 | § 3.3, 3.6, 3.6 bis : lieux avec photo d'abord, tri habituel dans chaque groupe (temporaire) — D104 |
+| 25/11/2026 | 1.31 | § 2 et § 3.6 ter : `GET /api/lieux/rangees` (onglet Lieux en rangées par gare, celles qui ont une photo d'abord) — D121 |

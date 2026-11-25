@@ -5,10 +5,10 @@ import { gareParUic, verifierDateDansFenetre } from '@/lib/db/requetes-partagees
 import { Introuvable } from '@/lib/http/erreurs';
 import { pageSuivante } from '@/lib/http/pagination';
 
-import { photoDe } from '../photo';
 import type { ParametresLieuxAccessibles, ReponseLieuxAccessibles } from '../schemas';
 
 import { lieuxAccessibles } from './requetes-accessibles';
+import { lieuResumeDe } from './resume';
 
 /** Onglet Lieux (D056). `dateDuJour` vient de la route : le service ne lit jamais l'horloge. */
 export async function accessibles(
@@ -35,17 +35,7 @@ export async function accessibles(
   });
   return {
     lieux: lieux.map((l) => ({
-      cle: l.cle,
-      nom: l.nom,
-      categorie: l.categorie,
-      sousCategorie: l.sous_categorie,
-      distanceM: l.distance_m,
-      dureeMarcheMin: l.duree_marche_min,
-      photo: photoDe(l),
-      qualiteTourisme: l.qualite_tourisme,
-      source: l.source,
-      lat: l.lat,
-      lon: l.lon,
+      ...lieuResumeDe(l),
       gare: { uic: l.gare_uic, nom: l.gare_nom },
       dureeTrainMin: l.duree_train_min,
     })),

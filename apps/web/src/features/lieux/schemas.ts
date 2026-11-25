@@ -106,6 +106,32 @@ export const schemaReponseLieuxAccessibles = z.object({
   pageSuivante: z.number().int().nullable(),
 });
 
+/**
+ * Une rangée de l'onglet Lieux (D121, docs/05-api.md § 3.6 ter). Une seule sorte pour l'instant : les lieux
+ * à pied d'une gare d'arrivée. Une autre sorte s'ajoutera comme une nouvelle variante de l'union (`type`).
+ */
+export const schemaRangeeGare = z.object({
+  type: z.literal('gare'),
+  /** Gare d'arrivée : « Voir tout » ouvre sa fiche destination. */
+  gare: z.object({ uic: z.string(), nom: z.string() }),
+  dureeTrainMin: z.number().int(),
+  /** Lieux à pied de cette gare avec ces filtres, avant la limite `limites.lieuxParRangee`. */
+  total: z.number().int(),
+  lieux: z.array(schemaLieuResume),
+});
+
+export const schemaRangee = z.discriminatedUnion('type', [schemaRangeeGare]);
+
+/** GET /api/lieux/rangees : mêmes paramètres que /api/lieux, `page` compte des rangées. */
+export const schemaReponseRangeesLieux = z.object({
+  rangees: z.array(schemaRangee),
+  /** Lieux distincts, toutes rangées confondues : le nombre du titre. */
+  total: z.number().int(),
+  totalRangees: z.number().int(),
+  /** Page de rangées à demander pour « Voir plus » ; null s'il n'y en a plus. */
+  pageSuivante: z.number().int().nullable(),
+});
+
 /** GET /api/lieux/[cle] (docs/05-api.md § 3.7, D052). */
 export const schemaFicheLieu = z.object({
   cle: z.string(),
@@ -144,6 +170,8 @@ export type Photo = z.infer<typeof schemaPhoto>;
 export type ReponseAutour = z.infer<typeof schemaReponseAutour>;
 export type ParametresLieuxAccessibles = z.infer<typeof schemaParametresLieuxAccessibles>;
 export type ReponseLieuxAccessibles = z.infer<typeof schemaReponseLieuxAccessibles>;
+export type Rangee = z.infer<typeof schemaRangee>;
+export type ReponseRangeesLieux = z.infer<typeof schemaReponseRangeesLieux>;
 
 /**
  * GET /api/carte/lieux (D094) : les lieux autour d'un point (`lat`, `lon`, `rayon` parmi les distances du

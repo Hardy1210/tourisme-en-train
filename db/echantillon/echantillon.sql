@@ -396,7 +396,8 @@ ON CONFLICT (code) DO NOTHING;
 
 -- ECH_L02 : photo sans dates. ECH_L03 : droits finis le 15/07/2026 (été). ECH_L04 : droits commencés le
 -- 17/11/2026 (hiver). ECH_L08 : photo dont l'adresse ne répond jamais dans le parcours de la limite de temps.
--- ECH_L11 (Beaune) : photo d'un lieu de l'écran Lieux depuis Dijon.
+-- ECH_L11 (Beaune) : photo d'un lieu de l'écran Lieux depuis Dijon. ECH_L20 (Besançon, trains l'été
+-- seulement) : rangée avec une photo plus loin en train que Dole et Chalon, sans photo (ordre des rangées, D121).
 INSERT INTO photo_lieu (lieu_id, source, origine, fichier, url_petite, url_grande, auteur, licence, licence_url,
                         page, droits_debut, droits_fin)
 SELECT l.id, p.source, p.origine, p.fichier, p.petite, p.grande, p.auteur, p.licence, p.licence_url, p.page,
@@ -419,6 +420,10 @@ FROM (VALUES
   ('ECH_L11', 'wikimedia_commons', 'wikipedia', 'Exemple hospices.jpg',
    'https://example.org/photos/hospices-500.jpg', 'https://example.org/photos/hospices-960.jpg',
    'Exemple Photographe', 'CC0', NULL, 'https://commons.wikimedia.org/wiki/File:Exemple_hospices.jpg',
+   NULL, NULL),
+  ('ECH_L20', 'wikimedia_commons', 'wikidata', 'Exemple promenade.jpg',
+   'https://example.org/photos/promenade-500.jpg', 'https://example.org/photos/promenade-960.jpg',
+   'Exemple Photographe', 'CC0', NULL, 'https://commons.wikimedia.org/wiki/File:Exemple_promenade.jpg',
    NULL, NULL)
 ) AS p (id_source, source, origine, fichier, petite, grande, auteur, licence, licence_url, page, debut, fin)
 JOIN lieu l ON l.source = 'echantillon' AND l.id_source = p.id_source;

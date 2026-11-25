@@ -251,6 +251,10 @@ export const schemaParametres = z
       lieux: z.number().int().positive(),
       /** Onglet Lieux : nombre de lieux par « Voir plus » (D056). */
       lieuxParPage: z.number().int().positive(),
+      /** Onglet Lieux en rangées (D121) : lieux montrés dans une rangée avant « Voir tout ». */
+      lieuxParRangee: z.number().int().positive(),
+      /** Onglet Lieux en rangées : rangées par « Voir plus ». */
+      rangeesParPage: z.number().int().positive(),
       /** Fiche destination, onglet Lieux : lieux montrés par catégorie avant « Voir les N autres ». */
       lieuxParCategorie: z.number().int().positive(),
       destinations: z.number().int().positive(),
