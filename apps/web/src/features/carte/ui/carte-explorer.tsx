@@ -55,8 +55,6 @@ export type ProprietesCarte = {
   masqueEnBas: () => number;
   /** Même chose en haut, sous l'en-tête posé sur la carte (mobile). */
   masqueEnHaut: () => number;
-  /** Carte plein écran sur mobile. */
-  pleinEcran: { actif: boolean; bascule: () => void };
   /** Augmente à chaque carte touchée dans la liste : la mini-fiche ouverte se referme (D074). */
   carteTouchee: number;
   /** Survol croisé sur grand écran : la destination survolée ici ou dans la liste. */
@@ -80,7 +78,6 @@ export function CarteExplorer({
   lienDe,
   masqueEnBas,
   masqueEnHaut,
-  pleinEcran,
   carteTouchee,
   survolee,
   surSurvol,
@@ -310,7 +307,6 @@ export function CarteExplorer({
           setSelection(null);
           cadrer();
         }}
-        pleinEcran={pleinEcran}
       />
 
       {destinationChoisie && (
