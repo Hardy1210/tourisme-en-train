@@ -1,8 +1,9 @@
 'use client';
 
 // Glissement de la feuille de résultats au doigt, partout sur elle (④, D120).
-// Pendant le geste, la feuille suit le doigt par `transform`, sans état React (rien n'est redessiné) ;
-// au lâcher, une seule mise à jour : la position choisie par `positionAuLacher`. Toutes les décisions
+// La feuille est posée par un seul décalage, `transform` (feuille-resultats.tsx). Pendant le geste, le
+// doigt le fixe, sans état React (rien n'est redessiné) ; au lâcher, une seule mise à jour : la position
+// choisie par `positionAuLacher`, dont la variable CSS reprend le décalage et l'anime jusqu'au cran. Toutes les décisions
 // sont dans `position-feuille.ts` (fonctions pures) ; ici, seulement la lecture des événements.
 import { type RefObject, useEffect } from 'react';
 import {
@@ -33,6 +34,12 @@ function lireCrans(feuille: HTMLElement): Crans {
   return { plein: 0, milieu: haut('milieu'), carte: haut('carte') };
 }
 
+/** Haut visible de la feuille dans son cadre, pendant une animation comprise. */
+function hautVisible(feuille: HTMLElement): number {
+  const cadre = feuille.parentElement?.getBoundingClientRect().top ?? 0;
+  return feuille.getBoundingClientRect().top - cadre;
+}
+
 export function useGlissementFeuille({
   feuille,
   liste,
@@ -61,7 +68,7 @@ export function useGlissementFeuille({
           ? {
               x: doigt.clientX,
               y: doigt.clientY,
-              hautDepart: element.offsetTop,
+              hautDepart: hautVisible(element),
               crans: lireCrans(element),
               preneur: null,
               aGlisse: false,
@@ -86,9 +93,8 @@ export function useGlissementFeuille({
       if (!geste.aGlisse && Math.abs(dy) < SEUIL_DEPLACEMENT_PX) return;
       geste.aGlisse = true;
       geste.points.push({ y: doigt.clientY, t: evenement.timeStamp });
-      const decalage = hautSousLeDoigt(geste.crans, geste.hautDepart, dy) - geste.hautDepart;
       element.style.transition = 'none';
-      element.style.transform = `translateY(${decalage}px)`;
+      element.style.transform = `translateY(${hautSousLeDoigt(geste.crans, geste.hautDepart, dy)}px)`;
     };
 
     const fin = (evenement: TouchEvent) => {
@@ -98,8 +104,8 @@ export function useGlissementFeuille({
       const dernier = termine.points.at(-1)?.y ?? termine.y;
       const haut = hautSousLeDoigt(termine.crans, termine.hautDepart, dernier - termine.y);
       clicAIgnorer = true;
-      // Le décalage revient à zéro pendant que le haut va au cran choisi, à la même vitesse (même
-      // transition) : la feuille part de sous le doigt et arrive au cran, sans saut.
+      // Le décalage du doigt rend la main à celui de la position choisie, dans la même image : une seule
+      // animation, de sous le doigt jusqu'au cran.
       element.style.transition = '';
       element.style.transform = '';
       if (evenement.type === 'touchend')
