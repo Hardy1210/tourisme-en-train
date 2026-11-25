@@ -1,7 +1,7 @@
 # Pitch : textes de la page « L'âme du produit »
 
-> **État : BROUILLON, à valider par Hardy.** Rien de cette page n'est encore affiché dans l'application.
-> **Version** 0.4 · **Date** 19/11/2026
+> **État :** textes de la page validés par Hardy (chiffres le 06–07/11, 3 étapes, « Pour qui », « Ce que ça change » le 25/11) ; one-pager à relire après son design.
+> **Version** 0.5 · **Date** 25/11/2026
 > **Dépend de :** `docs/00-vision.md` § 1 à 3
 > **Utilisé par :** `apps/web/src/features/presentation/` (E13), `docs/06-interface.md` § 5
 > **Document de référence pour :** les textes et les chiffres de la page (source unique, fiche E13).
@@ -53,13 +53,23 @@ L'application répond à deux questions :
 
 Ordre d'importance des transports : 1. le train · 2. les transports en ville à l'arrivée · 3. la marche depuis la gare.
 
-> **À écrire : les 3 étapes.** La page en demande 3, avec leurs captures, et `00` § 1 à 3 n'en décrit pas. L'ordre des transports ci-dessus n'est pas un parcours.
+### Comment ça marche (validé par Hardy le 25/11)
+1. **Ouvrez.** L'application trouve votre gare et vous montre ce qu'il y a à faire autour de vous. *Capture : Explorer, « Votre gare » et « Près de vous ».*
+2. **Choisissez une sortie.** Toutes les destinations en train direct depuis votre gare, la plus proche d'abord, avec leurs lieux à visiter. *Capture : la page Lieux en rangées.*
+3. **Partez.** La fiche donne le train aller et retour, les lieux à pied depuis la gare, le bus, le tram ou le vélo sur place, et le prix estimé. *Capture : la fiche de Beaune.*
 
-## Pour qui
-> **À écrire.** Rien dans `00` § 1 à 3 (le sujet est traité en `00` § 5, hors de ce que ce brouillon reprend).
+Captures du 25/11 (téléphone simulé, 390 px, données locales, départ Dijon-Ville) : `apps/web/public/a-propos/`.
 
-## Ce que ça change
-> **À écrire.** Rien dans `00` § 1 à 3.
+## Pour qui (validé par Hardy le 25/11, texte du one-pager)
+Tous ceux qui veulent sortir sans voiture.
+- **En famille** : une sortie du week-end avec les enfants.
+- **À deux ou entre amis** : une idée de sortie rapide, depuis sa gare.
+- **Habitants de la région** : découvrir les environs sans passer une soirée à s'organiser.
+- **En visite dans la région** : que faire ici, aujourd'hui ?
+- **Préparer un séjour** : repérer une destination et ses trains à l'avance.
+
+## Ce que ça change (validé par Hardy le 25/11)
+Une seule application au lieu de plusieurs sites à croiser : horaires, gares, lieux à visiter, bus à l'arrivée. Des sorties à un seul train de chez soi, qu'on ne connaissait pas, deviennent visibles. Et chaque destination montre le CO₂ économisé face à la voiture : pour 100 km, environ 2,8 kg en TER, contre 14 kg en voiture seul (chiffres calculés depuis les facteurs de `parametres.json`, jamais écrits en dur dans la page).
 
 ## Conclusion
 > Trouver une sortie en 30 secondes, et y aller en train.
@@ -106,3 +116,4 @@ Inchangés et vérifiés : 196 gares, 11 180 lieux affichés, 3 322 photos, 122 
 | 06/11/2026 | 0.2 | 14 kg confirmé (Hardy), voiture précisée, règle d'honnêteté chiffrée — D075 |
 | 07/11/2026 | 0.3 | 97 Mt et 69 % affichés ; pièges des 11 % et de l'avion notés — D078 |
 | 19/11/2026 | 0.4 | One-pager : texte pour Claude Design, chiffres mesurés et corrigés (268 025 → 4 367 et 350 gares ; 16 réseaux de transport sur place ; 30 secondes et 1 à 2 h non mesurés) |
+| 25/11/2026 | 0.5 | 3 étapes avec captures, « Pour qui », « Ce que ça change » : validés par Hardy, affichés sur la page |
