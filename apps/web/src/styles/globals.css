@@ -309,6 +309,9 @@
   --sur-photo-voile: rgb(22 17 30 / 0.9);
   --carte-rangee-largeur: 15.625rem;
   --carte-rangee-hauteur: 13.125rem;
+  /* Temps de train d'une rangée : pastille jaune de la marque (maquette Lieux-Rangees) */
+  --pastille-train-bg: var(--accent);
+  --pastille-train-texte: var(--accent-foreground);
   --pilule-carte-hauteur: 3.75rem; /* 60 px : nom du lieu choisi sur une carte */
   --pilule-carte-rond: 2.5rem; /* 40 px : rond de la flèche dans la pilule */
 
@@ -488,6 +491,8 @@
   --color-sur-photo-bouton: var(--sur-photo-bouton);
   --color-sur-photo-texte-muted: var(--sur-photo-texte-muted);
   --color-sur-photo-voile: var(--sur-photo-voile);
+  --color-pastille-train-bg: var(--pastille-train-bg);
+  --color-pastille-train-texte: var(--pastille-train-texte);
   --color-sortie-bg: var(--sortie-bg);
   --color-sortie-hover: var(--sortie-hover);
   --color-sortie-foreground: var(--sortie-foreground);

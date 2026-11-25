@@ -21,6 +21,7 @@
 ### Modifié
 - La feuille d'Explorer montre les 10 destinations les plus proches, puis « Voir plus » en ajoute 10 : elle glisse sans à-coup sur l'iPhone, et le nombre total reste affiché.
 - Sur le téléphone, la feuille des résultats se glisse avec le doigt n'importe où sur elle et suit le doigt ; lâchée, elle va à la position la plus proche, ou plus loin si on la lance vite.
+- La page Lieux montre une rangée par gare où l'on va en train direct, la plus proche d'abord : ses premiers lieux défilent de côté, en grandes photos, et « Voir tout » ouvre la fiche de la destination.
 - Sur les cartes, les lieux sont des épingles en forme de goutte dont la pointe tombe sur le lieu ; le lieu touché a une épingle plus grande, pleine.
 - Sur la carte, les gares deviennent des icônes de train quand on zoome (de loin, les points colorés restent) ; la destination choisie a un bord jaune ; les bulles du nombre de lieux sont décalées pour ne plus être cachées.
 - Avec une destination choisie, la barre en haut d'Explorer passe sur deux lignes : « Départ  Dijon », puis « Arrivée  Beaune ».

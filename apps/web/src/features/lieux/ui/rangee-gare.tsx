@@ -32,7 +32,7 @@ export function RangeeGare({
           </h2>
           <span className="tabular flex items-center gap-1.5 text-sm text-hero-muted">
             <TrainFront aria-hidden="true" className="size-4 flex-none" />
-            <span className="rounded-pill bg-accent px-2 text-xs leading-5 font-bold text-accent-foreground">
+            <span className="rounded-pill bg-pastille-train-bg px-2 text-xs leading-5 font-bold text-pastille-train-texte">
               {formaterDuree(dureeTrainMin)}
             </span>
             · {total} {total > 1 ? 'lieux' : 'lieu'}
