@@ -15,6 +15,7 @@
 - Un écran de lancement à chaque ouverture : le logo et « Allez-y en train. Bourgogne-Franche-Comté » sur le fond violet, qui s'efface en fondu pendant que l'application démarre. Sur Android, l'écran de démarrage du téléphone a la même couleur : plus de flash blanc.
 
 ### Corrigé
+- Sur la page Lieux, la grande icône d'une carte sans photo a des traits d'une seule teinte, sans parties plus claires là où ils se croisent.
 - Une fiche destination restée ouverte après minuit passe d'elle-même de « Demain » à « Aujourd'hui ».
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 

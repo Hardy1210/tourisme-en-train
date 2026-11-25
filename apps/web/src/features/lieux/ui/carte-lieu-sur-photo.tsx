@@ -26,7 +26,7 @@ export function CarteLieuSurPhoto({ lieu, trajet }: { lieu: LieuResume; trajet: 
           categorie={lieu.categorie}
           format="carte"
           className="absolute inset-0 items-start justify-end bg-carte-sur-marque-bg pt-2.5"
-          classeIcone="-mr-3.5 size-36 text-hero-tile"
+          classeIcone="-mr-3.5 size-36 text-carte-sur-marque-icone"
         />
         {lieu.photo && (
           <span
