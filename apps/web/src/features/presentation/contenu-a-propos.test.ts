@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ceQueCaChange,
   chiffresAffiches,
   comparaisonVoitureTer,
   seulementConfirmes,
@@ -37,5 +38,18 @@ describe('chiffres de la page', () => {
     const valeurs = chiffresAffiches().map((c) => c.valeur);
     expect(valeurs).toEqual(['97 Mt CO₂e', '69 %', '14 kg contre 2,8 kg']);
     expect(valeurs.join(' ')).not.toContain('11 %');
+  });
+});
+
+describe('« Ce que ça change »', () => {
+  it('la phrase du CO₂ vient des facteurs : 2,8 kg en TER contre 14 kg en voiture', () => {
+    const phrases = ceQueCaChange({ VOITURE: 142, TER: 27.7 });
+    expect(phrases).toHaveLength(3);
+    expect(phrases[2]).toContain('environ 2,8 kg en TER, contre 14 kg en voiture seul');
+  });
+  it('limite : sans facteur TER, pas de phrase chiffrée', () => {
+    const phrases = ceQueCaChange({ VOITURE: 142, TER: null });
+    expect(phrases).toHaveLength(2);
+    expect(phrases.join(' ')).not.toMatch(/kg/);
   });
 });

@@ -30,6 +30,22 @@ test('chaque chiffre affiché a sa source', async ({ page }) => {
   ).toHaveAttribute('href', /ademe\.fr\/presse\/communique-national/);
 });
 
+test('les 3 étapes avec leur capture, « Pour qui » et « Ce que ça change »', async ({ page }) => {
+  await page.goto('/a-propos');
+  for (const titre of ['Comment ça marche', 'Pour qui', 'Ce que ça change'])
+    await expect(page.getByRole('heading', { level: 2, name: titre })).toBeVisible();
+  await expect(page.getByText('Tous ceux qui veulent sortir sans voiture.')).toBeVisible();
+  // Chaque capture est chargée pour de vrai : une image absente garderait une largeur nulle.
+  const captures = page.getByRole('img', { name: /^(Explorer|La page Lieux|La fiche de Beaune)/ });
+  await expect(captures).toHaveCount(3);
+  for (const capture of await captures.all()) {
+    await capture.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => capture.evaluate((image: HTMLImageElement) => image.naturalWidth))
+      .toBeGreaterThan(0);
+  }
+});
+
 test('« Ouvrir l’application » mène à Explorer', async ({ page }) => {
   await page.goto('/a-propos');
   await page.getByRole('link', { name: "Ouvrir l'application" }).click();

@@ -52,6 +52,24 @@ export function comparaisonVoitureTer(
 export const seulementConfirmes = (liste: readonly ChiffreSource[]): ChiffreSource[] =>
   liste.filter((chiffre) => chiffre.confirme);
 
+/**
+ * « Ce que ça change » : la dernière phrase reprend les facteurs de l'application (jamais écrits en dur),
+ * et disparaît sans facteur TER, comme la carte des chiffres.
+ */
+export function ceQueCaChange(
+  facteurs: { VOITURE: number; TER: number | null } = parametres.impact.facteursCo2GParKm,
+): string[] {
+  const base = [
+    "Une seule application au lieu de plusieurs sites à croiser : horaires, gares, lieux à visiter, bus à l'arrivée.",
+    "Des sorties à un seul train de chez soi, qu'on ne connaissait pas, deviennent visibles.",
+  ];
+  if (facteurs.TER === null) return base;
+  return [
+    ...base,
+    `Et chaque destination montre le CO₂ économisé face à la voiture : pour 100 km, environ ${formaterKg(facteurs.TER / 10)} kg en TER, contre ${Math.round(facteurs.VOITURE / 10)} kg en voiture seul.`,
+  ];
+}
+
 export function chiffresAffiches(): ChiffreSource[] {
   const comparaison = comparaisonVoitureTer();
   return seulementConfirmes(comparaison ? [...CHIFFRES_DU_BILAN, comparaison] : CHIFFRES_DU_BILAN);
@@ -84,4 +102,52 @@ export const TEXTES_A_PROPOS = {
   },
   source: 'Source :',
   ouvrir: "Ouvrir l'application",
+  // Les 3 étapes, « Pour qui » et « Ce que ça change » : textes validés par Hardy le 25/11 (pitch.md).
+  etapes: {
+    titre: 'Comment ça marche',
+    liste: [
+      {
+        titre: 'Ouvrez',
+        texte:
+          "L'application trouve votre gare et vous montre ce qu'il y a à faire autour de vous.",
+        capture: {
+          src: '/a-propos/etape-1-ouvrez.webp',
+          alt: 'Explorer : votre gare et les lieux près de vous, sur la carte et dans la liste',
+        },
+      },
+      {
+        titre: 'Choisissez une sortie',
+        texte:
+          "Toutes les destinations en train direct depuis votre gare, la plus proche d'abord, avec leurs lieux à visiter.",
+        capture: {
+          src: '/a-propos/etape-2-choisissez.webp',
+          alt: 'La page Lieux : une rangée de lieux à visiter par gare, avec le temps de train',
+        },
+      },
+      {
+        titre: 'Partez',
+        texte:
+          'La fiche donne le train aller et retour, les lieux à pied depuis la gare, le bus, le tram ou le vélo sur place, et le prix estimé.',
+        capture: {
+          src: '/a-propos/etape-3-partez.webp',
+          alt: 'La fiche de Beaune : trains directs, lieux à pied et transports sur place',
+        },
+      },
+    ],
+  },
+  pourQui: {
+    titre: 'Pour qui',
+    introduction: 'Tous ceux qui veulent sortir sans voiture.',
+    profils: [
+      { titre: 'En famille', texte: 'une sortie du week-end avec les enfants.' },
+      { titre: 'À deux ou entre amis', texte: 'une idée de sortie rapide, depuis sa gare.' },
+      {
+        titre: 'Habitants de la région',
+        texte: "découvrir les environs sans passer une soirée à s'organiser.",
+      },
+      { titre: 'En visite dans la région', texte: 'que faire ici, aujourd’hui ?' },
+      { titre: 'Préparer un séjour', texte: "repérer une destination et ses trains à l'avance." },
+    ],
+  },
+  change: { titre: 'Ce que ça change' },
 } as const;
