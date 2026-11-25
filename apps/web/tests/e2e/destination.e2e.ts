@@ -115,6 +115,35 @@ test('prix non calibré : aucun prix, le bouton de billetterie reste', async ({ 
   await expect(page.getByText(/estimation|≈ \d+( à \d+)? €/)).toHaveCount(0);
 });
 
+// Fiche restée ouverte après minuit (D108) : « Demain » devient « Aujourd'hui » au retour au premier plan.
+// 17/11, 23:59:50 à Paris (UTC+1) ; le 18/11 est un jour de l'échantillon.
+const AVANT_MINUIT = '2026-11-17T22:59:50Z';
+const APRES_MINUIT = '2026-11-17T23:00:10Z';
+const boutonDate = (page: Page) =>
+  page.getByRole('button', { name: /^(Demain|Aujourd’hui|Aujourd'hui)/ });
+const revenirAuPremierPlan = (page: Page) =>
+  page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+
+test('fiche ouverte pour demain : après minuit, elle dit « Aujourd’hui »', async ({ page }) => {
+  await page.clock.setFixedTime(AVANT_MINUIT);
+  await page.goto(lien(BEAUNE));
+  await expect(boutonDate(page)).toHaveText(/^Demain/);
+
+  await page.clock.setFixedTime(APRES_MINUIT);
+  await revenirAuPremierPlan(page);
+  await expect(boutonDate(page)).toHaveText(/^Aujourd/);
+});
+
+test('limite : avant minuit, la même fiche dit toujours « Demain »', async ({ page }) => {
+  await page.clock.setFixedTime(AVANT_MINUIT);
+  await page.goto(lien(BEAUNE));
+  await expect(boutonDate(page)).toHaveText(/^Demain/);
+
+  await revenirAuPremierPlan(page);
+  await page.waitForTimeout(300);
+  await expect(boutonDate(page)).toHaveText(/^Demain/);
+});
+
 test('une destination inconnue et une date hors horaires ont leur message', async ({ page }) => {
   await page.goto(`/destinations/INCONNUE?depuis=${DIJON_VILLE}`);
   await expect(page.getByText("Cette destination n'existe pas ou plus")).toBeVisible();
