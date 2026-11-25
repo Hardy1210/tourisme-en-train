@@ -95,3 +95,15 @@ test('tout en haut, liste à son début : vers le bas redescend la feuille, vers
   await glisser(page, 250);
   await expect(positionFeuille(page)).not.toHaveAttribute('data-feuille', 'plein');
 });
+
+test('atteint au clavier sous le bas de l’écran, un élément fait monter la feuille ; visible, non', async ({
+  page,
+}) => {
+  await ouvrir(page);
+  await poignee(page).focus();
+  await page.waitForTimeout(400);
+  await expect(positionFeuille(page)).toHaveAttribute('data-feuille', 'milieu');
+
+  await page.getByRole('link', { name: 'Voir la sortie' }).last().focus();
+  await expect(positionFeuille(page)).toHaveAttribute('data-feuille', 'plein');
+});

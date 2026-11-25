@@ -395,7 +395,10 @@ test.describe('position acceptée', () => {
     await page.goto(`${ECRAN}&recherche=xyz`);
     await expect(page.getByText('Aucune destination « xyz » avec ces filtres')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Effacer les filtres' })).toBeVisible();
-    await page.getByRole('button', { name: 'Effacer la recherche' }).last().click();
+    // Sur téléphone, sous le bas de l'écran, feuille à moitié : atteint au clavier, il fait monter la feuille.
+    const effacer = page.getByRole('button', { name: 'Effacer la recherche' }).last();
+    await effacer.focus();
+    await effacer.click();
     await expect(sorties(page).first()).toBeVisible();
   });
 

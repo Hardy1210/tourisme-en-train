@@ -50,6 +50,14 @@ export function FeuilleResultats({ ref, position, surPosition, children }: Propr
         // Sur mobile, toujours la hauteur de l'écran, posée par un seul décalage (`transform`) : le contenu
         // est là pendant le geste, et seul ce décalage s'anime, sans remettre la liste en page (D120).
         className="pointer-events-auto absolute inset-x-0 top-0 z-sheet flex flex-col rounded-t-feuille bg-background shadow-sheet transition-transform duration-300 ease-soft max-lg:h-full max-lg:[transform:translateY(var(--resultats-haut))] max-lg:will-change-transform lg:static lg:z-auto lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:rounded-none lg:shadow-none lg:transition-none"
+        onFocus={(evenement) => {
+          // Atteint au clavier sous le bas de l'écran (sa partie cachée) : la feuille monte pour le montrer.
+          const feuille = evenement.currentTarget;
+          const bas = feuille.parentElement?.getBoundingClientRect().bottom ?? Infinity;
+          const mobile = getComputedStyle(feuille).position === 'absolute';
+          if (mobile && position !== 'plein' && evenement.target.getBoundingClientRect().top >= bas)
+            surPosition('plein');
+        }}
       >
         {/* Attribution exigée par la licence (config/sources.json), posée sur la feuille : elle la suit. */}
         <p className="absolute inset-x-0 top-0 -translate-y-full bg-surface/80 px-2 py-0.5 text-2xs text-muted-foreground lg:hidden">
