@@ -15,11 +15,13 @@
 - Un écran de lancement à chaque ouverture : le logo et « Allez-y en train. Bourgogne-Franche-Comté » sur le fond violet, qui s'efface en fondu pendant que l'application démarre. Sur Android, l'écran de démarrage du téléphone a la même couleur : plus de flash blanc.
 
 ### Corrigé
+- Sur la page Lieux, la grande icône d'une carte sans photo a des traits d'une seule teinte, sans parties plus claires là où ils se croisent.
 - Dans la page « Trajet », sans gare de départ utilisable (hors de la région, par exemple), la destination ne dit plus « Les destinations arrivent… » sans fin, mais « Choisissez d’abord une gare de départ. »
 - Une fiche destination restée ouverte après minuit passe d'elle-même de « Demain » à « Aujourd'hui ».
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Sur la page Lieux, les cartes des lieux n'ont plus de ⓘ : le crédit de la photo est sur la page du lieu, comme dans « Près de vous ».
 - La feuille d'Explorer montre les 10 destinations les plus proches, puis « Voir plus » en ajoute 10 : elle glisse sans à-coup sur l'iPhone, et le nombre total reste affiché.
 - Sur le téléphone, la feuille des résultats se glisse avec le doigt n'importe où sur elle et suit le doigt ; lâchée, elle va à la position la plus proche, ou plus loin si on la lance vite.
 - La page Lieux montre une rangée par gare où l'on va en train direct, celles qui ont des photos d'abord, puis la plus proche : ses premiers lieux défilent de côté, en grandes photos, et « Voir tout » ouvre la fiche de la destination.

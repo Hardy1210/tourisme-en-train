@@ -8,12 +8,12 @@ import { lienLieu, type ContexteTrajet } from '../liens';
 import { libelleCategorieDetaillee } from '../presentation';
 import type { LieuResume } from '../schemas';
 import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
-import { BoutonCreditPhoto, PhotoLieu } from './photo-lieu';
+import { PhotoLieu } from './photo-lieu';
 
 /**
  * Un lieu dans une rangée de l'onglet Lieux (maquette Lieux-Rangees, D121) : la photo occupe la carte, le
  * nom et la marche sont posés en bas sur un voile sombre ; sans photo, le fond de marque et une grande
- * icône de catégorie. Le ⓘ du crédit est un frère du lien (un bouton ne va pas dans un lien).
+ * icône de catégorie. Pas de ⓘ : le crédit de la photo est sur la page du lieu (D103, Hardy, 25/11).
  */
 export function CarteLieuSurPhoto({ lieu, trajet }: { lieu: LieuResume; trajet: ContexteTrajet }) {
   const { libelle, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
@@ -26,7 +26,7 @@ export function CarteLieuSurPhoto({ lieu, trajet }: { lieu: LieuResume; trajet: 
           categorie={lieu.categorie}
           format="carte"
           className="absolute inset-0 items-start justify-end bg-carte-sur-marque-bg pt-2.5"
-          classeIcone="-mr-3.5 size-36 text-hero-tile"
+          classeIcone="-mr-3.5 size-36 text-carte-sur-marque-icone"
         />
         {lieu.photo && (
           <span
@@ -53,9 +53,6 @@ export function CarteLieuSurPhoto({ lieu, trajet }: { lieu: LieuResume; trajet: 
           </span>
         </span>
       </Link>
-      {lieu.photo && (
-        <BoutonCreditPhoto photo={lieu.photo} surPhoto className="absolute top-1 right-1" />
-      )}
     </li>
   );
 }

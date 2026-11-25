@@ -19,6 +19,11 @@ test.beforeEach(async ({ context, baseURL }) => {
 const cartes = (page: Page) => page.getByRole('main').getByRole('listitem');
 /** La rangée d'une gare, par son titre (D121). */
 const rangee = (page: Page, gare: string) => page.getByRole('region', { name: gare, exact: true });
+/** Opacité d'une couleur calculée (« oklch(… / 0.13) », « rgba(…, 0.13) ») ; sans elle, 1. */
+const opacite = (couleur: string) => {
+  const trouve = couleur.match(/\/\s*([\d.]+)\s*\)$/) ?? couleur.match(/^rgba\(.*,\s*([\d.]+)\)$/);
+  return trouve ? Number(trouve[1]) : 1;
+};
 
 test.describe('position acceptée', () => {
   test.use({ geolocation: DIJON_VILLE, permissions: ['geolocation'] });
@@ -35,6 +40,25 @@ test.describe('position acceptée', () => {
     await expect(premiere).toContainText(/≈ \d+ min à pied/);
     await premiere.getByRole('link').click();
     await expect(page).toHaveURL(/\/lieux\/[^?]+\?depuis=EX000001&date=2026-11-18/);
+  });
+
+  // Une couleur à moitié transparente s'ajoute à elle-même là où les traits de l'icône se croisent :
+  // les traits paraissent chacun avec leur propre transparence (vu par Hardy, 25/11).
+  test('carte sans photo : la grande icône est d’une couleur opaque, plus discrète que le texte', async ({
+    page,
+  }) => {
+    await page.goto(ECRAN);
+    const sansPhoto = rangee(page, 'Beaune')
+      .getByRole('listitem')
+      .filter({ hasNot: page.locator('img') })
+      .first();
+    await expect(sansPhoto).toBeVisible();
+    const { icone, texte } = await sansPhoto.evaluate((carte) => ({
+      icone: getComputedStyle(carte.querySelector('a > div > svg')!).color,
+      texte: getComputedStyle(carte.querySelector('a')!).color,
+    }));
+    expect(opacite(icone)).toBe(1);
+    expect(icone).not.toBe(texte);
   });
 
   test('« Voir tout » ouvre la fiche destination de la gare, avec le départ et la date', async ({
