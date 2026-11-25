@@ -92,21 +92,19 @@ test.describe('écran Lieux, depuis Dijon-Ville', () => {
   });
   test.beforeEach(({ context, baseURL }) => servirPhotos(context, baseURL));
 
-  test('ⓘ sur la carte d’un lieu : le crédit dans une bulle, sans ouvrir le lieu', async ({
-    page,
-  }) => {
+  // Hardy, 25/11 : comme dans « Près de vous », pas de ⓘ sur les cartes des rangées ; le crédit complet est
+  // sur la page du lieu, ouverte par la carte.
+  test('la photo sur la carte, sans ⓘ ; le crédit est sur la page du lieu', async ({ page }) => {
     await page.goto('/lieux?date=2026-11-18');
     const carte = page
       .getByRole('main')
       .getByRole('listitem')
       .filter({ hasText: 'Exemple - Hospices' });
     await expect(carte.getByRole('img', { name: 'Exemple - Hospices' })).toBeVisible();
-    const adresse = page.url();
-    await carte.getByRole('button', { name: 'Crédit de la photo' }).click();
-    await expect(
-      page.getByText('Photo : Exemple Photographe · CC0 · Wikimedia Commons'),
-    ).toBeVisible();
-    expect(page.url()).toBe(adresse);
+    await expect(carte.getByRole('button', { name: 'Crédit de la photo' })).toHaveCount(0);
+    await carte.getByRole('link').click();
+    await page.getByRole('button', { name: 'Crédit de la photo' }).click();
+    await expect(page.getByText('Exemple Photographe')).toBeVisible();
   });
 
   test('limite : une carte sans photo n’a pas de bouton de crédit', async ({ page }) => {
@@ -121,7 +119,7 @@ test.describe('écran Lieux, depuis Dijon-Ville', () => {
 });
 
 // Décision de Hardy (18/11) : pas de ⓘ sur les petites cartes de « Près de vous » / « Près de la gare de… »,
-// même pour DATAtourisme ; le crédit reste sur la page du lieu. Il reste sur l'écran Lieux (test plus haut).
+// même pour DATAtourisme ; le crédit reste sur la page du lieu. De même sur l'écran Lieux depuis le 25/11.
 test.describe('« Près de vous », à Dijon-Ville', () => {
   test.use({
     geolocation: { latitude: 47.3233, longitude: 5.0272 },
