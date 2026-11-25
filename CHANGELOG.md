@@ -15,6 +15,7 @@
 - Un écran de lancement à chaque ouverture : le logo et « Allez-y en train. Bourgogne-Franche-Comté » sur le fond violet, qui s'efface en fondu pendant que l'application démarre. Sur Android, l'écran de démarrage du téléphone a la même couleur : plus de flash blanc.
 
 ### Corrigé
+- Dans la page « Trajet », sans gare de départ utilisable (hors de la région, par exemple), la destination ne dit plus « Les destinations arrivent… » sans fin, mais « Choisissez d’abord une gare de départ. »
 - Une fiche destination restée ouverte après minuit passe d'elle-même de « Demain » à « Aujourd'hui ».
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
