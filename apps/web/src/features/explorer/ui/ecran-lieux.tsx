@@ -4,7 +4,7 @@ import { dateDuJour } from '@tourisme/commun';
 import { useState } from 'react';
 import { EnTete } from '@/components/ui/en-tete';
 import { useGrandEcran } from '@/features/carte/hooks';
-import { ListeLieuxAccessibles } from '@/features/lieux/ui/liste-lieux-accessibles';
+import { RangeesLieux } from '@/features/lieux/ui/rangees-lieux';
 import { FILTRES_PAR_DEFAUT, nombreFiltresLieux } from '../filtres';
 import { dateChoisie, libelleDate } from '../date';
 import { useChoixDepart, useFiltres } from '../hooks';
@@ -54,7 +54,7 @@ export function EcranLieux() {
       </EnTete>
 
       {depart.etat === 'pret' ? (
-        <ListeLieuxAccessibles
+        <RangeesLieux
           gare={depart.gare}
           date={filtres.date}
           categories={filtres.categories}
