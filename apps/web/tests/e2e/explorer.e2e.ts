@@ -414,6 +414,33 @@ test.describe('position acceptée', () => {
         .getByRole('button', { name: /^Départ :/ })
         .click();
 
+    // Point 1 (vu par Hardy le 16/11) : sans départ utilisable (hors région, sans position, erreur), aucune
+    // destination n'arrivera ; la page le dit, au lieu d'annoncer des destinations qui ne viendront jamais.
+    test('départ hors région : la page demande une gare de départ, au lieu d’attendre sans fin', async ({
+      page,
+    }) => {
+      await page.route('**/api/geocodage?*', (requete) =>
+        requete.fulfill({
+          json: {
+            resultats: [
+              { libelle: 'Paris', commune: 'Paris', lat: 48.8443, lon: 2.3735, type: 'commune' },
+            ],
+            horsLigne: false,
+          },
+        }),
+      );
+      await page.goto(ECRAN);
+      await departDansLaBarre(page);
+      await pageTrajet(page).getByRole('searchbox', { name: 'Départ' }).fill('Paris');
+      await pageTrajet(page)
+        .getByRole('button', { name: /^Paris/ })
+        .click();
+      await expect(
+        pageTrajet(page).getByText('Choisissez d’abord une gare de départ.'),
+      ).toBeVisible();
+      await expect(pageTrajet(page).getByText('Les destinations arrivent…')).toHaveCount(0);
+    });
+
     test('nouveau départ avec un train direct vers la destination : la page se ferme, la destination reste', async ({
       page,
       isMobile,
