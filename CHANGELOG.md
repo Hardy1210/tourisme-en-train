@@ -16,6 +16,7 @@
 
 ### Corrigé
 - Sur la page Lieux, la grande icône d'une carte sans photo a des traits d'une seule teinte, sans parties plus claires là où ils se croisent.
+- Dans la page « Trajet », sans gare de départ utilisable (hors de la région, par exemple), la destination ne dit plus « Les destinations arrivent… » sans fin, mais « Choisissez d’abord une gare de départ. »
 - Une fiche destination restée ouverte après minuit passe d'elle-même de « Demain » à « Aujourd'hui ».
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 

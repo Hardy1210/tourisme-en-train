@@ -26,6 +26,8 @@ export const TEXTES_TRAJET = {
     'Vérifiez l’orthographe, ou effacez les filtres pour chercher dans toutes les destinations.',
   effacerFiltres: 'Effacer les filtres',
   chargement: 'Les destinations arrivent…',
+  /** Page « Trajet » sans départ utilisable : aucune destination n'arrivera avant ce choix. */
+  choisirDepart: 'Choisissez d’abord une gare de départ.',
   // Page « Trajet » du téléphone (D085).
   titrePage: 'Trajet',
   /** Page du départ seul, sur l'écran Lieux. */

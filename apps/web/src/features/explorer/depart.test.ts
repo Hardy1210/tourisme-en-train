@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GareProche } from '@/features/gares/schemas';
 import {
+  attenteDestination,
   calculerDepart,
   nomDepartCourt,
   plusProcheDifferente,
@@ -203,5 +204,15 @@ describe('nomDepartCourt (barre sur deux lignes, « Départ  Dijon »)', () => {
   });
   it('gare choisie : le nom de la gare, jamais la commune de la position', () => {
     expect(nomDepartCourt(pret('choix'), 'Dijon')).toBe('Dijon-Ville');
+  });
+});
+
+describe('attenteDestination (page « Trajet », départ pas prêt)', () => {
+  it('le départ se cherche : les destinations arrivent', () => {
+    expect(attenteDestination('chargement')).toBe('chargement');
+  });
+  it('limite : sans position, hors région ou en erreur, rien n’arrivera : choisir un départ', () => {
+    for (const etat of ['sans_position', 'hors_region', 'erreur'] as const)
+      expect(attenteDestination(etat)).toBe('choisirDepart');
   });
 });

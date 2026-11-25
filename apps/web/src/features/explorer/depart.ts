@@ -136,6 +136,17 @@ export function calculerDepart({
 }
 
 /**
+ * Ce que dit la zone de la destination (page « Trajet ») tant que le départ n'est pas prêt : on attend les
+ * destinations seulement pendant que le départ se cherche. Sans position, hors région ou en erreur, aucune
+ * destination n'arrivera : il faut d'abord choisir une gare de départ (vu par Hardy le 16/11).
+ */
+export function attenteDestination(
+  etat: Exclude<Depart['etat'], 'pret'>,
+): 'chargement' | 'choisirDepart' {
+  return etat === 'chargement' ? 'chargement' : 'choisirDepart';
+}
+
+/**
  * La gare la plus proche, quand la gare proposée en est une autre (D064) : l'écran doit le dire et
  * permettre d'y revenir d'un geste. Jamais hors région, où rien ne serait affiché.
  */

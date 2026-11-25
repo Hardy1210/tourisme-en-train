@@ -9,6 +9,7 @@ import { dateDuJour } from '@tourisme/commun';
 import { ATTRIBUT_DEFILEMENT, PagePleinEcran } from '@/components/ui/page-plein-ecran';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
+import { attenteDestination } from '../depart';
 import { ligneDate } from '../date';
 import { FILTRES_PAR_DEFAUT, type Filtres } from '../filtres';
 import type { useChoixDepart } from '../hooks';
@@ -115,7 +116,9 @@ export function PageTrajet({ trajet, choix, filtres, surModification, surResulta
             }}
           />
         ) : (
-          <p className="text-sm text-muted-foreground">{TEXTES_TRAJET.chargement}</p>
+          <p className="text-sm text-muted-foreground">
+            {TEXTES_TRAJET[attenteDestination(depart.etat)]}
+          </p>
         )}
       </div>
     </PagePleinEcran>
