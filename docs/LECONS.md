@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.25 · **Date** 24/11/2026
+> **Version** 1.26 · **Date** 25/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -587,6 +587,27 @@
 - **À retenir :** demander le critère d'usage, puis le mesurer avant d'écrire la valeur ; une valeur proposée « au jugé » dans une étude doit être marquée comme telle.
 - **Origine :** #182, D118, 24/11.
 
+### L88 — Une feuille qui suit le doigt : pleine hauteur, un seul décalage animé
+- **Problème :** la feuille d'Explorer suivait le doigt, mais le contenu manquait pendant la montée et elle sursautait au lâcher (essai de Hardy sur l'iPhone, 25/11).
+- **Cause :** la feuille gardait la hauteur de sa position (`top`) et le doigt ajoutait un décalage : seule la demi-feuille était dessinée, et au lâcher deux animations se superposaient, dont une (`top`) remettait la liste en page à chaque image. L'étude d'impact disait aussi « pas de bibliothèque » sans avoir vu que `vaul` était déjà dans le projet, et qu'il montre la bonne technique.
+- **Solution :** la feuille a toujours la hauteur de l'écran, et sa position n'est qu'un `transform` ; la durée et la courbe de `vaul` pour l'animation. Le sursaut au lâcher n'est pas encore résolu (#185).
+- **À retenir :** pour un élément qui suit le doigt, n'animer que `transform` (ou `opacity`) sur un élément déjà à sa taille finale ; avant d'écarter une bibliothèque, chercher celles du projet qui font déjà la même chose, et lire leur technique.
+- **Origine :** #185, D120, 25/11.
+
+### L89 — Un défaut d'animation vu seulement sur l'iPhone se cherche en retirant, sur l'iPhone
+- **Problème :** le départ de chaque animation de la feuille d'Explorer est brutal sur l'iPhone ; cinq corrections essayées l'une après l'autre (ordre de React, `touch-action`, durée, méthode de `vaul`, courbes) n'ont rien changé.
+- **Cause :** chaque correction partait d'une hypothèse ; les mesures image par image de Chromium (sans carte graphique, animations faites ailleurs que là où on les lit) ne montrent pas ce que Safari affiche à l'écran.
+- **Solution :** une version de diagnostic où l'on retire un suspect à la fois (la carte, la longue liste), choisie par l'adresse, comparée sur l'iPhone dans des onglets séparés.
+- **À retenir :** après deux corrections sans effet, arrêter de corriger et isoler : retirer les gros suspects un par un sur l'appareil où le défaut se voit, puis mesurer le coupable avant d'écrire la vraie correction.
+- **Origine :** #185, D120, 25/11.
+
+### L90 — Une classe de couleur sans jeton ne fait rien, sans aucune erreur
+- **Problème :** la pastille jaune du temps de train des rangées de l'onglet Lieux n'avait pas de fond, alors que le code lui donnait `bg-accent`.
+- **Cause :** avec Tailwind 4, une classe de couleur n'existe que si son jeton est déclaré dans `@theme` ; le projet n'y déclare que des jetons de rôle (`--color-pastille-train-bg`…), pas `accent`. Une classe inconnue est ignorée en silence : ni les types, ni le lint, ni les tests ne la voient.
+- **Solution :** un jeton de rôle `--pastille-train-bg` (valeur `var(--accent)`) et sa classe `bg-pastille-train-bg`, vus sur une capture.
+- **À retenir :** après chaque nouvelle classe de couleur, regarder l'écran (ou le CSS construit) ; une classe qui ne correspond à aucun jeton ne casse rien, elle ne fait simplement rien.
+- **Origine :** #189, D121, 25/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -666,3 +687,4 @@ Valeurs en g CO₂e/km.
 | 24/11/2026 | 1.23 | L83 (une fenêtre modale pendant une demande d'autorisation), L84 (un test « d'abord » doit échouer pour la bonne raison) |
 | 24/11/2026 | 1.24 | L85 (deux écritures de l'adresse dans le même geste), L86 (une remise en ordre se prouve par des tests avant et après) |
 | 24/11/2026 | 1.25 | L87 (un seuil d'interface se déduit d'un critère mesuré) |
+| 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |

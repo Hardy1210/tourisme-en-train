@@ -57,3 +57,4 @@ Voir `_MODELE.md`.
 - 18/11/2026 : **modifié après coup** : fiche sur le fond de la marque, cartes de lieux en arc, « Voir les N autres », pilule de la mini-carte, contraste AA mesuré (#154) — D106 ; « ≈ » devant les minutes, distance seule des gares « à vol d'oiseau » (#155) — D102.
 - 19/11/2026 : **modifié après coup** : fiche lieu, description complète de DATAtourisme en texte brut avec paragraphes, « Source : » dessous (#158) — D105.
 - 20/11/2026 : **modifié après coup** : fiche lieu, horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, ven. 20 nov. » en haut (une plage par ligne), date tenue à jour sur une fiche ouverte (#160) — D108.
+- 25/11/2026 : fiche destination, date du jour tenue à jour : une fiche ouverte pour « Demain » dit « Aujourd'hui » après minuit (`useDateDuJour()`, #187 ouverte) — D108.

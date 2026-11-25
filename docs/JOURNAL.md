@@ -24,6 +24,60 @@
 
 ---
 
+## 25/11/2026 (fin d'après-midi) — Étapes E11/E12 — Feuille en attente, date de la fiche destination, onglet Lieux en rangées
+**Fait :**
+- ④ (#185) **mis en attente par Hardy** : comportement actuel du glissement gardé ; reprise à la maison, le réseau de l'école bloquant les tunnels (sur l'ordinateur, mode téléphone, la liste courte du diagnostic est « parfaite ») ; version de diagnostic arrêtée
+- **#187 ouverte** (fiche destination, D108) : `en-tete-destination.tsx` lit `useDateDuJour()` ; une fiche ouverte pour « Demain » dit « Aujourd'hui » après minuit ; parcours d'abord (le cas et sa limite avant minuit, horloge fixée, retour sur l'onglet)
+- **⑤ : étude d'impact de la maquette « Lieux-Rangees »**, choix de Hardy : une rangée par gare (par ville plus tard, quand la page montrera d'autres choses), 8 lieux, ordinateur au plus simple ; **D121**, trois PR :
+  - **#188** (rien de visible) : `GET /api/lieux/rangees`, union discriminée `type: 'gare'` (une autre sorte de rangée s'ajoute sans toucher aux autres), filtres et exclusions écrits une fois (`lieuxDesGaresAtteintes`) pour les deux routes, un seul passage d'une ligne à un lieu (`lieuResumeDe`) ; requête en une fois (gares comptées, page de rangées, 8 premiers lieux par `row_number()`) ; `limites.lieuxParRangee` 8, `limites.rangeesParPage` 6 ; 16 tests d'intégration ; sur la base locale au départ de Dijon : 900 lieux, 65 rangées, 58 ms
+  - **#189** : écran en rangées (`RangeesLieux`, `UneRangee` choisit le dessin selon la sorte, `RangeeGare`, `CarteLieuSurPhoto`), « Voir tout » vers la fiche destination (`lienDestination`), défilement de côté sans défilement de la page en largeur ; jetons `--sur-photo-*`, `--carte-rangee-*`, `--pastille-train-*` ; ancienne liste retirée ; parcours de Lieux adaptés et complétés
+- Point 1 (« Les destinations arrivent… » sans gare de départ) réexpliqué simplement à Hardy
+**Décisions :** D121 (dans #188)
+**Problèmes rencontrés :**
+- La pastille du temps de train n'avait pas de fond : `bg-accent` n'existe pas (seuls les jetons de rôle ont une classe), sans aucune erreur ; vu sur la capture, corrigé par `--pastille-train-*` (L90)
+- `gh pr edit` échoue (« projects classic » abandonnés par GitHub) : description de la PR changée par `gh api -X PATCH`
+**À valider par Hardy :**
+- Ordre des rangées (petites gares proches en tête) ; essai de #189 ; fusions #186, #187, #188 puis #189 recalée ; point 1 ; ④ à la maison
+**Prochaine action :**
+- Recaler #189 après la fusion de #188, puis PR 3 (retrait de `/api/lieux`) si #189 est acceptée (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `82f47b6` (810 tests) · intégration ✅ (223) · parcours ✅ (102 passant par Lieux, puis 38 après la correction de la pastille)
+**Commit :** `d7ee107` (#188), `82f47b6` (#189), #187 ; sauvegarde sur `docs/sauvegarde-25-11` (#186)
+
+## 25/11/2026 (après-midi) — Étape E11 — Départ brutal de la feuille sur l'iPhone : diagnostic
+**Fait :**
+- Essais A/B sur l'iPhone (deux tunnels à chaque fois) : `touch-action: pan-x` hors du haut (C), 800 ms (fin plus douce, départ inchangé), lâcher de `vaul` (D : transition et arrivée en pixels écrites ensemble), courbes `(0.2, 0, 0, 1)` puis `(0.4, 0, 0.2, 1)` (E, calculées : moitié du trajet à 20 % puis 35 % du temps) : **aucun ne rend le départ doux** ; observation de Hardy : le défaut touche aussi le bouton, et disparaît quand on enchaîne vite
+- Mesures dans Chromium (sondes Playwright temporaires, jamais versionnées) : lâcher image par image propre sans ralentissement ; processeur ralenti ×4 : temps mort de 130 à 300 ms puis 27 à 66 % du trajet en une image ; recalcul du style après `data-feuille` sur la racine 60–78 ms (variable `--resultats-haut` héritée par les ≈ 970 éléments), contre 30–45 ms pour un style posé sur la feuille seule ; F (`@property` non héritée sur les seuls suiveurs) réduit le recalcul sans supprimer les sauts ; profil du processeur : code de l'application ≈ 10–15 ms par changement
+- Version de diagnostic en ligne (`diagnostic/feuille`, jamais fusionnée) : `?diag=sanscarte`, `?diag=listecourte`, `?diag=aucun`
+- WebKit de Playwright non installable sur le poste (bibliothèques système manquantes, `sudo` nécessaire)
+**Décisions :** aucune ; #185 inchangée (`b66a077`)
+**Problèmes rencontrés :**
+- Un `git commit --amend` sans `-a` n'avait changé que le message : le build d'E portait l'ancienne courbe ; vu en lisant le CSS construit, corrigé
+- Les mesures par image de Chromium (sans carte graphique, horloge des tests simulée) ne montrent pas ce que Safari affiche : seule la comparaison sur l'iPhone tranche (L89)
+**À valider par Hardy :**
+- Résultat des trois variantes de diagnostic ; description du plantage vu sur A
+**Prochaine action :**
+- Selon le résultat : carte, liste (F), ou panneau de mesure sur l'iPhone (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `b66a077` (824 tests, inchangé depuis) · parcours de la feuille ✅ sur chaque essai (6 à 7)
+**Commit :** `b66a077` (#185) ; essais sur branches locales
+
+## 25/11/2026 — Étape E11 — Épingles fusionnées, feuille d'Explorer glissée au doigt (en cours)
+**Fait :**
+- #183 (épingles, D119) recalée sur `main` (conflit de `A-FAIRE.md` avec #184, code inchangé), fusionnée par Hardy ; échec de parcours `explorer.e2e.ts:139` : cause A connue (Chalon sur Beaune), marqueurs des gares inchangés par #183
+- Bulles devant les gares : **après la soutenance** (Hardy) ; nouvelle idée de Hardy (icônes de lieux choisies par l'utilisateur) notée dans `A-FAIRE` § 3
+- ④ : étude d'impact validée (geste comme Google Maps, ouverture à moitié inchangée, PR A le geste puis PR B le retrait du bouton de la carte) ; **#185 ouverte (D120)** : fonctions pures `preneurDuGeste`, `hautSousLeDoigt`, `vitesseAuLacher`, `positionAuLacher` (19 tests en paires), `use-glissement-feuille.ts` (événements tactiles seulement), 5 parcours tactiles et clavier (`feuille-glissement.e2e.ts`)
+- Trois essais de Hardy sur l'iPhone : 1) contenu absent pendant la montée et sursaut → feuille à pleine hauteur, posée par un seul `transform` ; 2) passage d'un cran à l'autre trop brusque (mesuré : 60 % du trajet en une image avec `--ease-soft`) → jetons `--duree-feuille` (500 ms) et `--ease-feuille`, ceux de `vaul` ; 3) A/B : B (`flushSync` au lâcher) pareil que A ; il reste un sursaut au lâcher, et la version A a planté (cause inconnue)
+**Décisions :** D120 (dans #185)
+**Problèmes rencontrés :**
+- Le fond prolongé sous la feuille (première version) rendait l'écran défilable (1 598 px de contenu pour 754) : corrigé par `overflow-clip`
+- Parcours de la carte (cause A) : `:121`, `:178`, `:194` 9/18 échecs sur la branche contre 4/18 sur `main` (première version), puis `:121`, `:139`, `:178`, `:194` 10/16 contre 7/16 ; même cause des deux côtés, écart pas assez net
+- L'étude d'impact disait « pas de bibliothèque » sans avoir vu `vaul`, déjà dans le projet (L88)
+**À valider par Hardy :**
+- Décrire le plantage de la version A ; essai de #185 après la correction du sursaut
+**Prochaine action :**
+- Mesurer un lâcher image par image, puis A/B des pistes a, b, c (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ (824 tests, sur `b66a077`) · parcours d'Explorer, de la carte et de la feuille : 87 réussis, 1 échec connu (`:139`, cause A)
+**Commit :** `b66a077` (#185)
+
 ## 24/11/2026 (fin) — Étapes E11/E12 — Trains aux gares, épingles des lieux
 **Fait :**
 - **#182 (D118)** : gares en points de loin (inchangés, couleur du temps de train), en icônes de train inversées de près (seuil `carte.zoomIconesGares` = 9,75, mesuré sur le critère de Hardy : ≈ 15 gares visibles autour de Dijon) ; bord jaune de la destination du trajet ; bulles décalées en haut à droite (solution 1 de Hardy)
