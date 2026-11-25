@@ -1,11 +1,11 @@
 'use client';
 
-import { dateDuJour } from '@tourisme/commun';
 import { CalendarDays, Check, ChevronDown, Clock, Moon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BarreRetour } from '@/components/ui/barre-retour';
 import { Bouton } from '@/components/ui/bouton';
 import { Puce } from '@/components/ui/puce';
+import { useDateDuJour } from '@/lib/utiliser-date-du-jour';
 import { joursDuWeekEnd, libelleDate } from '@/features/explorer/date';
 import { formaterDuree } from '../presentation';
 import type { FicheDestination } from '../schemas';
@@ -20,7 +20,8 @@ type Proprietes = {
 
 export function EnTeteDestination({ fiche, date, surRetour, surOuvrirDate, surDate }: Proprietes) {
   const { gare, liaison } = fiche;
-  const aujourdhui = dateDuJour();
+  // Tenue à jour : une fiche restée ouverte après minuit passe de « Demain » à « Aujourd'hui » (D108).
+  const aujourdhui = useDateDuJour();
   const weekEnd = joursDuWeekEnd(date, aujourdhui);
 
   return (
