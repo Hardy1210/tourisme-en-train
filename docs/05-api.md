@@ -209,7 +209,7 @@ Onglet Lieux en rangées (D121). Mêmes paramètres, mêmes lieux et mêmes lieu
   pageSuivante: number | null;
 }
 ```
-- **Rangées :** une par gare d'arrivée qui a au moins un lieu avec ces filtres ; la plus courte en train d'abord, puis le nom de la gare. `limites.rangeesParPage` rangées par page ; page au-delà de la fin : `rangees` vide, totaux conservés.
+- **Rangées :** une par gare d'arrivée qui a au moins un lieu avec ces filtres ; celles qui ont au moins un lieu avec photo d'abord (D104, `photos.enPremier`), puis la plus courte en train, puis le nom de la gare. `limites.rangeesParPage` rangées par page ; page au-delà de la fin : `rangees` vide, totaux conservés.
 - **Dans une rangée :** les lieux avec une photo d'abord (D104, `photos.enPremier`), puis la marche la plus courte, puis la clé. Un lieu à pied de deux gares est dans les deux rangées, comme sur leurs fiches ; `total` (du titre) le compte une fois.
 - `404` si la gare est inconnue, `400` pour un paramètre invalide (comme § 3.6 bis). Cache : `public, max-age=3600`.
 
@@ -379,4 +379,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 17/11/2026 | 1.28 | § 1 point 13 : `photo` (droits à la date du jour) remplace `imageUrl` dans les routes de lieux — D100, D101 |
 | 19/11/2026 | 1.30 | § 3.7 : `description` en texte brut avec paragraphes, 2 000 caractères ; `attribution` sous la description — D105 |
 | 18/11/2026 | 1.29 | § 3.3, 3.6, 3.6 bis : lieux avec photo d'abord, tri habituel dans chaque groupe (temporaire) — D104 |
-| 25/11/2026 | 1.31 | § 2 et § 3.6 ter : `GET /api/lieux/rangees` (onglet Lieux en rangées par gare) — D121 |
+| 25/11/2026 | 1.31 | § 2 et § 3.6 ter : `GET /api/lieux/rangees` (onglet Lieux en rangées par gare, celles qui ont une photo d'abord) — D121 |

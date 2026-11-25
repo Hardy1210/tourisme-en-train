@@ -1371,13 +1371,14 @@
 
 ## D121 — Onglet Lieux en rangées : une par gare d'arrivée, 8 lieux, une base pour d'autres rangées
 - **Date :** 25/11/2026
-- **En clair :** la page Lieux ne montre plus une seule longue liste, mais une rangée par gare où l'on va en train direct, la plus proche d'abord, avec ses premiers lieux qu'on fait défiler de côté et « Voir tout » pour ouvrir la fiche de la destination. Plus tard, d'autres sortes de rangées pourront s'ajouter à la même page.
+- **En clair :** la page Lieux ne montre plus une seule longue liste, mais une rangée par gare où l'on va en train direct, celles qui ont des photos d'abord puis la plus proche, avec ses premiers lieux qu'on fait défiler de côté et « Voir tout » pour ouvrir la fiche de la destination. Plus tard, d'autres sortes de rangées pourront s'ajouter à la même page.
 - **Décision (Hardy, maquette « Lieux-Rangees », étude d'impact du 25/11) :**
   1. **une rangée par gare d'arrivée** (pas par ville : les rangées suivent les distances à pied depuis une gare, et une rangée de ville serait trop grosse ; par ville plus tard, avec d'autres contenus) ; **8 lieux** au plus (`limites.lieuxParRangee`), puis « Voir tout » vers la fiche destination de la gare ;
   2. **une nouvelle route** `GET /api/lieux/rangees` (`05` § 3.6 ter), mêmes filtres et mêmes exclusions que `/api/lieux`, écrits **une seule fois** (`lieuxDesGaresAtteintes`) ; pagination par rangées (`limites.rangeesParPage`) ; `/api/lieux` reste jusqu'à ce que l'écran n'en ait plus besoin ;
   3. **une base pour grandir :** chaque rangée porte une sorte (`type: 'gare'`, union discriminée) ; une autre sorte (par ville, événements…) s'ajoute comme une variante, sans changer les autres ;
   4. un lieu à pied de deux gares est dans les deux rangées, comme sur leurs fiches ; le nombre du titre compte les lieux distincts ;
   5. ordinateur : le plus simple, les mêmes rangées (la soutenance se fait sur téléphone) ;
-  6. découpage : PR 1 la route et la requête (rien de visible), PR 2 l'écran et la carte sur photo, PR 3 le retrait de l'ancienne liste.
+  6. découpage : PR 1 la route et la requête (rien de visible), PR 2 l'écran et la carte sur photo, PR 3 le retrait de l'ancienne liste ;
+  7. **ordre des rangées** (Hardy, 25/11, après mesure) : celles qui ont au moins un lieu avec photo d'abord, puis la plus courte en train, tant que `photos.enPremier` (D104, temporaire ; `false` redonne l'ordre par le temps de train seul). Mesuré au départ de Dijon (base locale) : par le temps de train seul, les trois premières rangées n'avaient aucune photo (Gevrey-Chambertin, Genlis, Ouges) ; 13 rangées sur 65 n'en ont aucune.
 - **Écarté :** garder la liste à plat (maquette de Hardy) ; une rangée par ville maintenant (lieux de plusieurs gares, « Voir tout » vers une seule fiche) ; toutes les rangées d'un coup (plus de 100 gares).
 - **Impact :** `config/parametres.json` (`limites.lieuxParRangee`, `limites.rangeesParPage`), `packages/commun/src/parametres.ts`, `features/lieux/schemas.ts`, `features/lieux/server/requetes-accessibles.ts`, `requetes-rangees.ts`, `rangees.ts`, `app/api/lieux/rangees/route.ts` ; test d'intégration `lieux-rangees.integration.test.ts` ; `05` § 2 et § 3.6 ter, `GLOSSAIRE`.
