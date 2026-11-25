@@ -49,7 +49,7 @@ export function FeuilleResultats({ ref, position, surPosition, children }: Propr
         ref={ref}
         // Sur mobile, toujours la hauteur de l'écran, posée par un seul décalage (`transform`) : le contenu
         // est là pendant le geste, et seul ce décalage s'anime, sans remettre la liste en page (D120).
-        className="pointer-events-auto absolute inset-x-0 top-0 z-sheet flex flex-col rounded-t-feuille bg-background shadow-sheet transition-transform duration-300 ease-soft max-lg:h-full max-lg:[transform:translateY(var(--resultats-haut))] max-lg:will-change-transform lg:static lg:z-auto lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:rounded-none lg:shadow-none lg:transition-none"
+        className="pointer-events-auto absolute inset-x-0 top-0 z-sheet flex flex-col rounded-t-feuille bg-background shadow-sheet transition-transform duration-(--duree-feuille) ease-feuille max-lg:h-full max-lg:[transform:translateY(var(--resultats-haut))] max-lg:will-change-transform lg:static lg:z-auto lg:col-start-1 lg:row-start-2 lg:min-h-0 lg:rounded-none lg:shadow-none lg:transition-none"
         onFocus={(evenement) => {
           // Atteint au clavier sous le bas de l'écran (sa partie cachée) : la feuille monte pour le montrer.
           const feuille = evenement.currentTarget;
