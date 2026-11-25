@@ -23,10 +23,11 @@ const schemaResultat = z.object({
 });
 
 /**
- * Rangées de l'onglet Lieux (D121) : une par gare d'arrivée ayant au moins un lieu avec ces filtres, la
- * plus courte en train d'abord ; dans chacune, ses `lieuxParRangee` premiers lieux (photo d'abord si
- * `photosDabord`, puis la marche la plus courte) et leur nombre. Un lieu à pied de deux gares est dans
- * les deux rangées ; `total` le compte une fois.
+ * Rangées de l'onglet Lieux (D121) : une par gare d'arrivée ayant au moins un lieu avec ces filtres ;
+ * si `photosDabord`, celles qui ont un lieu avec photo d'abord, puis la plus courte en train ; dans
+ * chacune, ses `lieuxParRangee` premiers lieux (photo d'abord si `photosDabord`, puis la marche la plus
+ * courte) et leur nombre. Un lieu à pied de deux gares est dans les deux rangées ; `total` le compte une
+ * fois.
  */
 export async function rangeesDeGares(
   options: FiltresAccessibles & {
@@ -35,7 +36,7 @@ export async function rangeesDeGares(
     decalage: number;
     /** Date du jour (Paris) : une photo se montre si ses droits sont en cours (D100). */
     datePhoto: string;
-    /** Lieux avec une photo d'abord dans chaque rangée (D104, temporaire). */
+    /** Rangées avec une photo d'abord, et lieux avec une photo d'abord dans chacune (D104, temporaire). */
     photosDabord: boolean;
   },
 ): Promise<z.infer<typeof schemaResultat>> {
@@ -46,13 +47,18 @@ export async function rangeesDeGares(
       ${lieuxDesGaresAtteintes(options)}
     ),
     gares AS (
-      SELECT gare_uic, gare_nom, duree_train_min, count(*) AS total
-      FROM candidats
-      GROUP BY gare_uic, gare_nom, duree_train_min
+      SELECT c.gare_uic, c.gare_nom, c.duree_train_min, count(*) AS total,
+             bool_or(p.lieu_id IS NOT NULL) AS avec_photo
+      FROM candidats c JOIN lieu l ON l.id = c.lieu_id ${jointurePhoto(options.datePhoto)}
+      GROUP BY c.gare_uic, c.gare_nom, c.duree_train_min
     ),
+    -- L'ordre des rangées, écrit une seule fois : il sert à la page et à la réponse.
     page AS (
-      SELECT * FROM gares
-      ORDER BY duree_train_min, gare_nom, gare_uic
+      SELECT *, row_number() OVER (
+               ORDER BY ${options.photosDabord ? sql`NOT avec_photo, ` : sql``}duree_train_min, gare_nom, gare_uic
+             ) AS ordre
+      FROM gares
+      ORDER BY ordre
       LIMIT ${options.rangees} OFFSET ${options.decalage}
     ),
     classes AS (
@@ -75,7 +81,7 @@ export async function rangeesDeGares(
                         'duree_train_min', p.duree_train_min, 'total', p.total,
                         'lieux', (SELECT jsonb_agg(cl ORDER BY cl.rang) FROM classes cl
                                   WHERE cl.gare_uic = p.gare_uic AND cl.rang <= ${options.lieuxParRangee}))
-                      ORDER BY p.duree_train_min, p.gare_nom, p.gare_uic)
+                      ORDER BY p.ordre)
              FROM page p), '[]'::jsonb) AS rangees`);
   return schemaResultat.parse(rows[0]);
 }
