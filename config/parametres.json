@@ -155,6 +155,8 @@
     "gares": 3,
     "lieux": 50,
     "lieuxParPage": 30,
+    "lieuxParRangee": 8,
+    "rangeesParPage": 6,
     "lieuxParCategorie": 5,
     "destinations": 150,
     "trains": 20,

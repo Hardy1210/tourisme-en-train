@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.26 · **Date** 24/11/2026
+> **Version** 1.27 · **Date** 25/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -42,6 +42,7 @@
 | **Catégorie secondaire** | Catégorie sous laquelle un lieu apparaît aussi quand on filtre ; sa catégorie principale reste affichée (D060) | `categoriesSecondaires` | `lieu.categories_secondaires` | Catégorie |
 | **Fiche de ville** | Fiche DATAtourisme décrivant une ville entière : gardée en base, jamais listée (D057) | `ficheVille` | `lieu.fiche_ville` | Lieu, label |
 | **Lieu accessible** | Lieu à pied d'une gare atteinte en train direct depuis la gare de départ (onglet Lieux, D056) | `lieuxAccessibles` | — | Lieu autour de l'utilisateur |
+| **Rangée** | Ligne horizontale de l'onglet Lieux, avec son titre, son nombre et « Voir tout ». Pour l'instant une seule sorte : les lieux accessibles d'une gare d'arrivée, la plus proche en train d'abord ; d'autres sortes pourront s'ajouter (D121) | `Rangee`, `rangees` (champ `type`) | — | Carte de destination (une ville, D047) |
 | **Mon espace** | Onglet montrant favoris et récompenses, **fictif en v1**, marqué « Aperçu · bientôt » (D054) | `MonEspace` | — | Compte utilisateur |
 | **Catégorie** | Famille de lieux : `enfants`, `nature`, `parcs`, `patrimoine`, `culture` | `Categorie` | `categorie` | Sous-catégorie |
 | **Sous-catégorie** | Précision libre dans une catégorie (ex. « aire de jeux », « château ») | `sousCategorie` | `sous_categorie` | — |
@@ -169,3 +170,4 @@
 | 18/11/2026 | 1.24 | Surface de marque — D106 |
 | 24/11/2026 | 1.25 | Accroche, écran de lancement — D112 |
 | 24/11/2026 | 1.26 | Écran de bienvenue — D113 |
+| 25/11/2026 | 1.27 | Rangée (onglet Lieux) — D121 |
