@@ -1380,6 +1380,7 @@
 - **Écarté :** `vaul`, déjà utilisé pour les feuilles modales (« Filtres »), dont la technique est reprise (hauteur complète, un seul décalage) : il calcule ses positions depuis le bas de la fenêtre (notre feuille est posée sur le menu), c'est une fenêtre modale (la carte doit rester utilisable autour), et il faudrait un autre panneau sur ordinateur ; les événements `pointer` (le navigateur reprend le geste pour défiler, et la feuille ne peut plus redescendre) ; déplacer le `top` pendant le geste (la liste est remise en page à chaque image).
 - **Limite :** à la souris (fenêtre étroite sur ordinateur), la feuille ne se glisse plus ; la poignée garde le clic et le clavier.
 - **Suite (25/11) :** le départ brutal de chaque animation sur l'iPhone, et les plantages de Safari, venaient de la longueur de la liste (101 destinations) : la feuille en montre 10, puis « Voir plus » (D122).
+- **PR B (25/11) :** le bouton « Carte plein écran / Afficher la liste » est retiré ; la carte en grand : la feuille baissée au doigt, ou par sa poignée (toucher, flèches du clavier). Le bouton « Recentrer » reste.
 - **Impact :** `features/explorer/position-feuille.ts`, `use-glissement-feuille.ts`, `ui/feuille-resultats.tsx`, `ui/resultats-explorer.tsx` ; parcours `feuille-glissement.e2e.ts` ; `06` § 4.
 
 ## D121 — Onglet Lieux en rangées : une par gare d'arrivée, 8 lieux, une base pour d'autres rangées

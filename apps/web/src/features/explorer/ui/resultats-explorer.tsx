@@ -144,10 +144,6 @@ export function ResultatsExplorer({
               ? cadre.bottom - element.getBoundingClientRect().top
               : 0;
           }}
-          pleinEcran={{
-            actif: position === 'carte',
-            bascule: () => surPosition(position === 'carte' ? 'milieu' : 'carte'),
-          }}
           survolee={survolee}
           surSurvol={setSurvolee}
         />

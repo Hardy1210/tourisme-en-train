@@ -33,6 +33,13 @@ test.beforeEach(async ({ context, baseURL }) => {
 });
 
 const sorties = (page: Page) => page.getByRole('link', { name: 'Voir la sortie' });
+/** La poignée de la feuille (D120) ; sur téléphone seulement. */
+const poignee = (page: Page) =>
+  page.getByRole('button', { name: 'Déplacer le panneau des résultats' });
+/** Sur téléphone, la feuille baissée au plus bas, la carte en grand (D120, plus de bouton). */
+const montrerLaCarte = async (page: Page) => {
+  if (await poignee(page).isVisible()) await poignee(page).press('ArrowDown');
+};
 const marqueurs = (page: Page) => page.getByRole('button', { name: /en train direct(,|$)/ });
 const titreDestinations = (page: Page) =>
   page.getByRole('heading', { name: 'En train direct depuis Dijon-Ville' });
@@ -122,8 +129,7 @@ test.describe('position acceptée', () => {
     await page.goto(ECRAN);
     await expect(sorties(page).first()).toBeVisible();
 
-    const pleinEcran = page.getByRole('button', { name: 'Carte plein écran' });
-    if (await pleinEcran.isVisible()) await pleinEcran.click();
+    await montrerLaCarte(page);
 
     const epingle = marqueurs(page).filter({ visible: true }).first();
     await epingle.click();
@@ -144,12 +150,11 @@ test.describe('position acceptée', () => {
     await page.goto(ECRAN);
     await expect(sorties(page).first()).toBeVisible();
 
-    const poignee = page.getByRole('button', { name: 'Déplacer le panneau des résultats' });
     const fiche = page.getByRole('button', { name: 'Fermer' }).locator('xpath=../..');
     // Espace entre le bas de la fiche et le haut de la feuille ; la fiche ne touche jamais les filtres.
     const ecartAvecLaFeuille = async () => {
       const cadre = await fiche.boundingBox();
-      const feuille = await poignee.boundingBox();
+      const feuille = await poignee(page).boundingBox();
       const filtres = await page.locator('header').first().boundingBox();
       if (!cadre || !feuille || !filtres) return Number.NaN;
       if (cadre.y < filtres.y + filtres.height) return Number.NaN;
@@ -160,17 +165,19 @@ test.describe('position acceptée', () => {
       await expect.poll(ecartAvecLaFeuille).toBeLessThanOrEqual(44);
     };
 
-    await page.getByRole('button', { name: 'Carte plein écran' }).click();
+    // Plus de bouton « Carte plein écran » (D120) : la poignée baisse et remonte la feuille.
+    await expect(page.getByRole('button', { name: 'Carte plein écran' })).toHaveCount(0);
+    await poignee(page).press('ArrowDown');
     await marqueurs(page).filter({ visible: true }).first().click();
     await attendreFicheCollee();
 
-    await page.getByRole('button', { name: 'Afficher la liste' }).click();
+    await poignee(page).press('ArrowUp');
     await attendreFicheCollee();
 
     // Feuille tout en haut : la fiche se cache, et revient quand la feuille redescend.
-    await poignee.press('ArrowUp');
+    await poignee(page).press('ArrowUp');
     await expect(fiche).toBeHidden();
-    await poignee.press('ArrowDown');
+    await poignee(page).press('ArrowDown');
     await expect(fiche).toBeVisible();
     await attendreFicheCollee();
   });
@@ -184,8 +191,7 @@ test.describe('position acceptée', () => {
     await expect(sorties(page).first()).toBeVisible();
     expect(arrets).toEqual([]);
 
-    const pleinEcran = page.getByRole('button', { name: 'Carte plein écran' });
-    if (await pleinEcran.isVisible()) await pleinEcran.click();
+    await montrerLaCarte(page);
     const reponse = page.waitForResponse((r) => r.url().includes('/api/trains/arrets'));
     await marqueurs(page).filter({ visible: true }).first().click();
     expect((await reponse).status()).toBe(200);
@@ -194,9 +200,8 @@ test.describe('position acceptée', () => {
   test('une carte de la liste referme la mini-fiche ouverte, pas le reste', async ({ page }) => {
     await page.goto(ECRAN);
     await expect(sorties(page).first()).toBeVisible();
-    const pleinEcran = page.getByRole('button', { name: 'Carte plein écran' });
-    const mobile = await pleinEcran.isVisible();
-    if (mobile) await pleinEcran.click();
+    const mobile = await poignee(page).isVisible();
+    await montrerLaCarte(page);
 
     const fermer = page.getByRole('button', { name: 'Fermer' });
     await marqueurs(page).filter({ visible: true }).first().click();
@@ -205,7 +210,7 @@ test.describe('position acceptée', () => {
     await page.waitForTimeout(100);
     await expect(fermer).toBeVisible();
 
-    if (mobile) await page.getByRole('button', { name: 'Afficher la liste' }).click();
+    if (mobile) await poignee(page).press('ArrowUp');
     await page.getByRole('heading', { name: 'Beaune' }).last().hover();
     await expect(fermer).toHaveCount(0);
   });
