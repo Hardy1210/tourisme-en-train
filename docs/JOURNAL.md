@@ -24,6 +24,25 @@
 
 ---
 
+## 25/11/2026 (soir) — Étapes E11/E12 — Feuille : la cause trouvée, « Voir plus » ; onglet Lieux en rangées fusionné
+**Fait :**
+- ④ à la maison, essais de Hardy sur l'iPhone, un suspect retiré à la fois (L89) : avec 3 destinations sans « Près de vous », la feuille glisse parfaitement ; avec la liste complète (101 destinations au départ de Dijon, 7 894 éléments dans l'écran), départ brutal et plantages de Safari, avec ou sans « Près de vous » ; l'application installée ouvre toujours `/` sans la variante choisie (d'où le « sursaut » vu en PWA)
+- Essai « cartes hors de l'écran sautées » (`content-visibility`, avec F) : recalcul du style ÷ 6 dans Chromium, mais Safari fermait la page dès qu'on bougeait la feuille : retiré, jamais dans #185
+- **#190 (D122)** : 10 destinations, puis « Voir plus » (`destinationsMontrees`, fonction pure ; un seul état, le nombre de pages ; `limites.destinationsParPage`) ; 2 808 éléments ; validé sur l'iPhone ; « Voir plus » contourne le problème sans le résoudre (Hardy) : la liste sans fin par cartes fabriquées à la demande, après la soutenance (`A-FAIRE` § 3)
+- **#185 (D120)** recalée par une fusion de `main` (une seule résolution des documents), validée sur l'iPhone, fusionnée ; puis #186, #187, **#188** (rangées « photos d'abord » : test d'abord, photo d'exemple ajoutée à Besançon pour que l'ordre se voie) et **#189** fusionnées, conflits des documents résolus à chaque fois
+- « Voir tout » gardé sur chaque rangée (Hardy) ; l'icône des cartes sans photo est bien la nôtre (mesurée : 144 px, blanc à 13 %), alignement sur la maquette à décider
+**Décisions :** D122 ; D121 complétée (ordre « photos d'abord », « Voir tout » partout)
+**Problèmes rencontrés :**
+- Le premier test de l'ordre « photos d'abord » échouait pour une mauvaise raison (L84) : Beaune était déjà la plus proche dans l'échantillon ; puis le lieu choisi pour la photo (Parc Micaud) était à 1 163 m de la gare, au-delà du rayon de l'échantillon (1 154 m) : photo mise sur la Promenade des bords du Doubs
+- Parcours instables de la carte (`explorer.e2e.ts:121`, `:139`, `:178`, `:194`) : même erreur sur la branche et sur `main` (clic sur une épingle qui n'aboutit pas, cause A) ; sur 28 essais, 20 échecs contre 15, écart pas net
+- Un rebase de #185 aurait demandé de résoudre les mêmes conflits à chaque commit : fusion de `main` dans la branche (L92)
+**À valider par Hardy :**
+- Icône des cartes sans photo ; point 1 ; suppression des branches d'essai ; alertes de dépendances (2 critiques)
+**Prochaine action :**
+- PR B de ④ (retrait du bouton de la carte), puis PR 3 de D121 (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`4c6b7e3`, 827 tests) · intégration ✅ (225) · parcours de la feuille, de « Voir plus », d'Explorer et de Lieux ✅ hors les 4 parcours instables de la carte
+**Commit :** `db23f96` (#190), `1e7c888` (#185), `d3a9612` (#188), `4c6b7e3` (#189)
+
 ## 25/11/2026 (fin d'après-midi) — Étapes E11/E12 — Feuille en attente, date de la fiche destination, onglet Lieux en rangées
 **Fait :**
 - ④ (#185) **mis en attente par Hardy** : comportement actuel du glissement gardé ; reprise à la maison, le réseau de l'école bloquant les tunnels (sur l'ordinateur, mode téléphone, la liste courte du diagnostic est « parfaite ») ; version de diagnostic arrêtée
