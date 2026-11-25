@@ -11,6 +11,8 @@ let route: Route;
 let liste: Route;
 const DIJON = 'EX000001';
 const BEAUNE = 'EX000002';
+const DOLE = 'EX000003';
+const BESANCON = 'EX000004';
 const CHALON = 'EX000005';
 const PORTE_NEUVE = 'EX000023';
 const HIVER = '2026-11-18';
@@ -21,23 +23,30 @@ async function lire(gare: string, suite = '', date = HIVER) {
   expect(reponse.statut).toBe(200);
   return schemaReponseRangeesLieux.parse(reponse.corps);
 }
+type Reponse = Awaited<ReturnType<typeof lire>>;
 const cle = (identifiant: string) => `echantillon-${identifiant}`;
-const cles = (reponse: Awaited<ReturnType<typeof lire>>) =>
-  reponse.rangees.flatMap((r) => r.lieux.map((l) => l.cle));
-const rangeeDe = (reponse: Awaited<ReturnType<typeof lire>>, uic: string) =>
-  reponse.rangees.find((r) => r.gare.uic === uic);
+const cles = (reponse: Reponse) => reponse.rangees.flatMap((r) => r.lieux.map((l) => l.cle));
+const rangeeDe = (reponse: Reponse, uic: string) => reponse.rangees.find((r) => r.gare.uic === uic);
+/** Une rangée a une photo si l'un de ses lieux en a une (ils sont en tête de la rangée, D104). */
+const aPhoto = (rangee: Reponse['rangees'][number]) => rangee.lieux.some((l) => l.photo !== null);
+/** Rang attendu d'une rangée : celles qui ont une photo d'abord, puis la plus courte en train. */
+const ordre = (rangee: Reponse['rangees'][number]) =>
+  (aPhoto(rangee) ? 0 : 10_000) + rangee.dureeTrainMin;
+const position = (reponse: Reponse, uic: string) =>
+  reponse.rangees.findIndex((r) => r.gare.uic === uic);
 
-/** Change une limite le temps d'un test (l'échantillon a peu de lieux par gare). */
-async function avecLimites<T>(
-  limites: Partial<Pick<typeof parametres.limites, 'lieuxParRangee' | 'rangeesParPage'>>,
+/** Change des réglages le temps d'un test (l'échantillon a peu de lieux par gare), puis les remet. */
+async function avecReglages<O extends object, T>(
+  reglages: O,
+  valeurs: Partial<O>,
   test: () => Promise<T>,
 ): Promise<T> {
-  const avant = { ...parametres.limites };
-  Object.assign(parametres.limites, limites);
+  const avant = { ...reglages };
+  Object.assign(reglages, valeurs);
   try {
     return await test();
   } finally {
-    Object.assign(parametres.limites, avant);
+    Object.assign(reglages, avant);
   }
 }
 
@@ -47,18 +56,35 @@ beforeAll(async () => {
 });
 
 describe('/api/lieux/rangees', () => {
-  it('une rangée par gare, la plus courte en train d’abord, avec un cache d’une heure', async () => {
+  it('une rangée par gare, avec un cache d’une heure', async () => {
     const reponse = await appeler(route, `/api/lieux/rangees?gare=${DIJON}&date=${HIVER}`);
     expect(reponse.cache).toBe('public, max-age=3600');
     const { rangees } = schemaReponseRangeesLieux.parse(reponse.corps);
     expect(rangees.length).toBeGreaterThan(1);
     expect(rangees.every((r) => r.type === 'gare')).toBe(true);
-    const durees = rangees.map((r) => r.dureeTrainMin);
-    expect(durees).toEqual([...durees].sort((a, b) => a - b));
     expect(new Set(rangees.map((r) => r.gare.uic)).size).toBe(rangees.length);
     expect(rangees.find((r) => r.gare.uic === BEAUNE)).toMatchObject({
       gare: { uic: BEAUNE, nom: 'Beaune' },
       dureeTrainMin: 22,
+    });
+  });
+
+  it('les rangées qui ont une photo d’abord, puis la plus courte en train (D104) : l’été, Besançon (60 min, une photo) passe devant Dole et Chalon', async () => {
+    const reponse = await lire(DIJON, '', ETE);
+    const rangs = reponse.rangees.map(ordre);
+    expect(rangs).toEqual([...rangs].sort((a, b) => a - b));
+    expect(rangeeDe(reponse, BESANCON)).toMatchObject({ dureeTrainMin: 60 });
+    expect(aPhoto(rangeeDe(reponse, DOLE)!)).toBe(false);
+    expect(position(reponse, BESANCON)).toBeLessThan(position(reponse, DOLE));
+    expect(position(reponse, BESANCON)).toBeLessThan(position(reponse, CHALON));
+  });
+
+  it('sans « photos d’abord » (`photos.enPremier` à false) : la plus courte en train d’abord, rien d’autre', async () => {
+    await avecReglages(parametres.photos, { enPremier: false }, async () => {
+      const reponse = await lire(DIJON, '', ETE);
+      const durees = reponse.rangees.map((r) => r.dureeTrainMin);
+      expect(durees).toEqual([...durees].sort((a, b) => a - b));
+      expect(position(reponse, BESANCON)).toBeGreaterThan(position(reponse, CHALON));
     });
   });
 
@@ -68,7 +94,7 @@ describe('/api/lieux/rangees', () => {
     const petite = complet.rangees.find((r) => r.total === 1);
     expect(grande).toBeDefined();
     expect(petite).toBeDefined();
-    await avecLimites({ lieuxParRangee: 2 }, async () => {
+    await avecReglages(parametres.limites, { lieuxParRangee: 2 }, async () => {
       const limite = await lire(DIJON);
       expect(rangeeDe(limite, grande!.gare.uic)).toMatchObject({ total: grande!.total });
       expect(rangeeDe(limite, grande!.gare.uic)?.lieux).toHaveLength(2);
@@ -134,14 +160,12 @@ describe('/api/lieux/rangees', () => {
   });
 
   it('page par page : la suite des rangées, sans doublon, puis plus de page suivante', async () => {
-    await avecLimites({ rangeesParPage: 2 }, async () => {
+    await avecReglages(parametres.limites, { rangeesParPage: 2 }, async () => {
       const premiere = await lire(DIJON);
       expect(premiere.rangees).toHaveLength(2);
       expect(premiere.pageSuivante).toBe(2);
       const deuxieme = await lire(DIJON, '&page=2');
-      expect(deuxieme.rangees[0]!.dureeTrainMin).toBeGreaterThanOrEqual(
-        premiere.rangees[1]!.dureeTrainMin,
-      );
+      expect(ordre(deuxieme.rangees[0]!)).toBeGreaterThanOrEqual(ordre(premiere.rangees[1]!));
       const uics = [...premiere.rangees, ...deuxieme.rangees].map((r) => r.gare.uic);
       expect(new Set(uics).size).toBe(uics.length);
       const derniere = Math.ceil(premiere.totalRangees / 2);
