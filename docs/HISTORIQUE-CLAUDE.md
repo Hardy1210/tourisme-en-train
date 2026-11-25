@@ -94,3 +94,4 @@
 | 24/11/2026 | 1.98 | § 9 : #182 sur `main` (D118), #183 ouverte (D119), décision des bulles en attente, prochaine action : reprise avec cette décision |
 | 25/11/2026 | 1.99 | § 9 : #183 sur `main` (D119), #185 ouverte (④, D120), bulles après la soutenance, idée des icônes choisies, sursaut au lâcher et plantage de A à reprendre ; prochaine action : mesure du lâcher, puis A/B |
 | 25/11/2026 | 2.00 | § 9 : départ brutal de la feuille sur l'iPhone, essais sans effet, version de diagnostic en ligne, branches d'essai ; prochaine action : résultat des trois variantes |
+| 25/11/2026 | 2.01 | § 9 : ④ en attente (reprise à la maison), #187 ouverte (date de la fiche destination), ⑤ : #188 et #189 ouvertes (D121), ordre des rangées et point 1 à valider ; prochaine action : recaler #189, PR 3, puis ④ |

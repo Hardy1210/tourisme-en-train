@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.25 · **Date** 24/11/2026
+> **Version** 1.26 · **Date** 25/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -601,6 +601,13 @@
 - **À retenir :** après deux corrections sans effet, arrêter de corriger et isoler : retirer les gros suspects un par un sur l'appareil où le défaut se voit, puis mesurer le coupable avant d'écrire la vraie correction.
 - **Origine :** #185, D120, 25/11.
 
+### L90 — Une classe de couleur sans jeton ne fait rien, sans aucune erreur
+- **Problème :** la pastille jaune du temps de train des rangées de l'onglet Lieux n'avait pas de fond, alors que le code lui donnait `bg-accent`.
+- **Cause :** avec Tailwind 4, une classe de couleur n'existe que si son jeton est déclaré dans `@theme` ; le projet n'y déclare que des jetons de rôle (`--color-pastille-train-bg`…), pas `accent`. Une classe inconnue est ignorée en silence : ni les types, ni le lint, ni les tests ne la voient.
+- **Solution :** un jeton de rôle `--pastille-train-bg` (valeur `var(--accent)`) et sa classe `bg-pastille-train-bg`, vus sur une capture.
+- **À retenir :** après chaque nouvelle classe de couleur, regarder l'écran (ou le CSS construit) ; une classe qui ne correspond à aucun jeton ne casse rien, elle ne fait simplement rien.
+- **Origine :** #189, D121, 25/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -680,3 +687,4 @@ Valeurs en g CO₂e/km.
 | 24/11/2026 | 1.23 | L83 (une fenêtre modale pendant une demande d'autorisation), L84 (un test « d'abord » doit échouer pour la bonne raison) |
 | 24/11/2026 | 1.24 | L85 (deux écritures de l'adresse dans le même geste), L86 (une remise en ordre se prouve par des tests avant et après) |
 | 24/11/2026 | 1.25 | L87 (un seuil d'interface se déduit d'un critère mesuré) |
+| 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |

@@ -24,6 +24,25 @@
 
 ---
 
+## 25/11/2026 (fin d'après-midi) — Étapes E11/E12 — Feuille en attente, date de la fiche destination, onglet Lieux en rangées
+**Fait :**
+- ④ (#185) **mis en attente par Hardy** : comportement actuel du glissement gardé ; reprise à la maison, le réseau de l'école bloquant les tunnels (sur l'ordinateur, mode téléphone, la liste courte du diagnostic est « parfaite ») ; version de diagnostic arrêtée
+- **#187 ouverte** (fiche destination, D108) : `en-tete-destination.tsx` lit `useDateDuJour()` ; une fiche ouverte pour « Demain » dit « Aujourd'hui » après minuit ; parcours d'abord (le cas et sa limite avant minuit, horloge fixée, retour sur l'onglet)
+- **⑤ : étude d'impact de la maquette « Lieux-Rangees »**, choix de Hardy : une rangée par gare (par ville plus tard, quand la page montrera d'autres choses), 8 lieux, ordinateur au plus simple ; **D121**, trois PR :
+  - **#188** (rien de visible) : `GET /api/lieux/rangees`, union discriminée `type: 'gare'` (une autre sorte de rangée s'ajoute sans toucher aux autres), filtres et exclusions écrits une fois (`lieuxDesGaresAtteintes`) pour les deux routes, un seul passage d'une ligne à un lieu (`lieuResumeDe`) ; requête en une fois (gares comptées, page de rangées, 8 premiers lieux par `row_number()`) ; `limites.lieuxParRangee` 8, `limites.rangeesParPage` 6 ; 16 tests d'intégration ; sur la base locale au départ de Dijon : 900 lieux, 65 rangées, 58 ms
+  - **#189** : écran en rangées (`RangeesLieux`, `UneRangee` choisit le dessin selon la sorte, `RangeeGare`, `CarteLieuSurPhoto`), « Voir tout » vers la fiche destination (`lienDestination`), défilement de côté sans défilement de la page en largeur ; jetons `--sur-photo-*`, `--carte-rangee-*`, `--pastille-train-*` ; ancienne liste retirée ; parcours de Lieux adaptés et complétés
+- Point 1 (« Les destinations arrivent… » sans gare de départ) réexpliqué simplement à Hardy
+**Décisions :** D121 (dans #188)
+**Problèmes rencontrés :**
+- La pastille du temps de train n'avait pas de fond : `bg-accent` n'existe pas (seuls les jetons de rôle ont une classe), sans aucune erreur ; vu sur la capture, corrigé par `--pastille-train-*` (L90)
+- `gh pr edit` échoue (« projects classic » abandonnés par GitHub) : description de la PR changée par `gh api -X PATCH`
+**À valider par Hardy :**
+- Ordre des rangées (petites gares proches en tête) ; essai de #189 ; fusions #186, #187, #188 puis #189 recalée ; point 1 ; ④ à la maison
+**Prochaine action :**
+- Recaler #189 après la fusion de #188, puis PR 3 (retrait de `/api/lieux`) si #189 est acceptée (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `82f47b6` (810 tests) · intégration ✅ (223) · parcours ✅ (102 passant par Lieux, puis 38 après la correction de la pastille)
+**Commit :** `d7ee107` (#188), `82f47b6` (#189), #187 ; sauvegarde sur `docs/sauvegarde-25-11` (#186)
+
 ## 25/11/2026 (après-midi) — Étape E11 — Départ brutal de la feuille sur l'iPhone : diagnostic
 **Fait :**
 - Essais A/B sur l'iPhone (deux tunnels à chaque fois) : `touch-action: pan-x` hors du haut (C), 800 ms (fin plus douce, départ inchangé), lâcher de `vaul` (D : transition et arrivée en pixels écrites ensemble), courbes `(0.2, 0, 0, 1)` puis `(0.4, 0, 0.2, 1)` (E, calculées : moitié du trajet à 20 % puis 35 % du temps) : **aucun ne rend le départ doux** ; observation de Hardy : le défaut touche aussi le bouton, et disparaît quand on enchaîne vite
