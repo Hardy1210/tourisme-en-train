@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.26 · **Date** 25/11/2026
+> **Version** 1.27 · **Date** 25/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -608,6 +608,20 @@
 - **À retenir :** après chaque nouvelle classe de couleur, regarder l'écran (ou le CSS construit) ; une classe qui ne correspond à aucun jeton ne casse rien, elle ne fait simplement rien.
 - **Origine :** #189, D121, 25/11.
 
+### L91 — Une animation qui saute sur une longue page : compter les éléments avant d'optimiser le dessin
+- **Problème :** la feuille d'Explorer partait d'un coup sur l'iPhone, puis Safari fermait la page ; une journée d'essais sur l'animation (ordre de React, `touch-action`, durées, courbes, variable non héritée, cartes hors de l'écran sautées) n'a rien réglé, et le dernier essai faisait planter Safari.
+- **Cause :** la feuille portait 101 destinations et 50 lieux, soit 7 894 éléments, que le téléphone recalculait à chaque mouvement.
+- **Solution :** montrer 10 destinations, puis « Voir plus » (2 808 éléments) : fluide sur l'iPhone, en quelques lignes.
+- **À retenir :** devant une animation lente, compter d'abord ce qu'elle déplace (`document.querySelectorAll('*').length`) et essayer la même page avec dix fois moins de contenu ; si c'est fluide, montrer moins (ou ne fabriquer que ce qui est visible) au lieu d'optimiser le dessin. Une astuce de rendu récente peut faire plus de mal sur Safari que le défaut qu'elle corrige.
+- **Origine :** #190, D122, 25/11.
+
+### L92 — Recaler une branche à plusieurs commits : fusionner `main` plutôt que la rejouer
+- **Problème :** après la fusion d'une PR voisine, le rebase de #185 s'arrêtait au premier de ses commits, puis s'arrêterait à chaque commit suivant, sur les mêmes documents (`06`, `DECISIONS`, `CHANGELOG`).
+- **Cause :** un rebase rejoue les commits un par un ; chaque commit qui touche une ligne en conflit redemande la résolution.
+- **Solution :** `git rebase --abort`, puis `git merge origin/main` dans la branche : une seule résolution, pas de poussée forcée ; la PR est fusionnée en un seul commit (*Squash and merge*), l'historique de `main` reste propre.
+- **À retenir :** pour une branche de PR fusionnée par « squash », fusionner `main` dedans est plus simple qu'un rebase dès qu'elle a plusieurs commits ; le rebase garde son intérêt pour une branche partie d'une autre (`--onto`), qui ne doit pas emporter les commits de la première.
+- **Origine :** #185, #188, 25/11.
+
 ### Chiffres pour le jury (mesurés le 16/11, base locale, départ de Dijon, 101 gares de destination)
 | Mesure | Avant | Après | Gain |
 |---|---|---|---|
@@ -688,3 +702,4 @@ Valeurs en g CO₂e/km.
 | 24/11/2026 | 1.24 | L85 (deux écritures de l'adresse dans le même geste), L86 (une remise en ordre se prouve par des tests avant et après) |
 | 24/11/2026 | 1.25 | L87 (un seuil d'interface se déduit d'un critère mesuré) |
 | 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |
+| 25/11/2026 | 1.27 | L91 (une animation qui saute sur une longue page : compter les éléments), L92 (recaler une branche à plusieurs commits par une fusion de `main`) |
