@@ -552,6 +552,10 @@
   --default-transition-duration: calc(200ms * var(--motion-speed));
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  /* Feuille de résultats d'Explorer et mini-fiche qui la suit : la durée et la courbe des feuilles de
+     `vaul` (« Filtres »), départ franc, longue fin douce (D120). */
+  --ease-feuille: cubic-bezier(0.32, 0.72, 0, 1);
+  --duree-feuille: calc(500ms * var(--motion-speed));
   --animate-fade-in: fade-in calc(200ms * var(--motion-speed)) var(--ease-soft) both;
   --animate-slide-up: slide-up calc(320ms * var(--motion-speed)) var(--ease-soft) both;
   --animate-pulse-dot: pulse-dot calc(1800ms * var(--motion-speed)) ease-out infinite;
