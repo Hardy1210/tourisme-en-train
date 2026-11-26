@@ -127,6 +127,19 @@ export const schemaFicheLieu = z.object({
   categorie: schemaCategorie,
   sousCategorie: z.string().nullable(),
   description: z.string().nullable(),
+  /**
+   * Crédit du texte quand il ne vient pas de la source du lieu (D123 : Wikipédia, nos textes) ; null = la
+   * source du lieu (`attribution`). Absent des réponses gardées hors ligne avant D123 : lu comme null.
+   */
+  creditDescription: z
+    .object({
+      credit: z.string(),
+      licence: z.string().nullable(),
+      licenceUrl: z.string().nullable(),
+      lien: z.string().nullable(),
+    })
+    .nullable()
+    .default(null),
   adresse: z.string().nullable(),
   commune: z.string().nullable(),
   url: z.string().nullable(),

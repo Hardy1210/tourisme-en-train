@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.22 · **Date** 26/11/2026
+> **Version** 1.23 · **Date** 26/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -325,7 +325,7 @@ Une photo par lieu au plus (D100, D101), recalculée par `pnpm etl photos` sans 
 Chargement : table entièrement remplacée, dans la transaction de l'étape ; contrôle bloquant `controles.photosMin`.
 
 ### 3.6 quater `description_lieu`
-Textes **ajoutés** à un lieu, une ligne par lieu et par **origine** (D123, migration `0018`). La description de la source du lieu reste dans `lieu.description` (DATAtourisme, OSM ; D105). **Priorité à l'affichage :** `wagoo`, puis `lieu.description`, puis `wikipedia` ; la table garde tous les textes, l'application choisit. Chaque traitement ne remplace **que les lignes de son origine**.
+Textes **ajoutés** à un lieu, une ligne par lieu et par **origine** (D123, migration `0018`). La description de la source du lieu reste dans `lieu.description` (DATAtourisme, OSM ; D105). **Priorité à l'affichage :** `wagoo`, puis `lieu.description` des sources de `lieux.descriptionsAvantWikipedia` (DATAtourisme), puis `wikipedia`, puis `lieu.description` des autres sources (OSM) ; la table garde tous les textes, l'application choisit. Chaque traitement ne remplace **que les lignes de son origine**.
 
 | Colonne | Type | Contraintes | Description |
 |---|---|---|---|
@@ -533,3 +533,4 @@ ORDER BY a.depart_s;
 | 16/11/2026 | 1.20 | § 3.10 : type `PARKING_VELO` (migration 0016) — D097 |
 | 17/11/2026 | 1.21 | § 3.6 `lieu.wikidata`, § 3.6 ter `photo_lieu` (migration 0017) — D100, D101 |
 | 26/11/2026 | 1.22 | § 3.6 quater `description_lieu` (migration 0018) — D123 |
+| 26/11/2026 | 1.23 | § 3.6 quater : ordre d'affichage précisé (OSM après Wikipédia) — D123 |

@@ -1,10 +1,13 @@
 // Lieux à pied d'une gare et fiche d'un lieu (docs/05-api.md § 3.6, § 3.7, D052).
 import 'server-only';
 
+import { sources } from '@tourisme/commun';
+
 import { parametres } from '@/config/parametres';
 import { gareParUic } from '@/lib/db/requetes-partagees';
 import { Introuvable } from '@/lib/http/erreurs';
 
+import { choisirDescription } from '../description';
 import { photoDe } from '../photo';
 import type { FicheLieu, ParametresLieuxGare, ReponseAutour } from '../schemas';
 
@@ -58,13 +61,27 @@ export async function ficheLieu(cle: string, datePhoto: string): Promise<FicheLi
     lieu = cible;
   }
   const gares = await garesDuLieu(lieu.id);
+  const texte = choisirDescription({
+    source: lieu.source,
+    description: lieu.description,
+    ajoutees: lieu.ajoutees,
+    sourcesAvantWikipedia: parametres.lieux.descriptionsAvantWikipedia,
+  });
+  const ajoutee = texte?.ajoutee ?? null;
   return {
     cle: lieu.cle,
     demande: lieu.cle === cle ? null : cle,
     nom: lieu.nom,
     categorie: lieu.categorie,
     sousCategorie: lieu.sous_categorie,
-    description: lieu.description,
+    description: texte?.texte ?? null,
+    creditDescription: ajoutee && {
+      credit: ajoutee.credit,
+      licence: ajoutee.licence,
+      // Même code que l'origine (`wikipedia`) : sa licence est liée quand config/sources.json la donne.
+      licenceUrl: sources.sources.find((s) => s.code === ajoutee.origine)?.licenceUrl ?? null,
+      lien: ajoutee.lien,
+    },
     adresse: lieu.adresse,
     commune: lieu.commune,
     url: lieu.url,

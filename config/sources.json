@@ -109,7 +109,7 @@
     },
     {
       "code": "wikipedia",
-      "nom": "Wikipédia — image principale libre d'un article",
+      "nom": "Wikipédia — image principale libre et introduction d'un article",
       "producteur": "Contributeurs de Wikipédia",
       "groupe": "lieux",
       "mode": "base",
@@ -117,6 +117,7 @@
       "telechargement": null,
       "api": "https://fr.wikipedia.org/w/api.php",
       "licence": "CC BY-SA 4.0",
+      "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
       "attribution": "Wikipédia (CC BY-SA)",
       "verifie": true,
       "affichee": true

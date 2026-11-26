@@ -104,6 +104,25 @@ describe('/api/lieux/[cle]', () => {
     });
   });
 
+  it('sans description de sa source, le texte Wikipédia, avec son crédit, sa licence et son article (D123)', async () => {
+    expect(await lire('echantillon-ECH_L51')).toMatchObject({
+      description: "Donnée d'exemple : introduction de l'article Wikipédia du château.",
+      creditDescription: {
+        credit: 'Wikipédia',
+        licence: 'CC BY-SA 4.0',
+        licenceUrl: configSources.sources.find((s) => s.code === 'wikipedia')?.licenceUrl,
+        lien: 'https://fr.wikipedia.org/wiki/Exemple',
+      },
+    });
+  });
+
+  it('limite : sans texte ajouté, la description de la source, sans crédit à part', async () => {
+    expect(await lire('echantillon-ECH_L11')).toMatchObject({
+      description: "Donnée d'exemple.",
+      creditDescription: null,
+    });
+  });
+
   it('lien vers un doublon → lieu gardé, avec la clé demandée (D052)', async () => {
     expect(await lire('echantillon-ECH_L17')).toMatchObject({
       cle: 'echantillon-ECH_L11',

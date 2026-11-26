@@ -8,6 +8,7 @@
 ## [Non publié]
 
 ### Ajouté
+- La fiche d'un lieu sans description montre le début de son article Wikipédia, quand le lieu en a un et que l'article parle bien de lui (environ 1 260 lieux de la région, dont 330 près des gares). Le texte est suivi de « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », avec le lien vers l'article.
 - Dans la page « Trajet », un bouton ⇅ échange le départ et la destination (Beaune → Dijon au lieu de Dijon → Beaune) ; s'il n'y a pas de train direct dans l'autre sens, l'application le dit.
 - Dans la page « Trajet », on choisit aussi la date : une ligne dit pour quand on cherche, trois pastilles (Aujourd'hui, Demain, Ce week-end) apparaissent avec la destination, et la ligne ouvre le calendrier. C'est la même date que dans « Filtres ».
 - Après le choix du départ, l'accueil montre la gare de départ et le temps pour y aller (« La plus proche de vous », ou « La mieux desservie près de vous »), avec « Changer », un champ « Destination » facultatif et « Voir les sorties ».

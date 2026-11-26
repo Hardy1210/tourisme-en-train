@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.32 · **Date** 26/11/2026
+> **Version** 1.33 · **Date** 26/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -62,7 +62,7 @@ Validé par **un seul schéma Zod**, dans `packages/commun/src/parametres.ts`, i
   },
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "region": { "garesPrincipales": "…" }, "localisation": { "delaiPositionMs": 10000, "delaiSaisieMs": 250, "longueurMinRecherche": 3 },
-  "lieux": { "descriptionMaxCaracteres": 2000, "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
+  "lieux": { "descriptionMaxCaracteres": 2000, "descriptionsAvantWikipedia": ["datatourisme"], "enLongueurOsm": ["waterway=canal"], "raccordTronconsM": 1000, "fichesVille": { "…": "D057" }, "ongletLieux": { "…": "D057" } },
   "dedoublonnage": {
     "distanceM": 75,
     "similariteNom": 0.6,
@@ -503,3 +503,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 25/11/2026 | 1.30 | § 2 : `limites.lieuxParRangee`, `limites.rangeesParPage` (onglet Lieux en rangées) — D121 |
 | 25/11/2026 | 1.31 | § 2 : `limites.lieuxParPage` retiré avec `GET /api/lieux` — D121 |
 | 26/11/2026 | 1.32 | § 4.6 quater : textes Wikipédia des lieux (`descriptions_wikipedia`) — D123 |
+| 26/11/2026 | 1.33 | § 2 : `lieux.descriptionsAvantWikipedia` — D123 |

@@ -114,6 +114,7 @@
   "journee": { "arriveeMaxAller": "12:00", "dureeVisiteMin": 180 },
   "lieux": {
     "descriptionMaxCaracteres": 2000,
+    "descriptionsAvantWikipedia": ["datatourisme"],
     "enLongueurOsm": ["waterway=canal"],
     "raccordTronconsM": 1000,
     "fichesVille": {

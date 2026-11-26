@@ -428,4 +428,10 @@ FROM (VALUES
 ) AS p (id_source, source, origine, fichier, petite, grande, auteur, licence, licence_url, page, debut, fin)
 JOIN lieu l ON l.source = 'echantillon' AND l.id_source = p.id_source;
 
+-- D123 : texte Wikipédia (donnée d'exemple) d'un lieu sans description, avec son crédit et son article.
+INSERT INTO description_lieu (lieu_id, origine, texte, credit, licence, lien)
+SELECT l.id, 'wikipedia', 'Donnée d''exemple : introduction de l''article Wikipédia du château.', 'Wikipédia',
+       'CC BY-SA 4.0', 'https://fr.wikipedia.org/wiki/Exemple'
+FROM lieu l WHERE l.source = 'echantillon' AND l.id_source = 'ECH_L51';
+
 COMMIT;

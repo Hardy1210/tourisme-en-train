@@ -1,6 +1,6 @@
 # 06 — Interface, design system et PWA
 
-> **Version** 1.53 · **Date** 26/11/2026
+> **Version** 1.54 · **Date** 26/11/2026
 > **Dépend de :** `00-vision.md`, `05-api.md`, `GLOSSAIRE.md`, `apps/web/src/styles/globals.css`
 > **Utilisé par :** fiches E10 → E14
 > **Document de référence pour :** écrans, états, composants, règles d'usage du design system, carte, PWA, accessibilité, textes.
@@ -102,6 +102,7 @@ Rail de navigation à gauche (88 px, `--rail-largeur`) + panneau de 440 px (en-t
 ## 4 quater. Description d'un lieu (D105)
 - **Texte brut, jamais du HTML** (pas de `dangerouslySetInnerHTML`) ; paragraphes gardés par `white-space: pre-line` (`features/lieux/ui/infos-lieu.tsx`). Repliée : 4 lignes, puis « Lire la suite » / « Réduire » au-delà de 240 caractères.
 - **« Source : » + attribution de la source du lieu, juste sous la description** (règle 8 ; DATAtourisme : « DATAtourisme (ADN Tourisme), Licence Ouverte Etalab 2.0 », `config/sources.json`). Sans description, l'attribution reste en bas de la fiche : jamais deux fois.
+- **Texte ajouté (D123)** : un seul texte par fiche, choisi par `choisirDescription` (`features/lieux/description.ts`) : nos textes, puis la description des sources de `lieux.descriptionsAvantWikipedia` (DATAtourisme), puis Wikipédia, puis la description des autres sources (OSM). Sous un texte Wikipédia : « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », l'article et la licence liés (la licence demande l'auteur, la licence et de dire que le texte est modifié : il est coupé et nettoyé) ; l'attribution de la source du lieu reste alors en bas de la fiche.
 
 ## 4 sexies. Fiche lieu, barre du haut et pied des fiches (D109)
 - **Fiche lieu** (maquette `design/maquettes/Fiche-Lieu.dc.html`) : toute la fiche sur le fond de la marque, cartes sur les surfaces de marque (D106). **Haut** : photo pleine largeur, jusqu'en haut de l'écran derrière l'heure et la batterie (`CadreFiche hautPlein`), découpée par un grand cercle bordé de jaune (`entete-arc`, mesures en `cqw`) ; sans photo, même courbe plus basse, icône de la catégorie. Puis titre, pastille de catégorie, Qualité Tourisme, carte des gares, description, bloc horaires + adresse, « Site officiel » à bord fin, mini-carte, source.
@@ -241,3 +242,4 @@ Un écran à la fois, celui que Hardy indique ; montré avant de passer au suiva
 | 25/11/2026 | 1.51 | § 5 : écran Lieux en rangées par gare, cartes sur photo — D121 |
 | 25/11/2026 | 1.52 | § 5 : plus de ⓘ sur les cartes des rangées, le crédit est sur la page du lieu — D103 |
 | 26/11/2026 | 1.53 | § 4 : page « Trajet » sans position, grandes gares de la région à la place des gares proches |
+| 26/11/2026 | 1.54 | § 4 quater : texte Wikipédia et son crédit dans la fiche lieu, ordre des textes — D123 |
