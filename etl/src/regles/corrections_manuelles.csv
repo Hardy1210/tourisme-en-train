@@ -1,6 +1,7 @@
 # Corrections manuelles de lieux (docs/04-traitement-donnees.md § 4.5, D061), relues par Hardy. Modifiable sans code.
 # Seules les lignes dont la colonne decision vaut « oui » sont appliquées, à chaque chargement de la source.
-# action : reclasser (nouvelle categorie et sous_categorie) ou retirer (le lieu n'est plus une sortie).
+# action : reclasser (nouvelle categorie et sous_categorie) ou retirer (le lieu n'est plus une sortie : gardé en
+#   base mais masqué de tous les écrans, D124 ; supprimer la ligne le fait revenir).
 # secondaire : retirer = aucune catégorie secondaire ; un nom de catégorie = cette seule catégorie secondaire ;
 #   vide = règle normale (D060).
 # Un lieu n'est marqué « enfants » que si une source le justifie : la raison dit laquelle.

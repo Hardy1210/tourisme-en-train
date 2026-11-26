@@ -13,11 +13,12 @@ export interface CorrectionLieu {
 }
 
 /**
- * Le lieu corrigé, ou null s'il est retiré. « inclure » se comporte comme « reclasser » : le lieu, que
+ * Le lieu corrigé. « retirer » ne le supprime jamais : il est gardé tel quel, et `lieuMasque` le cache de
+ * tous les écrans (règle de Hardy, D093, D124). « inclure » se comporte comme « reclasser » : le lieu, que
  * les règles auraient écarté, est gardé avec la catégorie donnée (le lecteur l'a déjà construit).
  */
-export function corrigerLieu(lieu: LieuACharger, correction: CorrectionLieu): LieuACharger | null {
-  if (correction.action === 'retirer') return null;
+export function corrigerLieu(lieu: LieuACharger, correction: CorrectionLieu): LieuACharger {
+  if (correction.action === 'retirer') return lieu;
   const categorie = correction.categorie ?? lieu.categorie;
   return {
     ...lieu,
@@ -49,15 +50,15 @@ export function inclusionsDe(corrections: readonly CorrectionLieu[]): Inclusion 
 }
 
 /**
- * Un lieu est-il masqué par sa sous-catégorie (`acces.sousCategoriesMasquees`, ex. piscine) ? Il reste
- * en base, caché de tous les écrans (D093). Une correction manuelle passe avant (D091) : un lieu
- * « inclure » ou « reclasser » n'est jamais masqué ici.
+ * Un lieu est-il masqué ? Il reste alors en base, caché de tous les écrans (D093). Une correction manuelle
+ * passe avant (D091) : « retirer » le masque toujours (D124), « inclure » ou « reclasser » jamais ; sans
+ * correction, sa sous-catégorie décide (`acces.sousCategoriesMasquees`, ex. piscine).
  */
-export function masqueParSousCategorie(
+export function lieuMasque(
   sousCategorie: string | null,
   masquees: readonly string[],
   correction: CorrectionLieu | undefined,
 ): boolean {
-  if (correction && correction.action !== 'retirer') return false;
+  if (correction) return correction.action === 'retirer';
   return sousCategorie !== null && masquees.includes(sousCategorie);
 }

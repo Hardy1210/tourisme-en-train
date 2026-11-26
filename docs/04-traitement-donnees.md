@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.33 · **Date** 26/11/2026
+> **Version** 1.34 · **Date** 26/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -315,7 +315,7 @@ Spécifique :
 
 ### 4.5 Catégorisation
 - **Corrections manuelles (D061, D091) :** `etl/src/regles/corrections_manuelles.csv`, versionné, lignes validées par Hardy (`decision` = `oui`), réappliquées à **chaque** import : une mise à jour des données ne les efface pas. Elles passent **avant** les règles automatiques (noms exclus, `acces.sousCategoriesMasquees`). Actions :
-  - `retirer` : le lieu n'est plus une sortie ;
+  - `retirer` : le lieu n'est plus une sortie. **Il n'est jamais supprimé** : gardé en base, `lieu.masque` = vrai, caché de tous les écrans comme une piscine (D093, D124) ; supprimer la ligne le fait revenir au prochain import. Retirer le lieu gardé d'une paire de doublons cache aussi son jumeau : c'est le même lieu ;
   - `reclasser` : nouvelle `categorie` (obligatoire) et `sous_categorie` ;
   - `inclure` : garder un lieu que les règles écartent (sans règle, exclu, sans nom…), avec la `categorie` donnée (obligatoire). Il doit être dans le fichier téléchargé de la source.
 
@@ -504,3 +504,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 25/11/2026 | 1.31 | § 2 : `limites.lieuxParPage` retiré avec `GET /api/lieux` — D121 |
 | 26/11/2026 | 1.32 | § 4.6 quater : textes Wikipédia des lieux (`descriptions_wikipedia`) — D123 |
 | 26/11/2026 | 1.33 | § 2 : `lieux.descriptionsAvantWikipedia` — D123 |
+| 26/11/2026 | 1.34 | § 4.5 : « retirer » masque le lieu au lieu de le supprimer — D124 |
