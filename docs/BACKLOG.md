@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.7 · **Date** 21/11/2026
+> **Version** 1.8 · **Date** 26/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -37,7 +37,7 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 | F03 | En tant que voyageur, je veux connaître mes gares de départ les plus proches et pouvoir en changer. | Must (P0) | 2 | Par défaut, la plus proche, sauf si une gare à 3 km au plus a au moins 1,5 fois plus de trains et dessert toutes ses destinations (D064) ; changement de gare possible. | E08 · E11 | S6 | ✅ |
 | F04 | En tant que voyageur, je veux voir les destinations atteignables en train direct à la date choisie afin de choisir une sortie. | Must (P0) | 8 | Aucune correspondance ; durée, trains par jour, premier départ, dernier retour. | E02 · E03 · E04 · E08 · E11 | S6 | ✅ |
 | F05 | En tant que voyageur, je veux filtrer (rayon, durée de train, ville, catégories, date) afin d'affiner mes idées. | Must (P0) | 3 | Chaque filtre modifie la liste et la carte ; filtres conservés dans l'adresse de la page. | E11 | S6 | ✅ |
-| F06 | En tant que voyageur, je veux une fiche destination avec les lieux à pied depuis la gare afin de préparer ma visite. | Must (P0) | 5 | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel. | E05 · E06 · E09 · E12 | S7 | 🟡 |
+| F06 | En tant que voyageur, je veux une fiche destination avec les lieux à pied depuis la gare afin de préparer ma visite. | Must (P0) | 5 | Lieux à pied depuis la gare, description, image et horaires si disponibles, lien officiel. | E05 · E06 · E09 · E12 | S7 | ✅ |
 | F07 | En tant que voyageur, je veux les trains aller et retour de la journée afin de savoir quand partir et rentrer. | Must (P0) | 3 | Horaires théoriques de la date ; dernier retour mis en évidence. | E03 · E09 · E12 | S7 | ✅ |
 | F08 | En tant que voyageur, je veux une carte avec les gares colorées selon le temps de trajet afin de visualiser les distances. | Must (P0) | 5 | Position, gares, lieux par catégorie ; couleurs par tranche de temps ; bascule liste / carte. | E11 | S6 | 🟡 |
 | F09 | En tant que voyageur, je veux connaître les transports sur place (bus, tram, vélos) afin de me déplacer à l'arrivée. | Must (P0) | 5 | Arrêts et stations proches de la gare d'arrivée. | E07 · E09 · E12 | S7 | 🟡 |
@@ -153,40 +153,41 @@ Sert à relier chaque ticket GitHub à ce qu'il apporte. Chaque ticket porte une
 
 ---
 
-## Vérification de l'état (05/11/2026)
+## Vérification de l'état (05/11/2026, mise à jour le 26/11)
 
 Lignes relues une à une dans le code et les tests. ✅ = le critère est dans le code ; l'essai sur téléphone reste à faire par Hardy.
 
 | Ligne | État | Ce qui manque |
 |---|---|---|
 | F05 | ✅ | Parcours de chaque filtre (`filtres.e2e.ts`, `date-filtres.e2e.ts`, catégories dans `explorer.e2e.ts`) : liste, carte, adresse, rechargement. Le rayon ne change la carte qu'à partir du zoom `carte.zoomMinLieux` ; section « Près de vous » et mode destination : `pres-de.e2e.ts` (D089) |
-| F06 | 🟡 | L'image du lieu n'est affichée nulle part (photos reportées, `A-FAIRE` § 1) |
-| F08 | 🟡 | Éléments présents ; lisibilité avec 101 destinations non validée (`A-FAIRE` § 1) |
+| F06 | ✅ | Photos des lieux avec crédit (D100 à D104, #189), descriptions complètes (D105), horaires lisibles (D108), site officiel. En plus, facultatif : extrait Wikipédia pour les lieux sans description (mesure d'abord, `A-FAIRE` § 1) |
+| F08 | 🟡 | Éléments présents ; la feuille se baisse au doigt pour montrer la carte (D120) ; lisibilité avec 101 destinations à juger au contrôle final sur l'iPhone (`A-FAIRE` § 1) |
 | F09 | 🟡 | Parcours présents ; comparaison au plan du réseau Divia à faire par Hardy (`A-FAIRE` § 2) |
 | F12 | 🟡 | iPhone validé en production le 07/11 ; un vrai Android à trouver |
-| F14 | 🟡 | Page en ligne ; 97 Mt, 69 %, 3 étapes, « pour qui », « ce que ça change » restent à écrire ou confirmer (E13) |
+| F14 | 🟡 | Page en ligne ; 3 étapes avec captures, « Pour qui », « Ce que ça change » dans #197 (ouverte) : Hardy refait les captures avant la fusion |
 | F20 | 🟡 | Couleurs sombres présentes ; bascule seulement sur la planche `/design`, pas dans l'application |
 | F15, F25 | ✅ | Dans le code et, pour F25, dans les tests unitaires ; aucun parcours dédié |
 | INF1, INF2, INF8, INF9 | ✅ | Phase 1 d'E17 terminée le 07/11 ; pare-feu de l'hébergeur en plus, en phase 2 |
 
 ---
 
-## 8. Reste à faire et estimation (relevé du 07/11/2026)
+## 8. Reste à faire et estimation (relevé du 26/11/2026)
 
-**Estimations de Claude Code, pas des mesures,** pour Hardy accompagné de Claude Code. À revoir chaque lundi. 1 jour = 2 points. Hors P1, qui passent après le P0 (D051). Dates de Hardy (D078) : P0 au plus tard le 22/11, gel des nouvelles fonctionnalités au plus tard le 27/11, puis corrections, design et déploiements jusqu'à la soutenance ; l'avance va aux P1. **Ordre (D079, D080) : les étapes ci-dessous d'abord ; les retouches de design du 23 au 25/11, avant E15.**
+**Estimations de Claude Code, pas des mesures,** pour Hardy accompagné de Claude Code. 1 jour = 2 points. Hors P1 (D051). Dates de Hardy (D078) : gel des nouvelles fonctionnalités le 27/11, livraison le 30/11, soutenance le 03/12. **Le contrôle complet sur l'iPhone se fait à la fin de tout (Hardy, 26/11).** Relevé du 07/11 : voir l'historique Git de ce fichier.
 
 | Étape | Pour quand | Fait | Reste | Estimation |
 |---|---|---|---|---|
-| E11, E12 | P0, 22/11 | Écrans, API, parcours | **Fonctionnel d'abord, une PR par point, dans cet ordre (D080) :** (1) recherche de ville, communes seules ✅ D081 ; (2) nom « TER Mobigo » ; (3) test « prix non calibré » ; (4) guidage si la position est refusée ; (5) recherche de destination ✅ D084 (barre du trajet) et D085 (page « Trajet » sur téléphone, #94), puis page « Trajet » sur Lieux ✅ (#100) et en-tête allégé, date dans « Filtres » (D086, remplace l'en-tête repliable) ; (6) parcours des filtres rayon, durée, ville (F05) ✅. Puis chronomètre et essais sur téléphone, plan Divia (F09) | 3 j |
-| Intégration continue | P0, 22/11 | ✅ le 21/11 : GitHub Actions (`verifier`, `integration`, `image` bloquantes, `parcours` non bloquant, ensemble de règles sans contournement, D110, #166, #167) ; règle ESLint des couches (D111, #168) | Rien | – |
-| Design | 23 → 25/11 | Maquettes v3 | Retouches de Hardy, après le P0 et avant E15, pour que l'accessibilité, la performance et les captures du pitch portent sur l'interface finale (D080) | 3 j |
-| E13 | P0, 22/11 | Sources, À propos, Mentions, en ligne | 3 étapes avec captures, « pour qui », « ce que ça change » : textes de Hardy | 1 j |
-| E14 | P0, 22/11 | Installation, hors ligne, iPhone en production | Un vrai Android (30 min, personne à trouver). Invitation à installer : facultative, 0,5 j | 0,5 j |
-| E15 | S8, après le P0 | 482 tests unitaires, 167 d'intégration, 133 de parcours (06/11) ; aucun `TODO` | Pas d'outil de couverture, ni axe, ni Lighthouse dans le dépôt (nouvelle dépendance : `DECISIONS`) ; accessibilité, performance, 2 ou 3 testeurs extérieurs | 3 j |
-| E16 | S8, après le P0 | Image web, compose de production, scripts d'export et de restauration | Profil `demo` sans `migrer` ni restauration ; export figé et date de démo ; `README.md` ; scénario de démo ; essai sur un autre ordinateur et réseau coupé ; répétition | 3 j |
-| E18 | Fin | Rien | Marque, `README.md` public, captures, publication | 1 j |
+| E11, E12 | Gel, 27/11 | Écrans, API, parcours ; les 7 remarques du professeur (#162 à #196) | Position refusée dans la page « Trajet » (`A-FAIRE` § 1) ; plan Divia (F09, Hardy) ; contrôle sur l'iPhone à la fin | 0,5 j |
+| Intégration continue | P0, 22/11 | ✅ le 21/11 (D110, D111) | Rien | – |
+| Design | Maquettes de Hardy | Maquettes v3 et v4 intégrées | Nouvelles maquettes de la feuille d'Explorer (Hardy, 26/11) : design seulement, étude d'impact avant le code | Selon les maquettes |
+| E13 | Gel, 27/11 | Sources, À propos, Mentions ; textes du pitch (#197) | Captures refaites par Hardy, fusion de #197 ; one-pager (design de Hardy) | 0,5 j |
+| E14 | Livraison, 30/11 | Installation, hors ligne, iPhone en production | Un vrai Android (30 min, personne à trouver) | 0,5 j |
+| E15 | Livraison, 30/11 | Tests unitaires, d'intégration et de parcours, sur chaque PR (D110) | Accessibilité, parcours instables (`A-FAIRE` § 1), corrections après le contrôle final | 2 j |
+| E16 | Livraison, 30/11 | Image web, compose de production, scripts d'export et de restauration | Profil `demo` sans `migrer` ni restauration ; export figé et date de démo ; `README.md` ; scénario de démo ; essai sur un autre ordinateur et réseau coupé ; répétition. **Plus gros risque : rien n'est encore commencé** | 3 j |
+| E17 | Quand Hardy le décide | 0.5.0 en ligne (20/11) | 0.6.0 (≈ 30 PR depuis la 0.5.0) ; phase 2 si le temps le permet | 0,5 j |
+| E18 | Fin | Rien | Marque, licence du code, `README.md` public, captures, publication | 1 j |
 
-**Avant le P0 : environ 4,5 jours de travail, pour 15 jours de calendrier. Jusqu'au 30/11 : environ 11,5 jours, pour 23 jours de calendrier.** Hors P1 et hors phase 2 d'E17.
+**Jusqu'au 30/11 : environ 8 jours de travail, pour 5 jours de calendrier.** E16 passe en premier après le gel ; le reste se range derrière.
 
 ---
 
@@ -202,3 +203,4 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | 10/11/2026 | 1.5 | § 8 : ordre des 6 points d'E11–E12, intégration continue, design du 23 au 25/11 — D080, D081 |
 | 13/11/2026 | 1.6 | § 8 bis : F05, parcours « Près de vous » et mode destination — D089 |
 | 21/11/2026 | 1.7 | § 8 : intégration continue et règle des couches terminées — D110, D111 |
+| 26/11/2026 | 1.8 | F06 terminée (photos, descriptions, horaires) ; F08 et F14 relues ; § 8 : relevé du 26/11, E16 en premier après le gel |
