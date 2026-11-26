@@ -1,6 +1,6 @@
 // Lieux à pied d'une gare et fiche d'un lieu (docs/05-api.md § 3.6, § 3.7, D052).
 import 'server-only';
-import { schemaCategorie, type Categorie } from '@tourisme/commun';
+import { ORIGINES_DESCRIPTION, schemaCategorie, type Categorie } from '@tourisme/commun';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -73,6 +73,16 @@ const schemaLieu = schemaColonnesPhoto.extend({
   lon: z.number(),
   doublon_de: z.coerce.number().int().nullable(),
   site_de: z.coerce.number().int().nullable(),
+  /** Lignes de `description_lieu` (D123) : l'application choisit le texte (`choisirDescription`). */
+  ajoutees: z.array(
+    z.object({
+      origine: z.enum(ORIGINES_DESCRIPTION),
+      texte: z.string(),
+      credit: z.string(),
+      licence: z.string().nullable(),
+      lien: z.string().nullable(),
+    }),
+  ),
 });
 
 export type LieuBrut = z.infer<typeof schemaLieu>;
@@ -80,7 +90,10 @@ export type LieuBrut = z.infer<typeof schemaLieu>;
 const COLONNES_LIEU = sql`l.id, l.cle, l.nom, l.categorie, l.sous_categorie, l.description, l.adresse,
   c.nom AS commune, l.url, l.horaires, l.periode, l.qualite_tourisme, l.source,
   s.attribution, ST_Y(l.geom::geometry) AS lat, ST_X(l.geom::geometry) AS lon, l.doublon_de, l.site_de,
-  ${colonnesPhoto}`;
+  ${colonnesPhoto},
+  (SELECT coalesce(json_agg(json_build_object('origine', d.origine, 'texte', d.texte,
+            'credit', d.credit, 'licence', d.licence, 'lien', d.lien) ORDER BY d.origine), '[]'::json)
+   FROM description_lieu d WHERE d.lieu_id = l.id) AS ajoutees`;
 
 async function lireLieu(
   condition: ReturnType<typeof sql>,

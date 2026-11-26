@@ -211,6 +211,12 @@ export const schemaParametres = z
     lieux: z.strictObject({
       /** Longueur maximale d'une description : coupe à une fin de phrase, sinon au mot (docs/04 § 4.4, D105). */
       descriptionMaxCaracteres: z.number().int().positive(),
+      /**
+       * Sources de lieux dont la description passe avant le texte Wikipédia (D123) : DATAtourisme, écrit par
+       * les offices de tourisme pour les visiteurs (822 caractères en moyenne, 26/11). Les autres (OSM : 86)
+       * passent après lui. Nos propres textes (`wagoo`) passent toujours en premier.
+       */
+      descriptionsAvantWikipedia: z.array(z.string().min(1)),
       /** Tags OSM `clé=valeur` des lieux en longueur (canal) : tracé gardé, pas seulement un point (D043). */
       enLongueurOsm: z.array(z.string().regex(/^[^=\s]+=[^=\s]+$/, 'clé=valeur attendu')),
       /** Tronçons de même nom à moins de cette distance : un seul lieu en longueur (D043). */

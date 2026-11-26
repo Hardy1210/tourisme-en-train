@@ -5,6 +5,8 @@ import { useState, type ReactNode } from 'react';
 import { Bouton } from '@/components/ui/bouton';
 import { cn } from '@/lib/classes';
 
+import type { FicheLieu } from '../schemas';
+
 const LONGUEUR_RESUME = 240;
 
 /**
@@ -34,11 +36,59 @@ export function Info({
   );
 }
 
+const CLASSES_LIEN = 'underline decoration-dotted underline-offset-2 hover:text-page-marque-texte';
+
+/**
+ * Sous un texte ajouté (D123) : « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », l'article et la licence
+ * liés quand on les a. « Extrait » : le texte est coupé et nettoyé (la licence demande de le dire).
+ */
+function LigneCreditTexte({ credit }: { credit: NonNullable<FicheLieu['creditDescription']> }) {
+  return (
+    <p className="text-xs text-page-marque-texte-muted">
+      Texte :{' '}
+      {credit.lien ? (
+        <a href={credit.lien} target="_blank" rel="noopener noreferrer" className={CLASSES_LIEN}>
+          {credit.credit}
+        </a>
+      ) : (
+        credit.credit
+      )}
+      {credit.licence && (
+        <>
+          {' '}
+          (extrait) ·{' '}
+          {credit.licenceUrl ? (
+            <a
+              href={credit.licenceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={CLASSES_LIEN}
+            >
+              {credit.licence}
+            </a>
+          ) : (
+            credit.licence
+          )}
+        </>
+      )}
+    </p>
+  );
+}
+
 /**
  * Description en texte brut, jamais en HTML (D105) : ses paragraphes sont gardés par `whitespace-pre-line`.
- * Sa source juste dessous (règle 8 : « Source : » + attribution de `config/sources.json`).
+ * Sa source juste dessous (règle 8) : « Source : » + attribution de `config/sources.json` ; pour un texte
+ * ajouté (Wikipédia, D123), son propre crédit.
  */
-export function Description({ texte, source }: { texte: string; source: string }) {
+export function Description({
+  texte,
+  source,
+  credit,
+}: {
+  texte: string;
+  source: string;
+  credit: FicheLieu['creditDescription'];
+}) {
   const [ouverte, setOuverte] = useState(false);
   const longue = texte.length > LONGUEUR_RESUME;
   return (
@@ -61,7 +111,11 @@ export function Description({ texte, source }: { texte: string; source: string }
           {ouverte ? 'Réduire' : 'Lire la suite'}
         </Bouton>
       )}
-      <p className="text-xs text-page-marque-texte-muted">Source : {source}</p>
+      {credit ? (
+        <LigneCreditTexte credit={credit} />
+      ) : (
+        <p className="text-xs text-page-marque-texte-muted">Source : {source}</p>
+      )}
     </div>
   );
 }

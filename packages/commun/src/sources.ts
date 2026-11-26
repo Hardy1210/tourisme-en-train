@@ -21,6 +21,8 @@ const schemaSource = z.strictObject({
   /** Adresse de base d'une API appelée en direct (mode `direct`, ex. API Adresse, D051). */
   api: z.url({ protocol: /^https$/ }).optional(),
   licence: z.string().min(1),
+  /** Texte de la licence, lié dans les crédits quand elle le demande (CC BY-SA des textes Wikipédia, D123). */
+  licenceUrl: z.url({ protocol: /^https$/ }).optional(),
   attribution: z.string().min(1),
   /** La même mention, morceau par morceau, quand la licence demande des liens (fond de carte, D073). */
   attributionLiens: z

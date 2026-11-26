@@ -39,3 +39,22 @@ test('limite : un lieu sans description garde son attribution, une seule fois, s
   await expect(page.getByText(/Données d'exemple/)).toHaveCount(1);
   await expect(page.getByText(/^Source : /)).toHaveCount(0);
 });
+
+test('texte Wikipédia (D123) : « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », article et licence liés, la source du lieu reste', async ({
+  page,
+}) => {
+  await page.goto('/lieux/echantillon-ECH_L51');
+  await expect(page.getByText(/introduction de l'article Wikipédia du château/)).toBeVisible();
+  await expect(page.getByText(/^Texte : Wikipédia \(extrait\) · CC BY-SA 4\.0$/)).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Wikipédia' })).toHaveAttribute(
+    'href',
+    'https://fr.wikipedia.org/wiki/Exemple',
+  );
+  await expect(page.getByRole('link', { name: 'CC BY-SA 4.0' })).toHaveAttribute(
+    'href',
+    /creativecommons\.org\/licenses\/by-sa\/4\.0/,
+  );
+  // Le texte n'est pas de la source du lieu : son attribution reste écrite une fois, sans « Source : ».
+  await expect(page.getByText(/Données d'exemple/)).toHaveCount(1);
+  await expect(page.getByText(/^Source : /)).toHaveCount(0);
+});

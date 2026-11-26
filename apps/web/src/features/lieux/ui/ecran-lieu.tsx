@@ -103,7 +103,13 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
 
           <GaresDuLieu gares={lieu.garesProches} />
 
-          {lieu.description && <Description texte={lieu.description} source={lieu.attribution} />}
+          {lieu.description && (
+            <Description
+              texte={lieu.description}
+              source={lieu.attribution}
+              credit={lieu.creditDescription}
+            />
+          )}
 
           {(lieu.horaires || lieu.periode || lieu.adresse || lieu.commune) && (
             <div className="flex flex-col rounded-carte bg-carte-sur-marque-bg text-carte-sur-marque-texte shadow-carte">
@@ -138,8 +144,9 @@ export function EcranLieu({ cle, trajet }: { cle: string; trajet: ContexteTrajet
             <div className="h-50 flex-none overflow-hidden rounded-carte shadow-carte">{carte}</div>
           )}
 
-          {/* Avec une description, la source est écrite sous elle (D105) : jamais deux fois. */}
-          {!lieu.description && (
+          {/* Description de la source : la source est écrite sous elle (D105), jamais deux fois. Texte
+              ajouté (Wikipédia, D123) : il a son propre crédit, la source du lieu reste ici. */}
+          {(!lieu.description || lieu.creditDescription) && (
             <p className="px-1 text-xs text-page-marque-texte-muted">{lieu.attribution}</p>
           )}
         </div>

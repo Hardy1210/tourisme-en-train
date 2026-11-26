@@ -1,6 +1,6 @@
 # 05 — API de l'application
 
-> **Version** 1.32 · **Date** 25/11/2026
+> **Version** 1.33 · **Date** 26/11/2026
 > **Dépend de :** `00-vision.md`, `03-base-de-donnees.md`, `04-traitement-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `06-interface.md`, `07-contrat-infra.md` (route de santé), fiches E08, E09, E11, E12
 > **Document de référence pour :** le contrat de chaque route (paramètres, réponse, erreurs, cache).
@@ -203,10 +203,11 @@ Onglet Lieux en rangées (D121) ; elle remplace `GET /api/lieux` (D056, retirée
 ```ts
 { cle, demande: string | null,   // `demande` : clé du lien suivi, si elle désignait un doublon ou un membre de site
   nom, categorie, sousCategorie, description, adresse, commune, url, photo,  // § 1, point 13
+  creditDescription: { credit: string; licence: string | null; licenceUrl: string | null; lien: string | null } | null,
   horaires, periode, qualiteTourisme, source, attribution, lat, lon,
   garesProches: Array<{ uic: string; nom: string; distanceM: number; dureeMarcheMin: number }> }
 ```
-`description` : texte brut, jamais du HTML, au plus `lieux.descriptionMaxCaracteres` caractères ; peut contenir des retours à la ligne, et `\n\n` entre deux paragraphes (D105). `attribution` : celle de la source du lieu, affichée « Source : … » sous la description.
+`description` : texte brut, jamais du HTML, au plus `lieux.descriptionMaxCaracteres` caractères ; peut contenir des retours à la ligne, et `\n\n` entre deux paragraphes (D105). `attribution` : celle de la source du lieu, affichée « Source : … » sous la description. **Depuis D123**, `description` est le texte choisi par `choisirDescription` (nos textes, DATAtourisme, Wikipédia, puis les autres sources) parmi `lieu.description` et `description_lieu` ; `creditDescription` en donne le crédit quand il ne vient pas de la source du lieu (Wikipédia : crédit, licence, lien de la licence lu dans `config/sources.json`, article), sinon `null`. Une réponse gardée hors ligne d'avant D123, sans ce champ, est lue avec `null`.
 
 Un lien vers un lieu devenu **doublon** ou **membre d'un site** renvoie le lieu gardé (ou le représentant du site), avec `demande` (D052) : un lien partagé ne casse pas. `404` seulement si la clé est inconnue. Cache : `public, max-age=86400`.
 
@@ -367,3 +368,4 @@ Aucune route : le lien partagé est l'URL de la page, qui contient déjà les fi
 | 18/11/2026 | 1.29 | § 3.3, 3.6, 3.6 bis : lieux avec photo d'abord, tri habituel dans chaque groupe (temporaire) — D104 |
 | 25/11/2026 | 1.31 | § 2 et § 3.6 ter : `GET /api/lieux/rangees` (onglet Lieux en rangées par gare, celles qui ont une photo d'abord) — D121 |
 | 25/11/2026 | 1.32 | § 2 et § 3.6 bis : `GET /api/lieux` retirée (plus aucun écran ne l'appelle) ; § 3.6 ter reprend ses paramètres et ses lieux écartés — D121 |
+| 26/11/2026 | 1.33 | § 3.7 : `creditDescription`, texte choisi parmi les descriptions ajoutées — D123 |
