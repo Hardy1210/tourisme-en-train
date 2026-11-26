@@ -58,3 +58,4 @@ Voir `_MODELE.md`.
 - 19/11/2026 : **modifié après coup** : fiche lieu, description complète de DATAtourisme en texte brut avec paragraphes, « Source : » dessous (#158) — D105.
 - 20/11/2026 : **modifié après coup** : fiche lieu, horaires d'ouverture en lignes françaises, résumé « Aujourd'hui, ven. 20 nov. » en haut (une plage par ligne), date tenue à jour sur une fiche ouverte (#160) — D108.
 - 25/11/2026 : fiche destination, date du jour tenue à jour : une fiche ouverte pour « Demain » dit « Aujourd'hui » après minuit (`useDateDuJour()`, #187 ouverte) — D108.
+- *26/11/2026 :* la fiche d'un lieu sans description montre l'introduction de son article Wikipédia, avec son crédit (D123, #200, #202).
