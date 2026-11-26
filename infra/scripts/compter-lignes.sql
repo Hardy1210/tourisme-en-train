@@ -10,4 +10,5 @@ SELECT
   (SELECT count(*) FROM trajet) AS trajet,
   (SELECT count(*) FROM passage) AS passage,
   (SELECT count(*) FROM mobilite_locale) AS mobilite_locale,
-  (SELECT count(*) FROM photo_lieu) AS photo_lieu;
+  (SELECT count(*) FROM photo_lieu) AS photo_lieu,
+  (SELECT count(*) FROM description_lieu) AS description_lieu;

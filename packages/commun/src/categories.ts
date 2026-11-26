@@ -36,6 +36,14 @@ export const schemaTypeMobilite = z.enum(TYPES_MOBILITE);
  */
 export const ORIGINES_PHOTO = ['osm', 'wikipedia', 'wikidata', 'datatourisme'] as const;
 export type OriginePhoto = (typeof ORIGINES_PHOTO)[number];
+
+/**
+ * D'où vient une description ajoutée à un lieu (D123) : l'introduction de son article Wikipédia, ou nos
+ * propres textes (`wagoo`, préparé, pas encore rempli). Ajouter une origine = étendre cette liste et la
+ * contrainte de `description_lieu` (une migration d'une ligne), sans nouvelle colonne.
+ */
+export const ORIGINES_DESCRIPTION = ['wikipedia', 'wagoo'] as const;
+export type OrigineDescription = (typeof ORIGINES_DESCRIPTION)[number];
 export type TypeMobilite = z.infer<typeof schemaTypeMobilite>;
 
 /** Résultat d'une exécution ETL ; `IGNORE` = fichier inchangé depuis le dernier chargement. */

@@ -33,6 +33,16 @@ describe('lireArguments', () => {
     });
   });
 
+  it('« descriptions_wikipedia » vient après « rattachements » : le texte d’un doublon sert au lieu qu’il double (D123)', () => {
+    expect(SOURCES.indexOf('descriptions_wikipedia')).toBeGreaterThan(
+      SOURCES.indexOf('rattachements'),
+    );
+    expect(lireArguments(['descriptions_wikipedia'])).toMatchObject({
+      type: 'execution',
+      cibles: ['descriptions_wikipedia'],
+    });
+  });
+
   it('lit --force et --hors-ligne', () => {
     expect(lireArguments(['gtfs_sncf', '--force', '--hors-ligne'])).toMatchObject({
       force: true,

@@ -97,3 +97,4 @@
 | 25/11/2026 | 2.01 | § 9 : ④ en attente (reprise à la maison), #187 ouverte (date de la fiche destination), ⑤ : #188 et #189 ouvertes (D121), ordre des rangées et point 1 à valider ; prochaine action : recaler #189, PR 3, puis ④ |
 | 25/11/2026 | 2.02 | § 9 : #185 à #190 sur `main` (D120 à D122), ① à ⑦ faites, aucune PR ouverte ; longue liste et animation (Bloquant) ; prochaine action : PR B de ④, puis PR 3 de D121 |
 | 25/11/2026 | 2.03 | § 9 : #191 à #196 sur `main`, #197 ouverte (pitch), après la soutenance (MapLibre 6, liste sans fin), prochaine action : validation de #197 puis évaluation après le gel |
+| 26/11/2026 | 2.04 | § 16 : étape `descriptions_wikipedia` dans la liste du traitement des données, à relancer après `datatourisme`, `osm` ou `rattachements` — D123 |

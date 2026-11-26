@@ -7,6 +7,7 @@ import { traiterCommunes } from './sources/communes';
 import { traiterContours } from './sources/contours';
 import { traiterDatatourisme } from './sources/datatourisme';
 import { traiterDescriptions } from './sources/descriptions';
+import { traiterDescriptionsWikipedia } from './sources/descriptions-wikipedia';
 import { traiterGares } from './sources/gares';
 import { traiterGtfsSncf } from './sources/gtfs-sncf';
 import { traiterLiaisons } from './sources/liaisons';
@@ -20,7 +21,7 @@ import { traiterSources } from './sources/registre';
 type Traitement = (options: { force: boolean; horsLigne: boolean }) => Promise<void>;
 
 // Rempli au fil des étapes : E02 (sources, gares), E03 (gtfs_sncf), D038 (communes), E04 (liaisons),
-// E05 (contours, regles, datatourisme, osm), E06 (rattachements), E07 (transport_local), D100 (photos), D105 (descriptions)…
+// E05 (contours, regles, datatourisme, osm), E06 (rattachements), E07 (transport_local), D100 (photos), D105 (descriptions), D123 (descriptions_wikipedia)…
 const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   sources: traiterSources,
   communes: traiterCommunes,
@@ -34,6 +35,7 @@ const TRAITEMENTS: Partial<Record<Source, Traitement>> = {
   rattachements: traiterRattachements,
   photos: traiterPhotos,
   descriptions: traiterDescriptions,
+  descriptions_wikipedia: traiterDescriptionsWikipedia,
   transport_local: traiterTransportLocal,
 };
 
