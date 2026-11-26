@@ -110,6 +110,11 @@ test.describe('sur iPhone', () => {
 // vélo à la gare (D097). À 3 km au nord de Dijon-Ville : trop loin à pied, à vélo dans le rayon.
 // À droite, sur deux lignes : « ≈ N min à vélo » en haut, la distance en dessous, en plus petit (essai iPhone
 // de Hardy, 17/11 : la distance avait disparu de la liste, et une seule ligne était trop large à 390 px).
+/** Billet de « Votre gare » (maquette Explorer-B-Max-2) : durée à vélo et distance sur la même ligne. */
+async function veloEnLigne(carte: Locator) {
+  await expect(carte).toContainText(/≈ \d+ min à vélo · \d+,\d km/);
+}
+
 async function sousLaDuree(zone: Locator) {
   const duree = zone.getByText(/^≈ \d+ min à vélo$/);
   const distance = zone.getByText(/^\d+,\d km$/);
@@ -154,7 +159,7 @@ test.describe('gares proches, à 3 km de Dijon-Ville', () => {
     await page.goto(ECRAN);
     const carte = carteVotreGare(page);
     await expect(carte).toContainText('Dijon-Ville');
-    await sousLaDuree(carte);
+    await veloEnLigne(carte);
     await expect(carte).toContainText('Parking vélo à la gare');
     await expect(carte.getByRole('link', { name: 'Voir l’itinéraire' })).toBeVisible();
   });
@@ -189,12 +194,12 @@ test.describe('gare proposée qui n’est pas la plus proche, à 2,9 km (D064)',
     await proposerDijonVille(page);
     const carte = carteVotreGare(page);
     await expect(carte).toContainText('Dijon-Ville');
-    await sousLaDuree(carte);
+    await veloEnLigne(carte);
     await expect(carte).toContainText('Parking vélo à la gare');
     await expect(carte).not.toContainText(/min à pied/);
-    const phrase = carte.getByText(/Gare la plus proche/);
+    const phrase = carte.getByText(/Plus proche/);
     await expect(phrase).toContainText('Dijon-Porte-Neuve');
-    await expect(phrase).toContainText(/Dijon-Porte-Neuve, 2,\d km à vol d'oiseau\./);
+    await expect(phrase).toContainText(/Dijon-Porte-Neuve, 2,\d km à vol d'oiseau/);
     await expect(phrase).not.toContainText(/min/);
   });
 
@@ -202,8 +207,8 @@ test.describe('gare proposée qui n’est pas la plus proche, à 2,9 km (D064)',
     page,
   }) => {
     await proposerDijonVille(page, true);
-    const phrase = carteVotreGare(page).getByText(/Gare la plus proche/);
-    await expect(phrase).toContainText(/Dijon-Porte-Neuve, ≈ \d+ min à vélo\./);
+    const phrase = carteVotreGare(page).getByText(/Plus proche/);
+    await expect(phrase).toContainText(/Dijon-Porte-Neuve, ≈ \d+ min à vélo/);
     await expect(phrase).not.toContainText(/min à pied/);
   });
 });

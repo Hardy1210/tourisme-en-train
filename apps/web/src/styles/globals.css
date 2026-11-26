@@ -292,6 +292,10 @@
   --tuile-sur-marque-bg: var(--hero-tile);
   --vignette-sur-marque-bg: color-mix(in oklch, var(--hero-foreground) 20%, var(--hero-bg));
   --vignette-sur-marque-trait: var(--accent);
+  /* Billet de « Votre gare » (maquette Explorer-B-Max-2) : pointillés entre l'heure et la destination, trait
+     au-dessus du conseil « Plus proche ». Le billet lui-même est une tuile (`--tuile-sur-marque-bg`). */
+  --pointilles-sur-marque: color-mix(in oklch, var(--hero-foreground) 35%, transparent);
+  --trait-sur-marque: color-mix(in oklch, var(--hero-foreground) 14%, transparent);
   --action-sur-marque: var(
     --accent
   ); /* action secondaire en texte sur la marque (« Autoriser la localisation ») */
@@ -499,6 +503,8 @@
   --color-carte-sur-marque-texte-muted: var(--carte-sur-marque-texte-muted);
   --color-tuile-sur-marque-bg: var(--tuile-sur-marque-bg);
   --color-action-sur-marque: var(--action-sur-marque);
+  --color-pointilles-sur-marque: var(--pointilles-sur-marque);
+  --color-trait-sur-marque: var(--trait-sur-marque);
   --color-vignette-sur-marque-bg: var(--vignette-sur-marque-bg);
   --color-sur-photo-texte: var(--sur-photo-texte);
   --color-sur-photo-bouton: var(--sur-photo-bouton);

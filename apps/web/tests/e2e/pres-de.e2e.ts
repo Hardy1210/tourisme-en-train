@@ -58,7 +58,10 @@ test('destination choisie : « Près de la gare de Beaune » en bas, à 2 km, et
   expect(await avant(titreTrains(page), section)).toBe(true);
   await expect(section).toContainText('à moins de 2 km');
   await expect(section.getByRole('listitem').first()).toBeAttached();
-  await expect(page.getByText('Prochain départ direct').locator('..')).toContainText('→ Beaune');
+  // Billet de « Votre gare » : le prochain train vers la destination choisie (« Vers », jamais « Direction »).
+  const billet = page.getByText('Prochain direct').locator('../..');
+  await expect(billet).toContainText('Vers');
+  await expect(billet).toContainText('Beaune');
 });
 
 // D114 : « Réinitialiser » remet à zéro tout ce que la feuille montre (catégories et date), rien d'autre.
