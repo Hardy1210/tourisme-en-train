@@ -11,11 +11,19 @@ import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
 import { PhotoLieu } from './photo-lieu';
 
 /**
- * Un lieu dans une rangée de l'onglet Lieux (maquette Lieux-Rangees, D121) : la photo occupe la carte, le
+ * Un lieu dans une rangée de l'onglet Lieux (maquette Lieux-Rangees, D121), et dans « Près de vous »
+ * d'Explorer (D125, une seule carte, une seule taille) : la photo occupe la carte, le
  * nom et la marche sont posés en bas sur un voile sombre ; sans photo, le fond de marque et une grande
  * icône de catégorie. Pas de ⓘ : le crédit de la photo est sur la page du lieu (D103, Hardy, 25/11).
  */
-export function CarteLieuSurPhoto({ lieu, trajet }: { lieu: LieuResume; trajet: ContexteTrajet }) {
+export function CarteLieuSurPhoto({
+  lieu,
+  trajet,
+}: {
+  lieu: LieuResume;
+  /** Rangées de Lieux : la fiche propose « Y aller en train » ; « Près de vous » : sans trajet. */
+  trajet?: ContexteTrajet;
+}) {
   const { libelle, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
   return (
     <li className="relative h-(--carte-rangee-hauteur) w-(--carte-rangee-largeur) flex-none snap-start overflow-hidden rounded-carte bg-carte-sur-marque-bg shadow-carte">
