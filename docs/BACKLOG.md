@@ -1,6 +1,6 @@
 # Backlog produit
 
-> **Version** 1.8 · **Date** 26/11/2026
+> **Version** 1.9 · **Date** 26/11/2026
 > **Dépend de :** `00-vision.md` § 6 (liste et priorités des fonctionnalités, qui fait foi) · `CLAUDE.md` § 8 (étapes et semaines) · fiche E17 (mise en ligne)
 > **Utilisé par :** point d'équipe du lundi · tableau GitHub Projects · présentation au tuteur et soutenance
 > **Document de référence pour :** les *user stories*, l'estimation, les critères d'acceptation par fonctionnalité, le lien fonctionnalités ↔ tâches, la planification par sprint.
@@ -56,6 +56,7 @@ Le backlog décrit **ce que le produit doit faire, du point de vue de l'utilisat
 | F25 | En tant que voyageur, je veux trouver une sortie pour ce week-end en un clic. | Should (P1) | 1 | L'option « Ce week-end » ouvre le samedi ; passage au dimanche possible. | E11 · E12 | S7 | ✅ |
 | F26 | En tant que cycliste, je veux voir les vélos disponibles en direct près de la gare. | Should (P1) | 2 | Nombre de vélos par station (villes publiant un flux GBFS). | E07 · E09 · E12 | S7 | ⬜ |
 | F27 | En tant que voyageur, je veux garder mes destinations favorites. | Could (P2) | 2 | Favoris enregistrés dans le navigateur. | — | après v1 | ⬜ |
+| F28 | En tant que voyageur, je veux découvrir les grands sites touristiques loin des gares et savoir comment y aller depuis la gare. | Could (P2) | 8 | Lieu ajouté à la main avec son accès (navette, bus…) et sa fiche enrichie ; rien ne change pour les autres lieux. | E19 | après v1 | ⬜ |
 | F22 | En tant que voyageur, je veux découvrir des pépites peu fréquentées. | Could (P2) | 3 | Badge calculé à partir des données Insee. | — | après v1 | ⬜ |
 | F23 | En tant que jeune ou senior, je veux savoir s'il reste des places MAX JEUNE / SENIOR. | Could (P2) | 3 | Badge de disponibilité. | — | après v1 | ⬜ |
 | F24 | En tant que voyageur, je veux retrouver mes favoris sur tous mes appareils. | Could (P2) | 5 | Connexion Google, favoris synchronisés. | — | après v1 | ⬜ |
@@ -204,3 +205,4 @@ Lignes relues une à une dans le code et les tests. ✅ = le critère est dans l
 | 13/11/2026 | 1.6 | § 8 bis : F05, parcours « Près de vous » et mode destination — D089 |
 | 21/11/2026 | 1.7 | § 8 : intégration continue et règle des couches terminées — D110, D111 |
 | 26/11/2026 | 1.8 | F06 terminée (photos, descriptions, horaires) ; F08 et F14 relues ; § 8 : relevé du 26/11, E16 en premier après le gel |
+| 26/11/2026 | 1.9 | F28 lieux ajoutés à la main (E19) |

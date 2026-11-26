@@ -1,6 +1,6 @@
 # 00 — Vision, utilisateurs et périmètre
 
-> **Version** 1.4 · **Date** 06/11/2026
+> **Version** 1.5 · **Date** 26/11/2026
 > **Dépend de :** `GLOSSAIRE.md`
 > **Utilisé par :** tous les documents ; en particulier `05-api.md`, `06-interface.md`, fiches E08 → E13, `BACKLOG.md`
 > **Document de référence pour :** le produit, les fonctionnalités, les priorités, le périmètre.
@@ -85,6 +85,7 @@ Priorités : **P0** indispensable au rendu · **P1** prévu, abandonné seulemen
 | F25 | Ce week-end | L'option « Ce week-end » ouvre le samedi ; la fiche propose de passer au dimanche | P1 | E11, E12 |
 | F26 | Vélos disponibles | Nombre de vélos disponibles en direct dans les stations proches de la gare (villes publiant un flux GBFS) | P1 | E07, E09, E12 |
 | F27 | Favoris | Favoris dans le navigateur | P2 | après |
+| F28 | Lieux ajoutés à la main | Site très touristique hors du périmètre à pied : accès depuis la gare (navette, bus…), fiche enrichie (événements, randonnées), informations de l'établissement | P2 | E19 |
 | F22 | Pépite méconnue | Badge : beaucoup de lieux, peu de fréquentation (Insee) | P2 | après |
 | F23 | Places MAX JEUNE / SENIOR | Badge de disponibilité | P2 | après |
 | F24 | Connexion Google | Synchroniser les favoris (Auth.js) | P2 | après |
@@ -136,3 +137,4 @@ Nom de code : `tourisme-en-train`. Marque : **Wagoo** (provisoire), définie uni
 | 11/10/2026 | 1.2 | Renvoi vers `BACKLOG.md` ; colonne « Étape » alignée sur les tâches du backlog — D032 |
 | 05/11/2026 | 1.3 | F03 : gare mieux desservie et à pied, sans destination perdue — D064 |
 | 06/11/2026 | 1.4 | § 2 : voiture précisée, règle d'honnêteté chiffrée — D075 |
+| 26/11/2026 | 1.5 | § 6 : F28 lieux ajoutés à la main (E19, architecture proposée) |
