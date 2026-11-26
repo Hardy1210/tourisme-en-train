@@ -34,7 +34,7 @@ import { lireCorrections } from '../chargement/corrections';
 import {
   corrigerLieu,
   inclusionsDe,
-  masqueParSousCategorie,
+  lieuMasque,
   type CorrectionLieu,
   type Inclusion,
 } from '../transformations/corrections';
@@ -108,6 +108,7 @@ export async function chargerLieux(options: {
   const compte = nouveauCompte();
   const lus = new Set<string>();
   const exclusParNom: LieuExclu[] = [];
+  let retiresALaMain = 0;
   async function* lieux(): AsyncGenerator<LieuMasquable> {
     const descriptionMax = parametres.lieux.descriptionMaxCaracteres;
     for await (const resultat of options.lire(index, descriptionMax, inclusion)) {
@@ -140,16 +141,13 @@ export async function chargerLieux(options: {
           }),
         };
         const corrige = correction ? corrigerLieu(lieu, correction) : lieu;
-        if (corrige === null) {
-          compter(compte, 'correction', resultat.nonClassees);
-          continue;
-        }
         const { sousCategoriesMasquees } = parametres.acces;
         compter(compte, null, resultat.nonClassees);
-        // Jamais écarté : un lieu masqué reste en base, caché des écrans (D093).
+        if (correction?.action === 'retirer') retiresALaMain += 1;
+        // Jamais écarté : un lieu masqué (piscine, ou retiré à la main) reste en base, caché des écrans (D093, D124).
         yield {
           ...corrige,
-          masque: masqueParSousCategorie(corrige.sousCategorie, sousCategoriesMasquees, correction),
+          masque: lieuMasque(corrige.sousCategorie, sousCategoriesMasquees, correction),
         };
       }
     }
@@ -178,6 +176,9 @@ export async function chargerLieux(options: {
   for (const [raison, n] of compte.ecarts) {
     suivi.remarques.push(`Écartés, ${LIBELLES_ECART[raison]} : ${nombre(n)}`);
   }
+  suivi.remarques.push(
+    `Masqués par une correction « retirer » (gardés en base, D124) : ${nombre(retiresALaMain)}`,
+  );
   const fusion = bilan as BilanFusionLieux | null;
   if (fusion) {
     suivi.remarques.push(

@@ -1,6 +1,6 @@
 # 03 — Base de données
 
-> **Version** 1.23 · **Date** 26/11/2026
+> **Version** 1.24 · **Date** 26/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** `04-traitement-donnees.md`, `05-api.md`, `07-contrat-infra.md`, fiches E01 → E09
 > **Document de référence pour :** tables, colonnes, contraintes, index, rôles, migrations.
@@ -285,7 +285,7 @@ Le **dernier retour** n'est pas stocké : `LEFT JOIN liaison_directe r ON r.gare
 | `code_insee` | char(5) | FK → commune(code_insee) | Commune dont le contour contient le lieu, quelle que soit la source (D041) ; nom de la commune par jointure |
 | `url` | text | | Site officiel |
 | `image_url` | text | | Photo telle que la source la donne (OSM : tag `image` ou fichier `wikimedia_commons`). L'application affiche `photo_lieu`, jamais cette colonne directement (D100) ; elle reste un signe d'intérêt pour la carte (D092) |
-| `masque` | boolean | NN, défaut faux | Gardé en base mais caché de tous les écrans (`acces.sousCategoriesMasquees`, calculé à l'import ; une correction manuelle passe avant), migration `0015` (D093) |
+| `masque` | boolean | NN, défaut faux | Gardé en base mais caché de tous les écrans (`acces.sousCategoriesMasquees`, ou correction manuelle « retirer », D124 ; calculé à l'import ; « inclure » et « reclasser » passent avant), migration `0015` (D093) |
 | `wikipedia` | text | | Article Wikipédia (OSM, tag `wikipedia`, migration `0014`) : signe d'intérêt pour le tri de la carte (D092) |
 | `wikidata` | text | | Fiche Wikidata (OSM, tag `wikidata`, « Q1069718 », migration `0017`) : sert **seulement** à trouver une photo (D100) ; jamais un signe d'intérêt pour la carte (D092, confirmé le 17/11) |
 | `horaires` | text | | Texte tel que fourni |
@@ -534,3 +534,4 @@ ORDER BY a.depart_s;
 | 17/11/2026 | 1.21 | § 3.6 `lieu.wikidata`, § 3.6 ter `photo_lieu` (migration 0017) — D100, D101 |
 | 26/11/2026 | 1.22 | § 3.6 quater `description_lieu` (migration 0018) — D123 |
 | 26/11/2026 | 1.23 | § 3.6 quater : ordre d'affichage précisé (OSM après Wikipédia) — D123 |
+| 26/11/2026 | 1.24 | § 3.6 `lieu.masque` : aussi pour un lieu retiré à la main — D124 |
