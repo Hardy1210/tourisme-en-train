@@ -1,16 +1,19 @@
 'use client';
 
 // Zone du bas de la page « Trajet » quand le champ Départ est actif (D085) : sa position, les gares
-// proches, ou les villes et gares qui correspondent au texte tapé (communes seules, D081).
+// proches (sans position : les grandes gares de la région), ou les villes et gares qui correspondent au
+// texte tapé (communes seules, D081).
 import { Building2, LocateFixed, TrainFront } from 'lucide-react';
 
 import { Bandeau } from '@/components/ui/bandeau';
 import { parametres } from '@/config/parametres';
 import { LigneGareProche } from '@/features/gares/ui/ligne-gare-proche';
+import { GARES_SUGGEREES } from '@/features/localisation/gares-suggerees';
 import { useRechercheVille } from '@/features/localisation/hooks';
 
 import { TEXTES_TRAJET } from '../contenu-trajet';
 import type { useChoixDepart } from '../hooks';
+import { listeSousMaPosition } from '../liste-depart';
 
 type Proprietes = {
   texte: string;
@@ -27,6 +30,9 @@ export function ZoneDepart({ texte, choix, surMaPosition, surGare, surPoint }: P
   const { data, isFetching, isError } = useRechercheVille(texte);
   const assezLong = texte.trim().length >= parametres.localisation.longueurMinRecherche;
   const proches = choix.depart.etat === 'pret' ? choix.depart.proches : [];
+  const liste = assezLong
+    ? null
+    : listeSousMaPosition({ positionConnue: choix.positionConnue, nombreProches: proches.length });
 
   return (
     <div className="flex flex-col gap-4">
@@ -44,7 +50,7 @@ export function ZoneDepart({ texte, choix, surMaPosition, surGare, surPoint }: P
         </span>
       </button>
 
-      {!assezLong && proches.length > 0 && (
+      {liste === 'proches' && (
         <section aria-labelledby="trajet-gares-proches" className="flex flex-col gap-1">
           <h3 id="trajet-gares-proches" className="text-sm font-medium text-muted-foreground">
             {TEXTES_TRAJET.garesProches}
@@ -55,6 +61,27 @@ export function ZoneDepart({ texte, choix, surMaPosition, surGare, surPoint }: P
                 <button type="button" onClick={() => surGare(gare.uic)} className={CLASSES_LIGNE}>
                   <TrainFront aria-hidden="true" className="size-5.5 flex-none text-primary" />
                   <LigneGareProche gare={gare} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {liste === 'region' && (
+        <section aria-labelledby="trajet-grandes-gares" className="flex flex-col gap-1">
+          <h3 id="trajet-grandes-gares" className="text-sm font-medium text-muted-foreground">
+            {TEXTES_TRAJET.garesRegion}
+          </h3>
+          <ul>
+            {GARES_SUGGEREES.map((gare) => (
+              <li key={gare.uic}>
+                <button type="button" onClick={() => surGare(gare.uic)} className={CLASSES_LIGNE}>
+                  <TrainFront aria-hidden="true" className="size-5.5 flex-none text-primary" />
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-base font-semibold">{gare.ville}</span>
+                    <span className="text-sm text-muted-foreground">{gare.departement}</span>
+                  </span>
                 </button>
               </li>
             ))}

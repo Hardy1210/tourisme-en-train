@@ -121,6 +121,8 @@ export function useChoixDepart(options: OptionsDepart = {}) {
     choisirGareEtFermer,
     choisirPoint,
     revenirAMaPosition,
+    /** Faux si la position est refusée, introuvable ou jamais demandée : pas de gares proches. */
+    positionConnue: point !== null,
   };
 }
 

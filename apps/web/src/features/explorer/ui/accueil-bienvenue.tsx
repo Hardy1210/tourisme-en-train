@@ -6,7 +6,7 @@
 import { LocateFixed, Lock, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
 import { Logo } from '@/components/ui/logo';
-import { parametres } from '@/config/parametres';
+import { GARES_SUGGEREES } from '@/features/localisation/gares-suggerees';
 import { RechercheVille } from '@/features/localisation/ui/recherche-ville';
 import { TEXTES_ACCUEIL as T } from '../contenu-accueil';
 import type { useChoixDepart } from '../hooks';
@@ -55,7 +55,7 @@ export function AccueilBienvenue({ choix, surChoix }: Proprietes) {
       />
       <ErreurChoixDepart choix={choix} />
       <div role="group" aria-label={T.suggestions} className="flex flex-wrap gap-2">
-        {parametres.region.garesPrincipales.slice(0, 3).map((gare) => (
+        {GARES_SUGGEREES.map((gare) => (
           <Bouton
             key={gare.uic}
             variante="sur-marque"
