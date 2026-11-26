@@ -204,6 +204,56 @@ test.describe('habitué qui a refusé', () => {
     await expect(page.getByRole('button', { name: 'Crédit de la photo' })).toBeVisible();
     expect(await menuALaMain(page)).toBe(true);
   });
+
+  /** Page « Trajet » (téléphone, D085), ouverte sur le champ Départ. */
+  async function ouvrirLeDepart(page: Page) {
+    await page
+      .getByRole('button', { name: /^Départ : / })
+      .first()
+      .click();
+    await expect(page.getByRole('searchbox', { name: 'Départ' })).toBeFocused();
+  }
+  const grandesGares = (page: Page) =>
+    page.getByRole('region', { name: 'Grandes gares de la région' });
+
+  test('page « Trajet » sans position : les grandes gares de la région sous « Ma position »', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La page « Trajet » est celle du téléphone (D085).');
+    await refuserLaPosition(page);
+    await page.goto('/');
+    await page.getByRole('searchbox', { name: 'Nom de ville ou de gare' }).fill('Beaune');
+    await page
+      .getByRole('listitem')
+      .getByRole('button', { name: /Beaune/ })
+      .first()
+      .click();
+    await ouvrirLeDepart(page);
+    // Les trois premières de `region.garesPrincipales`, comme sur l'accueil.
+    await expect(grandesGares(page).getByRole('button')).toHaveText([
+      /Dijon/,
+      /Besançon/,
+      /Beaune/,
+    ]);
+    await expect(page.getByRole('region', { name: 'Gares proches de vous' })).toHaveCount(0);
+    await grandesGares(page)
+      .getByRole('button', { name: /Besançon/ })
+      .click();
+    await expect(page).toHaveURL(/gare=87718007/);
+  });
+
+  test('page « Trajet » avec la position : les gares proches, pas les grandes gares', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'La page « Trajet » est celle du téléphone (D085).');
+    await page.goto('/');
+    await expect(page.getByText('Autour de Dijon').first()).toBeVisible();
+    await ouvrirLeDepart(page);
+    await expect(page.getByRole('region', { name: 'Gares proches de vous' })).toBeVisible();
+    await expect(grandesGares(page)).toHaveCount(0);
+  });
 });
 
 test.describe('lancements suivants', () => {

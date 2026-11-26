@@ -5,7 +5,7 @@
 // l'accueil (plein écran dans Explorer, dans la page dans Lieux).
 import { LocateFixed, TrainFront } from 'lucide-react';
 import { Bouton } from '@/components/ui/bouton';
-import { parametres } from '@/config/parametres';
+import { GARES_SUGGEREES } from '../gares-suggerees';
 import { GuidageLocalisation } from './guidage-localisation';
 import { RechercheVille } from './recherche-ville';
 
@@ -48,7 +48,7 @@ export function EcranSansPosition({
           Suggestions
         </span>
         <div role="group" aria-labelledby="suggestions-gares" className="flex flex-wrap gap-2">
-          {parametres.region.garesPrincipales.slice(0, 3).map((gare) => (
+          {GARES_SUGGEREES.map((gare) => (
             <Bouton
               key={gare.uic}
               variante="sur-marque"

@@ -49,6 +49,8 @@ export const TEXTES_TRAJET = {
   aucunTrain: 'Aucune destination en train direct avec ces filtres.',
   maPosition: 'Ma position',
   garesProches: 'Gares proches de vous',
+  /** Sans position connue, à la place des gares proches. */
+  garesRegion: 'Grandes gares de la région',
   autreVille: 'Une autre ville',
   impossible: (depart: string, destination: string) =>
     `Pas de train direct de ${depart} à ${destination} : choisissez une autre destination.`,
