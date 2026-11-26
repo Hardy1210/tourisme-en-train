@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.27 · **Date** 25/11/2026
+> **Version** 1.28 · **Date** 26/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -271,7 +271,6 @@
 - **À retenir :** un bouton doit réagir tout de suite, même si le résultat arrive après ; et un « ça ne marche pas » tiré d'un délai trop court n'est pas un résultat.
 - **Origine :** diagnostic du 05/11.
 
-
 ### L40 — Simuler une règle sur toutes les données, pas sur le cas qui l'a fait naître
 - **Problème :** la règle « la gare qui a le plus de trains » corrigeait Dijon, mais faisait perdre 26 destinations, dont Paris, à une gare TGV.
 - **Solution :** appeler la vraie route sur chaque gare et autour, puis recalculer les pertes à part depuis la base.
@@ -295,7 +294,6 @@
 - **Solution :** comparer chaque train à l'heure actuelle au moment d'afficher, quel que soit l'âge de la réponse, et distinguer « mise à jour » de « plus de train ».
 - **À retenir :** un cache plus court réduit le risque, seul un contrôle à l'affichage le supprime.
 - **Origine :** D068.
-
 
 ### L44 — Ne jamais reconstruire le dossier d'un serveur en marche
 - **Problème :** un écran blanc sur iPhone semblait venir de l'ajout à l'écran d'accueil. En réalité, des tests avaient reconstruit `.next` pendant que le serveur le lisait : ses scripts répondaient en erreur 500.
@@ -669,7 +667,22 @@ Valeurs en g CO₂e/km.
 - **Non vu :** les applications mobiles, et les pages Omio, Kombo, EcoPassenger, SNCF Voyageurs et le trajet sur SNCF Connect, inaccessibles. Aucune méthode trouvée pour Citymapper.
 - **Licence de `contours` (IGN) :** non confirmée. C'est pourquoi l'écran dit « données publiques », et pas « données ouvertes ».
 
+### L93 — Regarder les cas réels avant d'afficher des données venues d'ailleurs
+- **Problème :** les contrôles des textes Wikipédia (même fiche Wikidata, pas d'homonymie, pas l'article de la commune) passaient, mais un « Puits de mine » recevait le texte de sa commune.
+- **Cause :** son lien OSM visait une section de l'article de la commune (`Bethoncourt#Les_mines_de_fer`), et sa fiche Wikidata était, à tort, celle de la commune : les deux sources se trompaient ensemble.
+- **Solution :** relire les cas particuliers des vraies données (liens avec `#`) avant d'afficher ; contrôle « lien vers une section » ajouté, test d'abord.
+- **À retenir :** des contrôles qui croisent deux sources ne protègent pas d'une erreur commune aux deux ; un échantillon au hasard ne suffit pas, il faut aussi chercher les formes inhabituelles.
+- **Origine :** #200, 26/11.
+
+### L94 — Compter dans la bonne colonne avant de conclure
+- **Problème :** « 4 lieux retirés à la main » annoncé à Hardy ; il n'y en avait qu'un.
+- **Cause :** recherche de `;retirer;` dans tout le fichier CSV : le mot est aussi une valeur de la colonne « catégorie secondaire ».
+- **Solution :** lire les lignes trouvées, colonne par colonne, avant de donner un chiffre.
+- **À retenir :** un chiffre tiré d'un `grep` sur un CSV compte un mot, pas une colonne ; vérifier sur les lignes elles-mêmes (règle « chiffres mesurés seulement »).
+- **Origine :** #203, 26/11.
+
 ---
+
 
 ## Historique
 
@@ -703,3 +716,4 @@ Valeurs en g CO₂e/km.
 | 24/11/2026 | 1.25 | L87 (un seuil d'interface se déduit d'un critère mesuré) |
 | 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |
 | 25/11/2026 | 1.27 | L91 (une animation qui saute sur une longue page : compter les éléments), L92 (recaler une branche à plusieurs commits par une fusion de `main`) |
+| 26/11/2026 | 1.28 | L93 (regarder les cas réels avant d'afficher des données venues d'ailleurs), L94 (compter dans la bonne colonne) |

@@ -24,6 +24,28 @@
 
 ---
 
+## 26/11/2026 — Étapes E11/E12/E13 — Textes Wikipédia des lieux, page « Trajet » sans position, E19 proposée
+**Fait :**
+- #198 (sauvegarde de la nuit) fusionnée ; backlog relevé : F06 ✅ (photos, descriptions, horaires, site officiel), reste ≈ 8 jours de travail pour 5 jours de calendrier, E16 en premier après le gel
+- **#199** : page « Trajet » sans position (refusée ou jamais demandée) : « Grandes gares de la région » sous « Ma position » au lieu d'une zone vide (`listeSousMaPosition`, fonction pure ; une seule liste `GARES_SUGGEREES` pour l'accueil, « Dans quelle ville » et la page) ; parcours d'abord (échec vérifié sur `main`), limite avec la position
+- **#200 (D123)** : table `description_lieu` (une ligne par lieu et par origine : `wikipedia`, `wagoo` préparé), migration `0018` ; étape `descriptions_wikipedia` (lien OSM seulement, jamais par le nom ; contrôles : section d'article, article absent, homonymie, autre fiche Wikidata, article de la commune, texte vide) ; 1 601 textes, dont 1 259 pour des lieux sans autre description ; 30 tirés au hasard près des gares, tous justes ; 4 min d'appels
+- **#202** : affichage : `choisirDescription` (nos textes → DATAtourisme → Wikipédia → OSM, `lieux.descriptionsAvantWikipedia`) ; « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », article et licence liés ; `creditDescription` dans la fiche, lu `null` dans une réponse gardée hors ligne d'avant ; vu sur les vraies données (Lion de Belfort)
+- **#201** : fiche E19 (lieux ajoutés à la main : `acces_lieu`, `bloc_lieu`, source `wagoo`, un fichier par lieu ; uniquement des ajouts), F28 ; mesures du périmètre dans `A-FAIRE` (2,5 km : + 230 lieux, ≤ 33 min ; 3 km : + 472) : gardé à 2 km (Hardy)
+- **#203 ouverte (D124)** : « retirer » masque le lieu au lieu de le supprimer ; mesuré sur une copie temporaire de la base (une seule ligne : la médiathèque, en base et masquée ; rien d'autre ne bouge), copie supprimée
+- Tunnel sur `main` à jour pour les textes Wikipédia (port 3200)
+**Décisions :** D123 (et sa modification du 26/11 : ordre, textes courts gardés, licence), D124 ; E19 proposée (pas encore une décision)
+**Problèmes rencontrés :**
+- Un « Puits de mine » recevait le texte de sa commune (lien vers une section, fiche Wikidata fausse dans OSM) : contrôle ajouté, test d'abord (L93)
+- « 4 lieux retirés » annoncé, 1 seul en réalité : le `grep` trouvait aussi la colonne « catégorie secondaire » (L94)
+- `tsc` dans le dépôt signale un type de la route `/api/lieux` retirée, venu du vieux `.next` : sans lien avec le code
+- Parcours de #201 (documents seuls) : `explorer.e2e.ts:185` en échec, parcours instable connu
+**À valider par Hardy :**
+- #203 ; #197 après ses captures ; lieux écartés par leur nom à masquer ou non ; périmètre 2 ou 2,5 km ; mise en ligne 0.6.0
+**Prochaine action :**
+- Maquettes de Hardy (retouches visuelles) : étude d'impact avant tout code ; puis gel le 27/11 et E16
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`cb5d226`, 853 tests) et sur #203 (855) · intégration ✅ (216) · parcours de chaque PR ✅ hors les parcours instables connus
+**Commit :** `cb5d226` (#202) ; #203 ouverte
+
 ## 25/11/2026 (nuit) — Étapes E11/E12/E13 — Retouches de Lieux et de la feuille, ménage, textes du pitch
 **Fait :**
 - #191 (sauvegarde du soir) fusionnée
