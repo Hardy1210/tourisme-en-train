@@ -20,6 +20,7 @@ function urlTest(variable: 'BDD_URL_MIGRATIONS' | 'BDD_URL_APP' | 'BDD_URL_ETL')
 const TABLES_P0 = [
   'categorie_regle',
   'commune',
+  'description_lieu',
   'execution_etl',
   'gare',
   'gare_stats',
@@ -73,6 +74,17 @@ describe('droits', () => {
   it('app_lecture peut lire', async () => {
     const { rows } = await appLecture.query('SELECT count(*)::int AS n FROM gare');
     expect(rows[0].n).toBe(16);
+  });
+
+  it('app_lecture lit description_lieu, créée après 0002 (droits par défaut, D123)', async () => {
+    const { rows } = await appLecture.query('SELECT count(*)::int AS n FROM description_lieu');
+    expect(rows[0].n).toBeGreaterThanOrEqual(0);
+  });
+
+  it('limite : app_lecture ne peut pas écrire dans description_lieu', async () => {
+    await expect(appLecture.query('DELETE FROM description_lieu')).rejects.toMatchObject({
+      code: DROIT_INSUFFISANT,
+    });
   });
 
   it('app_lecture ne peut pas écrire', async () => {
