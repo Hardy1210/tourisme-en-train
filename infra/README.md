@@ -13,7 +13,7 @@
 - **Ne pas saisir `NODE_ENV` :** le compose le fixe déjà à `production`.
 - **Dans Coolify, pour chaque variable :** Build time = *Not available during build*, Runtime = *Available in the container*. La construction n'en a pas besoin (`apps/web/Dockerfile`), et Coolify 4.6 les fournit quand même à `docker compose build` pour les `:?` (lu dans son code le 07/11).
 - **Le domaine** ne dépend que d'`URL_APP` et du réglage Coolify.
-- **`URL_CONTACT`** (pas à saisir aujourd'hui) : contact public (`https://wagoo.hardylino.com`) envoyé à Wikimedia dans le User-Agent par `pnpm etl photos` (D100). Le traitement des données tourne sur le poste de Hardy, pas sur le serveur : `compose.prod.yml` n'a pas de service `etl`. Si un jour l'import tourne sur le serveur, ajouter cette variable à son service, avec l'adresse du site, **jamais une adresse e-mail personnelle** (`07` § 3).
+- **`URL_CONTACT`** (pas à saisir aujourd'hui) : contact public (`https://wagoo.hardylino.com`) envoyé à Wikimedia dans le User-Agent par `pnpm etl photos` et `pnpm etl descriptions_wikipedia` (D100, D123). Le traitement des données tourne sur le poste de Hardy, pas sur le serveur : `compose.prod.yml` n'a pas de service `etl`. Si un jour l'import tourne sur le serveur, ajouter cette variable à son service, avec l'adresse du site, **jamais une adresse e-mail personnelle** (`07` § 3).
 
 ## Ce qui est déployé
 `compose.prod.yml`, depuis la racine du dépôt : `docker compose --project-directory . -f infra/compose.prod.yml …`. Coolify lance aussi `--project-directory` à la racine (lu dans son code le 06/11).

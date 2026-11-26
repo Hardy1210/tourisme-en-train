@@ -1,6 +1,6 @@
 # 02 — Sources de données
 
-> **Version** 1.17 · **Date** 17/11/2026
+> **Version** 1.18 · **Date** 26/11/2026
 > **Dépend de :** `00-vision.md`
 > **Utilisé par :** `03-base-de-donnees.md`, `04-traitement-donnees.md`, écran Sources (`06-interface.md`), fiches E02 → E07, E09
 > **Document de référence pour :** quelles sources, où les trouver, quels champs, quelle licence, quel usage.
@@ -109,6 +109,7 @@
 - **Droits DATAtourisme** (FAQ et CGU diffuseurs v2.0, § 15) : photos sous Licence Ouverte « au même titre que les autres données » **si le producteur en a les droits** ; **crédit obligatoire** et **dates de cession à respecter** (34 de nos fiches n'avaient que des photos aux droits expirés le 17/11).
 - **Écarté pour l'instant :** l'API DATAtourisme (clé au nom de Hardy, 1 000 requêtes par heure) et le flux régional de la plateforme diffuseur (compte gratuit, `A-FAIRE` § 3).
 - **Table cible :** `photo_lieu` (une photo par lieu) ; `lieu.wikidata` (identifiant de fiche, lu depuis OSM).
+- **Textes Wikipédia (D123)** : la même API Wikipédia donne aussi l'**introduction** de l'article du lieu (`prop=extracts`, `exintro`, texte brut), pour les lieux sans description ; même politique d'usage (User-Agent avec contact, appels espacés, `Retry-After`) ; licence **CC BY-SA 4.0** : crédit « Wikipédia » et lien vers l'article affichés avec le texte. Table cible : `description_lieu` (origine `wikipedia`) ; traitement : `04` § 4.6 quater.
 
 ### 2.4 `osm` — OpenStreetMap (P0)
 - **Où :** **Overpass API**, une requête par région (aire administrative `ref:INSEE` = `parametres.region.codeInsee`). Adresse du serveur dans `config/sources.json`.
@@ -269,3 +270,4 @@ Chaque source de la table `source_donnees` est affichée avec : nom, producteur,
 | 10/11/2026 | 1.15 | § 3.1 : recherche par texte limitée aux communes — D081 |
 | 16/11/2026 | 1.16 | § 2.4 : parkings vélo dans la même extraction, fichier à part — D097 |
 | 17/11/2026 | 1.17 | § 1 et § 2.3 bis : sources des photos des lieux (export national DATAtourisme, Wikimedia Commons, Wikidata, Wikipédia) — D100, D101 |
+| 26/11/2026 | 1.18 | § 2.3 bis : introduction des articles Wikipédia pour les lieux sans description — D123 |

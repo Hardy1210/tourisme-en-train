@@ -1,4 +1,4 @@
-// Appels aux API de Wikimedia (Wikidata, Wikipédia, Commons) pour les photos des lieux (D100).
+// Appels aux API de Wikimedia (Wikidata, Wikipédia, Commons) pour les photos (D100) et les textes (D123) des lieux.
 // Politique de Wikimedia : un User-Agent avec le nom de l'application et un contact (l'adresse du site,
 // jamais une donnée personnelle), des appels espacés, le délai `Retry-After` respecté (L73).
 import { journal } from '@tourisme/commun';
@@ -10,6 +10,7 @@ import {
   lireP18,
 } from '../transformations/wikimedia';
 import type { MetaCommons } from '../transformations/photos';
+import { lireArticles, type ArticleWikipedia } from '../transformations/wikipedia-textes';
 
 /** Serveur saturé ou en panne passagère : on réessaie après le délai demandé. */
 const STATUTS_PASSAGERS = new Set([429, 502, 503, 504]);
@@ -99,6 +100,34 @@ export async function chercherImagesPages(
     for (const [titre, fichier] of lireImagesPages(reponse, paquet)) images.set(titre, fichier);
   }
   return images;
+}
+
+/**
+ * Titre d'article → introduction en texte brut, fiche Wikidata, homonymie et adresse (D123). `taille` ≤ 20 :
+ * au-delà, l'API ne renvoie l'introduction que des 20 premiers articles.
+ */
+export async function chercherArticles(
+  appeler: AppelWikimedia,
+  api: string,
+  titres: readonly string[],
+  taille: number,
+): Promise<Map<string, ArticleWikipedia>> {
+  const articles = new Map<string, ArticleWikipedia>();
+  for (const paquet of paquets([...new Set(titres)].sort(), taille)) {
+    const reponse = await appeler(api, {
+      action: 'query',
+      prop: 'extracts|pageprops|info',
+      exintro: '1',
+      explaintext: '1',
+      exlimit: 'max',
+      ppprop: 'wikibase_item|disambiguation',
+      inprop: 'url',
+      redirects: '1',
+      titles: paquet.join('|'),
+    });
+    for (const [titre, article] of lireArticles(reponse, paquet)) articles.set(titre, article);
+  }
+  return articles;
 }
 
 /** Fichier Commons → auteur, licence, vignettes, page et catégories visibles. */

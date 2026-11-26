@@ -91,6 +91,8 @@ export const schemaParametres = z
       photosMin: z.number().int().positive(),
       /** Lieux DATAtourisme avec une description après `pnpm etl descriptions` (≈ 3 830 le 19/11, D105). */
       descriptionsMin: z.number().int().positive(),
+      /** Lieux avec un texte Wikipédia après `pnpm etl descriptions_wikipedia` (D123) : en dessous, l'API a mal répondu. */
+      descriptionsWikipediaMin: z.number().int().positive(),
     }),
     fenetreJoursHoraires: z.number().int().positive(),
     fenetreJoursLiaisons: z.number().int().positive(),
@@ -161,6 +163,13 @@ export const schemaParametres = z
         pauseMs: z.number().int().min(0),
         tentatives: z.number().int().min(1),
       }),
+    }),
+    /**
+     * Textes Wikipédia des lieux (D123) : titres par appel. 20 au plus : l'API ne donne l'introduction
+     * (`extracts`, `exintro`) que de 20 articles par demande. Pause et tentatives : `photos.api`.
+     */
+    wikipedia: z.strictObject({
+      textes: z.strictObject({ taillePaquet: z.number().int().min(1).max(20) }),
     }),
     voiture: schemaMode,
     rail: z.strictObject({ coefDetour: z.number().min(1) }),

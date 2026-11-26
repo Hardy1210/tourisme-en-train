@@ -1,6 +1,6 @@
 # 04 — Traitement des données (ETL) et calculs métier
 
-> **Version** 1.31 · **Date** 25/11/2026
+> **Version** 1.32 · **Date** 26/11/2026
 > **Dépend de :** `02-sources-donnees.md`, `03-base-de-donnees.md`, `GLOSSAIRE.md`
 > **Utilisé par :** fiches E02 → E07, E09 (calculs d'impact), `05-api.md`
 > **Document de référence pour :** le pipeline ETL, ses algorithmes, le fichier `config/parametres.json`, les formules de distance, durée, CO₂ et prix.
@@ -380,6 +380,29 @@ Commande `pnpm etl photos`, après `rattachements` (la photo d'un doublon sert a
 
 **Tests en paires** : licence libre / « CC BY-NC » refusée ; auteur / « Unknown author » ; photo / carte postale (catégorie Commons) ; droits finissant ce jour / la veille, commençant ce jour / le lendemain (été et hiver) ; ordre des sources et photo exclue à la main ; export lu en trois passages / un seul passage quand aucune de nos fiches n'y est ; politique Wikimedia (User-Agent, pause, `Retry-After`) ; chargement remplacé / photo sans auteur refusée par la base.
 
+### 4.6 quater Textes Wikipédia des lieux (D123)
+Commande `pnpm etl descriptions_wikipedia`, après `rattachements` (le texte d'un doublon sert au lieu qu'il double) ; dans `all`, juste après `descriptions`. Elle ne remplace que les lignes `origine = 'wikipedia'` de `description_lieu` (`03` § 3.6 quater) ; nos propres textes (`wagoo`) n'y sont jamais touchés.
+
+**Quels lieux :** chaque lieu gardé dont le lieu ou l'un de ses doublons a un article **en français** dans `lieu.wikipedia` (tag OSM, `titreWikipediaFr`), qu'il ait déjà une description ou non : la table garde le texte, l'application choisit (D123). **Jamais de recherche par nom.**
+
+**Appels** (`sources/wikimedia.ts`, même client que les photos : User-Agent avec `URL_CONTACT`, pause `photos.api.pauseMs`, `Retry-After`) : `action=query`, `prop=extracts|pageprops|info`, `exintro`, `explaintext`, `ppprop=wikibase_item|disambiguation`, `redirects`, par paquets de `wikipedia.textes.taillePaquet` titres (20 au plus : limite de `extracts` en introduction). Réponses gardées dans `data/brut/wikipedia_textes/reponses.json` : `--hors-ligne` les rejoue sans réseau (E16).
+
+**Contrôles** (`transformations/wikipedia-textes.ts`, fonctions pures), **dans le doute, aucun texte** :
+1. le lien ne vise pas une **section** d'un article plus large (`Bibracte#…` : l'introduction parlerait de tout l'article ; 6 cas le 26/11, dont un puits de mine portant la fiche Wikidata de sa commune) ;
+2. l'article existe (`missing` → écarté) ;
+3. ce n'est pas une page d'homonymie (`disambiguation`) ;
+4. si le lieu a une fiche Wikidata (`lieu.wikidata`), l'article doit avoir **la même** (`wikibase_item`) ; sinon écarté (« autre fiche Wikidata ») ;
+5. sans fiche Wikidata, le titre de l'article (après redirection) ne doit pas être le nom de la commune du lieu (« article de la commune ») ;
+6. le texte, nettoyé et coupé par `nettoyerDescription` (§ 4.4, D105), n'est pas vide.
+
+Le premier article valide du groupe (lieu, puis ses doublons) est retenu ; crédit « Wikipédia », licence « CC BY-SA 4.0 », lien = adresse de l'article renvoyée par l'API.
+
+**Chargement** dans une transaction : lignes `wikipedia` supprimées puis réinsérées ; contrôle `controles.descriptionsWikipediaMin`. **Rapports** à relire par Hardy : `traite/rapports/textes_wikipedia_retenus.csv` (clé, nom, article, longueur, début du texte, sans autre description ou non) et `textes_wikipedia_ecartes.csv` (clé, nom, article, raison).
+
+**Mesuré le 26/11** (base locale) : 1 890 lieux gardés avec un article en français (1 845 titres distincts trouvés par l'API, 4 min) ; **1 601 textes retenus**, dont **1 259 pour des lieux sans autre description** (329 près des gares, sur 1 411 sans description) ; écartés : article absent 195 (liens OSM vers des articles jamais écrits), autre fiche Wikidata 48, section d'article 21, homonymie 30, texte vide 2 ; 30 textes tirés au hasard près des gares, tous justes ; moyenne 254 caractères, 139 textes de moins de 80 caractères (« Le château de X est un château situé à X »).
+
+**Tests en paires** : lien vers une section / article entier ; même fiche Wikidata / autre fiche ; page d'homonymie / article ordinaire ; sans fiche Wikidata, titre égal à la commune / différent ; article absent ; texte vide après nettoyage ; doublon qui apporte l'article au lieu gardé ; chargement qui remplace les lignes `wikipedia` et garde les lignes `wagoo`.
+
 ### 4.7 Transports locaux (E07)
 Commande `pnpm etl transport_local [--hors-ligne]` (D046) : réseaux lus dans `config/sources.json` (entrées avec un champ `reseau`), fichiers gardés dans `data/brut/<code du réseau>/`, toujours recalculé (≈ 20 s).
 1. **Licence** : un réseau dont la licence n'est pas dans `LICENCES_RESEAU` (`packages/commun`) n'est pas chargé (remarque dans le rapport).
@@ -479,3 +502,4 @@ Implémentés dans `apps/web/src/lib/geo`, `lib/dates`, `lib/impact`, testés en
 | 25/11/2026 | 1.29 | § 2 : `limites.destinationsParPage` (feuille d’Explorer, « Voir plus ») — D122 |
 | 25/11/2026 | 1.30 | § 2 : `limites.lieuxParRangee`, `limites.rangeesParPage` (onglet Lieux en rangées) — D121 |
 | 25/11/2026 | 1.31 | § 2 : `limites.lieuxParPage` retiré avec `GET /api/lieux` — D121 |
+| 26/11/2026 | 1.32 | § 4.6 quater : textes Wikipédia des lieux (`descriptions_wikipedia`) — D123 |

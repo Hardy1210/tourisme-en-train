@@ -17,6 +17,7 @@ export const SOURCES = [
   'rattachements',
   'photos',
   'descriptions',
+  'descriptions_wikipedia',
   'transport_local',
   'lignes',
   'cyclable',

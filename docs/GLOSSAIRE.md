@@ -1,6 +1,6 @@
 # Glossaire
 
-> **Version** 1.28 · **Date** 25/11/2026
+> **Version** 1.29 · **Date** 26/11/2026
 > **Dépend de :** —
 > **Utilisé par :** tous les documents et tout le code
 > **Rôle :** un terme = un sens = un nom dans le code. Avant de nommer une variable, une table ou un composant, vérifier ici. Un terme absent ? L'ajouter ici **avant** de l'utiliser.
@@ -77,6 +77,7 @@
 | **Car régional** | Ligne de car interurbain (Mobigo) desservant une gare : **transport sur place** (type `CAR`), jamais un trajet vers la destination, qui se fait en train (D046) | `'CAR'` | `mobilite_locale.type` | Car SNCF (exclu des trajets, E03) |
 | **Type de mobilité** | `BUS`, `TRAM`, `CAR`, `VELO`, `TROTTINETTE`, `AUTRE`, `PARKING_VELO` | `TypeMobilite` | `type` | — |
 | **Photo du lieu** | Une seule photo par lieu au plus, avec son **crédit** (auteur ou crédit, licence) ; prise d'abord sur Wikimedia (fichier OSM, image de l'article Wikipédia, image Wikidata), sinon sur DATAtourisme ; sinon l'icône de la catégorie. On ne garde que l'adresse de sa **vignette** (D100, D101) | `photo`, `PhotoChoisie` | table `photo_lieu` | `lieu.image_url` (photo brute de la source, pas affichée telle quelle) |
+| **Description ajoutée** | Texte d'un lieu qui ne vient pas de la source du lieu : l'introduction de son article Wikipédia (origine `wikipedia`), ou plus tard nos propres textes (origine `wagoo`), rangés par la clé du lieu. Affichée par priorité : nos textes, puis la description de la source, puis Wikipédia (D123) | `DescriptionAjoutee`, `origine` | table `description_lieu` | `lieu.description` (texte de la source du lieu) |
 | **Vignette** | Version réduite d'une photo fournie par sa source : petite (`photos.largeurPetitePx`, cartes) et grande (`photos.largeurGrandePx`, fiche lieu) ; jamais l'original (D100) | `urlPetite`, `urlGrande` | `url_petite`, `url_grande` | Icône de catégorie |
 | **Crédit (photo)** | Auteur et licence d'une photo, lus automatiquement (Commons : `Artist`, `LicenseShortName` ; DATAtourisme : `credits`) et toujours affichés avec elle. Sans crédit lisible, pas de photo (D100) | `auteur`, `licence` | `auteur`, `licence` | Attribution d'une source (écran Sources) |
 | **Droits (photo)** | Période pendant laquelle une photo DATAtourisme peut être montrée (`droits_debut`, `droits_fin`) ; vérifiée à la date du jour, à l'affichage (D100) | `droitsDebut`, `droitsFin` | `droits_debut`, `droits_fin` | Licence |
@@ -172,3 +173,4 @@
 | 24/11/2026 | 1.26 | Écran de bienvenue — D113 |
 | 25/11/2026 | 1.27 | Rangée (onglet Lieux) — D121 |
 | 25/11/2026 | 1.28 | Lieu accessible : nom dans le code `lieuxDesGaresAtteintes` (la liste `lieuxAccessibles` est retirée) — D121 |
+| 26/11/2026 | 1.29 | Description ajoutée — D123 |

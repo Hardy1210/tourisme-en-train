@@ -5,6 +5,7 @@
 import {
   CATEGORIES,
   CONDITIONS_REGLE,
+  ORIGINES_DESCRIPTION,
   ORIGINES_PHOTO,
   STATUTS_EXECUTION,
   TYPES_MOBILITE,
@@ -267,6 +268,32 @@ export const photoLieu = pgTable(
       'photo_lieu_droits_check',
       sql`${t.droitsDebut} IS NULL OR ${t.droitsFin} IS NULL OR ${t.droitsDebut} <= ${t.droitsFin}`,
     ),
+  ],
+);
+
+// § 3.6 quater — Textes ajoutés à un lieu (D123), une ligne par origine : l'introduction de son article
+// Wikipédia, plus tard nos propres textes. La description de la source reste dans `lieu.description` ;
+// l'application choisit par priorité. Chaque traitement ne remplace que les lignes de son origine.
+export const descriptionLieu = pgTable(
+  'description_lieu',
+  {
+    lieuId: bigint({ mode: 'number' })
+      .notNull()
+      .references(() => lieu.id, { onDelete: 'cascade' }),
+    origine: text().notNull(),
+    texte: text().notNull(),
+    // Affiché sous le texte : « Wikipédia », ou le nom de la marque pour nos textes.
+    credit: text().notNull(),
+    licence: text(),
+    // Article d'origine (Wikipédia).
+    lien: text(),
+    maj: maj(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.lieuId, t.origine] }),
+    check('description_lieu_origine_check', parmi(t.origine, ORIGINES_DESCRIPTION)),
+    check('description_lieu_texte_check', sql`btrim(${t.texte}) <> ''`),
+    check('description_lieu_credit_check', sql`btrim(${t.credit}) <> ''`),
   ],
 );
 
