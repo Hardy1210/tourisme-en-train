@@ -50,3 +50,4 @@ Voir `_MODELE.md`.
 - 07/11/2026 : 97 Mt et 69 % affichés, sans les 11 % — D078.
 - 07/11/2026 : hébergeur complété et vérifié en ligne (PR #84 et #85) — D076.
 - 06/11/2026 : page « Mentions légales et confidentialité » ajoutée à l'étape, à la demande de Hardy, avant la mise en ligne (E17, D076).
+- 25/11/2026 : textes du pitch validés par Hardy : 3 étapes avec captures, « Pour qui », « Ce que ça change » (#197) ; reste le one-pager.

@@ -24,6 +24,28 @@
 
 ---
 
+## 25/11/2026 (nuit) — Étapes E11/E12/E13 — Retouches de Lieux et de la feuille, ménage, textes du pitch
+**Fait :**
+- #191 (sauvegarde du soir) fusionnée
+- **#192** : la grande icône des cartes sans photo paraissait « avoir une opacité par trait » (Hardy) : sa couleur était un blanc à 13 % transparent, qui s'additionne là où les traits se croisent ; jeton opaque `--carte-sur-marque-icone` (même teinte) ; test d'abord (opacité 0,13 trouvée), limite : plus discrète que le texte ; taille gardée (Hardy)
+- **#193** (point 1, vu le 16/11) : un départ hors région choisi dans la page « Trajet » laissait « Les destinations arrivent… » sans fin ; fonction pure `attenteDestination` ; parcours d'abord (départ Paris), échec vérifié pour la bonne raison
+- **#194** : plus de ⓘ sur les cartes des rangées, le crédit est sur la page du lieu, comme « Près de vous » (D103 modifiée)
+- **#195** : plus de bouton « Carte plein écran / Afficher la liste » (PR B de D120) ; parcours de la carte par la poignée
+- **#196** : `GET /api/lieux` retirée (PR 3 de D121) avec `limites.lieuxParPage` ; les tests de ce qu'elle écartait sur d'autres écrans gardés dans `lieux-ecartes.integration.test.ts`
+- **#197 ouverte** : 3 étapes avec captures (WebP par `sharp`, téléphone simulé, données locales), « Pour qui » (texte du one-pager), « Ce que ça change » (CO₂ calculé depuis les facteurs) ; textes validés par Hardy ; « en 30 secondes » jamais ajouté
+- Branches d'essai de la feuille supprimées (8, locales) ; « Voir tout » gardé partout (Hardy)
+- Alertes de sécurité : 3 failles (4 alertes) ; MapLibre critique déjà étudiée le 05/11 (D065), toujours non exposée (contrôle d'attribution désactivé sur les deux cartes) ; `glob` (construction) et `minimatch` (outil de vérification) non exposés ; MapLibre 6 après la soutenance (Hardy). L'état « pas encore regardées » de la sauvegarde du soir était faux
+**Décisions :** D103 modifiée (ⓘ), D120 (PR B), D121 (PR 3)
+**Problèmes rencontrés :**
+- Un tunnel du diagnostic tournait encore : `pgrep -f` avait renvoyé le processus de l'enveloppe, pas `cloudflared` ; arrêter par `pgrep -a cloudflared`
+- Le libellé « Source : » de la page contient une espace insécable : un remplacement de texte doit le prévoir
+**À valider par Hardy :**
+- #197 sur l'iPhone ; mise en ligne 0.6.0 ; one-pager
+**Prochaine action :**
+- Validation de #197, puis évaluation du parcours complet après le gel (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`ab58e8e`, 829 tests) et sur #197 (831) · parcours de chaque PR ✅ hors les parcours instables connus de la carte
+**Commit :** `ab58e8e` (#196) ; #197 ouverte
+
 ## 25/11/2026 (soir) — Étapes E11/E12 — Feuille : la cause trouvée, « Voir plus » ; onglet Lieux en rangées fusionné
 **Fait :**
 - ④ à la maison, essais de Hardy sur l'iPhone, un suspect retiré à la fois (L89) : avec 3 destinations sans « Près de vous », la feuille glisse parfaitement ; avec la liste complète (101 destinations au départ de Dijon, 7 894 éléments dans l'écran), départ brutal et plantages de Safari, avec ou sans « Près de vous » ; l'application installée ouvre toujours `/` sans la variante choisie (d'où le « sursaut » vu en PWA)
