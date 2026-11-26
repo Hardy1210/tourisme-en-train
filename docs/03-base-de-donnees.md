@@ -337,7 +337,7 @@ Textes **ajoutés** à un lieu, une ligne par lieu et par **origine** (D123, mig
 | `lien` | text | | Article d'origine (Wikipédia), affiché avec le crédit |
 | `maj` | timestamptz | NN, défaut now() | |
 
-Rempli par `pnpm etl descriptions_wikipedia` (`04` § 4.6 quater) ; contrôle bloquant `controles.descriptionsWikipediaMin`. Les lieux étant rechargés par `datatourisme` et `osm` (cascade), l'étape se relance après eux, comme `photos`.
+Rempli par `pnpm etl descriptions_wikipedia` (`04` § 4.6 quater) ; contrôle bloquant `controles.descriptionsWikipediaMin`. Les lieux étant rechargés par `datatourisme` et `osm` (cascade) et les doublons recalculés par `rattachements`, l'étape se relance après eux, comme `photos`.
 
 ### 3.7 `categorie_regle`
 | Colonne | Type | Contraintes | Description |
