@@ -40,6 +40,27 @@
 **Vérifications :** `pnpm verifier` ✅ sur #203 (855 tests) ; documents seuls ensuite
 **Commit :** `1363a72` (#204) ; `d700b7f` sur `design/lieux-carte-320`
 
+## 27/11/2026 — Étapes E11/E12/E17/E16 — Feuille d'Explorer finie, horaires à jour, 0.6.0 en ligne, audit d'E16
+**Fait :**
+- #205 (sauvegarde), #206 (cartes de Lieux à 320 px), #207 (« Votre gare » en billet), #208 (« Près de vous » avec les cartes de Lieux) fusionnées ; conflits de `CHANGELOG.md` et `06-interface.md` réglés dans une copie temporaire, les deux versions gardées
+- **#210 (D125, 3/3)** : carte de destination en billet, maquette **V2** de Hardy (ligne des deux heures et de la pastille seule, noms de gare dessous coupés par « … ») ; `billetDestination` (fonction pure : durée de ce train sur les secondes GTFS, « aujourd'hui » / « ce jour », « mise à jour… ») ; `BilletProchainTrain` (nom accessible « Prochain train : 10:12 → 10:23, 11 min », repère des parcours) ; pastilles de catégories inchangées (Hardy) ; contour violet de la destination choisie ; captures en clair et en sombre dans un téléphone simulé ; fluidité jugée bonne par Hardy sur l'iPhone
+- #209 et #211 : idées reportées dans `A-FAIRE` § 3 (« Près de… » qui suit une recherche à une destination ; mode sombre dans l'application)
+- Horaires SNCF rechargés en local (sauvegarde `data/export/avant-horaires-2026-11-27.dump` d'abord) : fenêtre 27/11 → 26/01/2027, 3 145 trajets, 275 053 liaisons ; Dijon → Beaune le 03/12 : 45 trains dès 05:42
+- **0.6.0 en ligne** (#212) : essai de l'image en local (19 migrations, `web` healthy) ; sauvegardes `avant.dump` et `avant-donnees.dump` sur le VPS ; empreinte et 12 comptages identiques au poste ; contrôle 0 ; Lion de Belfort avec son texte Wikipédia ; iPhone bon ; tag `v0.6.0` ; ménage du VPS et du poste
+- Audit d'E16 : profil `demo` sans migrations ni données ; export 19,9 Mo ; photos (Wikimedia 2 710, DATAtourisme/Tourinsoft 612) et fond de carte chargés depuis Internet ; polices dans l'image
+**Décisions :** D125 modifiée (V2, légende des temps gardée, pas de bande lavande) ; D126 (plan de secours : app sur l'ordinateur, sans tunnel ; photos par le partage de connexion ; horaires rechargés avant chaque mise en ligne qui précède la soutenance)
+**Problèmes rencontrés :**
+- Étude d'impact de la section 3 incomplète : la bande lavande et la légende en pastilles de la maquette n'y étaient pas, et la bande avait été lue comme un fond de toute la feuille ; vu par Hardy
+- Deux parcours cassés par la nouvelle carte (`destination.e2e.ts` : « Dernier retour » trouvé aussi dans les cartes d'Explorer restées dans la page, D069 ; `explorer.e2e.ts` : ancien texte du prix) : corrigés
+- Un mauvais commit annoncé à Hardy pour le tunnel (`ed5fd8a` au lieu de `381af56`) : corrigé dans le message suivant
+- Le mode sombre n'est pas branché dans l'application (classe `.dark` posée par la page de design seulement)
+**À valider par Hardy :**
+- #197 ; petits détails vus sur l'application ; E18 exigée ou non ; restauration du serveur déjà essayée ?
+**Prochaine action :**
+- E16 : présenter le plan de secours en mots simples, attendre l'accord, puis le profil `demo` avec ses données
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`aeebdfe`, 863 tests) · parcours de #210 ✅ hors instables connus · contrôle de la production ✅ (code 0)
+**Commit :** `aeebdfe` (#212, 0.6.0)
+
 ## 26/11/2026 — Étapes E11/E12/E13 — Textes Wikipédia des lieux, page « Trajet » sans position, E19 proposée
 **Fait :**
 - #198 (sauvegarde de la nuit) fusionnée ; backlog relevé : F06 ✅ (photos, descriptions, horaires, site officiel), reste ≈ 8 jours de travail pour 5 jours de calendrier, E16 en premier après le gel
