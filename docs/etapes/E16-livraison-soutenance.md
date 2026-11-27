@@ -17,7 +17,7 @@ La soutenance a lieu en local. L'application complète doit démarrer **en une s
 
 ## Actions de Hardy
 - [ ] Faire le test sur **un autre ordinateur** à partir du dépôt seul.
-- [ ] Écrire le **scénario de démo** avec Claude (`docs/equipe/scenario-demo.md`) : 3 parcours (famille, touriste, week-end), 3 minutes.
+- [ ] Écrire le **scénario de démo** avec Claude (`docs/equipe/scenario-demo.md`) : 3 parcours (famille, touriste, week-end), 3 minutes. *Modifié le 27/11 :* 5 minutes, trois personnes (mère de famille, touriste, train en retard) ; brouillon écrit, à valider après le parcours complet sur l'iPhone.
 - [ ] Répétition générale avec l'équipe.
 
 ## Phase d'audit
@@ -33,7 +33,7 @@ La soutenance a lieu en local. L'application complète doit démarrer **en une s
 - [x] Choisir une **date de démo** couverte par les horaires chargés : le jour même (fenêtre du 27/11 au 26/01/2027, D126).
 - [ ] (Option, écartée le 27/11, D126) Fond de carte hors ligne : fichier PMTiles régional servi localement.
 - [ ] `README.md` : section « Lancer la démo » en 3 commandes maximum.
-- [ ] `docs/equipe/scenario-demo.md`.
+- [ ] `docs/equipe/scenario-demo.md` : brouillon 0.1 (27/11).
 
 ## Critères d'acceptation
 - [ ] Sur une machine propre : clonage → récupération de l'export → une commande → app fonctionnelle.
@@ -53,3 +53,4 @@ Voir `_MODELE.md`.
 - 06/11/2026 : `apps/web/Dockerfile` est fait en avance, pendant E17 phase 1 ; E16 le réutilise pour la démo locale, qui reste le filet de sécurité (D076).
 - 27/11/2026 : audit ; photos (Wikimedia et DATAtourisme) et fond de carte viennent d'Internet : partage de connexion du téléphone en secours, rien à coder ; le tunnel n'est pas un secours — D126.
 - 27/11/2026 (après-midi) : **profil « démo » reporté** (Hardy) : coupure d'Internet très rare le jour J ; secours = partage de connexion 4G et vidéo de la démo ; si on le fait plus tard, données par clé USB — D126, `A-FAIRE` § 3.
+- 27/11/2026 : démo mobile de 5 minutes (soutenance de 12 min + 8 min de questions) ; personnes : mère de famille, touriste venu d'ailleurs, voyageur dont le train a du retard ; points à vérifier sur l'iPhone dans `docs/equipe/scenario-demo.md`.
