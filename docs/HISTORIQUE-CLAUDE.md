@@ -100,3 +100,4 @@
 | 26/11/2026 | 2.04 | § 16 : étape `descriptions_wikipedia` dans la liste du traitement des données, à relancer après `datatourisme`, `osm` ou `rattachements` — D123 |
 | 26/11/2026 | 2.05 | § 8 : ligne E19 ; § 9 : #198 à #202 sur `main` (D123), #203 ouverte (D124), maquettes de Hardy, E16 en premier après le gel |
 | 26/11/2026 | 2.06 | § 9 : #199 à #204 sur `main`, maquette B-Max-2 retenue, cartes de Lieux à 320 px à valider, trois PR prévues |
+| 27/11/2026 | 2.07 | § 8 : E16 en cours, 0.6.0 le 27/11 ; § 9 : feuille B-Max-2 finie (#206 à #210), 0.6.0 en ligne, E16 (plan de secours) ensuite |
