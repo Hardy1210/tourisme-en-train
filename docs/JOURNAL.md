@@ -24,6 +24,22 @@
 
 ---
 
+## 26/11/2026 (après-midi) — Étapes E11/E12 — Maquettes de la feuille d'Explorer, cartes de Lieux à 320 px
+**Fait :**
+- #203 (D124) et #204 (sauvegarde) fusionnées, dans cet ordre
+- Cartes des rangées de Lieux à **320 px** sur téléphone (jeton `--carte-rangee-largeur`, 250 px sur ordinateur par `--carte-rangee-largeur-ordinateur`) ; mesuré dans un téléphone simulé : 320 px, la carte suivante dépasse ; branche `design/lieux-carte-320` poussée, tunnel donné à Hardy, PR après son accord
+- Étude d'impact de la maquette **B-Max-4** : « + 8 allers » et « + 9 retours » absents des données ; « Direction » inexacte (on connaît la destination, pas le terminus) ; prochain aller en double, sept hauteurs de pastilles, une quinzaine de tailles de texte, couleurs en dur
+- **B-Max-2 retenue** (option 1, données existantes) : une seule case « Prochain train » ; « Vers » à la place de « Direction » (Hardy) ; liste des états perdus par la maquette, gardés au même style ; prompt pour Claude Design avec tous les états manquants (A1–A7, B1–B5, C1–C8, D1–D2)
+**Décisions :** aucune nouvelle (option 1 et « Vers » : à écrire en décision avec la première PR)
+**Problèmes rencontrés :**
+- Question de Hardy : les compteurs de la fiche destination suffisent-ils ? Non : ils viennent d'une demande par destination ; dans Explorer, ce serait 10 demandes par écran ; à calculer dans la requête des destinations (`A-FAIRE` § 3)
+**À valider par Hardy :**
+- Variantes de Claude Design ; hauteur unique des cartes sur photo (210 ou 240 px) ; « Faisable dans la journée » partout ; cartes de Lieux à 320 px
+**Prochaine action :**
+- Harmonie des variantes, puis PR « Votre gare » en billet (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur #203 (855 tests) ; documents seuls ensuite
+**Commit :** `1363a72` (#204) ; `d700b7f` sur `design/lieux-carte-320`
+
 ## 26/11/2026 — Étapes E11/E12/E13 — Textes Wikipédia des lieux, page « Trajet » sans position, E19 proposée
 **Fait :**
 - #198 (sauvegarde de la nuit) fusionnée ; backlog relevé : F06 ✅ (photos, descriptions, horaires, site officiel), reste ≈ 8 jours de travail pour 5 jours de calendrier, E16 en premier après le gel
