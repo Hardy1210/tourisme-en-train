@@ -35,7 +35,7 @@ describe('/api/sante', () => {
       statut: 'degrade',
       base: 'ok',
       dateDonnees: null,
-      version: '0.5.0',
+      version: '0.6.0',
     });
   });
 

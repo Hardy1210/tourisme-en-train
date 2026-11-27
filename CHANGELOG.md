@@ -7,6 +7,8 @@
 
 ## [Non publié]
 
+## [0.6.0] — 27/11/2026
+
 ### Ajouté
 - La fiche d'un lieu sans description montre le début de son article Wikipédia, quand le lieu en a un et que l'article parle bien de lui (environ 1 260 lieux de la région, dont 330 près des gares). Le texte est suivi de « Texte : Wikipédia (extrait) · CC BY-SA 4.0 », avec le lien vers l'article.
 - Dans la page « Trajet », un bouton ⇅ échange le départ et la destination (Beaune → Dijon au lieu de Dijon → Beaune) ; s'il n'y a pas de train direct dans l'autre sens, l'application le dit.
