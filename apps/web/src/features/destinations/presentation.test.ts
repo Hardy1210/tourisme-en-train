@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  billetDestination,
   formaterNombreLieux,
   totalLieux,
   couleurTranche,
@@ -155,5 +156,42 @@ describe('destinationsMontrees (« Voir plus » de la feuille, D122)', () => {
 
   it('liste vide : rien à montrer, rien ne reste', () => {
     expect(destinationsMontrees([], 1, 10)).toEqual({ montrees: [], reste: 0 });
+  });
+});
+
+describe('billetDestination', () => {
+  const avec = (
+    depart: ReturnType<typeof heure> | null,
+    arrivee: ReturnType<typeof heure> | null,
+  ) => ({ prochainDepart: depart, prochaineArrivee: arrivee }) as Destination;
+
+  it('donne les deux heures et la durée de ce train-là', () => {
+    expect(billetDestination(avec(heure(36720, '10:12'), heure(37380, '10:23')), true)).toEqual({
+      etat: 'train',
+      depart: '10:12',
+      arrivee: '10:23',
+      dureeMin: 11,
+    });
+  });
+
+  it('compte juste un train qui arrive après minuit (25:10)', () => {
+    const billet = billetDestination(avec(heure(85800, '23:50'), heure(90600, '01:10')), true);
+    expect(billet).toMatchObject({ etat: 'train', dureeMin: 80 });
+  });
+
+  it('sans train : « aujourd’hui » le jour même, « ce jour » une autre date', () => {
+    expect(billetDestination(avec(null, null), true)).toEqual({
+      etat: 'aucun',
+      texte: "Plus de train direct aujourd'hui",
+    });
+    expect(billetDestination(avec(null, null), false)).toEqual({
+      etat: 'aucun',
+      texte: 'Plus de train direct ce jour',
+    });
+  });
+
+  it('train annoncé déjà parti : mise à jour, jamais « plus de train »', () => {
+    const d = { ...avec(null, null), prochainPerime: true };
+    expect(billetDestination(d, true)).toEqual({ etat: 'miseAJour' });
   });
 });

@@ -204,11 +204,13 @@ test('un train parti pendant qu’Explorer était caché n’est jamais montré 
     });
   });
   await page.goto(ECRAN);
-  await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+  await expect(
+    page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+  ).toBeVisible();
   await allerSurLieux(page);
   await page.clock.fastForward('06:00');
 
   await onglet(page, 'Explorer').click();
   await expect(sorties(page).first()).toBeVisible();
-  await expect(page.getByText('08:05 → 08:30')).toHaveCount(0);
+  await expect(page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ })).toHaveCount(0);
 });

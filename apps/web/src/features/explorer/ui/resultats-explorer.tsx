@@ -179,6 +179,7 @@ export function ResultatsExplorer({
               erreur={destinations.isError ? destinations.error.message : null}
               lienDe={lienDe}
               survolee={survolee}
+              choisie={filtres.destination}
               surSurvol={(uic) => {
                 setSurvolee(uic);
                 if (uic !== null) setCarteTouchee((nombre) => nombre + 1);

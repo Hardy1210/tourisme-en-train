@@ -86,6 +86,33 @@ export function prochainTrainDirect(
     : null;
 }
 
+/** Case « Prochain train » de la carte de destination (D125, états C1 à C8). */
+export type BilletDestination =
+  | { etat: 'train'; depart: string; arrivee: string; dureeMin: number }
+  | { etat: 'miseAJour' }
+  | { etat: 'aucun'; texte: string };
+
+/**
+ * Le prochain train direct vers une destination : heures de départ et d'arrivée, et sa propre durée (pas la
+ * plus courte de la journée), calculée sur les secondes GTFS : un train de 23:50 à 25:10 dure 80 min.
+ * Sans train : « aujourd'hui » seulement si la date est aujourd'hui, sinon « ce jour ».
+ */
+export function billetDestination(d: DestinationAffichee, aujourdhui: boolean): BilletDestination {
+  if (d.prochainDepart && d.prochaineArrivee) {
+    return {
+      etat: 'train',
+      depart: d.prochainDepart.texte,
+      arrivee: d.prochaineArrivee.texte,
+      dureeMin: Math.round((d.prochaineArrivee.s - d.prochainDepart.s) / 60),
+    };
+  }
+  if (d.prochainPerime) return { etat: 'miseAJour' };
+  return {
+    etat: 'aucun',
+    texte: aujourdhui ? "Plus de train direct aujourd'hui" : 'Plus de train direct ce jour',
+  };
+}
+
 /** Toujours une estimation (règle 7) : « ≈ 12 € », « ≈ 12 à 18 € ». */
 export function formaterPrix(prix: { min: number; max: number }): string {
   return prix.min === prix.max ? `≈ ${prix.min} €` : `≈ ${prix.min} à ${prix.max} €`;

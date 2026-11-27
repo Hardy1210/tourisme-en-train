@@ -1,33 +1,47 @@
-import { ArrowRight, Check, Clock, Leaf, MapPinOff, Moon, TrainFront } from 'lucide-react';
+import { ArrowRight, Check, Leaf, MapPinOff, Moon, TrainFront } from 'lucide-react';
 import Link from 'next/link';
 import { Bouton } from '@/components/ui/bouton';
 import { Carte } from '@/components/ui/carte';
 import { parametres } from '@/config/parametres';
-import { PastillesCategories } from './pastilles-categories';
 import { cn } from '@/lib/classes';
 import {
+  billetDestination,
   couleurTranche,
-  formaterDuree,
   formaterKg,
   formaterPrix,
   MENTION_ESTIMATION,
 } from '../presentation';
 import type { DestinationAffichee } from '../presentation';
+import { BilletProchainTrain } from './billet-prochain-train';
+import { PastillesCategories } from './pastilles-categories';
 
 type Proprietes = {
   destination: DestinationAffichee;
   lien: string;
-  /** Survol croisé avec la carte, sur grand écran. */
-  survolee: boolean;
+  /** Gare de départ, sous l'heure du prochain train. */
+  gareDepart: string;
+  /** La date affichée est aujourd'hui : « Plus de train direct aujourd'hui », sinon « ce jour ». */
+  aujourdhui: boolean;
+  /** Survol croisé avec la carte (grand écran), ou destination choisie (D2) : contour violet. */
+  enAvant: boolean;
   surSurvol: (uic: string | null) => void;
 };
 
-export function CarteDestination({ destination: d, lien, survolee, surSurvol }: Proprietes) {
+/** Carte de destination en billet (maquette B-Max-2, états C1 à C8 et D2, D125). */
+export function CarteDestination({
+  destination: d,
+  lien,
+  gareDepart,
+  aujourdhui,
+  enAvant,
+  surSurvol,
+}: Proprietes) {
+  const trains = d.nbTrains > 1 ? 'trains' : 'train';
   return (
     <Carte
       // Repère pour faire défiler la feuille jusqu'à la première destination trouvée (D084).
       data-destination={d.gare.uic}
-      className={cn('relative', survolee && 'ring-2 ring-primary')}
+      className={cn('relative gap-0 p-0', enAvant && 'ring-2 ring-primary')}
       onMouseEnter={() => surSurvol(d.gare.uic)}
       onMouseLeave={() => surSurvol(null)}
     >
@@ -35,97 +49,94 @@ export function CarteDestination({ destination: d, lien, survolee, surSurvol }: 
         aria-hidden="true"
         className="absolute top-5.5 -left-6.5 size-3.25 rounded-pill border-3 border-primary bg-background"
       />
-      <div className="flex items-baseline justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
+      <div className="flex flex-col gap-3 px-4 pt-4 pb-3.5">
+        <div className="flex items-start gap-2">
           <span
             aria-hidden="true"
             className={cn(
-              'size-2.5 flex-none rounded-pill',
+              'mt-2 size-2.75 flex-none rounded-pill',
               couleurTranche(d.trancheTemps, parametres.durees.tranchesTempsMin),
             )}
           />
-          <h3 className="text-xl leading-tight font-bold">{d.titre}</h3>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h3 className="font-display text-xl leading-tight font-extrabold">{d.titre}</h3>
+            {d.horsVille && d.commune.nom && (
+              <p className="text-xs text-muted-foreground">à {d.commune.nom}</p>
+            )}
+          </div>
+          <span className="tabular mt-0.5 text-sm whitespace-nowrap text-muted-foreground">
+            <strong className="text-foreground">{d.nbTrains}</strong> {trains}/jour
+          </span>
         </div>
-        <span className="tabular flex items-center gap-1 text-lg font-bold whitespace-nowrap text-primary">
-          <Clock aria-hidden="true" className="size-4" />
-          {formaterDuree(d.dureeMin)}
-        </span>
-      </div>
-      {d.horsVille && d.commune.nom && (
-        <p className="text-sm text-muted-foreground">à {d.commune.nom}</p>
-      )}
 
-      <p className="tabular flex items-center gap-1.5 text-sm text-muted-foreground">
-        <TrainFront aria-hidden="true" className="size-4 flex-none text-primary" />
-        <span>
-          {d.nbTrains} {d.nbTrains > 1 ? 'trains' : 'train'}/jour · 1er {d.premierDepart.texte}
-          {d.dernierRetour && ` · retour ${d.dernierRetour.texte}`}
-        </span>
-      </p>
+        <BilletProchainTrain
+          billet={billetDestination(d, aujourdhui)}
+          depart={gareDepart}
+          arrivee={d.titre}
+        />
 
-      {d.lieuxCharges ? (
-        <PastillesCategories lieuxParCategorie={d.lieuxParCategorie} />
-      ) : (
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <MapPinOff aria-hidden="true" className="size-4 flex-none" />
-          Hors région · trains seulement
-        </p>
-      )}
-
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 text-sm">
-        <span
-          className={cn(
-            'flex items-center gap-1',
-            d.faisableJournee ? 'text-foreground' : 'text-muted-foreground',
-          )}
-        >
-          {d.faisableJournee ? (
-            <Check aria-hidden="true" className="size-4 text-primary" />
-          ) : (
-            <Moon aria-hidden="true" className="size-4" />
-          )}
-          {d.faisableJournee ? 'Faisable dans la journée' : 'Retour tôt, plutôt sur 2 jours'}
-        </span>
-        {d.co2EconomiseKg !== null && (
-          <span
-            aria-label={`${formaterKg(d.co2EconomiseKg)} kilos de CO₂ économisés, aller-retour`}
-            className="tabular flex items-center gap-1 font-semibold text-eco"
-          >
-            <Leaf aria-hidden="true" className="size-4" />−{formaterKg(d.co2EconomiseKg)} kg CO₂
-          </span>
-        )}
-      </div>
-
-      <div className="h-px bg-border" aria-hidden="true" />
-
-      <div className="tabular flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-md">
-        {d.prochainDepart && d.prochaineArrivee ? (
+        <p className="tabular flex items-center gap-1.5 text-sm text-muted-foreground">
+          <TrainFront aria-hidden="true" className="size-4 flex-none" />
           <span>
-            <span className="text-muted-foreground">Prochain :</span>{' '}
-            <strong className="font-semibold">
-              {d.prochainDepart.texte} → {d.prochaineArrivee.texte}
-            </strong>
+            1er {d.premierDepart.texte}
+            {d.dernierRetour && ` · dernier retour ${d.dernierRetour.texte}`}
           </span>
+        </p>
+
+        <div className="flex flex-wrap items-center justify-between gap-1.5">
+          <span
+            className={cn(
+              'flex h-7 items-center gap-1 rounded-pill px-2.5 text-xs font-semibold',
+              d.faisableJournee ? 'bg-eco-soft text-eco' : 'bg-primary-soft text-muted-foreground',
+            )}
+          >
+            {d.faisableJournee ? (
+              <Check aria-hidden="true" className="size-3.5" />
+            ) : (
+              <Moon aria-hidden="true" className="size-3.5" />
+            )}
+            {d.faisableJournee ? 'Faisable dans la journée' : 'Retour tôt, plutôt sur 2 jours'}
+          </span>
+          {d.co2EconomiseKg !== null && (
+            <span
+              aria-label={`${formaterKg(d.co2EconomiseKg)} kilos de CO₂ économisés, aller-retour`}
+              className="tabular flex items-center gap-1 text-sm font-bold whitespace-nowrap text-eco"
+            >
+              <Leaf aria-hidden="true" className="size-4" />−{formaterKg(d.co2EconomiseKg)} kg CO₂
+            </span>
+          )}
+        </div>
+
+        {d.lieuxCharges ? (
+          <PastillesCategories lieuxParCategorie={d.lieuxParCategorie} />
         ) : (
-          <span className="text-muted-foreground">
-            {d.prochainPerime ? 'Prochain train : mise à jour…' : 'Plus de train direct ce jour'}
-          </span>
+          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <MapPinOff aria-hidden="true" className="size-4 flex-none" />
+            Hors région · trains seulement
+          </p>
         )}
+      </div>
+
+      {/* Talon du billet : pointillés et encoches, de la couleur du fond de la feuille qui l'entoure. */}
+      <div aria-hidden="true" className="relative mx-4 border-t-2 border-dashed border-border">
+        <span className="absolute -top-2.5 -left-6.5 size-4.5 rounded-pill bg-background" />
+        <span className="absolute -top-2.5 -right-6.5 size-4.5 rounded-pill bg-background" />
+      </div>
+      <div className="flex items-center gap-3 px-4 pt-3.5 pb-4">
         {d.prixEstime && (
           <span
-            className="font-semibold"
+            className="flex min-w-0 flex-1 flex-col"
             aria-label={`Prix estimé pour un aller : ${formaterPrix(d.prixEstime)}`}
           >
-            {formaterPrix(d.prixEstime)}{' '}
-            <span className="text-sm font-normal text-muted-foreground">
-              l&apos;aller ({MENTION_ESTIMATION})
+            <strong className="tabular font-display text-xl leading-tight font-extrabold">
+              {formaterPrix(d.prixEstime)}
+            </strong>
+            <span className="text-xs text-muted-foreground">
+              l&apos;aller, {MENTION_ESTIMATION}
             </span>
           </span>
         )}
-      </div>
-
-      <div className="flex justify-end">
-        <Bouton variante="sortie" asChild>
+        <Bouton variante="sortie" asChild className="ml-auto">
           <Link href={lien}>
             Voir la sortie
             <ArrowRight aria-hidden="true" className="size-4" />

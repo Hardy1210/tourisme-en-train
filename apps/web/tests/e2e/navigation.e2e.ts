@@ -95,26 +95,40 @@ test.describe('un train parti ne reste pas affiché', () => {
   test('avant le départ, le train reste affiché', async ({ page }) => {
     await annoncerHuitHeuresCinq(page);
     await page.goto(`/?date=${DATE}`);
-    await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+    ).toBeVisible();
     await page.clock.fastForward('04:00');
-    await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+    ).toBeVisible();
   });
 
   test('une autre date, choisie exprès, garde ses trains', async ({ page }) => {
     await annoncerHuitHeuresCinq(page);
     await page.goto('/?date=2026-07-15');
-    await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+    ).toBeVisible();
     await page.clock.fastForward('06:00');
-    await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+    ).toBeVisible();
   });
 
   test('après le départ, il disparaît, même si la réponse ne change pas', async ({ page }) => {
     await annoncerHuitHeuresCinq(page);
     await page.goto(`/?date=${DATE}`);
-    await expect(page.getByText('08:05 → 08:30').first()).toBeVisible();
+    await expect(
+      page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ }).first(),
+    ).toBeVisible();
     await page.clock.fastForward('06:00');
-    await expect(page.getByText('08:05 → 08:30')).toHaveCount(0);
-    await expect(page.getByText('Prochain train : mise à jour…').first()).toBeVisible();
+    await expect(page.getByRole('group', { name: /^Prochain train : 08:05 → 08:30/ })).toHaveCount(
+      0,
+    );
+    await expect(
+      page.getByRole('group', { name: 'Prochain train : mise à jour…' }).first(),
+    ).toBeVisible();
     await expect(page.getByText('Plus de train direct ce jour')).toHaveCount(0);
   });
 });
