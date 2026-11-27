@@ -3,7 +3,7 @@
 import { dateDuJour } from '@tourisme/commun';
 import { useRef, useState } from 'react';
 import { parametres } from '@/config/parametres';
-import { dureeElargie, prochainTrainDirect } from '@/features/destinations/presentation';
+import { dureeElargie } from '@/features/destinations/presentation';
 import { SectionDestinations } from '@/features/destinations/ui/section-destinations';
 import type { Destination } from '@/features/destinations/schemas';
 import { CarteExplorerDifferee } from '@/features/carte/ui/carte-explorer-differee';
@@ -11,6 +11,7 @@ import { CarteVotreGare } from '@/features/gares/ui/carte-votre-gare';
 import { useLieuxAutour, useLieuxCarte, useLieuxGare } from '@/features/lieux/hooks';
 import { SectionAPied } from '@/features/lieux/ui/section-a-pied';
 import { ErreurClient } from '@/lib/http/client';
+import { billetVotreGare } from '../billet-votre-gare';
 import { suffixeDate } from '../date';
 import { plusProcheDifferente, type Depart } from '../depart';
 import type { PositionFeuille } from '../position-feuille';
@@ -158,14 +159,7 @@ export function ResultatsExplorer({
               distanceM={gare.distanceM}
               parkingVelo={gare.parkingVelo}
               coordonnees={{ lat: gare.lat, lon: gare.lon }}
-              prochainDepart={
-                destinationChoisie
-                  ? (prochainTrainDirect([destinationChoisie]) ??
-                    TEXTES_TRAJET.plusDeTrain(destinationChoisie.titre, filtres.date !== null))
-                  : avantRecherche
-                    ? prochainTrainDirect(avantRecherche)
-                    : null
-              }
+              prochain={billetVotreGare(destinationChoisie, avantRecherche, filtres.date !== null)}
               surChangement={surChangementGare}
               plusProche={
                 plusProche && {

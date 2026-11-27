@@ -11,6 +11,9 @@ import { lienItineraire } from '../acces-gare';
 
 const CLASSES_LIEN =
   'flex items-center gap-0.5 text-sm font-medium whitespace-nowrap text-primary underline-offset-4 hover:underline';
+/** Sur la surface de la marque (billet de « Votre gare ») : « Itinéraire » en jaune, zone de toucher de 44 px. */
+const CLASSES_LIEN_SUR_MARQUE =
+  'flex min-h-touch flex-none cursor-pointer items-center gap-1 text-sm font-bold whitespace-nowrap text-action-sur-marque underline-offset-4 hover:underline';
 const CLASSES_LIGNE =
   'flex min-h-14 w-full items-center gap-3 rounded-md px-1 text-left hover:bg-surface-sunken';
 
@@ -19,27 +22,33 @@ const APPLICATIONS = [
   { application: 'google', nom: 'Google Maps', detail: 'Google', Icone: MapPin },
 ] as const;
 
-export function LienItineraire({ gare }: { gare: { lat: number; lon: number } }) {
+export function LienItineraire({
+  gare,
+  surMarque = false,
+}: {
+  gare: { lat: number; lon: number };
+  surMarque?: boolean;
+}) {
   const appareil = useAppareil();
   const [ouverte, setOuverte] = useState(false);
+  // Texte court sur la marque ; le nom accessible garde « Voir l’itinéraire », qui contient le texte visible.
+  const proprietes = surMarque
+    ? { className: CLASSES_LIEN_SUR_MARQUE, 'aria-label': 'Voir l’itinéraire' }
+    : { className: CLASSES_LIEN };
+  const texte = surMarque ? 'Itinéraire' : 'Voir l’itinéraire';
 
   if (!appareil.startsWith('iphone')) {
     return (
-      <a
-        href={lienItineraire(gare, 'google')}
-        target="_blank"
-        rel="noopener"
-        className={CLASSES_LIEN}
-      >
-        Voir l’itinéraire
+      <a href={lienItineraire(gare, 'google')} target="_blank" rel="noopener" {...proprietes}>
+        {texte}
         <ArrowUpRight aria-hidden="true" className="size-4" />
       </a>
     );
   }
   return (
     <>
-      <button type="button" onClick={() => setOuverte(true)} className={CLASSES_LIEN}>
-        Voir l’itinéraire
+      <button type="button" onClick={() => setOuverte(true)} {...proprietes}>
+        {texte}
         <ArrowUpRight aria-hidden="true" className="size-4" />
       </button>
       <Feuille ouverte={ouverte} surChangement={setOuverte} titre="Ouvrir l’itinéraire avec">

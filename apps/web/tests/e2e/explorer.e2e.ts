@@ -787,7 +787,7 @@ test.describe('gare proposée qui n’est pas la plus proche (D064)', () => {
     await expect(titreDestinations(page)).toBeVisible();
     // À ≈ 2,9 km : plus jamais de minutes à pied au-delà de `acces.rayonPiedM` (essai iPhone du 17/11, D097).
     await expect(page.locator('[aria-labelledby="votre-gare"]')).not.toContainText(/min à pied/);
-    await expect(page.getByText(/Gare la plus proche/)).toContainText('Dijon-Porte-Neuve');
+    await expect(page.getByText(/Plus proche :/)).toContainText('Dijon-Porte-Neuve');
 
     await page.getByRole('button', { name: 'Partir de Dijon-Porte-Neuve' }).click();
 
@@ -795,7 +795,7 @@ test.describe('gare proposée qui n’est pas la plus proche (D064)', () => {
       page.getByRole('heading', { name: 'En train direct depuis Dijon-Porte-Neuve' }),
     ).toBeVisible();
     expect(new URL(page.url()).searchParams.get('gare')).toBe('EX000023');
-    await expect(page.getByText(/Gare la plus proche/)).toHaveCount(0);
+    await expect(page.getByText(/Plus proche :/)).toHaveCount(0);
   });
 });
 
@@ -805,7 +805,7 @@ test.describe('gare proposée qui est la plus proche', () => {
   test('n’ajoute ni le temps à pied ni le bouton', async ({ page }) => {
     await page.goto(ECRAN);
     await expect(titreDestinations(page)).toBeVisible();
-    await expect(page.getByText(/Gare la plus proche/)).toHaveCount(0);
+    await expect(page.getByText(/Plus proche :/)).toHaveCount(0);
     await expect(page.getByRole('button', { name: /^Partir de/ })).toHaveCount(0);
   });
 });

@@ -49,7 +49,7 @@ describe('prochainTrainDirect', () => {
       destination('Dole', heure(40_000, '11:06')),
       destination('Beaune', heure(36_720, '10:12')),
     ];
-    expect(prochainTrainDirect(liste)).toBe('10:12 → Beaune');
+    expect(prochainTrainDirect(liste)).toEqual({ heure: '10:12', vers: 'Beaune' });
   });
 
   it('ignore les destinations sans train restant, et renvoie null si aucune n’en a', () => {
@@ -58,7 +58,7 @@ describe('prochainTrainDirect', () => {
         destination('Dole', null),
         destination('Beaune', heure(36_720, '10:12')),
       ]),
-    ).toBe('10:12 → Beaune');
+    ).toEqual({ heure: '10:12', vers: 'Beaune' });
     expect(prochainTrainDirect([destination('Dole', null)])).toBeNull();
     expect(prochainTrainDirect([])).toBeNull();
   });
@@ -105,7 +105,10 @@ describe('sansTrainsPartis', () => {
   });
   it('« Votre gare » annonce le train suivant encore à venir', () => {
     const liste = [dix, destination('Dole', heure(36_600, '10:10'))];
-    expect(prochainTrainDirect(sansTrainsPartis(liste, JOUR, a(36_001)))).toBe('10:10 → Dole');
+    expect(prochainTrainDirect(sansTrainsPartis(liste, JOUR, a(36_001)))).toEqual({
+      heure: '10:10',
+      vers: 'Dole',
+    });
   });
   it('« Votre gare » n’annonce rien quand tous sont partis', () => {
     expect(prochainTrainDirect(sansTrainsPartis([dix], JOUR, a(36_001)))).toBeNull();
