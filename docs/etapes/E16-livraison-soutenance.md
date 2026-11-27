@@ -1,7 +1,7 @@
 # E16 — Livraison pour la soutenance (local, Docker)
 
 > **Semaine :** S8 (23/11 → 29/11) · **Priorité :** P0 · **Branche :** `etape/E16-livraison`
-> **Étapes préalables :** E15 · **État :** 🟡 audit fait, plan validé (27/11)
+> **Étapes préalables :** E15 · **État :** ⏸ audit fait ; profil « démo » reporté par Hardy le 27/11 (D126)
 > **Version de la fiche** 1.0 · **Date** 30/09/2026
 
 ## Contexte minimal
@@ -52,3 +52,4 @@ Voir `_MODELE.md`.
 - 07/11/2026 : corrections et design continuent après le gel : refaire l'image et l'export de la démo sur la dernière version retenue avant la soutenance — D078.
 - 06/11/2026 : `apps/web/Dockerfile` est fait en avance, pendant E17 phase 1 ; E16 le réutilise pour la démo locale, qui reste le filet de sécurité (D076).
 - 27/11/2026 : audit ; photos (Wikimedia et DATAtourisme) et fond de carte viennent d'Internet : partage de connexion du téléphone en secours, rien à coder ; le tunnel n'est pas un secours — D126.
+- 27/11/2026 (après-midi) : **profil « démo » reporté** (Hardy) : coupure d'Internet très rare le jour J ; secours = partage de connexion 4G et vidéo de la démo ; si on le fait plus tard, données par clé USB — D126, `A-FAIRE` § 3.
