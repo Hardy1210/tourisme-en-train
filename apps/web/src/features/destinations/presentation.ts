@@ -66,8 +66,14 @@ export function traitTranche(tranche: string, bornes: readonly number[]): string
   return TRAITS[rangTranche(tranche, bornes)] ?? 'border-map-time-4 text-map-time-4';
 }
 
-/** Le train direct qui part le plus tôt parmi les destinations : « 10:12 → Beaune ». */
-export function prochainTrainDirect(destinations: readonly Destination[]): string | null {
+/**
+ * Billet de « Votre gare » : le train direct qui part le plus tôt parmi les destinations, et celle vers
+ * laquelle il va (« 10:12 », « Beaune »). On connaît la destination, pas le terminus : « Vers », jamais
+ * « Direction » (Hardy, 26/11).
+ */
+export function prochainTrainDirect(
+  destinations: readonly Destination[],
+): { heure: string; vers: string } | null {
   let meilleur: Destination | null = null;
   for (const d of destinations) {
     if (d.prochainDepart === null) continue;
@@ -75,7 +81,9 @@ export function prochainTrainDirect(destinations: readonly Destination[]): strin
       meilleur = d;
     }
   }
-  return meilleur?.prochainDepart ? `${meilleur.prochainDepart.texte} → ${meilleur.titre}` : null;
+  return meilleur?.prochainDepart
+    ? { heure: meilleur.prochainDepart.texte, vers: meilleur.titre }
+    : null;
 }
 
 /** Toujours une estimation (règle 7) : « ≈ 12 € », « ≈ 12 à 18 € ». */
