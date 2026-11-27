@@ -24,6 +24,23 @@
 
 ---
 
+## 27/11/2026 (soir) — Étape E16 — Profil « démo » reporté, scénario de la démo mobile
+**Fait :**
+- #214 fusionnée : profil « démo » d'E16 reporté (D126 modifiée) ; le jour J : site en ligne, partage de connexion 4G de l'iPhone, vidéo enregistrée à l'avance
+- Conseils pour montrer l'écran de l'iPhone en visio (rejoindre la visio depuis l'iPhone, recopie d'écran, vue mobile des DevTools) ; outil de visio du jury pas encore connu
+- Scénario de la démo mobile de 5 minutes (#215) : trois personnes (mère de famille, touriste, train en retard), gestes et phrases, points à vérifier sur l'iPhone
+- Serveur d'essai (port 3200) et tunnel arrêtés
+**Décisions :** D127
+**Problèmes rencontrés :**
+- Brouillon faux sur le filtre « Enfants » (ordre déduit d'un comptage en base) : corrigé après lecture du tri (L95)
+**À valider par Hardy :**
+- #215 ; outil de visio du jury ; défauts du parcours complet sur l'iPhone
+**Prochaine action :**
+- Fusion de #215, puis parcours complet de la démo sur l'iPhone et corrections (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`9f19a9f`) : types, lint, format, 863 tests ; documents seuls ensuite
+
+---
+
 ## 26/11/2026 (après-midi) — Étapes E11/E12 — Maquettes de la feuille d'Explorer, cartes de Lieux à 320 px
 **Fait :**
 - #203 (D124) et #204 (sauvegarde) fusionnées, dans cet ordre

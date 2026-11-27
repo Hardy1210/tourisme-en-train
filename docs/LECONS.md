@@ -683,6 +683,15 @@ Valeurs en g CO₂e/km.
 
 ---
 
+### L95 — L'ordre d'une liste se lit dans son tri, pas dans un comptage en base
+- **Problème :** dans le brouillon de la démo, « avec le filtre Enfants, Chalon, Auxerre et Mâcon passent devant » ; faux, Hardy l'a vu.
+- **Cause :** déduit d'un comptage des lieux « enfants » par destination en base, sans lire le code qui trie : le filtre cache les destinations sans lieu de cette envie, met à la fin celles qui en ont moins de 3, puis trie par temps de train.
+- **Solution :** lire la fonction de tri (`regrouper.ts`) avant de dire ce que l'écran montrera.
+- **À retenir :** ce que l'écran affiche se vérifie dans le code qui l'ordonne, ou sur l'écran lui-même ; un comptage en base ne dit rien de l'ordre.
+- **Origine :** #215, 27/11.
+
+---
+
 
 ## Historique
 
@@ -717,3 +726,4 @@ Valeurs en g CO₂e/km.
 | 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |
 | 25/11/2026 | 1.27 | L91 (une animation qui saute sur une longue page : compter les éléments), L92 (recaler une branche à plusieurs commits par une fusion de `main`) |
 | 26/11/2026 | 1.28 | L93 (regarder les cas réels avant d'afficher des données venues d'ailleurs), L94 (compter dans la bonne colonne) |
+| 27/11/2026 | 1.29 | L95 (l'ordre d'une liste se lit dans son tri) |
