@@ -19,6 +19,8 @@ type Proprietes = {
   erreur: string | null;
   lienDe: (destination: Destination) => string;
   survolee: string | null;
+  /** Destination choisie (D2) : sa carte a le même contour violet qu'au survol. */
+  choisie: string | null;
   surSurvol: (uic: string | null) => void;
   surReessai: () => void;
   /** La date est hors des horaires : réessayer ne servirait à rien, on propose d'en changer. */
@@ -44,6 +46,7 @@ export function SectionDestinations({
   erreur,
   lienDe,
   survolee,
+  choisie,
   surSurvol,
   surReessai,
   surAujourdhui,
@@ -80,8 +83,8 @@ export function SectionDestinations({
 
       {chargement && (
         <div className="flex flex-col gap-3" aria-hidden="true">
-          <Squelette className="h-64 rounded-carte" />
-          <Squelette className="h-64 rounded-carte" />
+          <Squelette className="h-80 rounded-carte" />
+          <Squelette className="h-80 rounded-carte" />
         </div>
       )}
 
@@ -141,7 +144,9 @@ export function SectionDestinations({
               key={destination.gare.uic}
               destination={destination}
               lien={lienDe(destination)}
-              survolee={survolee === destination.gare.uic}
+              gareDepart={gareNom}
+              aujourdhui={!suffixeDate}
+              enAvant={survolee === destination.gare.uic || choisie === destination.gare.uic}
               surSurvol={surSurvol}
             />
           ))}

@@ -234,7 +234,7 @@ test.describe('position acceptée', () => {
     await page.goto(ECRAN);
     await expect(sorties(page).first()).toBeVisible();
     await expect(page.getByLabel(/^Prix estimé pour un aller/).first()).toBeVisible();
-    await expect(page.getByText(/l.aller \(estimation\)/).first()).toBeVisible();
+    await expect(page.getByText(/l.aller, estimation/).first()).toBeVisible();
   });
 
   // Prix non calibré (`prixEstime: null`) : aucune ligne de prix, les cartes restent complètes.

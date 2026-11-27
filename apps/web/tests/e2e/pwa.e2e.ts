@@ -148,14 +148,14 @@ test.describe('avec le service worker', () => {
   test('hors ligne, un train déjà parti n’est pas affiché', async ({ page, context }) => {
     await page.clock.install({ time: new Date(`${DATE}T00:05:00+01:00`) });
     await installer(page, ECRAN);
-    await expect(page.getByText(/Prochain :/).first()).toBeVisible();
+    await expect(page.getByRole('group', { name: /^Prochain train : \d/ }).first()).toBeVisible();
 
     await context.setOffline(true);
     await page.clock.fastForward('23:50:00');
     await page.reload();
     await expect(page.getByText(BANDEAU)).toBeVisible();
     await expect(sorties(page).first()).toBeVisible();
-    await expect(page.getByText(/Prochain :/)).toHaveCount(0);
+    await expect(page.getByRole('group', { name: /^Prochain train : \d/ })).toHaveCount(0);
   });
 });
 

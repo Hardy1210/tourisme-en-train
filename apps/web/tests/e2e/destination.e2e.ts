@@ -28,7 +28,7 @@ test('Explorer → destination → onglet Trains : le dernier retour est visible
   await expect(page).toHaveURL(/\/destinations\//);
 
   await onglet(page, 'Trains').click();
-  await expect(page.getByText('Dernier retour')).toBeVisible();
+  await expect(page.getByText('Dernier retour', { exact: true })).toBeVisible();
   await expect(
     page.getByRole('region', { name: 'Aller' }).getByRole('listitem').first(),
   ).toBeVisible();
