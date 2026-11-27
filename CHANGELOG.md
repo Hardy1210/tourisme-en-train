@@ -23,6 +23,7 @@
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Dans Explorer, « Près de vous » montre les mêmes grandes cartes sur photo que l'onglet Lieux.
 - Dans Explorer, « Votre gare » devient un billet : le prochain train direct en grand et la destination vers laquelle il va, l'accès à la gare (à pied, à vélo ou à vol d'oiseau) et « Itinéraire » ; « Changer » est en haut à droite.
 - Sur le téléphone, les cartes de l'onglet Lieux sont plus larges (320 px au lieu de 250) : la photo et les textes se lisent mieux.
 - Sur le téléphone, plus de bouton « Carte plein écran » sur la carte d'Explorer : on baisse la feuille au doigt pour voir la carte en grand.

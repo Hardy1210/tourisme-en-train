@@ -1,52 +1,8 @@
-import { Footprints } from 'lucide-react';
-import Link from 'next/link';
 import { Bandeau } from '@/components/ui/bandeau';
 import { Bouton } from '@/components/ui/bouton';
 import { Squelette } from '@/components/ui/squelette';
-import { cn } from '@/lib/classes';
-import { formaterDistance, formaterDureeEstimee } from '@/lib/geo/formats';
-import { lienLieu } from '../liens';
 import type { LieuResume } from '../schemas';
-import { APPARENCE_CATEGORIE, IconeCategorie } from './icone-categorie';
-import { PhotoLieu } from './photo-lieu';
-
-/** Petite carte : la photo sans ⓘ, son crédit est sur la page du lieu (Hardy, 18/11, D103). */
-function CarteLieu({ lieu }: { lieu: LieuResume }) {
-  const { libelle, classeFond, classeTexte } = APPARENCE_CATEGORIE[lieu.categorie];
-  return (
-    <li className="w-47 flex-none overflow-hidden rounded-carte bg-carte-bg shadow-carte">
-      <Link href={lienLieu(lieu.cle)} className="flex h-full flex-col">
-        <PhotoLieu
-          photo={lieu.photo}
-          nom={lieu.nom}
-          categorie={lieu.categorie}
-          format="carte"
-          className="h-24"
-          classeIcone="size-10"
-        />
-        <div className="flex flex-col gap-2 p-3">
-          <h3 className="line-clamp-2 min-h-10 text-base leading-tight font-semibold">
-            {lieu.nom}
-          </h3>
-          <span
-            className={cn(
-              'inline-flex h-6.5 items-center gap-1 self-start rounded-pill pr-2 pl-1.5 text-xs font-semibold',
-              classeFond,
-              classeTexte,
-            )}
-          >
-            <IconeCategorie categorie={lieu.categorie} className="size-3.5" />
-            {libelle}
-          </span>
-          <span className="tabular flex items-center gap-1 text-sm text-muted-foreground">
-            <Footprints aria-hidden="true" className="size-4 flex-none" />
-            {formaterDureeEstimee(lieu.dureeMarcheMin)} · {formaterDistance(lieu.distanceM)}
-          </span>
-        </div>
-      </Link>
-    </li>
-  );
-}
+import { CarteLieuSurPhoto } from './carte-lieu-sur-photo';
 
 type Proprietes = {
   titre: string;
@@ -57,7 +13,10 @@ type Proprietes = {
   surReessai: () => void;
 };
 
-/** « Près de vous » ou « Près de la gare de… » (maquette v6) : tous les lieux à pied, sans le tri propre à l'onglet Lieux. */
+/**
+ * « Près de vous » ou « Près de la gare de… » (maquette v6 ; cartes de l'onglet Lieux depuis D125, états B1 à
+ * B5) : tous les lieux à pied, sans le tri propre à l'onglet Lieux.
+ */
 export function SectionAPied({
   titre,
   rayonLibelle,
@@ -72,14 +31,17 @@ export function SectionAPied({
         <h2 id="a-pied" className="text-xl font-bold">
           {titre}
         </h2>
-        <span className="tabular text-sm whitespace-nowrap text-muted-foreground">
-          à moins de {rayonLibelle}
-        </span>
+        {/* Sans lieu, la phrase du dessous le dit déjà : pas de doublon (état B5). */}
+        {lieux?.length !== 0 && (
+          <span className="tabular text-sm whitespace-nowrap text-muted-foreground">
+            à moins de {rayonLibelle}
+          </span>
+        )}
       </div>
       {chargement && (
         <div className="flex gap-3 overflow-hidden" aria-hidden="true">
-          <Squelette className="h-52 w-47 flex-none rounded-carte" />
-          <Squelette className="h-52 w-47 flex-none rounded-carte" />
+          <Squelette className="h-(--carte-rangee-hauteur) w-(--carte-rangee-largeur) flex-none rounded-carte" />
+          <Squelette className="h-(--carte-rangee-hauteur) w-(--carte-rangee-largeur) flex-none rounded-carte" />
         </div>
       )}
       {erreur && (
@@ -96,9 +58,9 @@ export function SectionAPied({
         </p>
       )}
       {lieux !== undefined && lieux.length > 0 && (
-        <ul className="scrollbar-none -mx-4 flex gap-3 overflow-x-auto px-4 pt-0.5 pb-2 lg:mx-0 lg:px-0">
+        <ul className="scrollbar-none -mx-4 flex snap-x gap-3 overflow-x-auto scroll-px-4 px-4 pt-0.5 pb-2 lg:mx-0 lg:px-0">
           {lieux.map((lieu) => (
-            <CarteLieu key={lieu.cle} lieu={lieu} />
+            <CarteLieuSurPhoto key={lieu.cle} lieu={lieu} />
           ))}
         </ul>
       )}
