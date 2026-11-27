@@ -23,6 +23,7 @@
 - Sources des données : deux licences trop longues dépassaient de leur carte et la page défilait en largeur sur le téléphone ; elles passent maintenant à la ligne.
 
 ### Modifié
+- Dans Explorer, chaque destination devient un billet : le prochain train en grand (départ, durée, arrivée), les noms de gare dessous, puis le prix estimé et « Voir la sortie » dans un talon détaché.
 - Dans Explorer, « Près de vous » montre les mêmes grandes cartes sur photo que l'onglet Lieux.
 - Dans Explorer, « Votre gare » devient un billet : le prochain train direct en grand et la destination vers laquelle il va, l'accès à la gare (à pied, à vélo ou à vol d'oiseau) et « Itinéraire » ; « Changer » est en haut à droite.
 - Sur le téléphone, les cartes de l'onglet Lieux sont plus larges (320 px au lieu de 250) : la photo et les textes se lisent mieux.
