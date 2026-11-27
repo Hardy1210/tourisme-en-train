@@ -86,7 +86,7 @@ export function CarteDestination({
         <div className="flex flex-wrap items-center justify-between gap-1.5">
           <span
             className={cn(
-              'flex h-7 items-center gap-1 rounded-pill px-2.5 text-xs font-semibold',
+              'flex h-7 items-center gap-1 rounded-pill px-2.5 text-2xs font-semibold whitespace-nowrap',
               d.faisableJournee ? 'bg-eco-soft text-eco' : 'bg-primary-soft text-muted-foreground',
             )}
           >
