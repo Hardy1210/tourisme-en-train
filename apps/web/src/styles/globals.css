@@ -311,10 +311,12 @@
   --sur-photo-texte: #ffffff;
   --sur-photo-bouton: rgb(22 17 30 / 0.5);
   /* Cartes sur photo des rangées de l'onglet Lieux (maquette Lieux-Rangees, D121) : texte posé sur un
-     voile sombre qui monte du bas de la photo ; 250 × 210 px. */
+     voile sombre qui monte du bas de la photo ; 320 × 210 px sur téléphone (Hardy, 26/11 : photo et
+     textes plus lisibles), 250 × 210 px sur ordinateur. */
   --sur-photo-texte-muted: rgb(255 255 255 / 0.86);
   --sur-photo-voile: rgb(22 17 30 / 0.9);
-  --carte-rangee-largeur: 15.625rem;
+  --carte-rangee-largeur: 20rem;
+  --carte-rangee-largeur-ordinateur: 15.625rem;
   --carte-rangee-hauteur: 13.125rem;
   /* Temps de train d'une rangée : pastille jaune de la marque (maquette Lieux-Rangees) */
   --pastille-train-bg: var(--accent);
@@ -665,6 +667,11 @@
   @media (width >= 64rem) {
     [data-feuille] {
       --resultats-haut: 100%;
+    }
+  }
+  @media (width >= 64rem) {
+    :root {
+      --carte-rangee-largeur: var(--carte-rangee-largeur-ordinateur);
     }
   }
   .lucide {
