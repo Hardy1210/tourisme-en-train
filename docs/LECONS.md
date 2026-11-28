@@ -1,6 +1,6 @@
 # Leçons réutilisables
 
-> **Version** 1.28 · **Date** 26/11/2026
+> **Version** 1.30 · **Date** 28/11/2026
 > **Dépend de :** `DECISIONS.md`, `JOURNAL.md`
 > **Utilisé par :** Hardy (révision, soutenance, futurs projets) ; aucun document ni code n'en dépend
 > **Rôle :** ce que le projet nous a appris **et qui servira ailleurs** : problème → cause → solution → comment l'éviter. `DECISIONS.md` dit ce qu'on a choisi **pour ce projet** ; ici, on garde ce qui est **transposable**.
@@ -683,6 +683,22 @@ Valeurs en g CO₂e/km.
 
 ---
 
+### L95 — L'ordre d'une liste se lit dans son tri, pas dans un comptage en base
+- **Problème :** dans le brouillon de la démo, « avec le filtre Enfants, Chalon, Auxerre et Mâcon passent devant » ; faux, Hardy l'a vu.
+- **Cause :** déduit d'un comptage des lieux « enfants » par destination en base, sans lire le code qui trie : le filtre cache les destinations sans lieu de cette envie, met à la fin celles qui en ont moins de 3, puis trie par temps de train.
+- **Solution :** lire la fonction de tri (`regrouper.ts`) avant de dire ce que l'écran montrera.
+- **À retenir :** ce que l'écran affiche se vérifie dans le code qui l'ordonne, ou sur l'écran lui-même ; un comptage en base ne dit rien de l'ordre.
+- **Origine :** #215, 27/11.
+
+### L96 — Reprendre depuis l'état publié, pas depuis la copie locale
+- **Problème :** à la reprise du 28/11, le résumé et le plan proposés (profil « démo » d'E16) dataient de midi la veille ; le soir, ce plan avait été reporté et un scénario de démo écrit. Hardy l'a vu : « tu ne te rappelles pas de tout ».
+- **Cause :** `CLAUDE.md` lu dans la copie de travail, restée sur un `main` en retard de deux fusions (#214, #215) ; la dernière sauvegarde (#216) attendait encore la fusion : la consigne « `git pull` d'abord » était écrite… dans cette sauvegarde.
+- **Solution :** `git fetch`, comparer `main` à `origin/main`, lister les PR ouvertes et lire § 9 dans la plus récente sauvegarde, puis résumer.
+- **À retenir :** quand chaque sauvegarde passe par une PR fusionnée plus tard, l'état vrai n'est pas forcément sur le disque ; on le cherche là où il est publié avant de parler.
+- **Origine :** reprise du 28/11.
+
+---
+
 
 ## Historique
 
@@ -717,3 +733,5 @@ Valeurs en g CO₂e/km.
 | 25/11/2026 | 1.26 | L88 (une feuille qui suit le doigt), L89 (un défaut vu seulement sur l'iPhone se cherche en retirant), L90 (une classe de couleur sans jeton ne fait rien) |
 | 25/11/2026 | 1.27 | L91 (une animation qui saute sur une longue page : compter les éléments), L92 (recaler une branche à plusieurs commits par une fusion de `main`) |
 | 26/11/2026 | 1.28 | L93 (regarder les cas réels avant d'afficher des données venues d'ailleurs), L94 (compter dans la bonne colonne) |
+| 27/11/2026 | 1.29 | L95 (l'ordre d'une liste se lit dans son tri) |
+| 28/11/2026 | 1.30 | L96 (reprendre depuis l'état publié, pas depuis la copie locale) |

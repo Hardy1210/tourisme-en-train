@@ -24,6 +24,46 @@
 
 ---
 
+## 28/11/2026 — Étapes E16/E13 — Reprise, secours redit, captures du pitch, gel de l'app évalué
+**Fait :**
+- Reprise faite d'abord sur un `main` local en retard (`0c638c8`, sans #214, #215 ni #216) : le profil « démo » d'E16 a été reproposé alors qu'il était reporté ; vu par Hardy, état réel relu ensuite sur `origin/main` et #216 (L96)
+- Secours redit par Hardy : une partie du jury est en visio, une démo sans Internet n'a pas de sens ; site en ligne, application sur son ordinateur (Docker), vidéo (D126)
+- « Gel » : date fixée par Hardy lui-même le 07/11 (D078), pas par le défi ; corrections et retouches restent permises
+- #197 : les 3 captures définies (Explorer à l'ouverture sans « Votre gare », Lieux, fiche de Beaune) et faites dans un iPhone 13 Pro Max simulé (428 × 926, 64 à 98 ko en WebP, hors dépôt) ; **Hardy les prend finalement lui-même** pour maîtriser les maquettes (`A-FAIRE` § 1)
+- Gel vu par Hardy sur l'iPhone (filtres, barre Trajet, destination choisie dans la page « Trajet », puis « Voir la sortie » ne répond plus pendant plusieurs secondes) : enchaînement rejoué 3 fois dans un iPhone 13 Pro Max simulé, sur `main` (port 3200), processeur ×4 puis ×1, avec une trace
+**Mesures :**
+- Mémoire stable : une seule carte, ≈ 3 800 éléments, tas de 18 à 23 Mo ; filtres sans requête au serveur ; photos = miniatures Wikimedia de 960 px (50 à 570 ko)
+- React ≈ 40 à 50 ms par geste ; tâches longues dominées par la carte WebGL dessinée sans carte graphique (trace : `Commit` 4,3 s, WebGL 3,7 s, `Paint` 315 ms) : défaut du navigateur de test (D107)
+- ≈ 100 marqueurs React sur la carte d'Explorer (portails : ≈ 160 écouteurs chacun, 15 563 au total)
+- Fiche destination sans `loading.tsx` : pas de préchargement, le toucher attend la réponse du serveur
+**Décisions :** D126 modifiée (secours précisé par Hardy)
+**Problèmes rencontrés :**
+- Reprise sur un dépôt local en retard de deux fusions et d'une sauvegarde ouverte (L96)
+- Latence réseau simulée (400 ms) invisible dans les temps relevés : le poids du réseau se mesure sur l'iPhone
+**À valider par Hardy :**
+- Où le gel a été vu (site en ligne ou tunnel, Wi-Fi ou 4G) ; enregistreur temporaire sur l'iPhone ; captures de #197
+**Prochaine action :**
+- Enregistreur temporaire dans la copie d'essai, gel reproduit sur l'iPhone, puis parcours complet de la démo (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `0c638c8` (types, lint, format, 863 tests) ; #214 et #215 : documents seuls
+**Commit :** sauvegarde ajoutée à #216
+
+## 27/11/2026 (soir) — Étape E16 — Profil « démo » reporté, scénario de la démo mobile
+**Fait :**
+- #214 fusionnée : profil « démo » d'E16 reporté (D126 modifiée) ; le jour J : site en ligne, partage de connexion 4G de l'iPhone, vidéo enregistrée à l'avance
+- Conseils pour montrer l'écran de l'iPhone en visio (rejoindre la visio depuis l'iPhone, recopie d'écran, vue mobile des DevTools) ; outil de visio du jury pas encore connu
+- Scénario de la démo mobile de 5 minutes (#215) : trois personnes (mère de famille, touriste, train en retard), gestes et phrases, points à vérifier sur l'iPhone
+- Serveur d'essai (port 3200) et tunnel arrêtés
+**Décisions :** D127
+**Problèmes rencontrés :**
+- Brouillon faux sur le filtre « Enfants » (ordre déduit d'un comptage en base) : corrigé après lecture du tri (L95)
+**À valider par Hardy :**
+- #215 ; outil de visio du jury ; défauts du parcours complet sur l'iPhone
+**Prochaine action :**
+- Fusion de #215, puis parcours complet de la démo sur l'iPhone et corrections (`CLAUDE.md` § 9)
+**Vérifications :** `pnpm verifier` ✅ sur `main` (`9f19a9f`) : types, lint, format, 863 tests ; documents seuls ensuite
+
+---
+
 ## 26/11/2026 (après-midi) — Étapes E11/E12 — Maquettes de la feuille d'Explorer, cartes de Lieux à 320 px
 **Fait :**
 - #203 (D124) et #204 (sauvegarde) fusionnées, dans cet ordre

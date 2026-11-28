@@ -54,3 +54,4 @@ Voir `_MODELE.md`.
 - 27/11/2026 : audit ; photos (Wikimedia et DATAtourisme) et fond de carte viennent d'Internet : partage de connexion du téléphone en secours, rien à coder ; le tunnel n'est pas un secours — D126.
 - 27/11/2026 (après-midi) : **profil « démo » reporté** (Hardy) : coupure d'Internet très rare le jour J ; secours = partage de connexion 4G et vidéo de la démo ; si on le fait plus tard, données par clé USB — D126, `A-FAIRE` § 3.
 - 27/11/2026 : démo mobile de 5 minutes (soutenance de 12 min + 8 min de questions) ; personnes : mère de famille, touriste venu d'ailleurs, voyageur dont le train a du retard ; points à vérifier sur l'iPhone dans `docs/equipe/scenario-demo.md`.
+- 28/11/2026 : secours redit par Hardy : jury en partie en visio, pas de démo sans réseau ; site en ligne, application sur son ordinateur (Docker), vidéo — D126.
