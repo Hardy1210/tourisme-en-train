@@ -103,3 +103,4 @@
 | 27/11/2026 | 2.07 | § 8 : E16 en cours, 0.6.0 le 27/11 ; § 9 : feuille B-Max-2 finie (#206 à #210), 0.6.0 en ligne, E16 (plan de secours) ensuite |
 | 27/11/2026 | 2.08 | § 1 : soutenance sur le site en ligne, démo locale reportée (D126) ; § 8 : E16 ⏸ ; § 9 : présentation (écran de l'iPhone en visio) |
 | 27/11/2026 | 2.09 | § 9 : scénario de la démo mobile (#215, D127), parcours complet sur l'iPhone ensuite, serveurs d'essai arrêtés |
+| 28/11/2026 | 2.10 | § 9 : gel de l'app vu par Hardy (suspects mesurés, enregistreur sur l'iPhone ensuite), captures de #197 prises par Hardy, reprise depuis `origin/main` (L96) |

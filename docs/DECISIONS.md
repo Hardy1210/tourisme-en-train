@@ -1462,6 +1462,7 @@
 - **Écarté :** le tunnel comme secours (dépend d'Internet) ; photos copiées en local pour la soutenance (stockage, adresses et crédits : un chantier, `A-FAIRE` § 3, après la soutenance) ; fond de carte PMTiles (même raison).
 - **Impact :** `docker-compose.yml` (profil `demo`), `README.md`, `docs/07-contrat-infra.md` § 4 et 5, fiche E16 ; aucun changement de l'application en ligne ni de `pnpm dev`.
 - **Modifié après coup (27/11, après-midi, Hardy) :** **le profil « démo » d'E16 est reporté.** Une coupure d'Internet est très rare (école d'informatique, jury de l'Open Data University en visio) ; le jour J : le site en ligne, le partage de connexion 4G de l'iPhone, et une vidéo de la démo enregistrée à l'avance. Si on le fait plus tard : fichier de données par clé USB (`A-FAIRE` § 3). La vraie question devient **montrer l'écran du téléphone pendant la visio**.
+- **Modifié après coup (28/11, Hardy) :** une partie du jury est en visio : sans Internet, la soutenance ne tient pas, donc **pas de démo sans réseau**. Trois filets : le site en ligne ; l'application qui tourne déjà sur l'ordinateur de Hardy (base dans Docker, essai de l'image de production, `CLAUDE.md` § 16), rien à construire ; la vidéo de la démo. Le profil « démo » reste reporté.
 
 ## D127 — Démo mobile de 5 minutes : trois personnes, défauts corrigés pendant le parcours sur l'iPhone
 - **Date :** 27/11/2026

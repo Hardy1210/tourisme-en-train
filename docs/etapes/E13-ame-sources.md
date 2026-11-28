@@ -51,3 +51,4 @@ Voir `_MODELE.md`.
 - 07/11/2026 : hébergeur complété et vérifié en ligne (PR #84 et #85) — D076.
 - 06/11/2026 : page « Mentions légales et confidentialité » ajoutée à l'étape, à la demande de Hardy, avant la mise en ligne (E17, D076).
 - 25/11/2026 : textes du pitch validés par Hardy : 3 étapes avec captures, « Pour qui », « Ce que ça change » (#197) ; reste le one-pager.
+- 28/11/2026 : captures des 3 étapes à refaire (Explorer a changé depuis le 25/11, #206 à #210) : Hardy les prend sur son iPhone 13 Pro Max ; la première sans « Votre gare », masqué pour la capture seulement (`A-FAIRE` § 1).

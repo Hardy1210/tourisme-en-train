@@ -1,7 +1,7 @@
 # Scénario de la démo mobile (5 minutes)
 
 > **État : BROUILLON d'entraînement, à valider par Hardy** après le parcours complet sur l'iPhone.
-> **Version** 0.1 · **Date** 27/11/2026
+> **Version** 0.2 · **Date** 28/11/2026
 > **Dépend de :** `docs/00-vision.md` § 1 à 3, `docs/equipe/pitch.md`, `docs/etapes/E16-livraison-soutenance.md`
 > **Utilisé par :** la soutenance du 03/12 (démo en direct, ou vidéo enregistrée à l'avance, D126)
 > **Document de référence pour :** le déroulé de la démo, les gestes et les phrases à dire.
@@ -92,6 +92,7 @@ Hardy fait le parcours complet de la démo sur le téléphone ; chaque défaut e
 | **Onglet Lieux : quels lieux en premier ?** | Idée de Hardy : mettre en avant les lieux les plus touristiques, avec photo, comme le moteur déjà utilisé pour les photos de « Près de vous » | Regarder l'ordre actuel sur l'iPhone, puis décider |
 | **Ordre des catégories** | Aujourd'hui : enfants, nature, parcs, patrimoine, culture (`packages/commun/src/categories.ts`). Voulu par Hardy : **patrimoine, nature, culture, enfants, parcs**, dans la fiche des lieux par gare **et** dans la barre de catégories d'Explorer | Une seule liste à changer si possible ; vérifier les tests qui suivent l'ordre |
 | **Écran Sources** | Classé par usage (trains, lieux, transports, carte et calculs), pas au hasard. Toutes les sources sont ouvertes ou libres, sauf les facteurs CO₂ (réutilisation non commerciale) et la disponibilité des vélos (selon l'opérateur). Deux lignes à relire : « Lignes par région administrative » (licence « à confirmer en E07 ») et « API SNCF (temps réel) » (est-elle encore utilisée ?) | Relire l'écran, corriger les lignes dépassées |
+| **L'application se fige après plusieurs gestes** (Hardy, 28/11 : filtres, barre Trajet, destination choisie dans la page « Trajet », puis « Voir la sortie » ne répond plus pendant plusieurs secondes) | Mesuré dans un iPhone 13 Pro Max simulé (28/11, `main`) : pas de fuite de mémoire, filtres sans requête au serveur, photos en miniatures, React ≈ 40 à 50 ms par geste ; le reste est la carte dessinée sans carte graphique, défaut du navigateur de test (D107). Deux suspects pour l'iPhone : **A** la fiche destination n'a pas d'écran de chargement (`loading.tsx`) : pas de préchargement, le toucher attend le serveur sans rien montrer ; **B** ≈ 100 bulles React sur la carte (≈ 16 000 écouteurs), refaites à chaque recherche pendant les animations | Savoir où (site en ligne ou tunnel, Wi-Fi ou 4G) ; enregistreur temporaire dans la copie d'essai (jamais commité), gel reproduit sur l'iPhone, capture du journal ; puis test d'abord et correction (A petite ; B après la soutenance, sauf mesure grave) |
 | **Chiffres du déroulé** | Beaune 18 min, 45 trains ; Hôtel-Dieu 16 min à pied ; Muséum 4 min, Arquebuse 5 min | Les relire à l'heure de la répétition |
 
 ---
@@ -101,3 +102,4 @@ Hardy fait le parcours complet de la démo sur le téléphone ; chaque défaut e
 | Version | Date | Changement |
 |---|---|---|
 | 0.1 | 27/11/2026 | Premier déroulé : 5 minutes, trois personnes (mère de famille, touriste, train en retard), points à vérifier sur l'iPhone |
+| 0.2 | 28/11/2026 | « À vérifier » : gel après plusieurs gestes, mesures dans un téléphone simulé et deux suspects |
